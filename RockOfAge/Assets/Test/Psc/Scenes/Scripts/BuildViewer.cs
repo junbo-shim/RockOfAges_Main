@@ -52,7 +52,7 @@ public class BuildViewer : MonoBehaviour
                 float height = bounds.size.y * .1f;
 
                 // 결과 출력
-                Debug.Log("Object Height: " + height);
+                //Debug.Log("Object Height: " + height);
 
                 return height;
             }

@@ -2,6 +2,7 @@ using ExitGames.Client.Photon.StructWrapping;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 
 public class BuildManager : MonoBehaviour
@@ -9,7 +10,7 @@ public class BuildManager : MonoBehaviour
     //!!!!!!!!!!!!!!!!!!!!!!!!!테스트 코드
     //해당 정보는 item manager에 저장될 예정??
     //상의 해 봐야함
-    public TestObstacle tmp;
+    public TestObstacle buildTarget;
     public GameObject gridTest;
 
 
@@ -17,7 +18,6 @@ public class BuildManager : MonoBehaviour
     public Vector3Int currCursorGridIndex = Vector3Int.zero;
     //건물이 바라보는 방향
     BuildRotateDirection whereLookAt;
-    public static readonly int ONCE_ROTATE_EULER_ANGLE = 90;
 
 
     //빌드 뷰어
@@ -26,12 +26,14 @@ public class BuildManager : MonoBehaviour
 
     //해당 지형의 건설 가능 상태를 저장 
     BitArray buildState;
+    public Vector3 gridOffset = new Vector3(.5f, 0, .5f);
+
     //맵 사이즈 
     public static readonly int MAP_SIZE_X = 256;
     public static readonly int MAP_SIZE_Z = 256;
     public static readonly int MAP_SIZE_Y = 50;
+    public static readonly int ONCE_ROTATE_EULER_ANGLE = 90;
 
-    public static readonly Vector3 GRID_OFFSET = new Vector3(.5f, 0, .5f);
 
 
 
@@ -42,7 +44,7 @@ public class BuildManager : MonoBehaviour
         viewer.HideViewer();
 
         InitTerrainData();
-        tmp.transform.localScale = Vector3.zero;
+        buildTarget.transform.localScale = Vector3.zero;
     }
 
 
@@ -52,23 +54,47 @@ public class BuildManager : MonoBehaviour
     //해당 지형이 건설 가능한지를 판단한다.
     void Update()
     {
+        ChangeBuildTarget(buildTarget);
+        if (buildTarget == null)
+        {
+            return;
+        }
+
         ChangeCurrGrid();
+        ChangeBuildPosition();
 
         //현재 상태에 따라서 해당 스크립트를 처리할지 정한다.
         //DEFANCE 모드, 현재 위치의 그리드에 지형이 존재, 현재 건설 가능한지
-        if (!IsDefance() || !IsTerrain() || !CanBuild())
+        if (!IsDefance() || !IsTerrain())
         {
             viewer.HideViewer();
             return;
         }
 
         viewer.ShowViewer();
-
-        if (Input.GetMouseButtonDown(1))
+        if (!CanBuild())
         {
-            Debug.Log("In");
-            tmp.Build(currCursorGridIndex+GRID_OFFSET, Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0));
-            buildState.Set((currCursorGridIndex.z + MAP_SIZE_Z / 2) * MAP_SIZE_Z + (currCursorGridIndex.x + MAP_SIZE_X / 2), false);
+            //하이라이트 색 변경
+        }
+        else
+        {
+            if (Input.GetMouseButtonDown(1))
+            {
+                TestObstacle build = buildTarget.Build(currCursorGridIndex + gridOffset, Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0));
+                build.name = buildTarget.name + "_" + currCursorGridIndex.z + "_" + currCursorGridIndex.x;
+                SetBitArrays(currCursorGridIndex, buildTarget.size);
+            }
+
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            ChangeBuildRotation(-1);
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            ChangeBuildRotation(1);
         }
 
     }
@@ -84,36 +110,67 @@ public class BuildManager : MonoBehaviour
             for (int x = -MAP_SIZE_X / 2; x < MAP_SIZE_X / 2; x++)
             {
                 RaycastHit raycastHit;
-                if (Physics.Raycast(new Vector3(x, MAP_SIZE_Y, z) + GRID_OFFSET, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
+                if (Physics.Raycast(new Vector3(x, MAP_SIZE_Y, z) + gridOffset, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
                 {
                     GameObject gameObject = Instantiate(gridTest, raycastHit.point, Quaternion.identity);
+                    gameObject.name = gridTest.name + "_" + z + "_" + x;
                     buildState.Set((z + MAP_SIZE_Z / 2) * MAP_SIZE_Z + (x + MAP_SIZE_X / 2), true);
-                    //Debug.LogError((i + MAP_SIZE_Z / 2) * MAP_SIZE_Z + (j + MAP_SIZE_X / 2)+"/"+buildState.Get((i + MAP_SIZE_Z / 2) * MAP_SIZE_Z + (j + MAP_SIZE_X / 2)));
                 }
             }
         }
     }
 
+    void SetBitArrays(Vector3 grid, Vector2Int buildSize)
+    {
+        for (int y = (int)(buildSize.y * .5f); y > -buildSize.y * .5f; y--)
+        {
+            for (int x = (int)(buildSize.x * .5f); x > -buildSize.x * .5f; x--)
+            {
+                Vector3 _grid = grid + Vector3Int.right * x + Vector3Int.forward * y;
+                buildState.Set((int)((_grid.z + MAP_SIZE_Z *.5f) * MAP_SIZE_Z + _grid.x + MAP_SIZE_X * .5f), false) ;
+            }
+        }
 
-    void ChangeCurrGrid()
+    }
+
+
+    void ChangeBuildTarget(TestObstacle target)
+    {
+        buildTarget = target;
+        viewer.ChangeTarget(buildTarget.gameObject);
+        gridOffset = new Vector3((buildTarget.size.x+1) % 2 * .5f, 0, (buildTarget.size.y+1) % 2 * .5f);
+        //gridOffset = new Vector3((int)(buildTarget.size.x + 1) % 2 * .5f, 0, (int)(buildTarget.size.y + 1) % 2 * .5f);
+
+    }
+
+    bool ChangeCurrGrid()
     {
         //마우스 커서는 기본적으로 (좌하단 0,0)을 기준으로 계산된다.
         //그렇기 때문에 마우스 커서를 가져온뒤 이를 월드 좌표로 변환한다.
 
-        Vector3 mouseWorldPos = Global_PSC.GetWorldMousePositionFromMainCamera(Camera.main.transform.position.y);
+        Vector3 mouseWorldPos = Global_PSC.GetWorldMousePositionFromMainCamera();
 
-        Vector3Int _currCursorGridIndex = new Vector3Int(Mathf.FloorToInt(mouseWorldPos.x), 0, Mathf.FloorToInt(mouseWorldPos.z));
-        if(currCursorGridIndex != _currCursorGridIndex)
+        Vector3Int _currCursorGridIndex;
+
+        if(gridOffset.x == .5f)
+        {
+
+            _currCursorGridIndex = new Vector3Int(Mathf.FloorToInt(mouseWorldPos.x), 0, Mathf.FloorToInt(mouseWorldPos.z));
+        }
+        else
+        {
+            _currCursorGridIndex = new Vector3Int(Mathf.RoundToInt(mouseWorldPos.x), 0, Mathf.RoundToInt(mouseWorldPos.z));
+        }
+
+
+        if (currCursorGridIndex != _currCursorGridIndex)
         {
             currCursorGridIndex = _currCursorGridIndex;
-            ChangeBuildPosition();
+            return true;
         }
+        return false;
     }
 
-    void ChangeBuildTarget(TestObstacle target)
-    {
-        viewer.ChangeTarget(target.gameObject);
-    }
 
 
     //grid 정보가 바뀔때마다 불러온다.
@@ -121,24 +178,28 @@ public class BuildManager : MonoBehaviour
     void ChangeBuildPosition()
     {
         RaycastHit raycastHit;
-        if (Physics.Raycast(currCursorGridIndex+ GRID_OFFSET + Vector3.up * MAP_SIZE_Y, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
+        if (Physics.Raycast(currCursorGridIndex+ gridOffset + Vector3.up * MAP_SIZE_Y, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
         {
-            Vector3 newPosition = raycastHit.point + transform.up * (viewer.GetHeight() / 2);
-            transform.position = newPosition;
+            Vector3 newPosition = raycastHit.point + viewer.transform.up * (viewer.GetHeight() / 2);
+            viewer.transform.position = newPosition;
         }
     }
 
     //특정키 누를시 방향 회전 시킨다.
     //이 정보는 유지된다.
-    void ChangeBuildRotation()
+    void ChangeBuildRotation(int diff)
     {
-        if (whereLookAt != BuildRotateDirection.LEFT)
+        if(whereLookAt != BuildRotateDirection.LEFT && diff==1)
         {
-            whereLookAt = whereLookAt + 1;
+            whereLookAt = BuildRotateDirection.UP;
+        }
+        else if (whereLookAt != BuildRotateDirection.UP && diff == -1)
+        {
+            whereLookAt = BuildRotateDirection.LEFT;
         }
         else
         {
-            whereLookAt = 0;
+            whereLookAt = whereLookAt + diff;
         }
         viewer.transform.localEulerAngles = Vector3.up * ONCE_ROTATE_EULER_ANGLE * (int)whereLookAt;
     }
@@ -153,7 +214,7 @@ public class BuildManager : MonoBehaviour
     bool IsTerrain()
     {
         RaycastHit raycastHit;
-        if (Physics.Raycast(currCursorGridIndex + GRID_OFFSET+ Vector3.up * MAP_SIZE_Y, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
+        if (Physics.Raycast(currCursorGridIndex + gridOffset+ Vector3.up * MAP_SIZE_Y, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
         {
             return true;
         }
@@ -164,7 +225,7 @@ public class BuildManager : MonoBehaviour
     //아이템의 limit상태와 해당 terrain의 건설 가능 상태를 &&한다.
     bool CanBuild()
     {
-        return GetBuildEnable(currCursorGridIndex) && GetItemLimitState();
+        return GetBuildEnable(currCursorGridIndex, buildTarget.size) && GetItemLimitState();
     }
 
     //현재 건설된 아이템의 최대 건설 개수와 현재 건설 개수를 비교한다.
@@ -175,15 +236,24 @@ public class BuildManager : MonoBehaviour
     }
 
     //현재 grid위치의 주변 위치의 terrain의 상태를 전부 비교
-    bool GetBuildEnable(Vector3Int grid, Vector2 buildSize)
+    bool GetBuildEnable(Vector3 grid, Vector2Int buildSize)
     {
-        //for
+        bool result = true;
 
-        return buildState.Get((grid.z + MAP_SIZE_Z / 2) * MAP_SIZE_Z + (grid.x + MAP_SIZE_X / 2));
+        for (int y = (int)(buildSize.y * .5f); y > -buildSize.y * .5f; y--) 
+        {
+            for (int x = (int)(buildSize.x * .5f); x > -buildSize.x * .5f; x--)
+            {
+                result = result && GetBuildEnable(grid + Vector3Int.right*x + Vector3Int.forward*y);
+            
+            }
+        }
+
+        return result;
     }
-    bool GetBuildEnable(Vector3Int grid)
+    bool GetBuildEnable(Vector3 grid)
     {
-        return GetBuildEnable(grid, Vector2.one);
+         return buildState.Get((int)((grid.z + MAP_SIZE_Z / 2) * MAP_SIZE_Z + (grid.x + MAP_SIZE_X / 2)));
     }
 }
 

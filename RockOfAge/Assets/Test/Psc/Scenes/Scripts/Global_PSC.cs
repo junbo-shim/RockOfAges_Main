@@ -13,7 +13,7 @@ public static class Global_PSC
         if (layerIndex == -1)
         {
             Debug.LogWarning("레이어 " + layerName + "를 찾을 수 없습니다.");
-            return layerIndex;
+            return FindLayerToName("Default");
         }
         
         return 1 << layerIndex;
@@ -26,4 +26,21 @@ public static class Global_PSC
         return Camera.main.ScreenToWorldPoint(mouseCurrPos);
 
     }
+    public static Vector3 GetWorldMousePositionFromMainCamera()
+    {
+        // 카메라
+        Camera mainCamera = Camera.main;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit raycastHit;
+        if (Physics.Raycast(ray, out raycastHit, 1000, Global_PSC.FindLayerToName("Terrains")))
+        {
+            return raycastHit.point;
+        }
+
+        // 반환합니다.
+        return Vector3.zero ;
+
+    }
 }
+

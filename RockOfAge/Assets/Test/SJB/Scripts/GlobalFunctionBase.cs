@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class GlobalFunctionBase : MonoBehaviour
+public class GlobalFunctionBase : MonoBehaviourPunCallbacks
 {
     protected virtual void Awake()
     {

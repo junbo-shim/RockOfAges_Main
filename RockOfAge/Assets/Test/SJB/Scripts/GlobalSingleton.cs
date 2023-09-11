@@ -7,7 +7,7 @@ using UnityEngine;
 /// <para></para>
 /// 사용법 : 싱글톤으로 만들 클래스에 이 클래스를 상속시키면 됩니다.
 /// <para></para>
-/// 예시) public class ItemManager : GlobalSingleton<ItemManager>
+/// 예시) public class ItemManager : GlobalSingleton(ItemManager)
 /// </summary>
 /// <typeparam name="T">제네릭 클래스(T)에 싱글톤으로 만들 클래스만 넣을 수 있습니다.<para></para>
 /// </typeparam>
@@ -28,6 +28,8 @@ public class GlobalSingleton<T> : GlobalFunctionBase where T : GlobalSingleton<T
             {
                 // T 를 게임 오브젝트에 컴포넌트로 붙여서 인스턴스화 합니다.
                 GlobalSingleton<T>._instance = new GameObject().AddComponent<T>();
+                _instance.GetComponent<T>().enabled = true;
+
                 // 싱글톤으로 컴포넌트화 한 게임 오브젝트는 Scene 이 바뀌어도 파괴되지 않습니다.
                 DontDestroyOnLoad(_instance.gameObject);
             }
@@ -36,5 +38,10 @@ public class GlobalSingleton<T> : GlobalFunctionBase where T : GlobalSingleton<T
             // _instance 의 프로퍼티 (Instance) 에 _instance 를 넣고 반환합니다.
             return _instance;
         }
+    }
+
+    public void CreateThisManager() 
+    {
+        /*Intentionally Emptied*/
     }
 }

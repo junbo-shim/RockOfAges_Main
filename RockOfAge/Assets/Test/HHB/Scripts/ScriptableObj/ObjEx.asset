@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: Obj
+  m_Name: ObjEx
   m_EditorClassIdentifier: Assembly-CSharp::ObstacleStatus
-  id: 11
-  obstacleName: "\uBC29\uD574\uBB3C\uC740\uBC29\uD574\uBB3C\uC774\uB2E4"
-  price: 1000
-  size: {x: 3, y: 0, z: 3}
-  buildLimit: 1000
+  id: 12
+  obstacleName: "\uC74C\uB9E4"
+  price: 20
+  health: 1
+  size: {x: 0, y: 0}
+  buildLimit: 3
+  tempString: "\uC900\uBCF4\uD615 \uCD5C\uACE0"

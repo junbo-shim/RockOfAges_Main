@@ -1,15 +1,15 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class HolderButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler, IPointerClickHandler
+public class UnitHolderButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler, IPointerClickHandler
 {
     #region 변수
     // 제거 이미지
     private GameObject _removeImage;
-    // RockButton에서 받은 ID
+    // UnitButton에서 받은 ID
     [HideInInspector]
-    public int id;
+    public int unitId;
     // 자기 자신의 이미지
     private Image _image;
     // 클릭 색 조절
@@ -37,7 +37,7 @@ public class HolderButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
 
     #region Packed
     //{ PackAwake()
-    public void PackAwake()
+    private void PackAwake()
     {
         _image = GetComponent<Image>();
         _orignialColor = _image.color;
@@ -47,7 +47,7 @@ public class HolderButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
     //} PackAwake()
 
     //{ PackOnPointerExit()
-    public void PackOnPointerExit()
+    private void PackOnPointerExit()
     {
         _image.color = _orignialColor;
         _removeImage.SetActive(false);
@@ -55,10 +55,10 @@ public class HolderButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
     //} PackOnPointerExit()
 
     //{ PackOnPointerEnter()
-    public void PackOnPointerEnter()
+    private void PackOnPointerEnter()
     {
         _image.color = _clickedColor;
-        if (ItemManager.itemManager.CheckItemList(id))
+        if (ItemManager.itemManager.CheckItemList(unitId))
         {
             _removeImage.SetActive(true);
         }
@@ -66,20 +66,19 @@ public class HolderButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHan
     //} PackOnPointerEnter()
 
     //{ PackOnPointerClick()
-    public void PackOnPointerClick()
+    private void PackOnPointerClick()
     {
-        ItemManager.itemManager.userSelectedItems.Remove(id);
-        ItemManager.itemManager.RePrintHolder();
-        RockButton[] rockButtons = FindObjectsOfType<RockButton>();
-        foreach (RockButton rockButton in rockButtons)
+        ItemManager.itemManager.unitSelected.Remove(unitId);
+        ItemManager.itemManager.UnitRePrintHolder();
+        UnitButton[] unitButtons = FindObjectsOfType<UnitButton>();
+        foreach (UnitButton unitButton in unitButtons)
         {
-            if (rockButton.id == id)
+            if (unitButton.id == unitId)
             {
-                rockButton.BackToOriginalColor(id);
+                unitButton.BackToOriginalColor(unitId);
             }
         }
     }
     //} PackOnPointerClick()
     #endregion
-
 }

@@ -126,13 +126,19 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         }
         else
         {
-            _selectImage.SetActive(true);
+            if (ItemManager.itemManager.CheckUserListCapacity(2) == true)
+            { 
+                _selectImage.SetActive(true);
+            }
         }
         UIManager.uiManager.PrintRockCard(id, name, explain, time);
         if (_isChecked == false)
-        { 
+        {
+            if (ItemManager.itemManager.CheckUserListCapacity(2) == true)
+            { 
+                InstantiatePreviewHolder();
+            }
             InstantiateStatImg(hp, speed, acc, dmg, weight);
-            InstantiatePreviewHolder();
         }
         
     }
@@ -144,20 +150,23 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         // 유저가 가지고 있지 않다면
         if (ItemManager.itemManager.CheckItemList(id) == false)
         {
-            // original -> dark
-            _image.color = _clickedColor;
-            ItemManager.itemManager.userSelectedItems.Add(id);
-            _isChecked = true;
-            InstantiateHolder(id);
+            if (ItemManager.itemManager.CheckUserListCapacity(2) == true)
+            {
+                // original -> dark
+                _image.color = _clickedColor;
+                ItemManager.itemManager.rockSelected.Add(id);
+                _isChecked = true;
+                InstantiateRockHolder(id);
+            }
         }
         else
         // 가지고 있다면
         {
             // dark -> orignial
             _image.color = _orignialColor;
-            ItemManager.itemManager.userSelectedItems.Remove(id);
+            ItemManager.itemManager.rockSelected.Remove(id);
             _isChecked = false;
-            ItemManager.itemManager.RePrintHolder();
+            ItemManager.itemManager.RockRePrintHolder();
         }
     }
     //} PackOnPointerClick()
@@ -220,7 +229,6 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
             if (texts.name == "WeightStatTxt")
             {
                 texts.text = weight_.ToString();
-
             }
         }
 
@@ -294,7 +302,7 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     //{ InstantiateHolder()
     // Holder 생성
     // 제거 로직은 ItemManager가 관리함
-    public void InstantiateHolder(int id_)
+    public void InstantiateRockHolder(int id_)
     { 
         Transform parentTransform = transform.parent;
         GameObject newHolderButton = Instantiate(holderButton, parentTransform);
@@ -303,7 +311,7 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         UIManager.uiManager.MatchHolderIDSprite(image, id_);
         RectTransform rectTransform = newHolderButton.GetComponent<RectTransform>();
         rectTransform.anchoredPosition = new Vector2(xPos + (float)(163.5 * ItemManager.itemManager.rockCount), yPos);
-        HolderButton myHolderButton = FindObjectOfType<HolderButton>();
+        RockHolderButton myHolderButton = FindObjectOfType<RockHolderButton>();
         myHolderButton.id = id_;
         ItemManager.itemManager.rockCount++;
     }

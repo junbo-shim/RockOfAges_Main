@@ -1,0 +1,81 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+
+public class ItemManager : MonoBehaviour
+{
+    public static ItemManager itemManager;
+    public List<int> userSelectedItems = new List<int>();
+    public int rockCount = 0;
+    public int unitCount = 0;
+    public int capacity = 8;
+
+
+    private void Awake()
+    {
+        itemManager = this;
+    }
+
+    //{ CheckUserListCapacity 
+    // 아이템이 갯수가 초과하는지 확인하는 함수
+    public void CheckUserListCapacity()
+    {
+
+    }
+
+    //{ CheckItemList()
+    // 아이템을 가지고 있는지 검증하는 함수
+    public bool CheckItemList(int id_)
+    {
+        // 유저가 가지고 있다면
+        if (userSelectedItems.Contains(id_))
+        {
+            return true;
+        }
+        else // 가지고 있지 않다면 
+        {
+            return false;
+        }
+    }
+    //} CheckItemList()
+
+    //{ RePrintHolder()
+    // 출력 삭제와 삭제시 출력위치를 재조정
+    public void RePrintHolder()
+    {
+        // 출력된 것이 1개 밖에 없을 때
+        if (rockCount <= 1)
+        {
+            GameObject rockHolder = GameObject.Find("RockHolder");
+            if (rockHolder != null)
+            {
+                rockCount--;
+                Destroy(rockHolder);
+            }
+        }
+        if (rockCount > 1)
+        { 
+            GameObject rocks = GameObject.Find("Rocks");
+            if (rocks != null)
+            {
+                Transform[] rockHolders = rocks.GetComponentsInChildren<Transform>();
+
+                foreach (Transform child in rockHolders)
+                {
+                    if (child.name == "RockHolder")
+                    {
+                        GameObject destroyObj = child.gameObject;
+                        Destroy(destroyObj);
+                        rockCount = 0;
+                    }
+                }
+            }
+            foreach (int id in userSelectedItems)
+            {
+                RockButton rockButton = FindObjectOfType<RockButton>();
+                rockButton.InstantiateHolder(id);
+            }
+        }
+    }
+    //} RePrintHolder()
+}

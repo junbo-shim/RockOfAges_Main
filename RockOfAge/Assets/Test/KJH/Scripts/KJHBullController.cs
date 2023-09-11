@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
+//using System.Diagnostics;
 using UnityEngine;
 using System;
 
@@ -11,7 +11,7 @@ public class KJHBullController : MonoBehaviour
     public LayerMask Rock;
 
     public float health = 100f; // 체력 변수
-    public float attackPower = 10f; // 공격력 변수
+    public float attackPower = default; // 공격력 변수
     public float chargeCool = 5.0f;
 
     private float lastChargeTime = 0f;
@@ -34,7 +34,6 @@ public class KJHBullController : MonoBehaviour
             lastChargeTime += Time.deltaTime;
             if (lastChargeTime >= chargeCool) // 쿨타임이 지났을 경우
             {
-                // 자기자리으로 돌아감.
                 DetectRock(); // 돌을 탐지합니다.
             }
         }
@@ -67,38 +66,22 @@ public class KJHBullController : MonoBehaviour
     {
         Vector3 direction = (targetRock.position - transform.position).normalized;
         float distanceToTarget = Vector3.Distance(targetRock.position, transform.position);
-
-        if (distanceToTarget > 1f) // 돌에 도달하기 전까지 돌진
-        {
-            bullRigidbody.velocity = direction * chargeSpeed;
-        }
-        else // 돌에 도달했을 때 돌진 상태 초기화 및 충돌 처리
-        {
-            chargeCount++;
-            Rigidbody rockRigidbody = targetRock.GetComponent<Rigidbody>();
-            if (rockRigidbody == null)
-            {
-                targetRock.gameObject.AddComponent<Rigidbody>();
-                rockRigidbody = targetRock.GetComponent<Rigidbody>();
-            }
-
-            Vector3 forceDirection = (targetRock.position - transform.position).normalized;
-            rockRigidbody.AddForce(forceDirection * attackPower, ForceMode.Impulse);
-            lastChargeTime = Time.time; // 쿨타임 설정
-            bullRigidbody.velocity = Vector3.zero; // 황소의 속도를 0으로 설정
-        }
+        bullRigidbody.velocity = direction * chargeSpeed;
     }
 
     void ResetCharge() // 돌진 상태를 초기화하는 메서드를 선언합니다.
     {
+        lastChargeTime = 0f;
+        chargeCount = 0;
         isCharging = false;
     }
     void OnCollisionEnter(Collision collision) // 충돌이 발생했을 때의 메서드를 선언합니다.
     {
         RockBase rock = collision.gameObject.GetComponent<RockBase>();
 
-        if (rock != null)
+        if (rock != null && chargeCount < 1)
         {
+            chargeCount++;
             Rigidbody rockRigidbody = collision.gameObject.GetComponent<Rigidbody>();
             Rigidbody bullRigidbody = GetComponent<Rigidbody>();
 
@@ -110,11 +93,15 @@ public class KJHBullController : MonoBehaviour
             TakeDamage(1f);
             if (rockRigidbody != null)
             {
-                rockRigidbody.velocity = bullRigidbody.velocity;
+                Vector3 forceDirection = (targetRock.position - transform.position).normalized;
+                rockRigidbody.velocity = Vector3.zero;
+                rockRigidbody.AddForce(forceDirection * attackPower, ForceMode.VelocityChange);
+                rockRigidbody.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
+
             }
+            ResetCharge();
         }
-        lastChargeTime = 0f;
-        ResetCharge();
+
     }
 
 }

@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using PlayFab;
 using PlayFab.ClientModels;
+using System;
 
 public class NetworkManager : GlobalSingleton<NetworkManager>
 {
@@ -31,7 +32,7 @@ public class NetworkManager : GlobalSingleton<NetworkManager>
     }
 
 
-    #region UI ¿ÀºêÁ§Æ® Ã£¾Æ¿À´Â ¸Ş¼­µå
+    #region UI ì˜¤ë¸Œì íŠ¸ ì°¾ì•„ì˜¤ëŠ” ë©”ì„œë“œ
     private void FindAllPanels() 
     {
         titlePanel = GameObject.Find("Panel_Title").transform;
@@ -40,7 +41,7 @@ public class NetworkManager : GlobalSingleton<NetworkManager>
     }
     #endregion
 
-    #region ºü¸¥ ½ÃÀÛ-PlayFab
+    #region ë¹ ë¥¸ ì‹œì‘-PlayFab
     public void StartQuick() 
     {
         Debug.Log("PlayFab authenticating using Custom ID...");
@@ -52,7 +53,7 @@ public class NetworkManager : GlobalSingleton<NetworkManager>
     }
     #endregion
 
-    #region ·Î±×ÀÎ-PlayFab
+    #region ë¡œê·¸ì¸-PlayFab
     public void Login()
     {
         TMP_InputField emailInput = loginPanel.Find("InputField_Email").GetComponent<TMP_InputField>();
@@ -74,20 +75,20 @@ public class NetworkManager : GlobalSingleton<NetworkManager>
 
         PlayFabClientAPI.GetPhotonAuthenticationToken(tokenRequest, AuthenticateWithPhoton, OnLoginFailure);
 
-        //Debug.LogFormat("·Î±×ÀÎ ¼º°ø");
+        //Debug.LogFormat("ë¡œê·¸ì¸ ì„±ê³µ");
         loginPanel.GetComponentInChildren<TMP_Text>().color = Color.green;
-        loginPanel.GetComponentInChildren<TMP_Text>().text = "·Î±×ÀÎ ¼º°ø";
+        loginPanel.GetComponentInChildren<TMP_Text>().text = "ë¡œê·¸ì¸ ì„±ê³µ";
     }
 
     private void OnLoginFailure(PlayFabError error) 
     {
-        Debug.LogFormat("·Î±×ÀÎ ½ÇÆĞ\n¿À·ù ÄÚµå : {0}", error);
+        Debug.LogFormat("ë¡œê·¸ì¸ ì‹¤íŒ¨\nì˜¤ë¥˜ ì½”ë“œ : {0}", error);
         loginPanel.GetComponentInChildren<TMP_Text>().color = Color.red;
-        loginPanel.GetComponentInChildren<TMP_Text>().text = "·Î±×ÀÎ ½ÇÆĞ, ¿À·ù ÄÚµå : " + error;
+        loginPanel.GetComponentInChildren<TMP_Text>().text = "ë¡œê·¸ì¸ ì‹¤íŒ¨, ì˜¤ë¥˜ ì½”ë“œ : " + error;
     }
     #endregion
 
-    #region Email È¸¿ø°¡ÀÔ-PlayFab
+    #region Email íšŒì›ê°€ì…-PlayFab
     public void Register() 
     {
         TMP_InputField emailInput = signupPanel.Find("InputField_Email").GetComponent<TMP_InputField>();
@@ -102,20 +103,20 @@ public class NetworkManager : GlobalSingleton<NetworkManager>
 
     private void OnRegisterSuccess(RegisterPlayFabUserResult result) 
     {
-        Debug.LogFormat("°èÁ¤ µî·Ï ¼º°ø");
+        Debug.LogFormat("ê³„ì • ë“±ë¡ ì„±ê³µ");
         signupPanel.GetComponentInChildren<TMP_Text>().color = Color.green;
-        signupPanel.GetComponentInChildren<TMP_Text>().text = "°èÁ¤ µî·Ï ¼º°ø";
+        signupPanel.GetComponentInChildren<TMP_Text>().text = "ê³„ì • ë“±ë¡ ì„±ê³µ";
     }
 
     private void OnRegisterFailure(PlayFabError error) 
     {
-        Debug.LogFormat("°èÁ¤ µî·Ï ½ÇÆĞ\n¿À·ù ÄÚµå : {0}", error);
+        Debug.LogFormat("ê³„ì • ë“±ë¡ ì‹¤íŒ¨\nì˜¤ë¥˜ ì½”ë“œ : {0}", error);
         signupPanel.GetComponentInChildren<TMP_Text>().color = Color.red;
-        signupPanel.GetComponentInChildren<TMP_Text>().text = "°èÁ¤ µî·Ï ½ÇÆĞ, ¿À·ù ÄÚµå : " +  error;
+        signupPanel.GetComponentInChildren<TMP_Text>().text = "ê³„ì • ë“±ë¡ ì‹¤íŒ¨, ì˜¤ë¥˜ ì½”ë“œ : " +  error;
     }
     #endregion
 
-    #region Photon Token ¿äÃ» ¹× ÀÎÁõ-Photon
+    #region Photon Token ìš”ì²­ ë° ì¸ì¦-Photon
     private void AuthenticateWithPhoton(GetPhotonAuthenticationTokenResult tokenResult)
     {
         Debug.LogFormat("Photon token acquired: " + tokenResult.PhotonCustomAuthenticationToken + "  Authentication complete.");

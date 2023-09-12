@@ -32,13 +32,12 @@ public partial class UIManager : MonoBehaviour
     public TextMeshProUGUI readyTxt;
     public Image readyImg;
     // selectionUI
-    private GameObject _userSelectUI;
+    public GameObject userSelectUI;
     #endregion
 
     private void Awake()
     {
         uiManager = this;
-        _userSelectUI = this.gameObject;
         DontDestroyOnLoad(uiManager);
     }
 
@@ -141,10 +140,19 @@ public partial class UIManager : MonoBehaviour
     }
     //} PrintReadyText()
 
+    //{ PrintReadyText()
+    public void PrintNotReadyText()
+    {
+        readyTxt.text = "¡ÿ∫Ò¡ﬂ";
+        readyImg.gameObject.SetActive(false);
+    }
+    //} PrintReadyText()
+
+
     //{ ShutDownUserSelectUI()
     public void ShutDownUserSelectUI()
     {
-        _userSelectUI.SetActive(false);
+        userSelectUI.SetActive(false);
     }
     //} ShutDownUserSelectUI()
     #endregion

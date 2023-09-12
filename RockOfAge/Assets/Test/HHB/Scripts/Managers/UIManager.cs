@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 #region Enum StoneTimer 
 // 공생성속도 빠름,보통,느림
@@ -27,11 +28,17 @@ public partial class UIManager : MonoBehaviour
     public TextMeshProUGUI cardGoldTxt;
     // Holder
     public Sprite[] rockHolderSprites;
+    // Selection To Defence
+    public TextMeshProUGUI readyTxt;
+    public Image readyImg;
+    // selectionUI
+    private GameObject _userSelectUI;
     #endregion
 
     private void Awake()
     {
-        uiManager = this;    
+        uiManager = this;
+        _userSelectUI = this.gameObject;
         DontDestroyOnLoad(uiManager);
     }
 
@@ -110,6 +117,7 @@ public partial class UIManager : MonoBehaviour
     }
     //} MatchIDToSprite()
 
+    //{ MatchHolderIDSprite()
     public void MatchHolderIDSprite(Image image_, int id_)
     {
         if (id_ < 10)
@@ -123,5 +131,21 @@ public partial class UIManager : MonoBehaviour
             image_.sprite = obstructionSprites[index];
         }
     }
+    //} MatchHolderIDSprite()
+
+    //{ PrintReadyText()
+    public void PrintReadyText()
+    {
+        readyTxt.text = "준비!";
+        readyImg.gameObject.SetActive(true);
+    }
+    //} PrintReadyText()
+
+    //{ ShutDownUserSelectUI()
+    public void ShutDownUserSelectUI()
+    {
+        _userSelectUI.SetActive(false);
+    }
+    //} ShutDownUserSelectUI()
     #endregion
 }

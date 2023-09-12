@@ -1,18 +1,25 @@
 
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class BuildViewer : MonoBehaviour
 {
-    MeshRenderer meshRenderer;
-    MeshFilter meshFilter;
+    private MeshRenderer meshRenderer;
+    private MeshFilter meshFilter;
+    private BuildHighLight highLight;
+    private BuildColorHighLight colorHighLight;
 
     private void Awake()
     {
         meshFilter = GetComponent<MeshFilter>();
         meshRenderer = GetComponent<MeshRenderer>();
+        highLight = GetComponentInChildren<BuildHighLight>();
+        colorHighLight = GetComponentInChildren<BuildColorHighLight>();
     }
 
-    public void ChangeTarget(GameObject target)
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!차후 target의 class를 ObstacleBase로 변경할것
+    void ChangeTarget(GameObject target)
     {
         MeshFilter _meshFilter = target.GetComponent<MeshFilter>();
         if (_meshFilter == null)
@@ -21,20 +28,41 @@ public class BuildViewer : MonoBehaviour
             return;
         }
 
-        // sourceMeshFilter에서 원본 Mesh를 가져옵니다.
+        // sourceMeshFilter에서 원본 Mesh를 참조
         Mesh sourceMesh = _meshFilter.sharedMesh;
 
-        // 새로운 Mesh를 생성하고 원본 Mesh를 복사합니다.
+        // 새로운 Mesh를 생성하고 원본 Mesh를 복사
         Mesh copyMesh = new Mesh();
         copyMesh.vertices = sourceMesh.vertices;
         copyMesh.triangles = sourceMesh.triangles;
         copyMesh.normals = sourceMesh.normals;
         copyMesh.uv = sourceMesh.uv;
 
-        // 복사된 Mesh를 새로운 MeshFilter에 할당합니다.
+        // 복사된 Mesh를 새로운 MeshFilter에 할당
         meshFilter.sharedMesh = copyMesh;
+
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!차후 상황에 맞게 변경할것.
+        TestObstacle _target = target.GetComponent<TestObstacle>();
+        highLight.ChangeHighLight(_target.size);
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
         HideViewer();
     }
+
+
+    public void UpdateMouseMove(bool canBuild)
+    {
+        colorHighLight.UpdateColorHighLightColor(canBuild);
+    }
+
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!차후 obstacleBase로 바꿀것
+    public void UpdateTargetChange(TestObstacle target)
+    {
+        colorHighLight.UpdateColorHighLightSize(target.size);
+        ChangeTarget(target.gameObject);
+    }
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
     public float GetHeight()
     {
@@ -93,4 +121,5 @@ public class BuildViewer : MonoBehaviour
             transform.localScale = Vector3.zero;
         }
     }
+
 }

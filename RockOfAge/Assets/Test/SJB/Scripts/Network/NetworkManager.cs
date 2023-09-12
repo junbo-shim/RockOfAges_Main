@@ -6,7 +6,7 @@ using Photon.Realtime;
 using PlayFab;
 using PlayFab.ClientModels;
 using System;
-using UnityEditor.PackageManager;
+
 
 public class NetworkManager : GlobalSingleton<NetworkManager>
 {

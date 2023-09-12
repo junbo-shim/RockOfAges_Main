@@ -4,31 +4,43 @@ using UnityEngine;
 
 public class ItemManager : MonoBehaviour
 {
+    #region 변수
     public static ItemManager itemManager;
-    public List<int> userSelectedItems = new List<int>();
+    public List<int> rockSelected = new List<int>();
+    public List<int> unitSelected = new List<int>();
     public int rockCount = 0;
     public int unitCount = 0;
     public int capacity = 8;
-
+    #endregion
 
     private void Awake()
     {
         itemManager = this;
+        DontDestroyOnLoad(itemManager);
     }
 
+    #region Functions
     //{ CheckUserListCapacity 
     // 아이템이 갯수가 초과하는지 확인하는 함수
-    public void CheckUserListCapacity()
+    public bool CheckUserListCapacity(int count_)
     {
-
+        float userItemCount = rockCount * 2 + unitCount + count_;
+        //Debug.Log(userItemCount);
+        if (userItemCount > capacity)
+        {
+            return false;
+        }
+        else { return true; }
     }
+    //} CheckUserListCapacity 
+    
 
     //{ CheckItemList()
     // 아이템을 가지고 있는지 검증하는 함수
     public bool CheckItemList(int id_)
     {
         // 유저가 가지고 있다면
-        if (userSelectedItems.Contains(id_))
+        if (unitSelected.Contains(id_) || rockSelected.Contains(id_))
         {
             return true;
         }
@@ -39,9 +51,9 @@ public class ItemManager : MonoBehaviour
     }
     //} CheckItemList()
 
-    //{ RePrintHolder()
-    // 출력 삭제와 삭제시 출력위치를 재조정
-    public void RePrintHolder()
+    //{ RockRePrintHolder()
+    // (돌)출력 삭제와 삭제시 출력위치를 재조정
+    public void RockRePrintHolder()
     {
         // 출력된 것이 1개 밖에 없을 때
         if (rockCount <= 1)
@@ -70,12 +82,53 @@ public class ItemManager : MonoBehaviour
                     }
                 }
             }
-            foreach (int id in userSelectedItems)
+            foreach (int id in rockSelected)
             {
                 RockButton rockButton = FindObjectOfType<RockButton>();
-                rockButton.InstantiateHolder(id);
+                rockButton.InstantiateRockHolder(id);
             }
         }
     }
-    //} RePrintHolder()
+    //} RockRePrintHolder()
+
+    //{ UnitRePrintHolder()
+    // (유닛)출력 삭제와 삭제시 출력위치를 재조정
+    public void UnitRePrintHolder()
+    {
+        // 출력된 것이 1개 밖에 없을 때
+        if (unitCount <= 1)
+        {
+            GameObject unitHolder = GameObject.Find("UnitHolder");
+            if (unitHolder != null)
+            {
+                unitCount--;
+                Destroy(unitHolder);
+            }
+        }
+        if (unitCount > 1)
+        {
+            GameObject units = GameObject.Find("Units");
+            if (units != null)
+            {
+                Transform[] rockHolders = units.GetComponentsInChildren<Transform>();
+
+                foreach (Transform child in rockHolders)
+                {
+                    if (child.name == "UnitHolder")
+                    {
+                        GameObject destroyObj = child.gameObject;
+                        Destroy(destroyObj);
+                        unitCount = 0;
+                    }
+                }
+            }
+            foreach (int id in unitSelected)
+            {
+                UnitButton unitButton = FindObjectOfType<UnitButton>();
+                unitButton.InstantiateUnitHolder(id);
+            }
+        }
+    }
+    //} UnitRePrintHolder()
+    #endregion
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.Globalization;
+using Unity.VisualScripting;
 
 #region Enum StoneTimer 
 // 공생성속도 빠름,보통,느림
@@ -13,7 +13,7 @@ public enum StoneTimer
 
 // Select UI
 public partial class UIManager : MonoBehaviour
-{
+{ 
     public static UIManager uiManager;
 
     #region 변수
@@ -28,11 +28,17 @@ public partial class UIManager : MonoBehaviour
     public TextMeshProUGUI cardGoldTxt;
     // Holder
     public Sprite[] rockHolderSprites;
+    // Selection To Defence
+    public TextMeshProUGUI readyTxt;
+    public Image readyImg;
+    // selectionUI
+    public GameObject userSelectUI;
     #endregion
 
     private void Awake()
     {
         uiManager = this;
+        DontDestroyOnLoad(uiManager);
     }
 
     #region Functions
@@ -43,6 +49,8 @@ public partial class UIManager : MonoBehaviour
         // 돌일때
         if (id_ <= 10)
         {
+            cardClockImage.gameObject.SetActive(true);
+            cardSandImage.gameObject.SetActive(true);
             cardNameTxt.text = name_;
             cardInfoTxt.text = explain_;
             cardGoldTxt.text = ""; // 출력 없음
@@ -53,10 +61,18 @@ public partial class UIManager : MonoBehaviour
     //} PrintCard
 
     //{ PrintObstacleCard()
-    // TODO
     public void PrintObstacleCard(int id_, string name_, string explain_, float gold_)
-    { 
-    
+    {
+        // 방해물일때
+        if (id_ > 10)
+        {
+            cardNameTxt.text = name_;
+            cardInfoTxt.text = explain_;
+            cardGoldTxt.text = gold_.ToString();
+            cardClockImage.gameObject.SetActive(false);
+            cardSandImage.gameObject.SetActive(false);
+            MatchIDToSprite(id_);
+        }
     }
     //} PrintObstacleCard()
 
@@ -94,12 +110,13 @@ public partial class UIManager : MonoBehaviour
         }
         if (id_ > 10)
         {
-            int index = id_ - 10;
+            int index = id_ - 11;
             cardImage.sprite = obstructionSprites[index];
         }
     }
     //} MatchIDToSprite()
 
+    //{ MatchHolderIDSprite()
     public void MatchHolderIDSprite(Image image_, int id_)
     {
         if (id_ < 10)
@@ -107,13 +124,36 @@ public partial class UIManager : MonoBehaviour
             int index = id_ - 1;
             image_.sprite = rockHolderSprites[index];
         }
-        if (id_ > 10)
+        if (id_ >= 11)
         {
-            int index = id_ - 10;
+            int index = id_ - 11;
             image_.sprite = obstructionSprites[index];
         }
     }
+    //} MatchHolderIDSprite()
+
+    //{ PrintReadyText()
+    public void PrintReadyText()
+    {
+        readyTxt.text = "준비!";
+        readyImg.gameObject.SetActive(true);
+    }
+    //} PrintReadyText()
+
+    //{ PrintReadyText()
+    public void PrintNotReadyText()
+    {
+        readyTxt.text = "준비중";
+        readyImg.gameObject.SetActive(false);
+    }
+    //} PrintReadyText()
 
 
+    //{ ShutDownUserSelectUI()
+    public void ShutDownUserSelectUI()
+    {
+        userSelectUI.SetActive(false);
+    }
+    //} ShutDownUserSelectUI()
     #endregion
 }

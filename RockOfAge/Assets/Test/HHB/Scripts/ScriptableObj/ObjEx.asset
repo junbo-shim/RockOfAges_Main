@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: ObjEx
+  m_EditorClassIdentifier: Assembly-CSharp::ObstacleStatus
+  id: 12
+  obstacleName: "\uC74C\uB9E4"
+  price: 20
+  health: 1
+  size: {x: 0, y: 0}
+  buildLimit: 3
+  tempString: "\uC900\uBCF4\uD615 \uCD5C\uACE0"

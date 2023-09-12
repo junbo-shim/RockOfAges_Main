@@ -162,17 +162,51 @@ public class KJHBullController : MonoBehaviour
             transform.LookAt(new Vector3(targetRock.transform.position.x, transform.position.y, targetRock.transform.position.z));
         }
     }
-    void OnCollisionEnter(Collision collision) // 충돌이 발생했을 때의 메서드를 선언합니다.
+    //void OnCollisionEnter(Collision collision) // 충돌이 발생했을 때의 메서드를 선언합니다.
+    //{
+    //    RockBase rock = collision.gameObject.GetComponent<RockBase>();
+
+    //    if (rock != null && chargeCount < 1)
+    //    {
+
+    //        hasCharged = true;
+    //        chargeCount++;
+    //        isCharging = false; // 충돌 시 돌진 상태를 false로 설정합니다.
+    //        isReturning = true; // 충돌 후 후퇴 상태를 true로 설정합니다.
+    //        Rigidbody rockRigidbody = collision.gameObject.GetComponent<Rigidbody>();
+    //        Rigidbody bullRigidbody = GetComponent<Rigidbody>();
+
+    //        if (bullRigidbody != null)
+    //        {
+    //            bullRigidbody.velocity = Vector3.zero;
+    //        }
+
+    //        TakeDamage(1f);
+    //        if (rockRigidbody != null)
+    //        {
+    //            Vector3 forceDirection = (targetRock.position - transform.position).normalized;
+    //            rockRigidbody.velocity = Vector3.zero;
+    //            rockRigidbody.AddForce(forceDirection * attackPower, ForceMode.VelocityChange);
+    //            rockRigidbody.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
+
+    //        }
+    //        ResetCharge();
+    //    }
+
+    //}
+    void OnCollisionEnter(Collision collision)
     {
         RockBase rock = collision.gameObject.GetComponent<RockBase>();
 
         if (rock != null && chargeCount < 1)
         {
+            string collidedTag = collision.collider.tag;
 
             hasCharged = true;
             chargeCount++;
             isCharging = false; // 충돌 시 돌진 상태를 false로 설정합니다.
             isReturning = true; // 충돌 후 후퇴 상태를 true로 설정합니다.
+
             Rigidbody rockRigidbody = collision.gameObject.GetComponent<Rigidbody>();
             Rigidbody bullRigidbody = GetComponent<Rigidbody>();
 
@@ -181,18 +215,23 @@ public class KJHBullController : MonoBehaviour
                 bullRigidbody.velocity = Vector3.zero;
             }
 
-            TakeDamage(1f);
-            if (rockRigidbody != null)
+            if (collidedTag == "BullHead")
             {
-                Vector3 forceDirection = (targetRock.position - transform.position).normalized;
-                rockRigidbody.velocity = Vector3.zero;
-                rockRigidbody.AddForce(forceDirection * attackPower, ForceMode.VelocityChange);
-                rockRigidbody.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
-
+                if (rockRigidbody != null)
+                {
+                    Vector3 forceDirection = (targetRock.position - transform.position).normalized;
+                    rockRigidbody.velocity = Vector3.zero;
+                    rockRigidbody.AddForce(forceDirection * attackPower, ForceMode.VelocityChange);
+                    rockRigidbody.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
+                }
             }
+            else if (collidedTag == "BullBody")
+            {
+                TakeDamage(1f);
+            }
+
             ResetCharge();
         }
-
     }
 
     private void ReturnToInitialPositionBackwards()

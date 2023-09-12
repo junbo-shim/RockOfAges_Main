@@ -16,8 +16,8 @@ MonoBehaviour:
   stoneName: "\uB77D \uC624\uBE0C \uC5D0\uC774\uC9C0"
   health: 100
   speed: 100
-  acceleration: 2
+  acceleration: 3
   damage: 200
-  weight: 100
+  weight: 50
   cooldown: 60
   tempString: "\uB0B4\uAC00 \uB3CC\uC544\uC654\uB2E4."

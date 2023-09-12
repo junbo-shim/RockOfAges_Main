@@ -1,39 +1,55 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Splines;
 
 public class SplineMeshBuilder : MonoBehaviour
 {
-    List<Vector3> rightVector;
-    List<Vector3> leftVector;
+    List<Vector3> rightPoint;
+    List<Vector3> leftPoint;
 
     [SerializeField]
     int resolution = 100;
     [SerializeField]
     float height = 4f;
 
-    [SerializeField]
-    SamplingSpline sampling;
+    GameObject upTerrains;
+    GameObject leftTerrains;
+    GameObject rightTerrains;
 
-    List<GameObject> upTerrains;
-    List<GameObject> leftTerrains;
-    List<GameObject> rightTerrains;
+    //spline의 정보를 가지고 있는 container
+    private SplineContainer[] splineContainer;
+
+    public const int TEAM_COUNT = 1;
+
+    //ground의 폭의 반(6임)
+    [SerializeField]
+    private float m_width = 3f;
 
     private void Awake()
     {
-        upTerrains = new List<GameObject>();
-        leftTerrains = new List<GameObject>();
-        rightTerrains = new List<GameObject>();
+        //팀 숫자만큼 배열 크기 지정
+        splineContainer = new SplineContainer[TEAM_COUNT];
+
+        //팀 숫자만큼 for문
+        //해당 for문은 제일 상단에서부터 검색해 splineContainer를 가져온다
+        for(int teamIndex = 0; teamIndex < TEAM_COUNT; teamIndex++)
+        {
+            splineContainer[teamIndex] = GameObject.Find("Team"+(teamIndex + 1)).transform.Find("BaseTerrains").GetComponent<SplineContainer>();
+        }
     }
 
     void Start()
     {
-        for(int i = 0; i < sampling.GetSplineCount(); i++)
+        for(int teamIndex = 0; teamIndex < TEAM_COUNT; teamIndex++)
         {
-            Generate(i);
+            Generate(teamIndex);
         }
     }
 
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!테스트 코드
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Z))
@@ -41,30 +57,56 @@ public class SplineMeshBuilder : MonoBehaviour
             Generate(0);
         }
     }
+    /// //////////////////////////////////////////////
 
-    void Generate(int index)
+    void Generate(int teamIndex)
     {
-        GameObject parent = new GameObject();
-        parent.transform.parent = transform;
-        GetVerts(index);
-        Build(parent);
+        for (int splinceIndex = 0; splinceIndex < splineContainer[teamIndex].Splines.Count; splinceIndex++)
+        {
+            GameObject parent = new GameObject();
+            parent.name = "SplineParts_" + splinceIndex;
+            parent.transform.parent = splineContainer[teamIndex].transform;
+            Build(splineContainer[teamIndex].Splines[splinceIndex], parent);
+        }
 
     }
 
-    void GetVerts(int index)
+    void GetVerts(Spline spline)
     {
-        rightVector = new List<Vector3>();
-        leftVector = new List<Vector3>();
+        rightPoint = new List<Vector3>();
+        leftPoint = new List<Vector3>();
+        int splineCount = spline.Count;
+        if (resolution < splineCount)
+        {
+            splineCount = resolution;
+        }
 
-        float step = 1 / (float)resolution;
-
-        for(int i = 0; i < resolution; i++)
+        float step = (1 / (float)resolution) * splineCount;
+        for (int i = 0; i < resolution; i++)
         {
             float t = step * i;
-            sampling.SampleSplineWidth(t, out Vector3 vv1, out Vector3 vv2);
-            rightVector.Add(vv1);
-            leftVector.Add(vv2);
+            SampleSplineWidth(spline, t, out Vector3 vv1, out Vector3 vv2);
+            rightPoint.Add(vv1);
+            leftPoint.Add(vv2);
         }
+    }
+
+    void Build(Spline spline, GameObject parent)
+    {
+        GetVerts(spline);
+
+        GameObject up = ConcreateGameObject(null);
+        up.transform.parent = parent.transform;
+        BuildUp(up, spline.Closed);
+
+        GameObject right = ConcreateGameObject(null);
+        right.transform.parent = parent.transform;
+        BuildSide(right, rightPoint, spline.Closed);
+
+        GameObject left = ConcreateGameObject(null);
+        left.transform.parent = parent.transform;
+        leftPoint.Reverse();
+        BuildSide(left, leftPoint, spline.Closed);
     }
 
     GameObject ConcreateGameObject(Material material)
@@ -77,23 +119,7 @@ public class SplineMeshBuilder : MonoBehaviour
         return result;
     }
 
-    void Build(GameObject parent)
-    {
-        GameObject up = ConcreateGameObject(null);
-        up.transform.parent = parent.transform;
-        BuildUp(up);
-
-        GameObject right = ConcreateGameObject(null);
-        right.transform.parent = parent.transform;
-        BuildSide(right, rightVector);
-
-        GameObject left = ConcreateGameObject(null);
-        left.transform.parent = parent.transform;
-        leftVector.Reverse();
-        BuildSide(left, leftVector);
-    }
-
-    void BuildUp(GameObject gameObject)
+    void BuildUp(GameObject gameObject, bool isClosed)
     {
         MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
         MeshCollider meshCollider = gameObject.GetComponent<MeshCollider>();
@@ -104,29 +130,28 @@ public class SplineMeshBuilder : MonoBehaviour
 
         int offset = 0;
 
-        int length = leftVector.Count;
+        int length = leftPoint.Count;
 
         for(int i = 1; i <=length; i++)
         {
-            Vector3 p1 = rightVector[i - 1];
-            Vector3 p2 = leftVector[i - 1];
+            Vector3 p1 = rightPoint[i - 1];
+            Vector3 p2 = leftPoint[i - 1];
             Vector3 p3;
             Vector3 p4;
 
             if (i == length)
             {
-                if (!sampling.IsClosed())
+                if (!isClosed)
                 {
                     break;
                 }
-                p3 = rightVector[0];
-                p4 = leftVector[0];
+                p3 = rightPoint[0];
+                p4 = leftPoint[0];
             }
             else
             {
-                Debug.LogError(i);
-                p3 = rightVector[i];
-                p4 = leftVector[i];
+                p3 = rightPoint[i];
+                p4 = leftPoint[i];
             }
 
             offset = 4 * (i - 1);
@@ -158,7 +183,7 @@ public class SplineMeshBuilder : MonoBehaviour
     }
 
         
-    void BuildSide(GameObject gameObject, List<Vector3> v)
+    void BuildSide(GameObject gameObject, List<Vector3> point, bool isClosed)
     {
         MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
         MeshCollider meshCollider = gameObject.GetComponent<MeshCollider>();
@@ -169,28 +194,28 @@ public class SplineMeshBuilder : MonoBehaviour
 
         int offset = 0;
 
-        int length = v.Count;
+        int length = point.Count;
 
         for (int i = 1; i <= length; i++)
         {
-            Vector3 p1 = v[i-1]-Vector3.up* height;
-            Vector3 p2 = v[i-1];
+            Vector3 p1 = point[i-1]-Vector3.up* height;
+            Vector3 p2 = point[i-1];
             Vector3 p3;
             Vector3 p4;
 
             if (i == length)
             {
-                if (!sampling.IsClosed())
+                if (!isClosed)
                 {
                     break;
                 }
-                p3 = v[0] - Vector3.up * height;
-                p4 = v[0];
+                p3 = point[0] - Vector3.up * height;
+                p4 = point[0];
             }
             else
             {
-                p3 = v[i] - Vector3.up * height;
-                p4 = v[i];
+                p3 = point[i] - Vector3.up * height;
+                p4 = point[i];
             }
 
             offset = 4 * (i - 1);
@@ -220,4 +245,22 @@ public class SplineMeshBuilder : MonoBehaviour
         meshCollider.sharedMesh = mesh;
 
     }
+
+    public void SampleSplineWidth(Spline spline, float time, out Vector3 rightPoint, out Vector3 leftPoint)
+    {
+        //evaout에 사용할 변수들
+        float3 position;
+        float3 tangent;
+        float3 upVector;
+
+        //time의 spline의 위치를 가져온다.
+        spline.Evaluate(time, out position, out tangent, out upVector);
+
+        Vector3 _position = position;
+        Vector3 right = Vector3.Cross(tangent, upVector).normalized;
+
+        rightPoint = _position + (right * m_width);
+        leftPoint = _position + (-right * m_width);
+    }
+
 }

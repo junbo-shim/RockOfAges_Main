@@ -15,12 +15,12 @@ MonoBehaviour:
   AppSettings:
     AppIdRealtime: 38356e11-294b-4e03-9d0f-094747e08d7c
     AppIdFusion: 
-    AppIdChat: 
+    AppIdChat: c963de85-8631-48b6-b44c-e2134fc6d02f
     AppIdVoice: 
     AppVersion: 
     UseNameServer: 1
     FixedRegion: 
-    Server: ns.photonengine.io
+    Server: 
     Port: 0
     ProxyServer: 
     Protocol: 0
@@ -28,7 +28,7 @@ MonoBehaviour:
     AuthMode: 0
     EnableLobbyStatistics: 0
     NetworkLogging: 1
-  DevRegion: 
+  DevRegion: kr
   PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
@@ -41,4 +41,4 @@ MonoBehaviour:
   - RespawnSpaceship
   DisableAutoOpenWizard: 1
   ShowSettings: 1
-  DevRegionSetOnce: 0
+  DevRegionSetOnce: 1

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Photon.Pun;
 
 public class ButtonManager : GlobalSingleton<ButtonManager>
 {
@@ -95,13 +96,18 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
 
     public void PressQuickStart() 
     {
-        NetworkManager.Instance.StartQuick();
+        PhotonNetwork.ConnectUsingSettings();
+      
+        //NetworkManager.Instance.StartQuick();
     }
 
     public void PressLogin() 
     {
         Transform loginPanel = titlePanel.Find("Panel_Login").transform;
         loginPanel.localScale = Vector3.one;
+
+        loginPanel.GetComponentInChildren<TMP_Text>().color = new Color(180, 180, 180);
+        loginPanel.GetComponentInChildren<TMP_Text>().text = "로그인";
     }
 
     public void PressSignup() 
@@ -134,6 +140,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
 
     public void PressRegister() 
     {
+
         NetworkManager.Instance.Register();
     }
 
@@ -145,6 +152,8 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         TMP_InputField emailInput = loginPanel.Find("InputField_Email").GetComponent<TMP_InputField>();
         TMP_InputField passwordInput = loginPanel.Find("InputField_Password").GetComponent<TMP_InputField>();
 
+        loginPanel.GetComponentInChildren<TMP_Text>().color = new Color(180, 180, 180);
+        loginPanel.GetComponentInChildren<TMP_Text>().text = "로그인";
         emailInput.text = default;
         passwordInput.text = default;
     }
@@ -158,6 +167,8 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         TMP_InputField passwordInput = signupPanel.Find("InputField_Password").GetComponent<TMP_InputField>();
         TMP_InputField nicknameInput = signupPanel.Find("InputField_Nickname").GetComponent<TMP_InputField>();
 
+        signupPanel.GetComponentInChildren<TMP_Text>().color = new Color(180, 180, 180);
+        signupPanel.GetComponentInChildren<TMP_Text>().text = "회원가입";
         emailInput.text = default;
         passwordInput.text = default;
         nicknameInput.text = default;

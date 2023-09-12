@@ -5,6 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - Target
+  - Team01
+  - Team02
+  - Team03
+  - Team04
+  - Common
+  - Block
   layers:
   - Default
   - TransparentFX

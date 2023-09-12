@@ -13,24 +13,26 @@ public class BuildManager : MonoBehaviour
 
 
     //커서의 현재 그리드위치
-    public Vector3Int currCursorGridIndex = Vector3Int.zero;
+    private Vector3Int currCursorGridIndex = Vector3Int.zero;
     //건물이 바라보는 방향
-    BuildRotateDirection whereLookAt;
+    private BuildRotateDirection whereLookAt;
 
 
     //빌드 뷰어
     //렌더러만 가진 Viewer 오브젝트
-    BuildViewer viewer;
+    private BuildViewer viewer;
 
     //해당 지형의 건설 가능 상태를 저장 
-    BitArray buildState;
-    public Vector3 gridOffset = new Vector3(.5f, 0, .5f);
+    private BitArray buildState;
+    private Vector3 gridOffset;
 
     //맵 사이즈 
     public static readonly int MAP_SIZE_X = 256;
     public static readonly int MAP_SIZE_Z = 256;
     public static readonly int MAP_SIZE_Y = 50;
-    public static readonly int ONCE_ROTATE_EULER_ANGLE = 90;
+    public static readonly Vector3 FIXED_GRID_OFFSET = (Vector3.one - Vector3.up) * .5f;
+
+    const int ONCE_ROTATE_EULER_ANGLE = 90;
 
 
 
@@ -70,11 +72,9 @@ public class BuildManager : MonoBehaviour
         }
 
         viewer.ShowViewer();
-        if (!CanBuild())
-        {
-            //하이라이트 색 변경
-        }
-        else
+        viewer.UpdateMouseMove(CanBuild());
+
+        if (CanBuild())
         {
             if (Input.GetMouseButtonDown(1))
             {
@@ -99,7 +99,6 @@ public class BuildManager : MonoBehaviour
 
     //씬 실행시 map 건설 가능 상태를 init함
     //terrain 비교시 tag로 team, 기본 건설 불가 타일등을 비교하는 부분 추가해야할거같음
-    //차후 회의후 추가
     void InitTerrainData()
     {
         buildState.SetAll(false);
@@ -108,11 +107,22 @@ public class BuildManager : MonoBehaviour
             for (int x = -MAP_SIZE_X / 2; x < MAP_SIZE_X / 2; x++)
             {
                 RaycastHit raycastHit;
-                if (Physics.Raycast(new Vector3(x, MAP_SIZE_Y, z) + gridOffset, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
+                if (Physics.Raycast(new Vector3(x, MAP_SIZE_Y, z) + (Vector3.one - Vector3.up)*.5f, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
                 {
-                    GameObject gameObject = Instantiate(gridTest, raycastHit.point, Quaternion.identity);
-                    gameObject.name = gridTest.name + "_" + z + "_" + x;
+                    if (raycastHit.collider.CompareTag("Block"))
+                    {
+                        continue;
+                    }
+
                     buildState.Set((z + MAP_SIZE_Z / 2) * MAP_SIZE_Z + (x + MAP_SIZE_X / 2), true);
+
+
+
+                    ///////////////////////////////////////////////////////////테스트 코드
+                    GameObject gameObject = Instantiate(gridTest, raycastHit.point+Vector3.up*0.02f, Quaternion.identity);
+                    gameObject.name = gridTest.name + "_" + z + "_" + x;
+                    gameObject.transform.localScale = Vector3.one * .1f * .8f;
+                    /////////////////////////////////////////////////////////////////////
                 }
             }
         }
@@ -120,12 +130,14 @@ public class BuildManager : MonoBehaviour
 
     void SetBitArrays(Vector3 grid, Vector2Int buildSize)
     {
-        for (int y = (int)(buildSize.y * .5f); y > -buildSize.y * .5f; y--)
+        for (int y = (int)(buildSize.y * .5f); y >-(buildSize.y * .5f); y--)
         {
-            for (int x = (int)(buildSize.x * .5f); x > -buildSize.x * .5f; x--)
+            for (int x = (int)(buildSize.x * .5f); x >-(buildSize.x * .5f); x--)                                                                                                                                                                                       
             {
-                Vector3 _grid = grid + Vector3Int.right * x + Vector3Int.forward * y;
-                buildState.Set((int)((_grid.z + MAP_SIZE_Z *.5f) * MAP_SIZE_Z + _grid.x + MAP_SIZE_X * .5f), false) ;
+                Vector3 _grid = grid - Vector3Int.right *( x) - Vector3Int.forward * (y);
+                buildState.Set((int)(_grid.z + MAP_SIZE_Z *.5f) * (int)MAP_SIZE_Z + (int)(_grid.x + MAP_SIZE_X * .5f), false);
+                GameObject floor = GameObject.Find("GridTestCube_" + _grid.z + "_" + _grid.x);
+                floor.GetComponent<MeshRenderer>().material.color = Color.red;
             }
         }
 
@@ -135,8 +147,8 @@ public class BuildManager : MonoBehaviour
     void ChangeBuildTarget(TestObstacle target)
     {
         buildTarget = target;
-        viewer.ChangeTarget(buildTarget.gameObject);
-        gridOffset = new Vector3((buildTarget.size.x+1) % 2 * .5f, 0, (buildTarget.size.y+1) % 2 * .5f);
+        gridOffset = new Vector3((buildTarget.size.x) % 2 * .5f, 0, (buildTarget.size.y) % 2 * .5f);
+        viewer.UpdateTargetChange(target);
         //gridOffset = new Vector3((int)(buildTarget.size.x + 1) % 2 * .5f, 0, (int)(buildTarget.size.y + 1) % 2 * .5f);
 
     }
@@ -242,11 +254,10 @@ public class BuildManager : MonoBehaviour
         {
             for (int x = (int)(buildSize.x * .5f); x > -buildSize.x * .5f; x--)
             {
-                result = result && GetBuildEnable(grid + Vector3Int.right*x + Vector3Int.forward*y);
+                result = result && GetBuildEnable(grid - Vector3Int.right * (x) - Vector3Int.forward * (y));
             
             }
         }
-
         return result;
     }
     bool GetBuildEnable(Vector3 grid)

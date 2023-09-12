@@ -20,7 +20,7 @@ MonoBehaviour:
     AppVersion: 
     UseNameServer: 1
     FixedRegion: 
-    Server: 
+    Server: ns.photonengine.io
     Port: 0
     ProxyServer: 
     Protocol: 0

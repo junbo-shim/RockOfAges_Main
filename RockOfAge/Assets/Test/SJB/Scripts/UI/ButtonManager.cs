@@ -95,7 +95,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
 
     public void PressQuickStart() 
     {
-        /*임의의 Auth 부여*/
+        NetworkManager.Instance.StartQuick();
     }
 
     public void PressLogin() 

@@ -20,6 +20,7 @@ public class RockBase : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
+
         if (Mathf.Abs(horizontalInput) > 0.1f || Mathf.Abs(verticalInput) > 0.1f)
         {
             Vector3 cameraForward = mainCamera.transform.forward;
@@ -28,7 +29,9 @@ public class RockBase : MonoBehaviour
             Vector3 forceDirection = (cameraForward * verticalInput + cameraRight * horizontalInput);
             forceDirection.y = 0;
 
-            rb.AddForce(forceDirection * rockStatus.Acceleration, ForceMode.Acceleration);
+            // 이동 방향에 따라 가속도를 조절합니다.
+            float acceleration = (Mathf.Abs(horizontalInput) > 0.1f && Mathf.Abs(verticalInput) > 0.1f) ? rockStatus.Acceleration * 2 : rockStatus.Acceleration;
+            rb.AddForce(forceDirection * acceleration, ForceMode.Acceleration);
         }
     }
 

@@ -32,10 +32,12 @@ public class BuildColorHighLight : MonoBehaviour
     {
         if (canBuild)
         {
+            allowPlane.SetActive(true);
             denyPlane.SetActive(false);
         }
-        else 
-        { 
+        else
+        {
+            allowPlane.SetActive(false);
             denyPlane.SetActive(true); 
         }
     }

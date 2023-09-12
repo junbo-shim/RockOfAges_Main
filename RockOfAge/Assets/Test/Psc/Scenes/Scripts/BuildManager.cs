@@ -13,25 +13,26 @@ public class BuildManager : MonoBehaviour
 
 
     //커서의 현재 그리드위치
-    public Vector3Int currCursorGridIndex = Vector3Int.zero;
+    private Vector3Int currCursorGridIndex = Vector3Int.zero;
     //건물이 바라보는 방향
-    BuildRotateDirection whereLookAt;
+    private BuildRotateDirection whereLookAt;
 
 
     //빌드 뷰어
     //렌더러만 가진 Viewer 오브젝트
-    BuildViewer viewer;
+    private BuildViewer viewer;
 
     //해당 지형의 건설 가능 상태를 저장 
-    BitArray buildState;
-    public Vector3 gridOffset;
+    private BitArray buildState;
+    private Vector3 gridOffset;
 
     //맵 사이즈 
     public static readonly int MAP_SIZE_X = 256;
     public static readonly int MAP_SIZE_Z = 256;
     public static readonly int MAP_SIZE_Y = 50;
-    public static readonly int ONCE_ROTATE_EULER_ANGLE = 90;
     public static readonly Vector3 FIXED_GRID_OFFSET = (Vector3.one - Vector3.up) * .5f;
+
+    const int ONCE_ROTATE_EULER_ANGLE = 90;
 
 
 

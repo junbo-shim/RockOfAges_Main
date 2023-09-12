@@ -13,6 +13,7 @@ public class KJHBullController : MonoBehaviour
     public float health = 100f; // 체력 변수
     public float attackPower = default; // 공격력 변수
     public float chargeCool = 5.0f;
+    public Transform headTransform; // 모루황소 머리의 Transform을 참조합니다.
 
     private float lastChargeTime = 0f;
     private Rigidbody bullRigidbody;
@@ -25,21 +26,28 @@ public class KJHBullController : MonoBehaviour
     {
         animator = GetComponent<Animator>(); // 애니메이터 컴포넌트를 가져옵니다.
         bullRigidbody = GetComponent<Rigidbody>(); // 리지드바디 컴포넌트를 가져옵니다.
+
     }
 
-    private void Update() // Update 메서드를 선언합니다.
+    private void Update()
     {
-        if (!isCharging) // 돌진 중이 아닐 경우
+        if (!isCharging)
         {
             lastChargeTime += Time.deltaTime;
-            if (lastChargeTime >= chargeCool) // 쿨타임이 지났을 경우
+            if (lastChargeTime >= chargeCool)
             {
-                DetectRock(); // 돌을 탐지합니다.
+                DetectRock();
             }
         }
         else
         {
-            ChargeTowardsRock(); // 돌을 향해 돌진합니다.
+            ChargeTowardsRock();
+        }
+
+        // 머리가 돌을 바라보게 합니다.
+        if (targetRock != null)
+        {
+            transform.LookAt(new Vector3(targetRock.transform.position.x, transform.position.y, targetRock.transform.position.z));
         }
     }
 
@@ -68,6 +76,8 @@ public class KJHBullController : MonoBehaviour
         float distanceToTarget = Vector3.Distance(targetRock.position, transform.position);
         bullRigidbody.velocity = direction * chargeSpeed;
     }
+
+
 
     void ResetCharge() // 돌진 상태를 초기화하는 메서드를 선언합니다.
     {

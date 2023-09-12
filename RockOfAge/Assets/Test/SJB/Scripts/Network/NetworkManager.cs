@@ -78,7 +78,6 @@ public class NetworkManager : GlobalSingleton<NetworkManager>
 
     private void OnLoginSuccess(LoginResult result) 
     {
-        Debug.Log(result.SessionTicket);
         loginPanel.GetComponentInChildren<TMP_Text>().color = Color.green;
         loginPanel.GetComponentInChildren<TMP_Text>().text = "로그인 성공";
     }

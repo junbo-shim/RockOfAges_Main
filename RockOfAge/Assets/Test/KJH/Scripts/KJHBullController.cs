@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class KJHBullController : MonoBehaviour
+public class KJHBullController : MonoBehaviour, IHitObjectHandler
 {
     public float detectionRange = default;
     public float chargeSpeed = 10.0f;
@@ -91,6 +91,8 @@ public class KJHBullController : MonoBehaviour
                 DetectRock();
                 if (isCharging)
                 {
+                    Debug.LogFormat("감지했나?");
+
                     lastChargeTime = 0f;
                 }
             }
@@ -98,12 +100,11 @@ public class KJHBullController : MonoBehaviour
         else if (isCharging)
         {
             ChargeTowardsRock();
-
+       
             float distanceToLastRockPosition = Vector3.Distance(transform.position, lastRockPosition);
 
             if (distanceToLastRockPosition <= 10.0f)
             {
-                Debug.LogFormat("????");
                 isCharging = false;
                 isReturning = true;
             }
@@ -134,14 +135,43 @@ public class KJHBullController : MonoBehaviour
             Destroy(gameObject); // 게임 오브젝트를 제거합니다.
         }
     }
-    private void DetectRock() // 돌을 탐지하는 메서드를 선언합니다.
+    //private void DetectRock() // 돌을 탐지하는 메서드를 선언합니다.
+    //{
+    //    Collider[] rocks = Physics.OverlapSphere(transform.position, detectionRange, Rock);
+    //    if (rocks.Length > 0 && rocks[0] != null)
+    //    {
+    //        targetRock = rocks[0].transform;
+    //        lastRockPosition = targetRock.position; // 돌의 현재 위치를 저장
+    //        isCharging = true; // 돌진 상태를 true로 설정합니다.
+    //    }
+    //}
+
+    private void DetectRock()
     {
-        Collider[] rocks = Physics.OverlapSphere(transform.position, detectionRange, Rock);
-        if (rocks.Length > 0 && rocks[0] != null)
+        float coneAngle = 45f; // 원뿔의 각도를 설정합니다. 필요에 따라 조정하세요.
+        float halfConeAngle = coneAngle * 0.5f;
+
+        RaycastHit[] hits = Physics.SphereCastAll(transform.position, detectionRange, transform.forward, detectionRange, Rock);
+        float minAngle = float.MaxValue;
+        Transform closestRock = null;
+
+        foreach (RaycastHit hit in hits)
         {
-            targetRock = rocks[0].transform;
-            lastRockPosition = targetRock.position; // 돌의 현재 위치를 저장
-            isCharging = true; // 돌진 상태를 true로 설정합니다.
+            Vector3 hitDirection = (hit.transform.position - transform.position).normalized;
+            float angleToTarget = Vector3.Angle(transform.forward, hitDirection);
+
+            if (angleToTarget <= halfConeAngle && angleToTarget < minAngle)
+            {
+                minAngle = angleToTarget;
+                closestRock = hit.transform;
+            }
+        }
+
+        if (closestRock != null)
+        {
+            targetRock = closestRock;
+            lastRockPosition = targetRock.position;
+            isCharging = true;
         }
     }
     private void ChargeTowardsRock() // 돌을 향해 돌진하는 메서드를 선언합니다.
@@ -150,62 +180,31 @@ public class KJHBullController : MonoBehaviour
         direction.y = 0; // y축 값을 0으로 설정합니다.r
         float distanceToTarget = Vector3.Distance(lastRockPosition, transform.position);
         bullRigidbody.velocity = direction * chargeSpeed;
+        // 황소가 돌을 바라보게 합니다.
+        transform.rotation = Quaternion.LookRotation(direction);
     }
 
     void ResetCharge()
     {
+        targetRock = null;
         lastChargeTime = 0f;
         chargeCount = 0;
         isCharging = false;
-        if (targetRock != null)
-        {
-            transform.LookAt(new Vector3(targetRock.transform.position.x, transform.position.y, targetRock.transform.position.z));
-        }
     }
-    //void OnCollisionEnter(Collision collision) // 충돌이 발생했을 때의 메서드를 선언합니다.
-    //{
-    //    RockBase rock = collision.gameObject.GetComponent<RockBase>();
 
-    //    if (rock != null && chargeCount < 1)
-    //    {
-
-    //        hasCharged = true;
-    //        chargeCount++;
-    //        isCharging = false; // 충돌 시 돌진 상태를 false로 설정합니다.
-    //        isReturning = true; // 충돌 후 후퇴 상태를 true로 설정합니다.
-    //        Rigidbody rockRigidbody = collision.gameObject.GetComponent<Rigidbody>();
-    //        Rigidbody bullRigidbody = GetComponent<Rigidbody>();
-
-    //        if (bullRigidbody != null)
-    //        {
-    //            bullRigidbody.velocity = Vector3.zero;
-    //        }
-
-    //        TakeDamage(1f);
-    //        if (rockRigidbody != null)
-    //        {
-    //            Vector3 forceDirection = (targetRock.position - transform.position).normalized;
-    //            rockRigidbody.velocity = Vector3.zero;
-    //            rockRigidbody.AddForce(forceDirection * attackPower, ForceMode.VelocityChange);
-    //            rockRigidbody.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
-
-    //        }
-    //        ResetCharge();
-    //    }
-
-    //}
+   
     void OnCollisionEnter(Collision collision)
     {
         RockBase rock = collision.gameObject.GetComponent<RockBase>();
 
         if (rock != null && chargeCount < 1)
         {
-            string collidedTag = collision.collider.tag;
+       Debug.LogFormat("충돌했나?");
 
             hasCharged = true;
             chargeCount++;
-            isCharging = false; // 충돌 시 돌진 상태를 false로 설정합니다.
-            isReturning = true; // 충돌 후 후퇴 상태를 true로 설정합니다.
+            isCharging = false;
+            isReturning = true;
 
             Rigidbody rockRigidbody = collision.gameObject.GetComponent<Rigidbody>();
             Rigidbody bullRigidbody = GetComponent<Rigidbody>();
@@ -215,21 +214,18 @@ public class KJHBullController : MonoBehaviour
                 bullRigidbody.velocity = Vector3.zero;
             }
 
-            if (collidedTag == "BullHead")
+            if (rockRigidbody != null && targetRock != null)
             {
-                if (rockRigidbody != null)
-                {
-                    Vector3 forceDirection = (targetRock.position - transform.position).normalized;
-                    rockRigidbody.velocity = Vector3.zero;
-                    rockRigidbody.AddForce(forceDirection * attackPower, ForceMode.VelocityChange);
-                    rockRigidbody.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
-                }
+                Vector3 forceDirection = (targetRock.position - transform.position).normalized;
+                rockRigidbody.velocity = Vector3.zero;
+                rockRigidbody.AddForce(forceDirection * attackPower, ForceMode.VelocityChange);
+                rockRigidbody.AddForce(Vector3.up * 15f, ForceMode.VelocityChange);
             }
-            else if (collidedTag == "BullBody")
+            IHitObjectHandler hitObj = collision.gameObject.GetComponent<IHitObjectHandler>();
+            if (hitObj != null)
             {
-                TakeDamage(1f);
+                hitObj.Hit((int)attackPower);
             }
-
             ResetCharge();
         }
     }
@@ -246,5 +242,15 @@ public class KJHBullController : MonoBehaviour
         {
             isReturning = false;
         }
+    }
+
+    public void Hit(int damage)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void HitReaction()
+    {
+        throw new NotImplementedException();
     }
 }

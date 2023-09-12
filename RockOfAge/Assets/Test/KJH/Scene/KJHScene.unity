@@ -931,7 +931,7 @@ GameObject:
   - component: {fileID: 945594092}
   m_Layer: 0
   m_Name: GameObject
-  m_TagString: Untagged
+  m_TagString: Target
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1058,13 +1058,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cde2741cf0c675f45ac659acd51ed564, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRange: 500
+  detectionRange: 40
   chargeSpeed: 30
   Rock:
     serializedVersion: 2
     m_Bits: 4096
   health: 100
-  attackPower: 25
+  attackPower: 10
   chargeCool: 3
   walkSpeed: 30
 --- !u!4 &1029444752 stripped

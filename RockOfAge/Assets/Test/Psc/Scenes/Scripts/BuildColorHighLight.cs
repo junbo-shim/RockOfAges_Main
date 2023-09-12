@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildColorHighLight : MonoBehaviour
+public class BuildColorHighLight : MonoBehaviour, IHitObjectHandler
 {
     public Vector2 size;
     private GameObject allowPlane;        // 건설 가능시
@@ -40,5 +40,15 @@ public class BuildColorHighLight : MonoBehaviour
             allowPlane.SetActive(false);
             denyPlane.SetActive(true); 
         }
+    }
+
+    public void Hit(int damage)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void HitReaction()
+    {
+        throw new System.NotImplementedException();
     }
 }

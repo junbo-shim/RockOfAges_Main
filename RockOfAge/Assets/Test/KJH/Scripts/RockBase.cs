@@ -40,14 +40,11 @@ public class RockBase : MonoBehaviour
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 
-    virtual public void Hit()
+   
+
+    virtual public float Attack()
     {
-
-    }
-
-    virtual public void Attack(GameObject target)
-    {
-
+        return 0;
     }
 
     virtual public void Fall()

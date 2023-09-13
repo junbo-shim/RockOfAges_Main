@@ -12,6 +12,7 @@ TagManager:
   - Common
   - Block
   - Booster
+  - JumpPad
   layers:
   - Default
   - TransparentFX

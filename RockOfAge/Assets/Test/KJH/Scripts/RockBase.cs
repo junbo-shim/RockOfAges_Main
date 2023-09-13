@@ -100,8 +100,14 @@ public class RockBase : MonoBehaviour
             rRb.velocity = Vector3.zero;
             Vector3 forceDirection = other.transform.forward.normalized; // 힘 방향 앞쪽으로 고정
             
-            rRb.AddForce(Vector3.up * 5000f, ForceMode.Impulse);
+            rRb.AddForce(Vector3.up * 500000f, ForceMode.Impulse);
             StartCoroutine(ApplyBooster(0.3f, forceDirection));
         }
+        else if (other.CompareTag("JumpPad")) // 점프대 태그를 확인합니다.
+        {
+         
+            rRb.AddForce(Vector3.up * 50000f, ForceMode.Acceleration); // 점프대 속도를 적용합니다.
+        }
     }
+
 }

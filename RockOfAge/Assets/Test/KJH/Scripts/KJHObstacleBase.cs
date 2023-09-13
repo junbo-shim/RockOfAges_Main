@@ -5,11 +5,11 @@ using UnityEngine;
 public class KJHObstacleBase : MonoBehaviour
 {
     public ObstacleStatus obstacleStatus;
-    protected Rigidbody Orb;
+    protected Rigidbody oRb;
     protected Animator animator;
     virtual public void Init()
     {
-        Orb = GetComponent<Rigidbody>();
+        oRb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
     }
 

@@ -28,7 +28,7 @@ public class KJHRockID1 : RockBase, IHitObjectHandler
     {
         float attackPower;
         // 공격력을 현재 속도에 비례하게 계산합니다.
-        float currentSpeed = Rrb.velocity.magnitude;
+        float currentSpeed = rRb.velocity.magnitude;
         attackPower = attackPowerBase * (rockStatus.Health + currentSpeed);
         return attackPower;
     }

@@ -16,9 +16,9 @@ MonoBehaviour:
   DevAccountToken: he5spukk14ih77wrkhh53n59g8f7mwpsci65994uqra9fgfiadcub69wfthcgws87bbzmkbq8fa3mj9nbuqgton67xkyc4jfc3k5oi8135phnw8dop3ci8tqmjzgsz71kf8ytz6m77twkswcdab7sihrzutunzn5r3dhjum5q9tp8nbt6dpm5ffm1nuh4ytypo53j65r
   AadAuthorization: 
   SelectedStudio: 
-  SdkPath: 
+  SdkPath: Assets/PlayFabSDK
   EdExPath: 
   LocalCloudScriptPath: 
   PanelIsShown: 0
-  curMainMenuIdx: 1
+  curMainMenuIdx: 2
   curSubMenuIdx: 0

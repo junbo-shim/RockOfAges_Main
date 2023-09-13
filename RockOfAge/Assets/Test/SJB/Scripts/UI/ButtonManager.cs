@@ -1,13 +1,22 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Photon.Pun;
 
 public class ButtonManager : GlobalSingleton<ButtonManager>
 {
+    #region Title 및 Lobby 하위 Panel 및 Popup 들
     private Transform titlePanel;
+    private Transform loginPopup;
+    private Transform signupPopup;
 
-    private Button optionButton;
+    private Transform lobbyPanel;
+    private Transform createRoomPopup;
+    private Transform joinLockedRoomPopup;
+    private Transform waitPopup;
+    #endregion
+
+    #region Title Panel 버튼들
+    private Button titleOptionButton;
     private Button quickStartButton;
     private Button loginButton;
     private Button signupButton;
@@ -18,44 +27,80 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     private Button closeButton;
 
     private Button registerButton;
-    private Button closeButton2;
-    
+    #endregion
+
+    #region Lobby Panel 버튼들
+    private Button lobbyOptionButton;
+
+    private Button joinRoomButton;
+    private Button createRoomButton;
+    private Button JoinRandomButton;
+
+    private Button createConfirmButton;
+    private Button commitPWButton;
+    #endregion
+
     protected override void Awake()
     {
-        titlePanel = GameObject.Find("Panel_Title").transform;
-        FindAllButtons();
-        SetAllButton();
+        GetAllPanels();
+        FinTitleButtons();
+        FindLobbyButtons();
+        ListentAllButton();
         MakePanelsDefault();
     }
 
-
-
-
-    #region 타이틀 씬의 모든 버튼을 찾아서 저장하는 메서드
-    private void FindAllButtons() 
+    protected override void Update()
     {
-        optionButton = titlePanel.Find("Button_Option").GetComponent<Button>();
+        CheckCloseButton();
+    }
+
+    #region 모든 Panel 을 NetworkManager로부터 받아오는 메서드
+    private void GetAllPanels() 
+    {
+        titlePanel = NetworkManager.Instance.TitlePanel;
+        lobbyPanel = NetworkManager.Instance.LobbyPanel;
+        loginPopup = NetworkManager.Instance.LoginPopup;
+        signupPopup = NetworkManager.Instance.SignupPopup;
+
+        createRoomPopup = NetworkManager.Instance.CreateRoomPopup;
+        joinLockedRoomPopup = NetworkManager.Instance.JoinLockedRoomPopup;
+        waitPopup = NetworkManager.Instance.WaitPopup;
+    }
+    #endregion
+
+    #region Title Panel 의 모든 버튼을 찾아서 저장하는 메서드
+    private void FinTitleButtons()
+    {
+        titleOptionButton = titlePanel.Find("Button_Option").GetComponent<Button>();
         quickStartButton = titlePanel.Find("Button_QuickStart").GetComponent<Button>();
         loginButton = titlePanel.Find("Button_Login").GetComponent<Button>();
         signupButton = titlePanel.Find("Button_Signup").GetComponent<Button>();
         quitButton = titlePanel.Find("Button_Quit").GetComponent<Button>();
 
-        startButton = titlePanel.Find("Panel_Login").Find("Button_Start").GetComponent<Button>();
-        resetPWButton = titlePanel.Find("Panel_Login").Find("Button_ResetPW").GetComponent<Button>();
-        closeButton = titlePanel.Find("Panel_Login").Find("Button_Close").GetComponent<Button>();
+        startButton = loginPopup.Find("Button_Start").GetComponent<Button>();
+        resetPWButton = loginPopup.Find("Button_ResetPW").GetComponent<Button>();
 
-        registerButton = titlePanel.Find("Panel_Signup").Find("Button_Register").GetComponent<Button>();
-        closeButton2 = titlePanel.Find("Panel_Signup").Find("Button_Close2").GetComponent<Button>();
+        registerButton = signupPopup.Find("Button_Register").GetComponent<Button>();
     }
     #endregion
 
+    #region Lobby Panel 의 모든 버튼을 찾아서 저장하는 메서드
+    private void FindLobbyButtons()
+    {
+        lobbyOptionButton = lobbyPanel.Find("Button_Option").GetComponent<Button>();
 
+        createRoomButton = lobbyPanel.Find("Panel_Room").Find("Button_CreateRoom").GetComponent<Button>();
+        JoinRandomButton = lobbyPanel.Find("Panel_Room").Find("Button_JoinRandomRoom").GetComponent<Button>();
 
+        createConfirmButton = createRoomPopup.Find("Button_Create").GetComponent<Button>();
+        commitPWButton = joinLockedRoomPopup.Find("Button_Join").GetComponent<Button>();
+    }
+    #endregion
 
     #region 버튼에 AddListener 세팅하는 메서드
-    private void SetAllButton() 
+    private void ListentAllButton()
     {
-        optionButton.onClick.AddListener(PressOption);
+        titleOptionButton.onClick.AddListener(PressOption);
         quickStartButton.onClick.AddListener(PressQuickStart);
         loginButton.onClick.AddListener(PressLogin);
         signupButton.onClick.AddListener(PressSignup);
@@ -63,115 +108,196 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
 
         startButton.onClick.AddListener(PressStart);
         resetPWButton.onClick.AddListener(PressResetPW);
-        closeButton.onClick.AddListener(PressClose);
 
         registerButton.onClick.AddListener(PressRegister);
-        closeButton2.onClick.AddListener(PressClose2);
+
+        createRoomButton.onClick.AddListener(PressCreateRoomButton);
+        JoinRandomButton.onClick.AddListener(PressJoinRandomButton);
+
+        createConfirmButton.onClick.AddListener(PressConfirmCreateButton);
+        //commitPWButton.onClick
     }
     #endregion
 
-
-
-
-    #region 모든 창을 작게 만드는 메서드
-    public void MakePanelsDefault() 
+    #region 모든 팝업창을 작게 만드는 메서드
+    public void MakePanelsDefault()
     {
-        Transform loginPanel = titlePanel.Find("Panel_Login").transform;
-        Transform signupPanel = titlePanel.Find("Panel_Signup").transform;
+        loginPopup.localScale = Vector3.zero;
+        signupPopup.localScale = Vector3.zero;
 
-        loginPanel.localScale = Vector3.zero;
-        signupPanel.localScale = Vector3.zero;
+        lobbyPanel.localScale = Vector3.zero;
+
+        createRoomPopup.localScale = Vector3.zero;
+        joinLockedRoomPopup.localScale = Vector3.zero;
+        waitPopup.localScale = Vector3.zero;
     }
     #endregion
-
-
-
-
 
     #region 버튼 기능 메서드
-    public void PressOption() 
+    //Button Functions ====================================================================================
+    #region 옵션버튼
+    public void PressOption()
     {
         /*Empty For Now*/
     }
+    #endregion
 
-    public void PressQuickStart() 
+    #region 빠른 시작 버튼
+    public void PressQuickStart()
     {
-        PhotonNetwork.ConnectUsingSettings();
-      
-        //NetworkManager.Instance.StartQuick();
+        NetworkManager.Instance.StartQuick();
     }
+    #endregion
 
-    public void PressLogin() 
+    #region 로그인 버튼
+    public void PressLogin()
     {
-        Transform loginPanel = titlePanel.Find("Panel_Login").transform;
-        loginPanel.localScale = Vector3.one;
+        loginPopup.localScale = Vector3.one;
 
-        loginPanel.GetComponentInChildren<TMP_Text>().color = new Color(180, 180, 180);
-        loginPanel.GetComponentInChildren<TMP_Text>().text = "로그인";
+        loginPopup.GetComponentInChildren<TMP_Text>().color = new Color(180, 180, 180);
+        loginPopup.GetComponentInChildren<TMP_Text>().text = "로그인";
     }
+    #endregion
 
-    public void PressSignup() 
+    #region 회원가입 버튼
+    public void PressSignup()
     {
-        Transform signupPanel = titlePanel.Find("Panel_Signup").transform;
-        signupPanel.localScale = Vector3.one;
+        signupPopup.localScale = Vector3.one;
     }
+    #endregion
 
-    public void PressQuit() 
+    #region 끝내기 버튼
+    public void PressQuit()
     {
-        //if (UnityEditor.EditorApplication.isPlaying == true) 
-        //{
-        //    UnityEditor.EditorApplication.isPlaying = false;
-        //}
-        //else 
-        //{
-            Application.Quit();
-        //}
+        Application.Quit();
     }
+    #endregion
 
-    public void PressStart() 
+    #region 로그인-게임 시작 버튼
+    public void PressStart()
     {
         NetworkManager.Instance.Login();
     }
+    #endregion
 
-    public void PressResetPW() 
+    #region 로그인-리셋 버튼
+    public void PressResetPW()
     {
-        /**/
+        /*Empty For Now*/
     }
+    #endregion
 
-    public void PressRegister() 
+    #region 회원가입-진짜가입 버튼
+    public void PressRegister()
     {
-
         NetworkManager.Instance.Register();
     }
+    #endregion
 
+    #region 닫기 버튼
     public void PressClose()
     {
-        Transform loginPanel = titlePanel.Find("Panel_Login").transform;
-        loginPanel.localScale = Vector3.zero;
+        if (loginPopup.localScale == Vector3.one)
+        {
+            loginPopup.localScale = Vector3.zero;
 
-        TMP_InputField emailInput = loginPanel.Find("InputField_Email").GetComponent<TMP_InputField>();
-        TMP_InputField passwordInput = loginPanel.Find("InputField_Password").GetComponent<TMP_InputField>();
+            TMP_InputField emailInput = loginPopup.Find("InputField_Email").GetComponent<TMP_InputField>();
+            TMP_InputField passwordInput = loginPopup.Find("InputField_Password").GetComponent<TMP_InputField>();
 
-        loginPanel.GetComponentInChildren<TMP_Text>().color = new Color(180, 180, 180);
-        loginPanel.GetComponentInChildren<TMP_Text>().text = "로그인";
-        emailInput.text = default;
-        passwordInput.text = default;
+            loginPopup.GetComponentInChildren<TMP_Text>().color = new Color(180, 180, 180);
+            loginPopup.GetComponentInChildren<TMP_Text>().text = "로그인";
+            emailInput.text = default;
+            passwordInput.text = default;
+        }
+        else if (signupPopup.localScale == Vector3.one)
+        {
+            signupPopup.localScale = Vector3.zero;
+
+            TMP_InputField emailInput = signupPopup.Find("InputField_Email").GetComponent<TMP_InputField>();
+            TMP_InputField passwordInput = signupPopup.Find("InputField_Password").GetComponent<TMP_InputField>();
+            TMP_InputField nicknameInput = signupPopup.Find("InputField_Nickname").GetComponent<TMP_InputField>();
+
+            signupPopup.GetComponentInChildren<TMP_Text>().color = new Color(180, 180, 180);
+            signupPopup.GetComponentInChildren<TMP_Text>().text = "회원가입";
+            emailInput.text = default;
+            passwordInput.text = default;
+            nicknameInput.text = default;
+        }
+        else if (createRoomPopup.localScale == Vector3.one) 
+        {
+            createRoomPopup.localScale = Vector3.zero;
+
+            TMP_InputField roomNameInput = createRoomPopup.Find("InputField_RoomName").GetComponent<TMP_InputField>();
+            TMP_InputField roomPWInput = createRoomPopup.Find("InputField_RoomPW").GetComponent<TMP_InputField>();
+
+            roomNameInput.text = default;
+            roomPWInput.text = default;
+        }
+        else if (joinLockedRoomPopup.localScale == Vector3.one) 
+        {
+            joinLockedRoomPopup.localScale = Vector3.zero;
+
+            TMP_InputField roomPWInput = createRoomPopup.Find("InputField_RoomPW").GetComponent<TMP_InputField>();
+            roomPWInput.text = default;
+        }
     }
+    #endregion
 
-    public void PressClose2()
+    #region 닫기 버튼 확인 로직
+    public void CheckCloseButton()
     {
-        Transform signupPanel = titlePanel.Find("Panel_Signup").transform;
-        signupPanel.localScale = Vector3.zero;
-
-        TMP_InputField emailInput = signupPanel.Find("InputField_Email").GetComponent<TMP_InputField>();
-        TMP_InputField passwordInput = signupPanel.Find("InputField_Password").GetComponent<TMP_InputField>();
-        TMP_InputField nicknameInput = signupPanel.Find("InputField_Nickname").GetComponent<TMP_InputField>();
-
-        signupPanel.GetComponentInChildren<TMP_Text>().color = new Color(180, 180, 180);
-        signupPanel.GetComponentInChildren<TMP_Text>().text = "회원가입";
-        emailInput.text = default;
-        passwordInput.text = default;
-        nicknameInput.text = default;
+        if (loginPopup.localScale == Vector3.one)
+        {
+            closeButton = loginPopup.Find("Button_Close").GetComponent<Button>();
+            closeButton.onClick.AddListener(PressClose);
+        }
+        else if (signupPopup.localScale == Vector3.one)
+        {
+            closeButton = signupPopup.Find("Button_Close").GetComponent<Button>();
+            closeButton.onClick.AddListener(PressClose);
+        }
+        else if (createRoomPopup.localScale == Vector3.one) 
+        {
+            closeButton = createRoomPopup.Find("Button_Close").GetComponent<Button>();
+            closeButton.onClick.AddListener(PressClose);
+        }
+        else if (joinLockedRoomPopup.localScale == Vector3.one) 
+        {
+            closeButton = joinLockedRoomPopup.Find("Button_Close").GetComponent<Button>();
+            closeButton.onClick.AddListener(PressClose);
+        }
     }
+    #endregion
+
+    #region 방 생성 버튼
+    public void PressCreateRoomButton() 
+    {
+        createRoomPopup.localScale = Vector3.one;
+    }
+    #endregion
+
+    #region 방 생성-진짜 생성 버튼
+    public void PressConfirmCreateButton() 
+    {
+        //Instantiate
+    }
+    #endregion
+
+    #region 랜덤 참여 버튼
+    public void PressJoinRandomButton() 
+    {
+        // 룸이 없다면 Wait 팝업에서 경고문을 띄우고 1.5초 뒤 꺼짐
+        // 룸이 있다면 Wait 팝업에서 참가중을 띄우고 방으로
+    }
+    #endregion
+
+    #region 방 참여 버튼 (방 자체)
+    public void PressJoinRoomButton() 
+    {
+    
+    }
+    #endregion
+
+    //Button Functions ====================================================================================
     #endregion
 }

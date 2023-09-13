@@ -39,6 +39,10 @@ public partial class UIManager : MonoBehaviour
     {
         uiManager = this;
         DontDestroyOnLoad(uiManager);
+        commonUI.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+        rockSelectUI.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+        defenceUI.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+        attackUI.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
     }
 
     #region Functions
@@ -147,7 +151,6 @@ public partial class UIManager : MonoBehaviour
         readyImg.gameObject.SetActive(false);
     }
     //} PrintReadyText()
-
 
     //{ ShutDownUserSelectUI()
     public void ShutDownUserSelectUI()

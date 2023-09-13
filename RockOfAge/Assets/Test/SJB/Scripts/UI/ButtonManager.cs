@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Photon.Pun;
+using Photon.Realtime;
+using System.Collections.Generic;
 
 public class ButtonManager : GlobalSingleton<ButtonManager>
 {
@@ -32,13 +35,15 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #region Lobby Panel 버튼들
     private Button lobbyOptionButton;
 
-    private Button joinRoomButton;
+    private GameObject roomPrefab;
     private Button createRoomButton;
     private Button JoinRandomButton;
 
     private Button createConfirmButton;
     private Button commitPWButton;
     #endregion
+
+
 
     protected override void Awake()
     {
@@ -88,6 +93,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     private void FindLobbyButtons()
     {
         lobbyOptionButton = lobbyPanel.Find("Button_Option").GetComponent<Button>();
+        roomPrefab = lobbyPanel.Find("Button_Room").gameObject;
 
         createRoomButton = lobbyPanel.Find("Panel_Room").Find("Button_CreateRoom").GetComponent<Button>();
         JoinRandomButton = lobbyPanel.Find("Panel_Room").Find("Button_JoinRandomRoom").GetComponent<Button>();
@@ -135,6 +141,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
 
     #region 버튼 기능 메서드
     //Button Functions ====================================================================================
+
     #region 옵션버튼
     public void PressOption()
     {
@@ -177,6 +184,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     public void PressStart()
     {
         NetworkManager.Instance.Login();
+        Invoke("PressClose", 2f);
     }
     #endregion
 
@@ -191,6 +199,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     public void PressRegister()
     {
         NetworkManager.Instance.Register();
+        Invoke("PressClose", 2f);
     }
     #endregion
 
@@ -279,22 +288,25 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #region 방 생성-진짜 생성 버튼
     public void PressConfirmCreateButton() 
     {
-        //Instantiate
+        TMP_InputField roomNameInput = createRoomPopup.Find("InputField_RoomName").GetComponent<TMP_InputField>();
+        TMP_InputField roomPWInput = createRoomPopup.Find("InputField_RoomPW").GetComponent<TMP_InputField>();
+
+        RoomOptions roomOptions = new RoomOptions { MaxPlayers = 4 };
+        PhotonNetwork.CreateRoom(roomNameInput.text, roomOptions, null, null);
+        GameObject room = Instantiate(roomPrefab, NetworkManager.Instance.RoomListContent);
+
+        NetworkManager.Instance.roomLists.Add(room);
+
+        PressClose();
     }
     #endregion
 
     #region 랜덤 참여 버튼
     public void PressJoinRandomButton() 
     {
+        // 룸 리스트 필요
         // 룸이 없다면 Wait 팝업에서 경고문을 띄우고 1.5초 뒤 꺼짐
         // 룸이 있다면 Wait 팝업에서 참가중을 띄우고 방으로
-    }
-    #endregion
-
-    #region 방 참여 버튼 (방 자체)
-    public void PressJoinRoomButton() 
-    {
-    
     }
     #endregion
 

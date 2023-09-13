@@ -1,9 +1,10 @@
 using UnityEngine;
+using System.Collections.Generic;
 using TMPro;
 using Photon.Pun;
+using Photon.Realtime;
 using PlayFab;
 using PlayFab.ClientModels;
-using Photon.Realtime;
 
 public partial class NetworkManager : GlobalSingleton<NetworkManager>
 {
@@ -16,6 +17,7 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     protected override void Awake()
     {
         FindUIObjects();
+        roomLists = new List<GameObject>();
     }
 
     #region 서버연결-Photon
@@ -26,22 +28,15 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
 
     public override void OnConnectedToMaster()
     {
+        base.OnConnectedToMaster();
         PhotonNetwork.JoinLobby();
+        //currentPlayersInLobby = PhotonNetwork.CountOfPlayersOnMaster;
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
         base.OnDisconnected(cause);
         Debug.LogFormat("You are Disconnected : {0}", cause);
-    }
-
-    public override void OnJoinedLobby()
-    {
-        base.OnJoinedLobby();
-        TitlePanel.localScale = Vector3.zero;
-        LobbyPanel.localScale = Vector3.one;
-        Debug.Log("Join Success");
-        Debug.Log(IsInvoking());
     }
     #endregion
 
@@ -58,12 +53,12 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         JoinLockedRoomPopup = LobbyPanel.Find("Panel_Room").Find("Popup_JoinLockedRoom").transform;
         WaitPopup = LobbyPanel.Find("Panel_Room").Find("Popup_Wait").transform;
 
-        roomListContent = 
+        RoomListContent = 
             LobbyPanel.Find("Panel_Room").Find("Panel_RoomList").Find("Viewport").Find("Content").transform;
         roomInfo = LobbyPanel.Find("Panel_Room").Find("Panel_RoomInfo").transform;
 
         playerName = LobbyPanel.Find("LobbyInfo_PlayerName").GetComponent<TMP_Text>();
-        playerNumbers = LobbyPanel.Find("LobbyInfo_PlayerNumber").GetComponent<TMP_Text>();
+        playerLobbyNumbers = LobbyPanel.Find("LobbyInfo_PlayerNumber").GetComponent<TMP_Text>();
     }
     #endregion
 
@@ -77,7 +72,7 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
 
         PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginFailure);
 
-        Invoke("ConnectToServer", 3f);
+        Invoke("ConnectToServer", 2f);
     }
     #endregion
 
@@ -90,8 +85,9 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         var request = new LoginWithEmailAddressRequest
         {
             Email = emailInput.text,
-            Password = passwordInput.text
+            Password = passwordInput.text,
         };
+        PlayerPrefs.SetString("name", emailInput.text);
 
         PlayFabClientAPI.LoginWithEmailAddress(request, OnLoginSuccess, OnLoginFailure);
 

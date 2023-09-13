@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class KJHRockMove : RockBase, IHitObjectHandler
 {
+    public float TestHp = 100f;
 
-
-
+    void Awake()
+    {
+        rockStatus = new RockStatus(rockStatus);
+    }
     void Start()
     {
         Init();
@@ -20,7 +23,7 @@ public class KJHRockMove : RockBase, IHitObjectHandler
         {
             Jump();
         }
-
+        TestHp = rockStatus.Health;
     }
    
     override public float Attack()

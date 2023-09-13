@@ -7,24 +7,24 @@ using System;
 public class KJHBullController : MonoBehaviour, IHitObjectHandler
 {
     public float detectionRange = default;
-    public float chargeSpeed = 10.0f;
-    public LayerMask Rock;
-
+    public float chargeSpeed = default;
     public float health = 100f; // 체력 변수
     public float attackPower = default; // 공격력 변수
-    public float chargeCool = 5.0f;
-    public float walkSpeed = 3.0f;
+    public float chargeCool = default;
+    public float walkSpeed = default;
+    public LayerMask Rock;
 
-    private Vector3 lastRockPosition; // 돌의 마지막 위치를 저장할 변수 추가
-    private bool hasCharged = false; // 모루황소가 돌진했는지 여부를 나타내는 변수 추가
+    private int chargeCount = 0;
+    private int rockCollisionCount = 0;// 돌과 충돌한 횟수를 추적하는 변수 추가
     private float lastChargeTime = 0f;
-    private Rigidbody bullRigidbody;
+    private Vector3 lastRockPosition; // 돌의 마지막 위치를 저장할 변수 추가
+    private Vector3 initialBullPosition;
+    private bool hasCharged = false; // 모루황소가 돌진했는지 여부를 나타내는 변수 추가
     private bool isCharging = false;
+    private bool isReturning = false;
+    private Rigidbody bullRigidbody;
     private Transform targetRock;
     private Animator animator;
-    private int chargeCount = 0;
-    private Vector3 initialBullPosition;
-    private bool isReturning = false;
 
     private void Start() // Start 메서드를 선언합니다.
     {
@@ -33,51 +33,6 @@ public class KJHBullController : MonoBehaviour, IHitObjectHandler
         initialBullPosition = transform.position;
     }
 
-
-    //private void Update()
-    //{
-    //    if (!isCharging)
-    //    {
-    //        lastChargeTime += Time.deltaTime;
-    //        if (lastChargeTime >= chargeCool)
-    //        {
-    //            DetectRock();
-    //            if (isCharging)
-    //            {
-    //                lastChargeTime = 0f;
-    //            }
-    //        }
-    //    }
-    //    else
-    //    {
-    //        ChargeTowardsRock();
-
-    //        float distanceToLastRockPosition = Vector3.Distance(transform.position, lastRockPosition);
-
-    //        // 돌진 중일 때 돌의 마지막 좌표에 도착했는지 확인합니다.
-    //        if (distanceToLastRockPosition <= 10.0f)
-    //        {
-    //            Debug.LogFormat("????");
-    //            ResetCharge();
-    //        }
-    //    }
-    //    // 머리가 돌을 바라보게 합니다.
-    //    if (targetRock != null)
-    //    {
-    //        if (isCharging)
-    //        {
-    //            // 돌진 중일 때는 돌진 방향을 바라봅니다.
-    //            Vector3 chargeDirection = (lastRockPosition - transform.position).normalized;
-    //            chargeDirection.y = 0;
-    //            transform.rotation = Quaternion.LookRotation(chargeDirection);
-    //        }
-    //        else
-    //        {
-    //            // 돌진 중이 아닐 때는 돌을 바라봅니다.
-    //            transform.LookAt(new Vector3(targetRock.transform.position.x, transform.position.y, targetRock.transform.position.z));
-    //        }
-    //    }
-    //}
     private void Update()
     {
         animator.SetBool("isCharging", isCharging);
@@ -135,16 +90,6 @@ public class KJHBullController : MonoBehaviour, IHitObjectHandler
             Destroy(gameObject); // 게임 오브젝트를 제거합니다.
         }
     }
-    //private void DetectRock() // 돌을 탐지하는 메서드를 선언합니다.
-    //{
-    //    Collider[] rocks = Physics.OverlapSphere(transform.position, detectionRange, Rock);
-    //    if (rocks.Length > 0 && rocks[0] != null)
-    //    {
-    //        targetRock = rocks[0].transform;
-    //        lastRockPosition = targetRock.position; // 돌의 현재 위치를 저장
-    //        isCharging = true; // 돌진 상태를 true로 설정합니다.
-    //    }
-    //}
 
     private void DetectRock()
     {
@@ -177,7 +122,7 @@ public class KJHBullController : MonoBehaviour, IHitObjectHandler
     private void ChargeTowardsRock() // 돌을 향해 돌진하는 메서드를 선언합니다.
     {
         Vector3 direction = (lastRockPosition - transform.position).normalized;
-        direction.y = 0; // y축 값을 0으로 설정합니다.r
+        direction.y = 0; // y축 값을 0으로 설정합니다.
         float distanceToTarget = Vector3.Distance(lastRockPosition, transform.position);
         bullRigidbody.velocity = direction * chargeSpeed;
         // 황소가 돌을 바라보게 합니다.
@@ -227,6 +172,15 @@ public class KJHBullController : MonoBehaviour, IHitObjectHandler
                 hitObj.Hit((int)attackPower);
             }
             ResetCharge();
+        }
+        // 모루황소가 돌과 충돌했을 때 충돌 횟수를 증가시키고, 충돌 횟수가 2 이상이면 죽는 코드 추가
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
+        {
+            rockCollisionCount++;
+            if (rockCollisionCount >= 2)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 

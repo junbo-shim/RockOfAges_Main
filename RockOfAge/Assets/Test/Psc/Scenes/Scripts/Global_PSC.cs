@@ -4,7 +4,13 @@ using UnityEngine;
 
 public static class Global_PSC
 {
-
+    public static void InitLocalTransformData(Transform _GameObject, Transform parent=null)
+    {
+        _GameObject.parent = parent.transform;
+        _GameObject.localPosition = Vector3.zero;
+        _GameObject.localRotation = Quaternion.identity;
+        _GameObject.localScale = Vector3.one;
+    }
     public static int FindLayerToName(string layerName)
     {
 

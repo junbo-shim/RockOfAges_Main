@@ -5,11 +5,14 @@ using UnityEngine;
 
 public class BuildManager : MonoBehaviour
 {
+    public static BuildManager instance;
+
     //!!!!!!!!!!!!!!!!!!!!!!!!!테스트 코드
     //해당 정보는 item manager에 저장될 예정??
     //상의 해 봐야함
     public TestObstacle buildTarget;
     public GameObject gridTest;
+    public Material red;
 
 
     //커서의 현재 그리드위치
@@ -39,11 +42,12 @@ public class BuildManager : MonoBehaviour
 
     private void Awake()
     {
+        instance = this;
+
         buildState = new BitArray(MAP_SIZE_X * MAP_SIZE_Z);
         viewer = GetComponentInChildren<BuildViewer>();
         viewer.HideViewer();
 
-        InitTerrainData();
         buildTarget.transform.localScale = Vector3.zero;
     }
 
@@ -78,7 +82,7 @@ public class BuildManager : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(1))
             {
-                TestObstacle build = buildTarget.Build(currCursorGridIndex + gridOffset, Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0));
+                TestObstacle build = buildTarget.Build(viewer.transform.position-Vector3.up*.7f, Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0));
                 build.name = buildTarget.name + "_" + currCursorGridIndex.z + "_" + currCursorGridIndex.x;
                 SetBitArrays(currCursorGridIndex, buildTarget.size);
             }
@@ -99,7 +103,7 @@ public class BuildManager : MonoBehaviour
 
     //씬 실행시 map 건설 가능 상태를 init함
     //terrain 비교시 tag로 team, 기본 건설 불가 타일등을 비교하는 부분 추가해야할거같음
-    void InitTerrainData()
+    public void InitTerrainData()
     {
         buildState.SetAll(false);
         for (int z = -MAP_SIZE_Z / 2; z < MAP_SIZE_Z / 2; z++)
@@ -116,18 +120,15 @@ public class BuildManager : MonoBehaviour
 
                     buildState.Set((z + MAP_SIZE_Z / 2) * MAP_SIZE_Z + (x + MAP_SIZE_X / 2), true);
 
-
-
                     ///////////////////////////////////////////////////////////테스트 코드
-                    GameObject gameObject = Instantiate(gridTest, raycastHit.point+Vector3.up*0.02f, Quaternion.identity);
+                    GameObject gameObject = Instantiate(gridTest, raycastHit.point+Vector3.up*0.02f, Quaternion.FromToRotation(-Vector3.forward, raycastHit.normal));
                     gameObject.name = gridTest.name + "_" + z + "_" + x;
-                    gameObject.transform.localScale = Vector3.one * .1f * .8f;
+                    gameObject.transform.localScale = Vector3.one*0.8f;
                     /////////////////////////////////////////////////////////////////////
                 }
             }
         }
     }
-
     void SetBitArrays(Vector3 grid, Vector2Int buildSize)
     {
         for (int y = (int)(buildSize.y * .5f); y >-(buildSize.y * .5f); y--)
@@ -136,8 +137,10 @@ public class BuildManager : MonoBehaviour
             {
                 Vector3 _grid = grid - Vector3Int.right *( x) - Vector3Int.forward * (y);
                 buildState.Set((int)(_grid.z + MAP_SIZE_Z *.5f) * (int)MAP_SIZE_Z + (int)(_grid.x + MAP_SIZE_X * .5f), false);
+                Debug.Log(grid);
                 GameObject floor = GameObject.Find("GridTestCube_" + _grid.z + "_" + _grid.x);
-                floor.GetComponent<MeshRenderer>().material.color = Color.red;
+                Debug.Log(floor.name);
+                floor.GetComponent<MeshRenderer>().material = red;
             }
         }
 

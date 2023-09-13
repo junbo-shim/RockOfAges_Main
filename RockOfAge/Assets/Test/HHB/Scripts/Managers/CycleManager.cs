@@ -1,26 +1,66 @@
+using PlayFab.GroupsModels;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
+
+public enum UserState
+{ 
+    UnitSelect = 0, RockSelect = 1, Defence = 2, Attack = 3, Ending = 4 
+}
 
 public class CycleManager : MonoBehaviour
 {
-    public bool selection = true;
-    public bool attack = false;
-    public bool defence = false;
-    public bool isGameOver = false;
+    public static CycleManager cycleManager;
+
+    #region 변수
+    public int userState;
+    // 공격에서 공이 선택됨 bool
+    public bool attackRockSelected = false;
+    // 공 생성 시간이 다 경과됨을 감지하는 bool
+    public bool isRockCreated = false;
+    ////! 서버 team1 team2 체력
+    //public float team1Hp = 1000f;
+    //public float team2Hp = 1000f;
+    ////! 서버 player gold
+    //public int gold = 1000; 
+    #endregion
+
+    public void Awake()
+    {
+        cycleManager = this;
+        userState = (int)UserState.UnitSelect;
+    }
 
     private void Update()
     {
-        UpdateSelectionCycle();
-        UpdateCommonUICycle();
+        GameCycle();
     }
 
+    #region GameCycle
+    //{ GameCycle()
+    public void GameCycle()
+    {
+        UpdateSelectionCycle();
+        UpdateCommonUICycle();
+        // 돌 선택 판별
+
+        //UpdateDefenceCycle();
+
+        //UpdateGameEndCycle();
+
+    }
+    //} GameCycle()
+    #endregion
+
+
+    #region SelectCycle
     //{ UpdateSelectionCycle()
     // 선택 사이클
     // 공하나 이상 선택 & 유저 enter -> defence
     public void UpdateSelectionCycle()
     {
-        if (selection == true)
+        if (userState == (int)UserState.UnitSelect)
         {
             // 공 하나 이상 선택시 문자출력 설정
             if (CheckUserBall() == true)
@@ -34,9 +74,13 @@ public class CycleManager : MonoBehaviour
                 // 검증 후 다음 사이클로
                 if (CheckUserBall() == true)
                 {
-                    selection = false;
-                    defence = true;
+                    UIManager.uiManager.PrintRockSelectUI();
+                    ItemManager.itemManager.userRockChoosed[0] = 0;
+                    UIManager.uiManager.InstantiateRockImgForAttack();
+                    UIManager.uiManager.InstantiateUnitImgForDenfence();
                     UIManager.uiManager.ShutDownUserSelectUI();
+                    userState = (int)UserState.RockSelect;
+                    UIManager.uiManager.TurnOnCommonUI();
                 }
                 else { return; }
             }
@@ -56,17 +100,79 @@ public class CycleManager : MonoBehaviour
     }
     //} CheckUserBall()
 
+    #endregion
+
+    #region CommonUICycle
     //{ UpdateDefenceCycle()
     // 게임종료시까지 켜져 있는 UI
     public void UpdateCommonUICycle()
     {
-        if (isGameOver == false && selection == false)
+        // 유닛 선택단계와 엔딩 단계가 아니라면 항상 출력
+        if (userState != (int)UserState.UnitSelect || userState != (int)UserState.Ending)
         { 
-            UIManager.uiManager.TurnOnCommonUI();
-            UIManager.uiManager.GetRotationKey();        
+              UIManager.uiManager.GetRotationKey();
+        }
+    }
+    //} UpdateDefenceCycle()
+    #endregion
+
+    #region AttackCycle
+    //{ ChangeCycleAttackToDefence()
+    // 공격 싸이클에서 방어 싸이클로 전환하는 함수
+    public void ChangeCycleAttackToDefence()
+    {
+        if (userState == (int)UserState.Attack)
+        {
+            userState = (int)UserState.Defence;
+        }
+        else { Debug.Log("GAMELOGIC ERROR"); }
+    }
+    //} ChangeCycleAttackToDefence()
+    #endregion
+
+
+    #region DefenceCycle
+    //{ UpdateDefenceCycle()
+    public void UpdateDefenceCycle()
+    {
+        // 돌 선택이 되었을 때
+        if (userState == (int)UserState.Defence)
+        {
+            // 버튼 인스턴스
+
+            // 선택공 만큼 시간 돌리기
+            //StartCoroutine(WaitForRock());
+            // 소환시간초과시 C 누르면
+            if (isRockCreated == true && Input.GetKey(KeyCode.C))
+            {
+                // 돌 소환하고 카메라 쫓게 해주고
+                userState = (int)UserState.Attack;
+            }
         }
     }
     //} UpdateDefenceCycle()
 
+    IEnumerator WaitForRock(float time_)
+    { 
+    
+        yield return new WaitForSeconds(time_);
+        isRockCreated = true;
+        //GameObject myRock = Instantiate();
+    }
 
+
+    #endregion
+
+
+    #region GameEndCycle
+    //{ UpdateGameEndCycle()
+    public void UpdateGameEndCycle()
+    {
+        if (userState == (int)UserState.Ending)
+        { 
+        
+        }
+    }
+    //} UpdateGameEndCycle()
+    #endregion
 }

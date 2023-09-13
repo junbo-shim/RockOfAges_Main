@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KJHRockMove : RockBase, IHitObjectHandler
+public class KJHRockID1 : RockBase, IHitObjectHandler
 {
     public float TestHp = 100f;
 
@@ -30,8 +30,8 @@ public class KJHRockMove : RockBase, IHitObjectHandler
     {
 
      float attackPower;
-        // °ø°İ·ÂÀ» ÇöÀç ¼Óµµ¿¡ ºñ·ÊÇÏ°Ô °è»êÇÕ´Ï´Ù.
-        float currentSpeed = rb.velocity.magnitude;
+        // ê³µê²©ë ¥ì„ í˜„ì¬ ì†ë„ì— ë¹„ë¡€í•˜ê²Œ ê³„ì‚°í•©ë‹ˆë‹¤.
+        float currentSpeed = Rrb.velocity.magnitude;
         attackPower = attackPowerBase * (rockStatus.Health + currentSpeed);
         return attackPower;
     }
@@ -57,4 +57,5 @@ public class KJHRockMove : RockBase, IHitObjectHandler
     {
         throw new System.NotImplementedException();
     }
+
 }

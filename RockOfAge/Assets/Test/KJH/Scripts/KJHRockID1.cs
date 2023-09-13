@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class KJHRockID1 : RockBase, IHitObjectHandler
 {
-    public float TestHp = 100f;
 
     void Awake()
     {
@@ -23,7 +22,6 @@ public class KJHRockID1 : RockBase, IHitObjectHandler
         {
             Jump(); // RockBase 클래스의 Jump 메서드를 호출합니다.
         }
-        TestHp = rockStatus.Health;
     }
 
     public override float Attack()

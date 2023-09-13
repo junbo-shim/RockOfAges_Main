@@ -9,6 +9,7 @@ public class RockBase : MonoBehaviour
 
     public float maxSpeed = 50f;
     public RockStatus rockStatus;
+    public LayerMask terrainLayer; // Inspector에서 "Terrains" 레이어를 할당할 수 있는 변수 추가
     protected Rigidbody Rrb;
     protected Camera mainCamera;
 
@@ -16,6 +17,11 @@ public class RockBase : MonoBehaviour
     {
         Rrb = GetComponent<Rigidbody>();
         mainCamera = Camera.main;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawCube(transform.position, new Vector3(1, 8, 1));
     }
     public virtual void Move()
     {
@@ -44,10 +50,31 @@ public class RockBase : MonoBehaviour
 
     public virtual void Jump()
     {
-        Rrb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        if (IsGround())
+        {
+            Debug.Log("IsGround() is true");
+            Rrb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+        else
+        {
+            Debug.Log("IsGround() is false");
+        }
+    }
+    public virtual bool IsGround()
+    {
+        
+        float distance = 4f; // 레이 캐스트 거리
+        RaycastHit hit;
+
+        // 레이 캐스트를 사용하여 지면과의 거리를 확인합니다.
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, distance, terrainLayer))
+        {
+            return true;
+        }
+
+        return false;
     }
 
-   
 
     public virtual float Attack()
     {
@@ -57,12 +84,6 @@ public class RockBase : MonoBehaviour
     public virtual void Fall()
     {
 
-    }
-
-    public virtual bool IsGround()
-    {
-
-        return true;
     }
     protected IEnumerator ApplyBooster(float duration, float boosterMultiplier)
     {

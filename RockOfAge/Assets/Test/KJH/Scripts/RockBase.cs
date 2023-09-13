@@ -6,7 +6,8 @@ public class RockBase : MonoBehaviour
 {
     protected float jumpForce = 3000f;
     protected float attackPowerBase = 10f;
-    
+
+    public Vector3 boostDirection;
     public RockStatus rockStatus;
     protected Rigidbody Rrb;
     protected Camera mainCamera;
@@ -29,7 +30,7 @@ public class RockBase : MonoBehaviour
             Vector3 forceDirection = (cameraForward * verticalInput + cameraRight * horizontalInput);
             forceDirection.y = 0;
 
-            // ÀÌµ¿ ¹æÇâ¿¡ µû¶ó °¡¼Óµµ¸¦ Á¶ÀýÇÕ´Ï´Ù.
+            // ì´ë™ ë°©í–¥ì— ë”°ë¼ ê°€ì†ë„ë¥¼ ì¡°ì ˆí•©ë‹ˆë‹¤.
             float acceleration = (Mathf.Abs(horizontalInput) > 0.1f && Mathf.Abs(verticalInput) > 0.1f) ? rockStatus.Acceleration * 2 : rockStatus.Acceleration;
             Rrb.AddForce(forceDirection * acceleration, ForceMode.Acceleration);
         }
@@ -64,11 +65,14 @@ public class RockBase : MonoBehaviour
         rockStatus.Acceleration /= boosterMultiplier;
     }
 
-    protected void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Booster"))
         {
-            StartCoroutine(ApplyBooster(2.0f, 2.0f));
+            Vector3 forceDirection = transform.forward.normalized; // íž˜ ë°©í–¥ ì•žìª½ìœ¼ë¡œ ê³ ì •
+            Rrb.AddForce(Vector3.up * 30f, ForceMode.VelocityChange);
+            Rrb.AddForce(forceDirection * rockStatus.Acceleration * 100.0f, ForceMode.Acceleration);
+            StartCoroutine(ApplyBooster(0.01f, 100f));
         }
     }
 }

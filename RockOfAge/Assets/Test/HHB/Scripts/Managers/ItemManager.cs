@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class ItemManager : MonoBehaviour
 {
-    #region 변수
     public static ItemManager itemManager;
+    #region 변수
+    public int[] userRockChoosed = new int[1];
     public List<int> rockSelected = new List<int>();
     public List<int> unitSelected = new List<int>();
     public int rockCount = 0;

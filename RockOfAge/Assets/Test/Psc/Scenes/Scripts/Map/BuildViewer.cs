@@ -18,8 +18,7 @@ public class BuildViewer : MonoBehaviour
         colorHighLight = GetComponentInChildren<BuildColorHighLight>();
     }
 
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!차후 target의 class를 ObstacleBase로 변경할것
-    void ChangeTarget(GameObject target)
+    void ChangeTarget(ObstacleBase target)
     {
         MeshFilter _meshFilter = target.GetComponent<MeshFilter>();
         if (_meshFilter == null)
@@ -42,8 +41,8 @@ public class BuildViewer : MonoBehaviour
         meshFilter.sharedMesh = copyMesh;
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!차후 상황에 맞게 변경할것.
-        TestObstacle _target = target.GetComponent<TestObstacle>();
-        highLight.ChangeHighLight(_target.size);
+        ObstacleBase _target = target.GetComponent<ObstacleBase>();
+        highLight.ChangeHighLight(_target.status.Size);
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         HideViewer();
@@ -56,38 +55,14 @@ public class BuildViewer : MonoBehaviour
     }
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!차후 obstacleBase로 바꿀것
-    public void UpdateTargetChange(TestObstacle target)
+    public void UpdateTargetChange(ObstacleBase target)
     {
-        colorHighLight.UpdateColorHighLightSize(target.size);
-        ChangeTarget(target.gameObject);
+        colorHighLight.UpdateColorHighLightSize(target.status.Size);
+        ChangeTarget(target);
     }
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-    public float GetHeight()
-    {
-        if (meshFilter != null)
-        {
-            // 메쉬 데이터 가져오기
-            Mesh mesh = meshFilter.sharedMesh;
-
-            if (mesh != null)
-            {
-                // 메쉬의 경계 상자 (Bounds) 가져오기
-                Bounds bounds = mesh.bounds;
-
-                // 높이 계산
-                float height = bounds.size.y * .1f;
-
-                // 결과 출력
-                //Debug.Log("Object Height: " + height);
-
-                return height;
-            }
-        }
-
-        return 0f;
-    }
 
     public void HideViewer()
     {

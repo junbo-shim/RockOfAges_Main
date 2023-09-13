@@ -14,6 +14,7 @@ public class KJHBullController : MonoBehaviour, IHitObjectHandler
     public float walkSpeed = default;
     public LayerMask Rock;
 
+    bool isDying = false;
     private int chargeCount = 0;
     private int rockCollisionCount = 0;// 돌과 충돌한 횟수를 추적하는 변수 추가
     private float lastChargeTime = 0f;
@@ -35,6 +36,10 @@ public class KJHBullController : MonoBehaviour, IHitObjectHandler
 
     private void Update()
     {
+        if(isDying == true)
+        {
+            return;
+        }
         animator.SetBool("isCharging", isCharging);
         animator.SetBool("isReturning", isReturning);
 
@@ -179,7 +184,8 @@ public class KJHBullController : MonoBehaviour, IHitObjectHandler
             rockCollisionCount++;
             if (rockCollisionCount >= 2)
             {
-                Destroy(gameObject);
+                isDying = true;
+                StartCoroutine(Die()); // 황소가 죽을 때 Die 코루틴을 실행합니다.
             }
         }
     }
@@ -197,7 +203,27 @@ public class KJHBullController : MonoBehaviour, IHitObjectHandler
             isReturning = false;
         }
     }
+    private IEnumerator Die()
+    {
+        animator.SetBool("isDying", true); // 애니메이터의 "isDying" 파라미터를 true로 설정합니다.
 
+        // 포지션 고정
+        Rigidbody bullRigidbody = GetComponent<Rigidbody>();
+        if(bullRigidbody != null)
+        {
+            bullRigidbody.velocity = Vector3.zero;
+        }
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length); // 애니메이션 클립의 길이만큼 대기합니다.
+                                                                                         // 황소의 포지션을 고정합니다.
+        if (bullRigidbody != null)
+        {
+            bullRigidbody.isKinematic = true; // 황소의 Rigidbody를 isKinematic 상태로 변경하여 포지션을 고정합니다.
+        }
+        // 애니메이션이 끝난 상태로 3초 대기
+        animator.speed = 0f;
+        yield return new WaitForSeconds(3f);
+        Destroy(gameObject); // 애니메이션이 끝난 후에 게임 오브젝트를 파괴합니다.
+    }
     public void Hit(int damage)
     {
         throw new NotImplementedException();
@@ -208,3 +234,5 @@ public class KJHBullController : MonoBehaviour, IHitObjectHandler
         throw new NotImplementedException();
     }
 }
+
+

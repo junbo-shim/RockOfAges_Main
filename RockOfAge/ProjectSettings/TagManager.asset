@@ -11,6 +11,7 @@ TagManager:
   - Team04
   - Common
   - Block
+  - Booster
   layers:
   - Default
   - TransparentFX

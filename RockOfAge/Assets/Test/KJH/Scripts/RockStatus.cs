@@ -13,6 +13,19 @@ public class RockStatus : ScriptableObject
     [SerializeField] private float cooldown;
     [SerializeField] private string tempString;
 
+    public RockStatus(RockStatus rockStatus)
+    {
+        id = rockStatus.Id;
+        stoneName = rockStatus.stoneName;
+        health = rockStatus.health;
+        speed = rockStatus.speed;
+        acceleration = rockStatus.acceleration;
+        damage = rockStatus.damage;
+        weight = rockStatus.weight;
+        cooldown = rockStatus.cooldown;
+        tempString = rockStatus.tempString;
+    }
+
     public int Id { get => id; set => id = value; }
     public string StoneName { get => stoneName; set => stoneName = value; }
     public float Health { get => health; set => health = value; }

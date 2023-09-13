@@ -8,15 +8,15 @@ public class RockBase : MonoBehaviour
     protected float attackPowerBase = 10f;
     
     public RockStatus rockStatus;
-    protected Rigidbody rb;
+    protected Rigidbody Rrb;
     protected Camera mainCamera;
 
-    virtual public void Init()
+    public  virtual void Init()
     {
-        rb = GetComponent<Rigidbody>();
+        Rrb = GetComponent<Rigidbody>();
         mainCamera = Camera.main;
     }
-    virtual public void Move()
+    public virtual void Move()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
@@ -31,30 +31,44 @@ public class RockBase : MonoBehaviour
 
             // 이동 방향에 따라 가속도를 조절합니다.
             float acceleration = (Mathf.Abs(horizontalInput) > 0.1f && Mathf.Abs(verticalInput) > 0.1f) ? rockStatus.Acceleration * 2 : rockStatus.Acceleration;
-            rb.AddForce(forceDirection * acceleration, ForceMode.Acceleration);
+            Rrb.AddForce(forceDirection * acceleration, ForceMode.Acceleration);
         }
     }
 
-    virtual public void Jump()
+    public virtual void Jump()
     {
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        Rrb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 
    
 
-    virtual public float Attack()
+    public virtual float Attack()
     {
         return 0;
     }
 
-    virtual public void Fall()
+    public virtual void Fall()
     {
 
     }
 
-    virtual public bool IsGround()
+    public virtual bool IsGround()
     {
 
         return true;
+    }
+    protected IEnumerator ApplyBooster(float duration, float boosterMultiplier)
+    {
+        rockStatus.Acceleration *= boosterMultiplier;
+        yield return new WaitForSeconds(duration);
+        rockStatus.Acceleration /= boosterMultiplier;
+    }
+
+    protected void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Booster"))
+        {
+            StartCoroutine(ApplyBooster(2.0f, 2.0f));
+        }
     }
 }

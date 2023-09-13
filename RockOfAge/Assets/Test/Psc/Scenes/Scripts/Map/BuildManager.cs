@@ -6,30 +6,30 @@ using UnityEngine;
 public class BuildManager : MonoBehaviour
 {
     public static BuildManager instance;
+    public ObstacleBase buildTarget;
 
-    //!!!!!!!!!!!!!!!!!!!!!!!!!Å×½ºÆ® ÄÚµå
-    //ÇØ´ç Á¤º¸´Â item manager¿¡ ÀúÀåµÉ ¿¹Á¤??
-    //»óÀÇ ÇØ ºÁ¾ßÇÔ
-    public TestObstacle buildTarget;
+    //!!!!!!!!!!!!!!!!!!!!!!!!!í…ŒìŠ¤íŠ¸ ì½”ë“œ
+    //í•´ë‹¹ ì •ë³´ëŠ” item managerì— ì €ì¥ë  ì˜ˆì •??
+    //ìƒì˜ í•´ ë´ì•¼í•¨
     public GameObject gridTest;
     public Material red;
 
 
-    //Ä¿¼­ÀÇ ÇöÀç ±×¸®µåÀ§Ä¡
+    //ì»¤ì„œì˜ í˜„ì¬ ê·¸ë¦¬ë“œìœ„ì¹˜
     private Vector3Int currCursorGridIndex = Vector3Int.zero;
-    //°Ç¹°ÀÌ ¹Ù¶óº¸´Â ¹æÇâ
+    //ê±´ë¬¼ì´ ë°”ë¼ë³´ëŠ” ë°©í–¥
     private BuildRotateDirection whereLookAt;
 
 
-    //ºôµå ºä¾î
-    //·»´õ·¯¸¸ °¡Áø Viewer ¿ÀºêÁ§Æ®
+    //ë¹Œë“œ ë·°ì–´
+    //ë Œë”ëŸ¬ë§Œ ê°€ì§„ Viewer ì˜¤ë¸Œì íŠ¸
     private BuildViewer viewer;
 
-    //ÇØ´ç ÁöÇüÀÇ °Ç¼³ °¡´É »óÅÂ¸¦ ÀúÀå 
+    //í•´ë‹¹ ì§€í˜•ì˜ ê±´ì„¤ ê°€ëŠ¥ ìƒíƒœë¥¼ ì €ì¥ 
     private BitArray buildState;
     private Vector3 gridOffset;
 
-    //¸Ê »çÀÌÁî 
+    //ë§µ ì‚¬ì´ì¦ˆ 
     public static readonly int MAP_SIZE_X = 256;
     public static readonly int MAP_SIZE_Z = 256;
     public static readonly int MAP_SIZE_Y = 50;
@@ -52,10 +52,10 @@ public class BuildManager : MonoBehaviour
     }
 
 
-    //ÇöÀç °ÔÀÓ ½ÎÀÌÅ¬ »óÅÂ¿¡ µû¶ó¼­ ÁøÀÔÇÑ´Ù. 
-    //Ä¿¼­ÀÇ À§Ä¡¿¡ µû¸¥ ÇöÀç grid °ªÀ» ÀçÁ¶Á¤ÇÏ°í
-    //ÇöÀç grid À§Ä¡¿¡ terrainÀÌ ÀÖÀ» °æ¿ì,
-    //ÇØ´ç ÁöÇüÀÌ °Ç¼³ °¡´ÉÇÑÁö¸¦ ÆÇ´ÜÇÑ´Ù.
+    //í˜„ì¬ ê²Œì„ ì‹¸ì´í´ ìƒíƒœì— ë”°ë¼ì„œ ì§„ì…í•œë‹¤. 
+    //ì»¤ì„œì˜ ìœ„ì¹˜ì— ë”°ë¥¸ í˜„ì¬ grid ê°’ì„ ì¬ì¡°ì •í•˜ê³ 
+    //í˜„ì¬ grid ìœ„ì¹˜ì— terrainì´ ìˆì„ ê²½ìš°,
+    //í•´ë‹¹ ì§€í˜•ì´ ê±´ì„¤ ê°€ëŠ¥í•œì§€ë¥¼ íŒë‹¨í•œë‹¤.
     void Update()
     {
         ChangeBuildTarget(buildTarget);
@@ -67,8 +67,8 @@ public class BuildManager : MonoBehaviour
         ChangeCurrGrid();
         ChangeBuildPosition();
 
-        //ÇöÀç »óÅÂ¿¡ µû¶ó¼­ ÇØ´ç ½ºÅ©¸³Æ®¸¦ Ã³¸®ÇÒÁö Á¤ÇÑ´Ù.
-        //DEFANCE ¸ğµå, ÇöÀç À§Ä¡ÀÇ ±×¸®µå¿¡ ÁöÇüÀÌ Á¸Àç, ÇöÀç °Ç¼³ °¡´ÉÇÑÁö
+        //í˜„ì¬ ìƒíƒœì— ë”°ë¼ì„œ í•´ë‹¹ ìŠ¤í¬ë¦½íŠ¸ë¥¼ ì²˜ë¦¬í• ì§€ ì •í•œë‹¤.
+        //DEFANCE ëª¨ë“œ, í˜„ì¬ ìœ„ì¹˜ì˜ ê·¸ë¦¬ë“œì— ì§€í˜•ì´ ì¡´ì¬, í˜„ì¬ ê±´ì„¤ ê°€ëŠ¥í•œì§€
         if (!IsDefance() || !IsTerrain())
         {
             viewer.HideViewer();
@@ -82,9 +82,9 @@ public class BuildManager : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(1))
             {
-                TestObstacle build = buildTarget.Build(viewer.transform.position-Vector3.up*.7f, Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0));
+                ObstacleBase build = buildTarget.Build(viewer.transform.position, Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0));
                 build.name = buildTarget.name + "_" + currCursorGridIndex.z + "_" + currCursorGridIndex.x;
-                SetBitArrays(currCursorGridIndex, buildTarget.size);
+                SetBitArrays(currCursorGridIndex, buildTarget.status.Size);
             }
 
         }
@@ -101,8 +101,8 @@ public class BuildManager : MonoBehaviour
 
     }
 
-    //¾À ½ÇÇà½Ã map °Ç¼³ °¡´É »óÅÂ¸¦ initÇÔ
-    //terrain ºñ±³½Ã tag·Î team, ±âº» °Ç¼³ ºÒ°¡ Å¸ÀÏµîÀ» ºñ±³ÇÏ´Â ºÎºĞ Ãß°¡ÇØ¾ßÇÒ°Å°°À½
+    //ì”¬ ì‹¤í–‰ì‹œ map ê±´ì„¤ ê°€ëŠ¥ ìƒíƒœë¥¼ inití•¨
+    //terrain ë¹„êµì‹œ tagë¡œ team, ê¸°ë³¸ ê±´ì„¤ ë¶ˆê°€ íƒ€ì¼ë“±ì„ ë¹„êµí•˜ëŠ” ë¶€ë¶„ ì¶”ê°€í•´ì•¼í• ê±°ê°™ìŒ
     public void InitTerrainData()
     {
         buildState.SetAll(false);
@@ -120,7 +120,7 @@ public class BuildManager : MonoBehaviour
 
                     buildState.Set((z + MAP_SIZE_Z / 2) * MAP_SIZE_Z + (x + MAP_SIZE_X / 2), true);
 
-                    ///////////////////////////////////////////////////////////Å×½ºÆ® ÄÚµå
+                    ///////////////////////////////////////////////////////////í…ŒìŠ¤íŠ¸ ì½”ë“œ
                     GameObject gameObject = Instantiate(gridTest, raycastHit.point+Vector3.up*0.02f, Quaternion.FromToRotation(-Vector3.forward, raycastHit.normal));
                     gameObject.name = gridTest.name + "_" + z + "_" + x;
                     gameObject.transform.localScale = Vector3.one*0.8f;
@@ -137,9 +137,7 @@ public class BuildManager : MonoBehaviour
             {
                 Vector3 _grid = grid - Vector3Int.right *( x) - Vector3Int.forward * (y);
                 buildState.Set((int)(_grid.z + MAP_SIZE_Z *.5f) * (int)MAP_SIZE_Z + (int)(_grid.x + MAP_SIZE_X * .5f), false);
-                Debug.Log(grid);
                 GameObject floor = GameObject.Find("GridTestCube_" + _grid.z + "_" + _grid.x);
-                Debug.Log(floor.name);
                 floor.GetComponent<MeshRenderer>().material = red;
             }
         }
@@ -147,10 +145,10 @@ public class BuildManager : MonoBehaviour
     }
 
 
-    void ChangeBuildTarget(TestObstacle target)
+    void ChangeBuildTarget(ObstacleBase target)
     {
         buildTarget = target;
-        gridOffset = new Vector3((buildTarget.size.x) % 2 * .5f, 0, (buildTarget.size.y) % 2 * .5f);
+        gridOffset = new Vector3((buildTarget.status.Size.x) % 2 * .5f, 0, (buildTarget.status.Size.y) % 2 * .5f);
         viewer.UpdateTargetChange(target);
         //gridOffset = new Vector3((int)(buildTarget.size.x + 1) % 2 * .5f, 0, (int)(buildTarget.size.y + 1) % 2 * .5f);
 
@@ -158,8 +156,8 @@ public class BuildManager : MonoBehaviour
 
     bool ChangeCurrGrid()
     {
-        //¸¶¿ì½º Ä¿¼­´Â ±âº»ÀûÀ¸·Î (ÁÂÇÏ´Ü 0,0)À» ±âÁØÀ¸·Î °è»êµÈ´Ù.
-        //±×·¸±â ¶§¹®¿¡ ¸¶¿ì½º Ä¿¼­¸¦ °¡Á®¿ÂµÚ ÀÌ¸¦ ¿ùµå ÁÂÇ¥·Î º¯È¯ÇÑ´Ù.
+        //ë§ˆìš°ìŠ¤ ì»¤ì„œëŠ” ê¸°ë³¸ì ìœ¼ë¡œ (ì¢Œí•˜ë‹¨ 0,0)ì„ ê¸°ì¤€ìœ¼ë¡œ ê³„ì‚°ëœë‹¤.
+        //ê·¸ë ‡ê¸° ë•Œë¬¸ì— ë§ˆìš°ìŠ¤ ì»¤ì„œë¥¼ ê°€ì ¸ì˜¨ë’¤ ì´ë¥¼ ì›”ë“œ ì¢Œí‘œë¡œ ë³€í™˜í•œë‹¤.
 
         Vector3 mouseWorldPos = Global_PSC.GetWorldMousePositionFromMainCamera();
 
@@ -186,20 +184,20 @@ public class BuildManager : MonoBehaviour
 
 
 
-    //grid Á¤º¸°¡ ¹Ù²ğ¶§¸¶´Ù ºÒ·¯¿Â´Ù.
-    //targetÀÇ À§Ä¡¸¦ °»½ÅÇÑ´Ù.
+    //grid ì •ë³´ê°€ ë°”ë€”ë•Œë§ˆë‹¤ ë¶ˆëŸ¬ì˜¨ë‹¤.
+    //targetì˜ ìœ„ì¹˜ë¥¼ ê°±ì‹ í•œë‹¤.
     void ChangeBuildPosition()
     {
         RaycastHit raycastHit;
         if (Physics.Raycast(currCursorGridIndex+ gridOffset + Vector3.up * MAP_SIZE_Y, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
         {
-            Vector3 newPosition = raycastHit.point + viewer.transform.up * (viewer.GetHeight() / 2);
+            Vector3 newPosition = raycastHit.point + viewer.transform.up * (viewer.gameObject.GetHeight(.1f) / 2);
             viewer.transform.position = newPosition;
         }
     }
 
-    //Æ¯Á¤Å° ´©¸¦½Ã ¹æÇâ È¸Àü ½ÃÅ²´Ù.
-    //ÀÌ Á¤º¸´Â À¯ÁöµÈ´Ù.
+    //íŠ¹ì •í‚¤ ëˆ„ë¥¼ì‹œ ë°©í–¥ íšŒì „ ì‹œí‚¨ë‹¤.
+    //ì´ ì •ë³´ëŠ” ìœ ì§€ëœë‹¤.
     void ChangeBuildRotation(int diff)
     {
         if(whereLookAt != BuildRotateDirection.LEFT && diff==1)
@@ -223,7 +221,7 @@ public class BuildManager : MonoBehaviour
         return true;
     }
 
-    //ÇöÀç ±×¸®µå À§Ä¡¿¡ °Ç¼³ °¡´ÉÇÑ ÁöÇüÀÌ Á¸ÀçÇÏ´ÂÁö Ã¼Å©
+    //í˜„ì¬ ê·¸ë¦¬ë“œ ìœ„ì¹˜ì— ê±´ì„¤ ê°€ëŠ¥í•œ ì§€í˜•ì´ ì¡´ì¬í•˜ëŠ”ì§€ ì²´í¬
     bool IsTerrain()
     {
         RaycastHit raycastHit;
@@ -235,20 +233,20 @@ public class BuildManager : MonoBehaviour
         return false;
     }
 
-    //¾ÆÀÌÅÛÀÇ limit»óÅÂ¿Í ÇØ´ç terrainÀÇ °Ç¼³ °¡´É »óÅÂ¸¦ &&ÇÑ´Ù.
+    //ì•„ì´í…œì˜ limitìƒíƒœì™€ í•´ë‹¹ terrainì˜ ê±´ì„¤ ê°€ëŠ¥ ìƒíƒœë¥¼ &&í•œë‹¤.
     bool CanBuild()
     {
-        return GetBuildEnable(currCursorGridIndex, buildTarget.size) && GetItemLimitState();
+        return GetBuildEnable(currCursorGridIndex, buildTarget.status.Size) && GetItemLimitState();
     }
 
-    //ÇöÀç °Ç¼³µÈ ¾ÆÀÌÅÛÀÇ ÃÖ´ë °Ç¼³ °³¼ö¿Í ÇöÀç °Ç¼³ °³¼ö¸¦ ºñ±³ÇÑ´Ù.
-    //true : ÇöÀç °Ç¼³ °³¼ö°¡ ÃÖ´ë °Ç¼³º¸´Ù ³·´Ù
+    //í˜„ì¬ ê±´ì„¤ëœ ì•„ì´í…œì˜ ìµœëŒ€ ê±´ì„¤ ê°œìˆ˜ì™€ í˜„ì¬ ê±´ì„¤ ê°œìˆ˜ë¥¼ ë¹„êµí•œë‹¤.
+    //true : í˜„ì¬ ê±´ì„¤ ê°œìˆ˜ê°€ ìµœëŒ€ ê±´ì„¤ë³´ë‹¤ ë‚®ë‹¤
     bool GetItemLimitState()
     {
         return true;
     }
 
-    //ÇöÀç gridÀ§Ä¡ÀÇ ÁÖº¯ À§Ä¡ÀÇ terrainÀÇ »óÅÂ¸¦ ÀüºÎ ºñ±³
+    //í˜„ì¬ gridìœ„ì¹˜ì˜ ì£¼ë³€ ìœ„ì¹˜ì˜ terrainì˜ ìƒíƒœë¥¼ ì „ë¶€ ë¹„êµ
     bool GetBuildEnable(Vector3 grid, Vector2Int buildSize)
     {
         bool result = true;

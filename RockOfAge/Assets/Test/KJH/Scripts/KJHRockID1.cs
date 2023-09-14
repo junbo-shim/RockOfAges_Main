@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class KJHRockID1 : RockBase, IHitObjectHandler
 {
+    public float gravityStrength = 100f; // 중력 세기 (기본값: 지구 중력)
 
     void Awake()
     {
@@ -13,7 +14,15 @@ public class KJHRockID1 : RockBase, IHitObjectHandler
     {
         Init(); // RockBase 클래스의 Init 메서드를 호출합니다.
     }
-
+    void FixedUpdate()
+    {
+        if (!IsGround())
+        {
+            // 중력 힘을 직접 적용
+            Vector3 gravityForce = Vector3.down * gravityStrength;
+            rRb.AddForce(gravityForce, ForceMode.Acceleration);
+        }
+    }
     void Update()
     {
         Move(); // RockBase 클래스의 Move 메서드를 호출합니다.

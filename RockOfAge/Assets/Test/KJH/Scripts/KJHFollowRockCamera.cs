@@ -13,14 +13,14 @@ public class KJHFollowRockCamera : MonoBehaviour
 
     void Start()
     {
-        cameraOffset = transform.position - target.position;
+        //cameraOffset = transform.position - target.position;
     }
 
     void Update()
     {
         mouseX += Input.GetAxis("Mouse X") * rotationSpeed;
         mouseY -= Input.GetAxis("Mouse Y") * rotationSpeed;
-        mouseY = Mathf.Clamp(mouseY, -45, 45);
+        //mouseY = Mathf.Clamp(mouseY, -180, 180);
             
         Quaternion rotation = Quaternion.Euler(mouseY, mouseX, 0);
         transform.position = target.position + rotation * cameraOffset;

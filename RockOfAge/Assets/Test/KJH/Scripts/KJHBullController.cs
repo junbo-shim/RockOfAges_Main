@@ -7,79 +7,39 @@ using System;
 public class KJHBullController : MonoBehaviour, IHitObjectHandler
 {
     public float detectionRange = default;
-    public float chargeSpeed = 10.0f;
+    public float chargeSpeed = default;
+    public float health = 100f; // ì²´ë ¥ ë³€ìˆ˜
+    public float attackPower = default; // ê³µê²©ë ¥ ë³€ìˆ˜
+    public float chargeCool = default;
+    public float walkSpeed = default;
     public LayerMask Rock;
 
-    public float health = 100f; // Ã¼·Â º¯¼ö
-    public float attackPower = default; // °ø°İ·Â º¯¼ö
-    public float chargeCool = 5.0f;
-    public float walkSpeed = 3.0f;
-
-    private Vector3 lastRockPosition; // µ¹ÀÇ ¸¶Áö¸· À§Ä¡¸¦ ÀúÀåÇÒ º¯¼ö Ãß°¡
-    private bool hasCharged = false; // ¸ğ·çÈ²¼Ò°¡ µ¹ÁøÇß´ÂÁö ¿©ºÎ¸¦ ³ªÅ¸³»´Â º¯¼ö Ãß°¡
+    bool isDying = false;
+    private int chargeCount = 0;
+    private int rockCollisionCount = 0;// ëŒê³¼ ì¶©ëŒí•œ íšŸìˆ˜ë¥¼ ì¶”ì í•˜ëŠ” ë³€ìˆ˜ ì¶”ê°€
     private float lastChargeTime = 0f;
-    private Rigidbody bullRigidbody;
+    private Vector3 lastRockPosition; // ëŒì˜ ë§ˆì§€ë§‰ ìœ„ì¹˜ë¥¼ ì €ì¥í•  ë³€ìˆ˜ ì¶”ê°€
+    private Vector3 initialBullPosition;
+    private bool hasCharged = false; // ëª¨ë£¨í™©ì†Œê°€ ëŒì§„í–ˆëŠ”ì§€ ì—¬ë¶€ë¥¼ ë‚˜íƒ€ë‚´ëŠ” ë³€ìˆ˜ ì¶”ê°€
     private bool isCharging = false;
+    private bool isReturning = false;
+    private Rigidbody bullRigidbody;
     private Transform targetRock;
     private Animator animator;
-    private int chargeCount = 0;
-    private Vector3 initialBullPosition;
-    private bool isReturning = false;
 
-    private void Start() // Start ¸Ş¼­µå¸¦ ¼±¾ğÇÕ´Ï´Ù.
+    private void Start() // Start ë©”ì„œë“œë¥¼ ì„ ì–¸í•©ë‹ˆë‹¤.
     {
-        animator = GetComponent<Animator>(); // ¾Ö´Ï¸ŞÀÌÅÍ ÄÄÆ÷³ÍÆ®¸¦ °¡Á®¿É´Ï´Ù.
-        bullRigidbody = GetComponent<Rigidbody>(); // ¸®Áöµå¹Ùµğ ÄÄÆ÷³ÍÆ®¸¦ °¡Á®¿É´Ï´Ù.
+        animator = GetComponent<Animator>(); // ì• ë‹ˆë©”ì´í„° ì»´í¬ë„ŒíŠ¸ë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
+        bullRigidbody = GetComponent<Rigidbody>(); // ë¦¬ì§€ë“œë°”ë”” ì»´í¬ë„ŒíŠ¸ë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
         initialBullPosition = transform.position;
     }
 
-
-    //private void Update()
-    //{
-    //    if (!isCharging)
-    //    {
-    //        lastChargeTime += Time.deltaTime;
-    //        if (lastChargeTime >= chargeCool)
-    //        {
-    //            DetectRock();
-    //            if (isCharging)
-    //            {
-    //                lastChargeTime = 0f;
-    //            }
-    //        }
-    //    }
-    //    else
-    //    {
-    //        ChargeTowardsRock();
-
-    //        float distanceToLastRockPosition = Vector3.Distance(transform.position, lastRockPosition);
-
-    //        // µ¹Áø ÁßÀÏ ¶§ µ¹ÀÇ ¸¶Áö¸· ÁÂÇ¥¿¡ µµÂøÇß´ÂÁö È®ÀÎÇÕ´Ï´Ù.
-    //        if (distanceToLastRockPosition <= 10.0f)
-    //        {
-    //            Debug.LogFormat("????");
-    //            ResetCharge();
-    //        }
-    //    }
-    //    // ¸Ó¸®°¡ µ¹À» ¹Ù¶óº¸°Ô ÇÕ´Ï´Ù.
-    //    if (targetRock != null)
-    //    {
-    //        if (isCharging)
-    //        {
-    //            // µ¹Áø ÁßÀÏ ¶§´Â µ¹Áø ¹æÇâÀ» ¹Ù¶óº¾´Ï´Ù.
-    //            Vector3 chargeDirection = (lastRockPosition - transform.position).normalized;
-    //            chargeDirection.y = 0;
-    //            transform.rotation = Quaternion.LookRotation(chargeDirection);
-    //        }
-    //        else
-    //        {
-    //            // µ¹Áø ÁßÀÌ ¾Æ´Ò ¶§´Â µ¹À» ¹Ù¶óº¾´Ï´Ù.
-    //            transform.LookAt(new Vector3(targetRock.transform.position.x, transform.position.y, targetRock.transform.position.z));
-    //        }
-    //    }
-    //}
     private void Update()
     {
+        if(isDying == true)
+        {
+            return;
+        }
         animator.SetBool("isCharging", isCharging);
         animator.SetBool("isReturning", isReturning);
 
@@ -91,7 +51,7 @@ public class KJHBullController : MonoBehaviour, IHitObjectHandler
                 DetectRock();
                 if (isCharging)
                 {
-                    Debug.LogFormat("°¨ÁöÇß³ª?");
+                    Debug.LogFormat("ê°ì§€í–ˆë‚˜?");
 
                     lastChargeTime = 0f;
                 }
@@ -121,34 +81,24 @@ public class KJHBullController : MonoBehaviour, IHitObjectHandler
                 isReturning = false;
             }
         }
-        // ¸Ó¸®°¡ µ¹À» ¹Ù¶óº¸°Ô ÇÕ´Ï´Ù.
+        // ë¨¸ë¦¬ê°€ ëŒì„ ë°”ë¼ë³´ê²Œ í•©ë‹ˆë‹¤.
         if (targetRock != null && !isCharging && !isReturning)
         {
             transform.LookAt(new Vector3(targetRock.transform.position.x, transform.position.y, targetRock.transform.position.z));
         }
     }
-    public void TakeDamage(float damage) // µ¥¹ÌÁö¸¦ ¹Ş´Â ¸Ş¼­µå¸¦ ¼±¾ğÇÕ´Ï´Ù.
+    public void TakeDamage(float damage) // ë°ë¯¸ì§€ë¥¼ ë°›ëŠ” ë©”ì„œë“œë¥¼ ì„ ì–¸í•©ë‹ˆë‹¤.
     {
-        health -= damage; // Ã¼·ÂÀ» °¨¼Ò½ÃÅµ´Ï´Ù.
-        if (health <= 0) // Ã¼·ÂÀÌ 0 ÀÌÇÏÀÏ °æ¿ì
+        health -= damage; // ì²´ë ¥ì„ ê°ì†Œì‹œí‚µë‹ˆë‹¤.
+        if (health <= 0) // ì²´ë ¥ì´ 0 ì´í•˜ì¼ ê²½ìš°
         {
-            Destroy(gameObject); // °ÔÀÓ ¿ÀºêÁ§Æ®¸¦ Á¦°ÅÇÕ´Ï´Ù.
+            Destroy(gameObject); // ê²Œì„ ì˜¤ë¸Œì íŠ¸ë¥¼ ì œê±°í•©ë‹ˆë‹¤.
         }
     }
-    //private void DetectRock() // µ¹À» Å½ÁöÇÏ´Â ¸Ş¼­µå¸¦ ¼±¾ğÇÕ´Ï´Ù.
-    //{
-    //    Collider[] rocks = Physics.OverlapSphere(transform.position, detectionRange, Rock);
-    //    if (rocks.Length > 0 && rocks[0] != null)
-    //    {
-    //        targetRock = rocks[0].transform;
-    //        lastRockPosition = targetRock.position; // µ¹ÀÇ ÇöÀç À§Ä¡¸¦ ÀúÀå
-    //        isCharging = true; // µ¹Áø »óÅÂ¸¦ true·Î ¼³Á¤ÇÕ´Ï´Ù.
-    //    }
-    //}
 
     private void DetectRock()
     {
-        float coneAngle = 45f; // ¿ø»ÔÀÇ °¢µµ¸¦ ¼³Á¤ÇÕ´Ï´Ù. ÇÊ¿ä¿¡ µû¶ó Á¶Á¤ÇÏ¼¼¿ä.
+        float coneAngle = 45f; // ì›ë¿”ì˜ ê°ë„ë¥¼ ì„¤ì •í•©ë‹ˆë‹¤. í•„ìš”ì— ë”°ë¼ ì¡°ì •í•˜ì„¸ìš”.
         float halfConeAngle = coneAngle * 0.5f;
 
         RaycastHit[] hits = Physics.SphereCastAll(transform.position, detectionRange, transform.forward, detectionRange, Rock);
@@ -174,13 +124,13 @@ public class KJHBullController : MonoBehaviour, IHitObjectHandler
             isCharging = true;
         }
     }
-    private void ChargeTowardsRock() // µ¹À» ÇâÇØ µ¹ÁøÇÏ´Â ¸Ş¼­µå¸¦ ¼±¾ğÇÕ´Ï´Ù.
+    private void ChargeTowardsRock() // ëŒì„ í–¥í•´ ëŒì§„í•˜ëŠ” ë©”ì„œë“œë¥¼ ì„ ì–¸í•©ë‹ˆë‹¤.
     {
         Vector3 direction = (lastRockPosition - transform.position).normalized;
-        direction.y = 0; // yÃà °ªÀ» 0À¸·Î ¼³Á¤ÇÕ´Ï´Ù.r
+        direction.y = 0; // yì¶• ê°’ì„ 0ìœ¼ë¡œ ì„¤ì •í•©ë‹ˆë‹¤.
         float distanceToTarget = Vector3.Distance(lastRockPosition, transform.position);
         bullRigidbody.velocity = direction * chargeSpeed;
-        // È²¼Ò°¡ µ¹À» ¹Ù¶óº¸°Ô ÇÕ´Ï´Ù.
+        // í™©ì†Œê°€ ëŒì„ ë°”ë¼ë³´ê²Œ í•©ë‹ˆë‹¤.
         transform.rotation = Quaternion.LookRotation(direction);
     }
 
@@ -199,7 +149,7 @@ public class KJHBullController : MonoBehaviour, IHitObjectHandler
 
         if (rock != null && chargeCount < 1)
         {
-       Debug.LogFormat("Ãæµ¹Çß³ª?");
+       Debug.LogFormat("ì¶©ëŒí–ˆë‚˜?");
 
             hasCharged = true;
             chargeCount++;
@@ -228,6 +178,16 @@ public class KJHBullController : MonoBehaviour, IHitObjectHandler
             }
             ResetCharge();
         }
+        // ëª¨ë£¨í™©ì†Œê°€ ëŒê³¼ ì¶©ëŒí–ˆì„ ë•Œ ì¶©ëŒ íšŸìˆ˜ë¥¼ ì¦ê°€ì‹œí‚¤ê³ , ì¶©ëŒ íšŸìˆ˜ê°€ 2 ì´ìƒì´ë©´ ì£½ëŠ” ì½”ë“œ ì¶”ê°€
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
+        {
+            rockCollisionCount++;
+            if (rockCollisionCount >= 2)
+            {
+                isDying = true;
+                StartCoroutine(Die()); // í™©ì†Œê°€ ì£½ì„ ë•Œ Die ì½”ë£¨í‹´ì„ ì‹¤í–‰í•©ë‹ˆë‹¤.
+            }
+        }
     }
 
     private void ReturnToInitialPositionBackwards()
@@ -243,7 +203,27 @@ public class KJHBullController : MonoBehaviour, IHitObjectHandler
             isReturning = false;
         }
     }
+    private IEnumerator Die()
+    {
+        animator.SetBool("isDying", true); // ì• ë‹ˆë©”ì´í„°ì˜ "isDying" íŒŒë¼ë¯¸í„°ë¥¼ trueë¡œ ì„¤ì •í•©ë‹ˆë‹¤.
 
+        // í¬ì§€ì…˜ ê³ ì •
+        Rigidbody bullRigidbody = GetComponent<Rigidbody>();
+        if(bullRigidbody != null)
+        {
+            bullRigidbody.velocity = Vector3.zero;
+        }
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length); // ì• ë‹ˆë©”ì´ì…˜ í´ë¦½ì˜ ê¸¸ì´ë§Œí¼ ëŒ€ê¸°í•©ë‹ˆë‹¤.
+                                                                                         // í™©ì†Œì˜ í¬ì§€ì…˜ì„ ê³ ì •í•©ë‹ˆë‹¤.
+        if (bullRigidbody != null)
+        {
+            bullRigidbody.isKinematic = true; // í™©ì†Œì˜ Rigidbodyë¥¼ isKinematic ìƒíƒœë¡œ ë³€ê²½í•˜ì—¬ í¬ì§€ì…˜ì„ ê³ ì •í•©ë‹ˆë‹¤.
+        }
+        // ì• ë‹ˆë©”ì´ì…˜ì´ ëë‚œ ìƒíƒœë¡œ 3ì´ˆ ëŒ€ê¸°
+        animator.speed = 0f;
+        yield return new WaitForSeconds(3f);
+        Destroy(gameObject); // ì• ë‹ˆë©”ì´ì…˜ì´ ëë‚œ í›„ì— ê²Œì„ ì˜¤ë¸Œì íŠ¸ë¥¼ íŒŒê´´í•©ë‹ˆë‹¤.
+    }
     public void Hit(int damage)
     {
         throw new NotImplementedException();
@@ -254,3 +234,5 @@ public class KJHBullController : MonoBehaviour, IHitObjectHandler
         throw new NotImplementedException();
     }
 }
+
+

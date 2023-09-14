@@ -15,7 +15,7 @@ MonoBehaviour:
   TitleId: E328D
   DeveloperSecretKey: OU94M9EJ4DTUR5BQJKKFQ9GT4G4C6UXOJDG8RSFBNZ49K6FEYY
   ProductionEnvironmentUrl: 
-  RequestType: 0
+  RequestType: 2
   DisableDeviceInfo: 0
   DisableFocusTimeCollection: 0
   RequestTimeout: 2000

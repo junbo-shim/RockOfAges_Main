@@ -1,13 +1,16 @@
-using PlayFab.GroupsModels;
 using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
 using UnityEngine;
 
 public enum UserState
 { 
-    UnitSelect = 0, RockSelect = 1, Defence = 2, WaitForRock = 3, Attack = 4, Ending = 5 
+    UNITSELECT = 0 , DEFENCE = 1, ATTACK = 2, ENDING = 3 
 }
+
+public enum RockState 
+{ 
+    ROCKSELECT = 0, ROCKCREATING = 1, ROCKCREATED = 2
+}
+
 
 public class CycleManager : MonoBehaviour
 {
@@ -15,21 +18,21 @@ public class CycleManager : MonoBehaviour
 
     #region 변수
     public int userState;
+    public int rockState;
     // 공격에서 공이 선택됨 bool
     public bool attackRockSelected = false;
-    // 공 생성 시간이 다 경과됨을 감지하는 bool
-    public bool isRockCreated = false;
     ////! 서버 team1 team2 체력
     //public float team1Hp = 1000f;
     //public float team2Hp = 1000f;
     ////! 서버 player gold
-    //public int gold = 1000; 
+    //public int gold = 1000;
     #endregion
 
     public void Awake()
     {
         cycleManager = this;
-        userState = (int)UserState.UnitSelect;
+        userState = (int)UserState.UNITSELECT;
+        rockState = (int)RockState.ROCKSELECT;
     }
 
     private void Update()
@@ -61,7 +64,7 @@ public class CycleManager : MonoBehaviour
     // 공하나 이상 선택 & 유저 enter -> defence
     public void UpdateSelectionCycle()
     {
-        if (userState == (int)UserState.UnitSelect)
+        if (userState == (int)UserState.UNITSELECT)
         {
             // 공 하나 이상 선택시 문자출력 설정
             if (CheckUserBall() == true)
@@ -80,7 +83,7 @@ public class CycleManager : MonoBehaviour
                     UIManager.uiManager.InstantiateRockImgForAttack();
                     UIManager.uiManager.InstantiateUnitImgForDenfence();
                     UIManager.uiManager.ShutDownUserSelectUI();
-                    userState = (int)UserState.RockSelect;
+                    userState = (int)UserState.DEFENCE;
                     UIManager.uiManager.TurnOnCommonUI();
                 }
                 else { return; }
@@ -109,7 +112,7 @@ public class CycleManager : MonoBehaviour
     public void UpdateCommonUICycle()
     {
         // 유닛 선택단계와 엔딩 단계가 아니라면 항상 출력
-        if (userState != (int)UserState.UnitSelect || userState != (int)UserState.Ending)
+        if (userState != (int)UserState.UNITSELECT || userState != (int)UserState.ENDING)
         { 
               UIManager.uiManager.GetRotationKey();
         }
@@ -122,9 +125,9 @@ public class CycleManager : MonoBehaviour
     // 공격 싸이클에서 방어 싸이클로 전환하는 함수
     public void ChangeCycleAttackToDefence()
     {
-        if (userState == (int)UserState.Attack)
+        if (userState == (int)UserState.ATTACK)
         {
-            userState = (int)UserState.Defence;
+            userState = (int)UserState.DEFENCE;
         }
         else { Debug.Log("GAMELOGIC ERROR"); }
     }
@@ -136,16 +139,21 @@ public class CycleManager : MonoBehaviour
     //{ UpdateDefenceCycle()
     public void UpdateDefenceCycle()
     {
-        // 돌 선택이 되었을 때
-        if (userState == (int)UserState.Defence)
+        int userRock = ItemManager.itemManager.userRockChoosed[0];
+        if (userRock != 0)
         {
-            userState = (int)UserState.WaitForRock;
-            if (userState == (int)UserState.WaitForRock)
+            if (userState == (int)UserState.DEFENCE)
             {
-                StartCoroutine(WaitForRock());
+                if (rockState == (int)RockState.ROCKSELECT)
+                {
+                    StartCoroutine(WaitForRock());
+                }
+                else if (rockState == (int)RockState.ROCKCREATED)
+                {
+                    ChangeStateDefenceToAttack();
+                }
+                else { return; }
             }
-
-
         }
     }
     //} UpdateDefenceCycle()
@@ -153,25 +161,24 @@ public class CycleManager : MonoBehaviour
     public void ChangeStateDefenceToAttack()
     {
         // 소환시간초과시 C 누르면
-        if (isRockCreated == true && Input.GetKey(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.C))
         {
-            Debug.Log("공격으로 전환");
-            // 돌 소환하고 카메라 쫓게 해주고
-            userState = (int)UserState.Attack;
-            isRockCreated = false;
+            ResourceManager.Instance.InstatiateUserSelectedRock();
+            userState = (int)UserState.ATTACK;
+            rockState = (int)RockState.ROCKSELECT;
+            ItemManager.itemManager.userRockChoosed[0] = 0;
         }
     }
 
 
     IEnumerator WaitForRock()
     {
+        rockState = (int)RockState.ROCKCREATING;
         float coolDown = default;
-        ResourceManager.Instance.GetRockCoolDownFromId(ItemManager.itemManager.userRockChoosed[0],
-            ResourceManager.Instance.GetGameObjectByID(ItemManager.itemManager.userRockChoosed[0]), out coolDown);
-        Debug.LogFormat("선택된 돌 : {0}",ItemManager.itemManager.userRockChoosed[0]);
-        Debug.LogFormat("GameObject Name : {0}", ResourceManager.Instance.GetGameObjectByID(ItemManager.itemManager.userRockChoosed[0]).name);
+        ResourceManager.Instance.GetRockCoolDownFromId(ItemManager.itemManager.userRockChoosed[0], out coolDown);
         yield return new WaitForSeconds(coolDown);
-        isRockCreated = true;
+        rockState = (int)RockState.ROCKCREATED;
+
     }
 
 
@@ -182,7 +189,7 @@ public class CycleManager : MonoBehaviour
     //{ UpdateGameEndCycle()
     public void UpdateGameEndCycle()
     {
-        if (userState == (int)UserState.Ending)
+        if (userState == (int)UserState.ENDING)
         { 
         
         }

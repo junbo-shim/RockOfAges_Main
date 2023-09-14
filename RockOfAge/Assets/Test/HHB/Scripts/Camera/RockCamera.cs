@@ -13,6 +13,7 @@ public class RockCamera : MonoBehaviour
 
     public void MoveCameraToTopView()
     {
+        // 죽으면 바꾸기
         if (Input.GetKey(KeyCode.Escape))
         {
             Debug.Log("rock -> top");

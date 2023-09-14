@@ -169,7 +169,7 @@ public class BuildManager : MonoBehaviour
 
 
     //obstacle, 즉 장애물이 변경될시 불러온다.
-    void ChangeBuildTarget(ObstacleBase target)
+    public void ChangeBuildTarget(ObstacleBase target)
     {
         buildTarget = target;
 

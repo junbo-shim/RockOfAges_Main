@@ -3947,7 +3947,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1015838840}
   m_Layer: 0
-  m_Name: Team1(Clone)
+  m_Name: Team2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10879,7 +10879,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: db7fb3106814eae45932b6194abd1333, type: 2}
-  colliderObject: {fileID: 8305973622018715215}
+  colliderParts: {fileID: 8305973622018715215}
 --- !u!54 &3058730100843881686
 Rigidbody:
   m_ObjectHideFlags: 0

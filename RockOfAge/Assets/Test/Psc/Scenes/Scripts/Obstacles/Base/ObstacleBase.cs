@@ -4,11 +4,20 @@ using UnityEngine;
 
 public class ObstacleBase : MonoBehaviour
 {
+    //obstacle의 베이스
+
+    //스테이터스
     public ObstacleStatus status;
+
+    //기본 데이터
     protected MeshFilter obstacleMeshFilter;
     protected Rigidbody obstacleRigidBody;
     protected Animator obstacleAnimator;
 
+    //타겟
+    protected GameObject target;
+
+    //맵에 Build
     public ObstacleBase Build(Vector3 position, Quaternion rotate)
     {
         ObstacleBase obstacle = Instantiate(this, position, rotate);
@@ -17,6 +26,7 @@ public class ObstacleBase : MonoBehaviour
         return obstacle;
     }
 
+    //초기화
     protected virtual void Init()
     {
         status = new ObstacleStatus(status);
@@ -25,9 +35,15 @@ public class ObstacleBase : MonoBehaviour
         obstacleAnimator = GetComponent<Animator>();
     }
 
-    protected virtual void SearchPlayer(){}
+    //타겟 서치
+    //아마 상위에 없어도 될거로 추정됨
+    protected virtual void SearchTarget(){}
 
-
-
+    //죽음
     protected virtual void Dead(){}
+
+    //공격 활성화
+    protected virtual void ActiveAttack() { }
+    protected virtual void EndAttack(){ }
+    
 }

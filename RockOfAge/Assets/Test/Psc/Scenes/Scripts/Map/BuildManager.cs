@@ -64,7 +64,12 @@ public class BuildManager : MonoBehaviour
             return;
         }
 
-        ChangeCurrGrid();
+        //좌표가 변하지 않았다면 다음의 계산들을 실행하지않는다. 
+        if (!ChangeCurrGrid())
+        {
+            return;
+        }
+
         ChangeBuildPosition();
 
         //현재 상태에 따라서 해당 스크립트를 처리할지 정한다.
@@ -105,6 +110,7 @@ public class BuildManager : MonoBehaviour
     //terrain 비교시 tag로 team, 기본 건설 불가 타일등을 비교하는 부분 추가해야할거같음
     public void InitTerrainData()
     {
+        //모든 좌표를 검사한다.
         buildState.SetAll(false);
         for (int z = -MAP_SIZE_Z / 2; z < MAP_SIZE_Z / 2; z++)
         {
@@ -113,11 +119,13 @@ public class BuildManager : MonoBehaviour
                 RaycastHit raycastHit;
                 if (Physics.Raycast(new Vector3(x, MAP_SIZE_Y, z) + (Vector3.one - Vector3.up)*.5f, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
                 {
+                    //건설 불가 타일 검사
                     if (raycastHit.collider.CompareTag("Block"))
                     {
                         continue;
                     }
 
+                    //건설 불가 타일 검사 통과시 
                     buildState.Set((z + MAP_SIZE_Z / 2) * MAP_SIZE_Z + (x + MAP_SIZE_X / 2), true);
 
                     ///////////////////////////////////////////////////////////테스트 코드
@@ -129,31 +137,55 @@ public class BuildManager : MonoBehaviour
             }
         }
     }
+
+    //size만큼의 건설 가능 데이터를 변경함
     void SetBitArrays(Vector3 grid, Vector2Int buildSize)
     {
+        //짝수 크기와 홀수 크기마다 맵핑되는 그리드 영역이 달라지기 때문에 적당한 계산 값을 도출해냈음
+        //크기 3 일 경우
+        //1.5 ~ -1.5 -> 1 ~ -1
+
+        //크기가 2 일 경우
+        //1 ~ -1 -> 1 ~ 0
         for (int y = (int)(buildSize.y * .5f); y >-(buildSize.y * .5f); y--)
         {
             for (int x = (int)(buildSize.x * .5f); x >-(buildSize.x * .5f); x--)                                                                                                                                                                                       
             {
-                Vector3 _grid = grid - Vector3Int.right *( x) - Vector3Int.forward * (y);
+                //입력된 그리드를 기반으로 그리드 위치 변경
+                Vector3 _grid = grid - Vector3Int.right * x - Vector3Int.forward * y;
+
+                //건설 가능 데이터 변경
                 buildState.Set((int)(_grid.z + MAP_SIZE_Z *.5f) * (int)MAP_SIZE_Z + (int)(_grid.x + MAP_SIZE_X * .5f), false);
+                
+                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Test 코드
+                //gameobject에 접근
                 GameObject floor = GameObject.Find("GridTestCube_" + _grid.z + "_" + _grid.x);
                 floor.GetComponent<MeshRenderer>().material = red;
+                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
         }
 
     }
 
 
+    //obstacle, 즉 장애물이 변경될시 불러온다.
     void ChangeBuildTarget(ObstacleBase target)
     {
         buildTarget = target;
+
+        //맵핑되는 그리드의 좌표를 변경하기 위해 offset 설정
+        //짝수
+        //0, 0
+        //홀수
+        //0.5, 0.5
         gridOffset = new Vector3((buildTarget.status.Size.x) % 2 * .5f, 0, (buildTarget.status.Size.y) % 2 * .5f);
         viewer.UpdateTargetChange(target);
         //gridOffset = new Vector3((int)(buildTarget.size.x + 1) % 2 * .5f, 0, (int)(buildTarget.size.y + 1) % 2 * .5f);
 
     }
 
+
+    //마우스가 이동할때마다 불러온다.
     bool ChangeCurrGrid()
     {
         //마우스 커서는 기본적으로 (좌하단 0,0)을 기준으로 계산된다.
@@ -163,17 +195,19 @@ public class BuildManager : MonoBehaviour
 
         Vector3Int _currCursorGridIndex;
 
+        //짝수인지 홀수인지에 따라서 맵핑되는 그리드 좌표 달라짐.
         if(gridOffset.x == .5f)
         {
-
+            //홀수
             _currCursorGridIndex = new Vector3Int(Mathf.FloorToInt(mouseWorldPos.x), 0, Mathf.FloorToInt(mouseWorldPos.z));
         }
         else
         {
+            //짝수
             _currCursorGridIndex = new Vector3Int(Mathf.RoundToInt(mouseWorldPos.x), 0, Mathf.RoundToInt(mouseWorldPos.z));
         }
 
-
+        //커서가 이전과 다를 경우 데이터를 갱신
         if (currCursorGridIndex != _currCursorGridIndex)
         {
             currCursorGridIndex = _currCursorGridIndex;
@@ -185,7 +219,7 @@ public class BuildManager : MonoBehaviour
 
 
     //grid 정보가 바뀔때마다 불러온다.
-    //target의 위치를 갱신한다.
+    //viewer 위치를 갱신한다.
     void ChangeBuildPosition()
     {
         RaycastHit raycastHit;
@@ -215,7 +249,7 @@ public class BuildManager : MonoBehaviour
         viewer.transform.localEulerAngles = Vector3.up * ONCE_ROTATE_EULER_ANGLE * (int)whereLookAt;
     }
 
-
+    //모드 참조
     bool IsDefance()
     {
         return true;
@@ -261,6 +295,8 @@ public class BuildManager : MonoBehaviour
         }
         return result;
     }
+
+    //그리드 좌표에 따라 건설 가능 데이터를 가져오는 메서드
     bool GetBuildEnable(Vector3 grid)
     {
          return buildState.Get((int)((grid.z + MAP_SIZE_Z / 2) * MAP_SIZE_Z + (grid.x + MAP_SIZE_X / 2)));

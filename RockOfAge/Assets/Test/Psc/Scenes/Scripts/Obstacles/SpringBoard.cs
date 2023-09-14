@@ -6,7 +6,7 @@ public class SpringBoard : HoldObstacleBase, IHitObjectHandler
 {
 
     [SerializeField]
-    private GameObject colliderObject;
+    private GameObject colliderParts;
     private bool isAttacked = false;
 
 
@@ -20,8 +20,7 @@ public class SpringBoard : HoldObstacleBase, IHitObjectHandler
             }
             else
             {
-                Vector3 eulerAngle = colliderObject.transform.localEulerAngles - Vector3.right*30;
-                collision.gameObject.GetComponent<Rigidbody>().AddForce(eulerAngle.normalized * 1000f, ForceMode.Acceleration);
+                Push(collision);
             }
         }
     }
@@ -51,11 +50,15 @@ public class SpringBoard : HoldObstacleBase, IHitObjectHandler
             obstacleAnimator.SetTrigger("Active");
         }
     }
+    protected override void EndAttack()
+    {
+        obstacleAnimator.SetBool("Idle", true);
+    }
 
     public void Push(Collision collision)
     {
-        Vector3 eulerAngle = colliderObject.transform.localEulerAngles - Vector3.right * 20 + Vector3.up * 40;
-        collision.gameObject.GetComponent<Rigidbody>().AddForce(eulerAngle.normalized * 5000f, ForceMode.Acceleration);
+        Vector3 eulerAngle = colliderParts.transform.localEulerAngles - Vector3.right * 20 + Vector3.up * 40;
+        collision.gameObject.GetComponent<Rigidbody>().AddForce(eulerAngle.normalized * 1000f, ForceMode.Acceleration);
     }
 
     public void Hit(int damage)

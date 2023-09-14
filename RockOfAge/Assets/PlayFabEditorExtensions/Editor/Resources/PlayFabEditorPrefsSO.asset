@@ -16,9 +16,9 @@ MonoBehaviour:
   DevAccountToken: 
   AadAuthorization: 
   SelectedStudio: 
-  SdkPath: Assets/PlayFabSDK
+  SdkPath: 
   EdExPath: 
   LocalCloudScriptPath: 
   PanelIsShown: 0
-  curMainMenuIdx: 2
+  curMainMenuIdx: 0
   curSubMenuIdx: 0

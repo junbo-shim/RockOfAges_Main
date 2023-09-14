@@ -76,17 +76,24 @@ public partial class UIManager : MonoBehaviour
             creatButton.id = ItemManager.itemManager.unitSelected[n];
 
             TextMeshProUGUI[] textElements = unitImg.GetComponentsInChildren<TextMeshProUGUI>();
-            foreach (var text in textElements)
-            {
-                if (text.name == "GoldTxt")
-                { 
-                    text.text = "999";
-                }
-                if (text.name == "UnitCountTxt")
-                {
-                    text.text = 10+ "/" +30;
-                }
-            }
+
+            // scriptable Object가 달린게 없어서 실험 불가
+            //float gold;
+            //int buildLimit;
+            //ResourceManager.Instance.GetUnitGoldAndBuildLimitFromID(creatButton.id, 
+            //    ResourceManager.Instance.GetGameObjectByID(creatButton.id), out gold, out buildLimit);
+
+            //foreach (var text in textElements)
+            //{
+            //    if (text.name == "GoldTxt")
+            //    { 
+            //        text.text = gold.ToString();
+            //    }
+            //    if (text.name == "UnitCountTxt")
+            //    {
+            //        text.text = 0+ "/" + buildLimit.ToString();
+            //    }
+            //}
         }
     }
     //} InstantiateUnitImgForDenfence()

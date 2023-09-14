@@ -6,23 +6,23 @@ using UnityEngine;
 
 public enum UserState
 { 
-    UnitSelect = 0, RockSelect = 1, Defence = 2, Attack = 3, Ending = 4 
+    UnitSelect = 0, RockSelect = 1, Defence = 2, WaitForRock = 3, Attack = 4, Ending = 5 
 }
 
 public class CycleManager : MonoBehaviour
 {
     public static CycleManager cycleManager;
 
-    #region º¯¼ö
+    #region ë³€ìˆ˜
     public int userState;
-    // °ø°İ¿¡¼­ °øÀÌ ¼±ÅÃµÊ bool
+    // ê³µê²©ì—ì„œ ê³µì´ ì„ íƒë¨ bool
     public bool attackRockSelected = false;
-    // °ø »ı¼º ½Ã°£ÀÌ ´Ù °æ°úµÊÀ» °¨ÁöÇÏ´Â bool
+    // ê³µ ìƒì„± ì‹œê°„ì´ ë‹¤ ê²½ê³¼ë¨ì„ ê°ì§€í•˜ëŠ” bool
     public bool isRockCreated = false;
-    ////! ¼­¹ö team1 team2 Ã¼·Â
+    ////! ì„œë²„ team1 team2 ì²´ë ¥
     //public float team1Hp = 1000f;
     //public float team2Hp = 1000f;
-    ////! ¼­¹ö player gold
+    ////! ì„œë²„ player gold
     //public int gold = 1000; 
     #endregion
 
@@ -43,9 +43,10 @@ public class CycleManager : MonoBehaviour
     {
         UpdateSelectionCycle();
         UpdateCommonUICycle();
-        // µ¹ ¼±ÅÃ ÆÇº°
+        // ëŒ ì„ íƒ íŒë³„
 
-        //UpdateDefenceCycle();
+        UpdateDefenceCycle();
+        ChangeStateDefenceToAttack();
 
         //UpdateGameEndCycle();
 
@@ -56,22 +57,22 @@ public class CycleManager : MonoBehaviour
 
     #region SelectCycle
     //{ UpdateSelectionCycle()
-    // ¼±ÅÃ »çÀÌÅ¬
-    // °øÇÏ³ª ÀÌ»ó ¼±ÅÃ & À¯Àú enter -> defence
+    // ì„ íƒ ì‚¬ì´í´
+    // ê³µí•˜ë‚˜ ì´ìƒ ì„ íƒ & ìœ ì € enter -> defence
     public void UpdateSelectionCycle()
     {
         if (userState == (int)UserState.UnitSelect)
         {
-            // °ø ÇÏ³ª ÀÌ»ó ¼±ÅÃ½Ã ¹®ÀÚÃâ·Â ¼³Á¤
+            // ê³µ í•˜ë‚˜ ì´ìƒ ì„ íƒì‹œ ë¬¸ìì¶œë ¥ ì„¤ì •
             if (CheckUserBall() == true)
             {
                 UIManager.uiManager.PrintReadyText();
             }
             else { UIManager.uiManager.PrintNotReadyText(); }
-            // ¿£ÅÍ´©¸¦½Ã
+            // ì—”í„°ëˆ„ë¥¼ì‹œ
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
             {
-                // °ËÁõ ÈÄ ´ÙÀ½ »çÀÌÅ¬·Î
+                // ê²€ì¦ í›„ ë‹¤ìŒ ì‚¬ì´í´ë¡œ
                 if (CheckUserBall() == true)
                 {
                     UIManager.uiManager.PrintRockSelectUI();
@@ -89,7 +90,7 @@ public class CycleManager : MonoBehaviour
     //} UpdateSelectionCycle()
 
     //{ CheckUserBall()
-    // °øÀÌ ÇÏ³ª ÀÌ»ó ¼±ÅÃµÇ¾ú´ÂÁö °ËÁõÇÏ´Â ÇÔ¼ö
+    // ê³µì´ í•˜ë‚˜ ì´ìƒ ì„ íƒë˜ì—ˆëŠ”ì§€ ê²€ì¦í•˜ëŠ” í•¨ìˆ˜
     public bool CheckUserBall()
     {
         if (ItemManager.itemManager.rockSelected.Count >= 1)
@@ -104,10 +105,10 @@ public class CycleManager : MonoBehaviour
 
     #region CommonUICycle
     //{ UpdateDefenceCycle()
-    // °ÔÀÓÁ¾·á½Ã±îÁö ÄÑÁ® ÀÖ´Â UI
+    // ê²Œì„ì¢…ë£Œì‹œê¹Œì§€ ì¼œì ¸ ìˆëŠ” UI
     public void UpdateCommonUICycle()
     {
-        // À¯´Ö ¼±ÅÃ´Ü°è¿Í ¿£µù ´Ü°è°¡ ¾Æ´Ï¶ó¸é Ç×»ó Ãâ·Â
+        // ìœ ë‹› ì„ íƒë‹¨ê³„ì™€ ì—”ë”© ë‹¨ê³„ê°€ ì•„ë‹ˆë¼ë©´ í•­ìƒ ì¶œë ¥
         if (userState != (int)UserState.UnitSelect || userState != (int)UserState.Ending)
         { 
               UIManager.uiManager.GetRotationKey();
@@ -118,7 +119,7 @@ public class CycleManager : MonoBehaviour
 
     #region AttackCycle
     //{ ChangeCycleAttackToDefence()
-    // °ø°İ ½ÎÀÌÅ¬¿¡¼­ ¹æ¾î ½ÎÀÌÅ¬·Î ÀüÈ¯ÇÏ´Â ÇÔ¼ö
+    // ê³µê²© ì‹¸ì´í´ì—ì„œ ë°©ì–´ ì‹¸ì´í´ë¡œ ì „í™˜í•˜ëŠ” í•¨ìˆ˜
     public void ChangeCycleAttackToDefence()
     {
         if (userState == (int)UserState.Attack)
@@ -135,29 +136,42 @@ public class CycleManager : MonoBehaviour
     //{ UpdateDefenceCycle()
     public void UpdateDefenceCycle()
     {
-        // µ¹ ¼±ÅÃÀÌ µÇ¾úÀ» ¶§
+        // ëŒ ì„ íƒì´ ë˜ì—ˆì„ ë•Œ
         if (userState == (int)UserState.Defence)
         {
-            // ¹öÆ° ÀÎ½ºÅÏ½º
-
-            // ¼±ÅÃ°ø ¸¸Å­ ½Ã°£ µ¹¸®±â
-            //StartCoroutine(WaitForRock());
-            // ¼ÒÈ¯½Ã°£ÃÊ°ú½Ã C ´©¸£¸é
-            if (isRockCreated == true && Input.GetKey(KeyCode.C))
+            userState = (int)UserState.WaitForRock;
+            if (userState == (int)UserState.WaitForRock)
             {
-                // µ¹ ¼ÒÈ¯ÇÏ°í Ä«¸Ş¶ó ÂÑ°Ô ÇØÁÖ°í
-                userState = (int)UserState.Attack;
+                StartCoroutine(WaitForRock());
             }
+
+
         }
     }
     //} UpdateDefenceCycle()
 
-    IEnumerator WaitForRock(float time_)
-    { 
-    
-        yield return new WaitForSeconds(time_);
+    public void ChangeStateDefenceToAttack()
+    {
+        // ì†Œí™˜ì‹œê°„ì´ˆê³¼ì‹œ C ëˆ„ë¥´ë©´
+        if (isRockCreated == true && Input.GetKey(KeyCode.C))
+        {
+            Debug.Log("ê³µê²©ìœ¼ë¡œ ì „í™˜");
+            // ëŒ ì†Œí™˜í•˜ê³  ì¹´ë©”ë¼ ì«“ê²Œ í•´ì£¼ê³ 
+            userState = (int)UserState.Attack;
+            isRockCreated = false;
+        }
+    }
+
+
+    IEnumerator WaitForRock()
+    {
+        float coolDown = default;
+        ResourceManager.Instance.GetRockCoolDownFromId(ItemManager.itemManager.userRockChoosed[0],
+            ResourceManager.Instance.GetGameObjectByID(ItemManager.itemManager.userRockChoosed[0]), out coolDown);
+        Debug.LogFormat("ì„ íƒëœ ëŒ : {0}",ItemManager.itemManager.userRockChoosed[0]);
+        Debug.LogFormat("GameObject Name : {0}", ResourceManager.Instance.GetGameObjectByID(ItemManager.itemManager.userRockChoosed[0]).name);
+        yield return new WaitForSeconds(coolDown);
         isRockCreated = true;
-        //GameObject myRock = Instantiate();
     }
 
 

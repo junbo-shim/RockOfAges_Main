@@ -19,5 +19,5 @@ MonoBehaviour:
   acceleration: 220
   damage: 50
   weight: 20
-  cooldown: 90
+  cooldown: 5
   tempString: "\uC544 \uC65C\uC548\uB418\uB0D0\uACE0"

@@ -26,7 +26,7 @@ public class SelectButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public void OnPointerClick(PointerEventData eventData)
     {
         ItemManager.itemManager.userRockChoosed[0] = id;
-        // ¿©±â¼­ ¼öºñ ¹öÆ° ÀÎ½ºÅÏ½º
+        // ì—¬ê¸°ì„œ ìˆ˜ë¹„ ë²„íŠ¼ ì¸ìŠ¤í„´ìŠ¤
         UIManager.uiManager.PrintDefenceUI();
         CycleManager.cycleManager.userState = (int)UserState.Defence;
         UIManager.uiManager.TurnOffRockSelectUI();

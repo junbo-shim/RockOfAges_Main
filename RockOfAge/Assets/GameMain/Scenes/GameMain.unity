@@ -16078,6 +16078,7 @@ MonoBehaviour:
   buildTarget: {fileID: 1819548158}
   gridTest: {fileID: 1190693507}
   red: {fileID: 0}
+  white: {fileID: 0}
 --- !u!4 &1954570714
 Transform:
   m_ObjectHideFlags: 0

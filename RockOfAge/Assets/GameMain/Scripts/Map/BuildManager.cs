@@ -2,6 +2,7 @@ using ExitGames.Client.Photon.StructWrapping;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class BuildManager : MonoBehaviour
 {
@@ -52,9 +53,6 @@ public class BuildManager : MonoBehaviour
         buildState = new BitArray(MAP_SIZE_X * MAP_SIZE_Z);
         viewer = GetComponentInChildren<BuildViewer>();
         viewer.HideViewer();
-
-
-        buildTarget.transform.localScale = Vector3.zero;
     }
 
 
@@ -69,7 +67,6 @@ public class BuildManager : MonoBehaviour
         ChangeCurrGrid();
 
         //테스트 코드
-        ChangeBuildTarget(buildTarget);
         if (buildTarget == null)
         {
             return;
@@ -298,13 +295,17 @@ public class BuildManager : MonoBehaviour
         
     bool IsUIClick()
     {
-        return false;
+        return EventSystem.current.IsPointerOverGameObject();
     }
 
     //모드 참조
     bool IsDefance()
     {
-        return true;
+        if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
+        { 
+            return true;
+        }
+        return false;
     }
 
     //현재 그리드 위치에 건설 가능한 지형이 존재하는지 체크
@@ -345,7 +346,14 @@ public class BuildManager : MonoBehaviour
     //true : 현재 건설 개수가 최대 건설보다 낮다
     bool GetItemLimitState()
     {
-        return true;
+        // gold & limit
+        float gold = default;
+        int buildLimit = default;
+        ResourceManager.Instance.GetUnitGoldAndBuildLimitFromID(buildTarget.status.Id, out gold, out buildLimit);
+        GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(buildTarget.status.Id);
+        int buildCount = unitButton.GetComponent<CreateButton>().buildCount;
+
+        return (buildCount < buildLimit);
     }
 
     //현재 grid위치의 주변 위치의 terrain의 상태를 전부 비교

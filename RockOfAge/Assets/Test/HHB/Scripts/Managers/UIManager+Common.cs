@@ -5,41 +5,33 @@ using UnityEngine.UI;
 // Common
 public partial class UIManager: MonoBehaviour
 {
-    #region º¯¼ö
+    #region ë³€ìˆ˜
     public GameObject commonUI;
-    // MÅ° ´©¸¥½Ã°£°ú bool º¯¼ö
+    // Mí‚¤ ëˆ„ë¥¸ì‹œê°„ê³¼ bool ë³€ìˆ˜
     private bool _mButtonPressed = false;
     private float _pressedTime = 0f;
-    // ÇÃ·¹ÀÌ¾î ÀÌ¸§
+    // í”Œë ˆì´ì–´ ì´ë¦„
     public TextMeshProUGUI player1Txt;
     public TextMeshProUGUI player2Txt;
     public TextMeshProUGUI player3Txt;
     public TextMeshProUGUI player4Txt;
-    // ÇÃ·¹ÀÌ¾î Ã¼·Â
+    // í”Œë ˆì´ì–´ ì²´ë ¥
     public Image team1HpImg;
     public Image team2HpImg;
-    // ÇÃ·¹ÀÌ¾î ÀÌ¹ÌÁö
+    // í”Œë ˆì´ì–´ ì´ë¯¸ì§€
     public Image player1Img;
     public Image player2Img;
     public Image player3Img;
     public Image player4Img;
-    // ÇÃ·¹ÀÌ¾î Ã¼·Â
+    // í”Œë ˆì´ì–´ ì²´ë ¥
     public TextMeshProUGUI playerGold;
     #endregion
 
 
     #region Functions
-    //! ½ºÄÉÀÏ Á¶Á¤À¸·Î ¹Ù²Ù±â
-    //{ TurnOnCommonUI()
-    // commonUI ÄÑ´Â ÇÔ¼ö
-    public void TurnOnCommonUI()
-    {
-        commonUI.transform.localScale = Vector3.one;
-    }
-    //} TurnOnCommonUI()
 
     //{ GetRotationKey()
-    // M 1ÃÊ ´©¸£¸é Ä«¸Ş¶ó ÄÑÁü
+    // M 1ì´ˆ ëˆ„ë¥´ë©´ ì¹´ë©”ë¼ ì¼œì§
     public void GetRotationKey()
     {
         if (Input.GetKey(KeyCode.M) == true)
@@ -64,20 +56,20 @@ public partial class UIManager: MonoBehaviour
     }
     //} GetRotationKey()
 
-    //! ¼­¹ö
+    //! ì„œë²„
     //{ RotateMirror()
-    // ¹Ì·¯ Ä«¸Ş¶ó¸¦ ºÒ·¯¿À´Â ÇÔ¼ö
+    // ë¯¸ëŸ¬ ì¹´ë©”ë¼ë¥¼ ë¶ˆëŸ¬ì˜¤ëŠ” í•¨ìˆ˜
     public void RotateMirror()
     {
-        // »ó´ë°¡ °ø ±¼¸®°í ÀÖÀ» ¶§ Ä«¸Ş¶ó ¿¬µ¿°ú ÇÔ²²(Æ÷ÅæÃ³¸®)
+        // ìƒëŒ€ê°€ ê³µ êµ´ë¦¬ê³  ìˆì„ ë•Œ ì¹´ë©”ë¼ ì—°ë™ê³¼ í•¨ê»˜(í¬í†¤ì²˜ë¦¬)
         MirrorRotate mirrorRotate = FindObjectOfType<MirrorRotate>();
         mirrorRotate.RotateMirror();
     }
     //} RotateMirror()
 
-    // ! ¼­¹ö
+    // ! ì„œë²„
     //{ PrintPlayerText()
-    // ÇÃ·¹ÀÌ¾î ÀÌ¸§ Ãâ·ÂÇÏ´Â ÇÔ¼ö
+    // í”Œë ˆì´ì–´ ì´ë¦„ ì¶œë ¥í•˜ëŠ” í•¨ìˆ˜
     public void PrintPlayerText(string player1_, string player2_, string player3_, string player4_)
     { 
         player1Txt.text = player1_;
@@ -87,8 +79,8 @@ public partial class UIManager: MonoBehaviour
     }
     //} PrintPlayerText()
 
-    //! ¼­¹ö
-    // ÇÃ·¹ÀÌ¾î ÀÌ¹ÌÁö Ãâ·ÂÇÏ´Â ÇÔ¼ö
+    //! ì„œë²„
+    // í”Œë ˆì´ì–´ ì´ë¯¸ì§€ ì¶œë ¥í•˜ëŠ” í•¨ìˆ˜
     //{ PrintPlayerImg()
     public void PrintPlayerImg(Image playerImg1_, Image playerImg2_, Image playerImg3_, Image playerImg4_)
     { 
@@ -96,9 +88,9 @@ public partial class UIManager: MonoBehaviour
     }
     //} PrintPlayerImg()
 
-    //! ¼­¹ö
+    //! ì„œë²„
     //{ PrintTeamHP()
-    // ÆÀ1 °ú ÆÀ2ÀÇ Ã¼·ÂÀ» Ãâ·ÂÇÏ´Â ÇÔ¼ö
+    // íŒ€1 ê³¼ íŒ€2ì˜ ì²´ë ¥ì„ ì¶œë ¥í•˜ëŠ” í•¨ìˆ˜
     public void PrintTeamHP()
     {
         //team1HpImg.fillAmount = CycleManager.cycleManager.   /teamMaxHp;
@@ -106,7 +98,7 @@ public partial class UIManager: MonoBehaviour
     }
     //} PrintTeamHP()
 
-    //! ¼­¹ö
+    //! ì„œë²„
     //{ PrintMyGold()
     public void PrintMyGold()
     {

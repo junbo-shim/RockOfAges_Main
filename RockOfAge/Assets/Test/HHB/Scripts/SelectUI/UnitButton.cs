@@ -1,15 +1,14 @@
-using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UnitButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    #region º¯¼ö
-    // ÀĞ¾î¿Ã ½ºÅ©¸³ÅÍºí Á¤º¸
+    #region ë³€ìˆ˜
+    // ì½ì–´ì˜¬ ìŠ¤í¬ë¦½í„°ë¸” ì •ë³´
     public ObstacleStatus obstacleStatus;
     #region ObstacleScriptable
-    /// UnitScriptable º¯¼ö¸í
+    /// UnitScriptable ë³€ìˆ˜ëª…
     /// id = Id
     /// name = obsName
     /// price = Price
@@ -24,18 +23,18 @@ public class UnitButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     #endregion ObstacleScriptable
     // 
     public GameObject holderButton;
-    // ¼±ÅÃ ÀÌ¹ÌÁö
+    // ì„ íƒ ì´ë¯¸ì§€
     private GameObject _selectImage;
-    // Á¦°Å ÀÌ¹ÌÁö
+    // ì œê±° ì´ë¯¸ì§€
     private GameObject _removeImage;
-    // ÀÚ±â ÀÚ½ÅÀÇ ÀÌ¹ÌÁö
+    // ìê¸° ìì‹ ì˜ ì´ë¯¸ì§€
     private Image _image;
-    // Å¬¸¯ »ö Á¶Àı
+    // í´ë¦­ ìƒ‰ ì¡°ì ˆ
     private Color _orignialColor;
     private Color _clickedColor;
     [HideInInspector]
     public bool _isChecked { get; private set; }
-    // holderButton »ı¼º x,yÁÂÇ¥
+    // holderButton ìƒì„± x,yì¢Œí‘œ
     [HideInInspector]
     public float xPos;
     [HideInInspector]
@@ -114,7 +113,7 @@ public class UnitButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     //{ PackOnPointerClick()
     public void PackOnPointerClick()
     {
-        // À¯Àú°¡ °¡Áö°í ÀÖÁö ¾Ê´Ù¸é
+        // ìœ ì €ê°€ ê°€ì§€ê³  ìˆì§€ ì•Šë‹¤ë©´
         if (ItemManager.itemManager.CheckItemList(id) == false)
         {
             if (ItemManager.itemManager.CheckUserListCapacity(1) == true)
@@ -127,7 +126,7 @@ public class UnitButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
             }
         }
         else
-        // °¡Áö°í ÀÖ´Ù¸é
+        // ê°€ì§€ê³  ìˆë‹¤ë©´
         {
             // dark -> orignial
             _image.color = _orignialColor;
@@ -141,7 +140,7 @@ public class UnitButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
     #region Functions
     //{ GetInforFromScriptObj()
-    // scriptable Á¤º¸
+    // scriptable ì •ë³´
     private void GetInfoFromScriptObj()
     {
         if (obstacleStatus != null)
@@ -155,7 +154,7 @@ public class UnitButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     //} GetInforFromScriptObj()
 
     //{ InstantiatePreviewHolder()
-    // Holder ¹Ì¸®º¸±â - °ËÀº»ö ÀÎ½ºÅÏ½ºÈ­
+    // Holder ë¯¸ë¦¬ë³´ê¸° - ê²€ì€ìƒ‰ ì¸ìŠ¤í„´ìŠ¤í™”
     public void InstantiatePreviewHolder()
     {
         Transform parentTransform = transform.parent;
@@ -170,7 +169,7 @@ public class UnitButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     //} InstantiatePreviewHolder()
 
     //{ DestroyPreviewHolder()
-    // Holder ¹Ì¸®º¸±â Destroy
+    // Holder ë¯¸ë¦¬ë³´ê¸° Destroy
     public void DestroyPreviewHolder()
     {
         GameObject unitHolder = GameObject.Find("UnitHolderPreview");
@@ -182,8 +181,8 @@ public class UnitButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     //} DestroyPreviewHolder()
 
     //{ InstantiateHolder()
-    // Holder »ı¼º
-    // Á¦°Å ·ÎÁ÷Àº ItemManager°¡ °ü¸®ÇÔ
+    // Holder ìƒì„±
+    // ì œê±° ë¡œì§ì€ ItemManagerê°€ ê´€ë¦¬í•¨
     public void InstantiateUnitHolder(int id_)
     {
         Transform parentTransform = transform.parent;
@@ -194,16 +193,16 @@ public class UnitButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         RectTransform rectTransform = newHolderButton.GetComponent<RectTransform>();
         rectTransform.anchoredPosition = new Vector2(xPos - (float)(84 * ItemManager.itemManager.unitCount), yPos);
         UnitHolderButton myHolderButton = FindObjectOfType<UnitHolderButton>();
-        myHolderButton.unitId = id_;
+        myHolderButton.id = id_;
         ItemManager.itemManager.unitCount++;
     }
     //} InstantiateHolder()
 
     //{ BackToOriginalColor()
-    // Holder¸¦ Å¬¸¯½Ã ¿ø·¡´ë·Î »öÀ» µÇµ¹¸®´Â ÇÔ¼ö
+    // Holderë¥¼ í´ë¦­ì‹œ ì›ë˜ëŒ€ë¡œ ìƒ‰ì„ ë˜ëŒë¦¬ëŠ” í•¨ìˆ˜
     public void BackToOriginalColor(int id_)
     {
-        // À¯Àú°¡ ¾ÆÀÌÅÛÀ» °¡Áö°í ÀÖÁö ¾Ê´Ù¸é
+        // ìœ ì €ê°€ ì•„ì´í…œì„ ê°€ì§€ê³  ìˆì§€ ì•Šë‹¤ë©´
         if (ItemManager.itemManager.CheckItemList(id_) == false)
         {
             _image.color = _orignialColor;

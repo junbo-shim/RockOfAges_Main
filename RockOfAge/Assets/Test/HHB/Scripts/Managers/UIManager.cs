@@ -1,10 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
 
 #region Enum StoneTimer 
-// ∞¯ª˝º∫º”µµ ∫¸∏ß,∫∏≈Î,¥¿∏≤
+// Í≥µÏÉùÏÑ±ÏÜçÎèÑ Îπ†Î¶Ñ,Î≥¥ÌÜµ,ÎäêÎ¶º
 public enum StoneTimer
 {
     Fast = 5, Normal = 7, Slow = 10
@@ -16,7 +15,7 @@ public partial class UIManager : MonoBehaviour
 { 
     public static UIManager uiManager;
 
-    #region ∫Øºˆ
+    #region Î≥ÄÏàò
     // Card
     public Sprite[] rockSprites;
     public Sprite[] obstructionSprites;
@@ -39,25 +38,105 @@ public partial class UIManager : MonoBehaviour
     {
         uiManager = this;
         DontDestroyOnLoad(uiManager);
-        commonUI.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
-        rockSelectUI.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
-        defenceUI.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
-        attackUI.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+        SwitchUIManager("rockSelectUI");
+        SwitchUIManager("commonUI");
+        SwitchUIManager("attackUI");
+        SwitchUIManager("defenceUI");
     }
 
     #region Functions
+
+    //{ SwitchUIManager()
+    // UI Ïä§ÏºÄÏùºÏùÑ 1, 0.001Î°ú ÏôîÎã§Í∞îÎã§ ÌïòÎäî Ìï®Ïàò (Îß§Í∞úÎ≥ÄÏàòÏóê UIÌïòÏúÑÏùò Í≤åÏûÑÏò§Î∏åÏ†ùÌä∏ Ïù¥Î¶Ñ)
+    // selectUIÎäî ÌïúÎ≤àÏì∞Í≥† Î≤ÑÎ¶º
+    public void SwitchUIManager(string uiName_)
+    {
+        switch (uiName_)
+        {
+            case "rockSelectUI":
+                SwitchRockSelectUI();
+                break;
+            case "commonUI":
+                SwitchCommonUI();
+                break;
+            case "attackUI":
+                SwitchAttackUI();
+                break;
+            case "defenceUI":
+                SwitchDefenceUI();
+                break;
+        }
+    }
+
+    #region UISwitcher
+    public void SwitchRockSelectUI()
+    {
+        Vector3 scale = rockSelectUI.transform.localScale;
+        float minScale = 0.001f;
+        if (scale == Vector3.one)
+        {
+            rockSelectUI.transform.localScale = Vector3.one * minScale;
+        }
+        else if (scale == Vector3.one * minScale)
+        {
+            rockSelectUI.transform.localScale = Vector3.one;
+        }
+    }
+
+    public void SwitchDefenceUI()
+    {
+        Vector3 scale = defenceUI.transform.localScale;
+        float minScale = 0.001f;
+        if (scale == Vector3.one)
+        {
+            defenceUI.transform.localScale = Vector3.one * minScale;
+        }
+        else if (scale == Vector3.one * minScale)
+        {
+            defenceUI.transform.localScale = Vector3.one;
+        }
+    }
+    public void SwitchAttackUI()
+    {
+        Vector3 scale = attackUI.transform.localScale;
+        float minScale = 0.001f;
+        if (scale == Vector3.one)
+        {
+            attackUI.transform.localScale = Vector3.one * minScale;
+        }
+        else if (scale == Vector3.one * minScale)
+        {
+            attackUI.transform.localScale = Vector3.one;
+        }
+    }
+    public void SwitchCommonUI()
+    {
+        Vector3 scale = commonUI.transform.localScale;
+        float minScale = 0.001f;
+        if (scale == Vector3.one)
+        {
+            commonUI.transform.localScale = Vector3.one * minScale;
+        }
+        else if (scale == Vector3.one * minScale)
+        {
+            commonUI.transform.localScale = Vector3.one;
+        }
+    }
+    #endregion
+    //} SwitchUIManager()
+
     //{ PrintCard
     public void PrintRockCard(int id_, string name_, string explain_, float time_)
     {
         float maxTime = 0.1f;
-        // µπ¿œ∂ß
+        // ÎèåÏùºÎïå
         if (id_ <= 10)
         {
             cardClockImage.gameObject.SetActive(true);
             cardSandImage.gameObject.SetActive(true);
             cardNameTxt.text = name_;
             cardInfoTxt.text = explain_;
-            cardGoldTxt.text = ""; // √‚∑¬ æ¯¿Ω
+            cardGoldTxt.text = ""; // Ï∂úÎ†• ÏóÜÏùå
             cardSandImage.fillAmount = (float)ConvertCoolTimeToEnum(time_) * maxTime;
             MatchIDToSprite(id_);
         }
@@ -67,7 +146,7 @@ public partial class UIManager : MonoBehaviour
     //{ PrintObstacleCard()
     public void PrintObstacleCard(int id_, string name_, string explain_, float gold_)
     {
-        // πÊ«ÿπ∞¿œ∂ß
+        // Î∞©Ìï¥Î¨ºÏùºÎïå
         if (id_ > 10)
         {
             cardNameTxt.text = name_;
@@ -81,22 +160,23 @@ public partial class UIManager : MonoBehaviour
     //} PrintObstacleCard()
 
     //{ StoneTimer ConvertCoolTimeToEnum
+    // Í≥µ ÏÉùÏÑ± Ïø®ÌÉÄÏûÑÏùÑ Îπ†Î¶Ñ/ÎäêÎ¶º/Î≥¥ÌÜµÏúºÎ°ú Î™®ÎûòÏãúÍ≥Ñ ÌîÑÎ¶∞Ìä∏Î•º ÏúÑÌïú Enum Î≥ÄÌôòÍ∏∞
     public StoneTimer ConvertCoolTimeToEnum(float time_)
     {
         float normalMaxTime = 65f;
         float normalMinTime = 55f;
 
-        // ∫¸∏ß
+        // Îπ†Î¶Ñ
         if (time_ > normalMaxTime)
         {
             return StoneTimer.Fast;
         }
-        // ∫∏≈Î
+        // Î≥¥ÌÜµ
         else if (time_ >= normalMinTime && time_ <= normalMaxTime)
         {
             return StoneTimer.Normal;
         }
-        // ¥¿∏≤
+        // ÎäêÎ¶º
         else
         {
             return StoneTimer.Slow;
@@ -139,7 +219,7 @@ public partial class UIManager : MonoBehaviour
     //{ PrintReadyText()
     public void PrintReadyText()
     {
-        readyTxt.text = "¡ÿ∫Ò!";
+        readyTxt.text = "Ï§ÄÎπÑ!";
         readyImg.gameObject.SetActive(true);
     }
     //} PrintReadyText()
@@ -147,7 +227,7 @@ public partial class UIManager : MonoBehaviour
     //{ PrintReadyText()
     public void PrintNotReadyText()
     {
-        readyTxt.text = "¡ÿ∫Ò¡ﬂ";
+        readyTxt.text = "Ï§ÄÎπÑÏ§ë";
         readyImg.gameObject.SetActive(false);
     }
     //} PrintReadyText()

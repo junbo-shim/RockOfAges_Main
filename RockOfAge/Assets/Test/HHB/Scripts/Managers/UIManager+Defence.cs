@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -8,39 +7,40 @@ using UnityEngine.UI;
 public partial class UIManager : MonoBehaviour
 {
     public GameObject rockSelectUI;
-    public GameObject attackSelect;
+    public GameObject rockselect;
     public GameObject unitSelect;
     public GameObject defenceUI;
     public Sprite[] selectRockSprite;
     public Sprite[] selectUnitSprite;
-    public void PrintRockSelectUI()
+
+    //{ ChangeStateUnitSelectToRockSelect()
+    // 유닛선택이 완료되면 공선택하는 UI출력하는 함수
+    public void ChangeStateUnitSelectToRockSelect()
     {
-        rockSelectUI.transform.localScale = Vector3.one;
+        SwitchUIManager("rockSelectUI");
+        ItemManager.itemManager.userRockChoosed[0] = 0;
+        InstantiateUserSelect();
+        ShutDownUserSelectUI();
+        SwitchUIManager("commonUI");
+    }
+    //} ChangeStateUnitSelectToRockSelect()
+
+    // 유저가 선택한 유닛들을 버튼을 프린트하는 함수
+    public void InstantiateUserSelect()
+    {
+        InstantiateRockImgForAttack();
+        InstantiateUnitImgForDenfence();
     }
 
-    public void TurnOffRockSelectUI()
-    {
-        rockSelectUI.transform.localScale = Vector3.one * 0.001f;
-    }
-
-    public void PrintDefenceUI()
-    {
-        defenceUI.transform.localScale = Vector3.one;
-    }
-
-    public void TurnOffDefenceUI()
-    {
-        defenceUI.transform.localScale = Vector3.one * 0.001f;
-    }
-
+    #region 유저선택 출력함수
     //{ InstantiateRockImgForAttack()
     public void InstantiateRockImgForAttack()
     {
         GameObject motherObj = GameObject.Find("RockSelectUI");
         for(int n = 0; n < ItemManager.itemManager.rockSelected.Count; n++)
         {
-            GameObject rockImg = Instantiate(attackSelect, motherObj.transform.Find("RockChooseButtons").Find("RockView").Find("Viewport").Find("Content"));
-            rockImg.name = "rockSelect " + n;
+            GameObject rockImg = Instantiate(rockselect, motherObj.transform.Find("RockChooseButtons").Find("RockView").Find("Viewport").Find("Content"));
+            rockImg.name = "rockSelect" + n;
             SelectButton selectButton = FindObjectOfType<SelectButton>();
             selectButton.id = ItemManager.itemManager.rockSelected[n];
         }
@@ -63,31 +63,65 @@ public partial class UIManager : MonoBehaviour
     }
     //} MatchImageToIDSprite()
 
-
     //{ InstantiateUnitImgForDenfence()
     public void InstantiateUnitImgForDenfence()
     {
         GameObject motherObj = GameObject.Find("DefenceUI");
+        ItemManager.itemManager.unitSelected.Sort();
         for (int n = 0; n < ItemManager.itemManager.unitSelected.Count; n++)
         {
+            //foreach (var a in ItemManager.itemManager.unitSelected)
+            //{
+            //    Debug.LogFormat("선택된 유닛 : {0}", a);
+            //}
+
             GameObject unitImg = Instantiate(unitSelect, motherObj.transform.Find("DefenceHolder").Find("UnitButton").Find("UnitView").Find("Viewport").Find("Content"));
-            unitImg.name = "unitSelect " + n;
+            unitImg.name = "unitSelect" + (n+11);
+            //Debug.Log(n+10);
             CreateButton creatButton = FindObjectOfType<CreateButton>();
             creatButton.id = ItemManager.itemManager.unitSelected[n];
+            creatButton.buildCount = 0;
 
             TextMeshProUGUI[] textElements = unitImg.GetComponentsInChildren<TextMeshProUGUI>();
+
+            float gold;
+            int buildLimit;
+            ResourceManager.Instance.GetUnitGoldAndBuildLimitFromID(creatButton.id, out gold, out buildLimit);
+
+            creatButton.buildLimit = buildLimit;
+
             foreach (var text in textElements)
             {
                 if (text.name == "GoldTxt")
-                { 
-                    text.text = "999";
+                {
+                    text.text = gold.ToString();
                 }
                 if (text.name == "UnitCountTxt")
                 {
-                    text.text = 10+ "/" +30;
+                    text.text = creatButton.buildCount.ToString() + "/" + buildLimit.ToString();
                 }
             }
         }
     }
     //} InstantiateUnitImgForDenfence()
+    #endregion
+
+    //{ RePrintUnitCount()
+    // 유닛을 클릭하면 재출력하는 로직
+    public void RePrintUnitCount(int id_)
+    {
+        TextMeshProUGUI unitTxt = ResourceManager.Instance.FindUnitTextById(id_);
+        if (unitTxt != null)
+        {
+            float gold;
+            int buildLimit;
+            ResourceManager.Instance.GetUnitGoldAndBuildLimitFromID(id_, out gold, out buildLimit);
+            GameObject target = ResourceManager.Instance.FindUnitGameObjById(id_);
+            Debug.LogFormat("id = {0}",target.name);
+            CreateButton creatbutton = target.GetComponent<CreateButton>();
+            int buildCount = creatbutton.buildCount;
+            unitTxt.text = buildCount.ToString() + "/" + buildLimit.ToString();
+        }
+    }
+
 }

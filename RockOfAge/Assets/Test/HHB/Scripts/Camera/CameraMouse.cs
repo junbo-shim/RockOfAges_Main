@@ -10,6 +10,7 @@ public class CameraMouse : MonoBehaviour
     public CinemachineVirtualCamera nextOnCamera;
     // 돌 카메라
     public CinemachineVirtualCamera rockCamera;
+    //public CinemachineFreeLook rockCamera;
     // topViewCamera 움직임 제어
     private CinemachineTransposer transposer;
     // X,Z 유저 입력
@@ -20,13 +21,13 @@ public class CameraMouse : MonoBehaviour
     // 최종 움직임 포지션
     private Vector3 targetPosition;
     // 카메라 이동 속도
-    private float cameraSpeed = 100f;
+    private float cameraSpeed = 500f;
     // smoothDamp 
     private float smoothTime = 0.02f;
     // ref velocity
     private Vector3 velocity = Vector3.zero;
     // 마우스 이동 엣지간격
-    private float edgeSize = 20f;
+    private float edgeSize = 50f;
 
 
     private void Start()

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RockBase : MonoBehaviour
 {
-    protected float jumpForce = 10000f;
+    protected float jumpForce = 1000f;
     protected float attackPowerBase = 10f;
 
     public float maxSpeed = 50f;
@@ -20,10 +20,10 @@ public class RockBase : MonoBehaviour
     }
 
     // 돌의 레이거리를 확인하기 위한 함수
-    //private void OnDrawGizmos() 
-    //{
-    //    Gizmos.DrawCube(transform.position, new Vector3(1, 8, 1));
-    //}
+    private void OnDrawGizmos() 
+  {
+        Gizmos.DrawCube(transform.position, new Vector3(1, 3, 1));
+    }
     public virtual void Move()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
@@ -59,7 +59,7 @@ public class RockBase : MonoBehaviour
     public virtual bool IsGround()
     {
         
-        float distance = 0.5f; // 레이 캐스트 거리
+        float distance = 3f; // 레이 캐스트 거리
         RaycastHit hit;
 
         // 레이 캐스트를 사용하여 지면과의 거리를 확인합니다.

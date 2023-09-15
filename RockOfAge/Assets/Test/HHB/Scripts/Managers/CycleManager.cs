@@ -44,15 +44,11 @@ public class CycleManager : MonoBehaviour
     //{ GameCycle()
     public void GameCycle()
     {
-        UpdateSelectionCycle();
-        UpdateCommonUICycle();
-        // 돌 선택 판별
-
-        UpdateDefenceCycle();
-        ChangeStateDefenceToAttack();
-
-        //UpdateGameEndCycle();
-
+        // 업데이트
+        UpdateSelectionCycle(); // 유닛 선택창
+        // start 구독 이벤트에서 
+        UpdateCommonUICycle(); // m 눌렀을 때 효과 
+        UpdateDefenceCycle();// c 눌렀을 때 효과
     }
     //} GameCycle()
     #endregion
@@ -78,13 +74,7 @@ public class CycleManager : MonoBehaviour
                 // 검증 후 다음 사이클로
                 if (CheckUserBall() == true)
                 {
-                    UIManager.uiManager.PrintRockSelectUI();
-                    ItemManager.itemManager.userRockChoosed[0] = 0;
-                    UIManager.uiManager.InstantiateRockImgForAttack();
-                    UIManager.uiManager.InstantiateUnitImgForDenfence();
-                    UIManager.uiManager.ShutDownUserSelectUI();
-                    userState = (int)UserState.DEFENCE;
-                    UIManager.uiManager.TurnOnCommonUI();
+                    UIManager.uiManager.ChangeStateUnitSelectToRockSelect();
                 }
                 else { return; }
             }
@@ -107,17 +97,17 @@ public class CycleManager : MonoBehaviour
     #endregion
 
     #region CommonUICycle
-    //{ UpdateDefenceCycle()
     // 게임종료시까지 켜져 있는 UI
     public void UpdateCommonUICycle()
     {
+        // inputManager로 event화 가능
         // 유닛 선택단계와 엔딩 단계가 아니라면 항상 출력
         if (userState != (int)UserState.UNITSELECT || userState != (int)UserState.ENDING)
         { 
               UIManager.uiManager.GetRotationKey();
         }
     }
-    //} UpdateDefenceCycle()
+
     #endregion
 
     #region AttackCycle
@@ -129,7 +119,7 @@ public class CycleManager : MonoBehaviour
         {
             userState = (int)UserState.DEFENCE;
         }
-        else { Debug.Log("GAMELOGIC ERROR"); }
+        else { Debug.Log("GAME LOGIC ERROR"); }
     }
     //} ChangeCycleAttackToDefence()
     #endregion
@@ -140,23 +130,12 @@ public class CycleManager : MonoBehaviour
     public void UpdateDefenceCycle()
     {
         int userRock = ItemManager.itemManager.userRockChoosed[0];
-        if (userRock != 0)
+        if (userRock != 0 && userState == (int)UserState.DEFENCE && rockState == (int)RockState.ROCKCREATED)
         {
-            if (userState == (int)UserState.DEFENCE)
-            {
-                if (rockState == (int)RockState.ROCKSELECT)
-                {
-                    StartCoroutine(WaitForRock());
-                }
-                else if (rockState == (int)RockState.ROCKCREATED)
-                {
-                    ChangeStateDefenceToAttack();
-                }
-                else { return; }
-            }
+            ChangeStateDefenceToAttack();
         }
+        else { return; }
     }
-    //} UpdateDefenceCycle()
 
     public void ChangeStateDefenceToAttack()
     {
@@ -171,15 +150,21 @@ public class CycleManager : MonoBehaviour
     }
 
 
-    IEnumerator WaitForRock()
+    public IEnumerator WaitForRock()
     {
-        rockState = (int)RockState.ROCKCREATING;
-        float coolDown = default;
-        ResourceManager.Instance.GetRockCoolDownFromId(ItemManager.itemManager.userRockChoosed[0], out coolDown);
-        yield return new WaitForSeconds(coolDown);
-        rockState = (int)RockState.ROCKCREATED;
-
+        if (rockState == (int)RockState.ROCKSELECT)
+        { 
+            rockState = (int)RockState.ROCKCREATING;
+            int id = ItemManager.itemManager.userRockChoosed[0];
+            float coolDown = default;
+            ResourceManager.Instance.GetRockCoolDownFromId(id, out coolDown);
+            yield return new WaitForSeconds(coolDown);
+            rockState = (int)RockState.ROCKCREATED;        
+        }
     }
+
+
+
 
 
     #endregion

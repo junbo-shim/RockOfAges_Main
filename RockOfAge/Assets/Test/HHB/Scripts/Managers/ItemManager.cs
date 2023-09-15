@@ -5,7 +5,7 @@ using UnityEngine;
 public class ItemManager : MonoBehaviour
 {
     public static ItemManager itemManager;
-    #region º¯¼ö
+    #region ë³€ìˆ˜
     public int[] userRockChoosed = new int[1];
     public List<int> rockSelected = new List<int>();
     public List<int> unitSelected = new List<int>();
@@ -22,7 +22,7 @@ public class ItemManager : MonoBehaviour
 
     #region Functions
     //{ CheckUserListCapacity 
-    // ¾ÆÀÌÅÛÀÌ °¹¼ö°¡ ÃÊ°úÇÏ´ÂÁö È®ÀÎÇÏ´Â ÇÔ¼ö
+    // ì•„ì´í…œì´ ê°¯ìˆ˜ê°€ ì´ˆê³¼í•˜ëŠ”ì§€ í™•ì¸í•˜ëŠ” í•¨ìˆ˜
     public bool CheckUserListCapacity(int count_)
     {
         float userItemCount = rockCount * 2 + unitCount + count_;
@@ -37,15 +37,15 @@ public class ItemManager : MonoBehaviour
     
 
     //{ CheckItemList()
-    // ¾ÆÀÌÅÛÀ» °¡Áö°í ÀÖ´ÂÁö °ËÁõÇÏ´Â ÇÔ¼ö
+    // ì•„ì´í…œì„ ê°€ì§€ê³  ìˆëŠ”ì§€ ê²€ì¦í•˜ëŠ” í•¨ìˆ˜
     public bool CheckItemList(int id_)
     {
-        // À¯Àú°¡ °¡Áö°í ÀÖ´Ù¸é
+        // ìœ ì €ê°€ ê°€ì§€ê³  ìˆë‹¤ë©´
         if (unitSelected.Contains(id_) || rockSelected.Contains(id_))
         {
             return true;
         }
-        else // °¡Áö°í ÀÖÁö ¾Ê´Ù¸é 
+        else // ê°€ì§€ê³  ìˆì§€ ì•Šë‹¤ë©´ 
         {
             return false;
         }
@@ -53,10 +53,10 @@ public class ItemManager : MonoBehaviour
     //} CheckItemList()
 
     //{ RockRePrintHolder()
-    // (µ¹)Ãâ·Â »èÁ¦¿Í »èÁ¦½Ã Ãâ·ÂÀ§Ä¡¸¦ ÀçÁ¶Á¤
+    // (ëŒ)ì¶œë ¥ ì‚­ì œì™€ ì‚­ì œì‹œ ì¶œë ¥ìœ„ì¹˜ë¥¼ ì¬ì¡°ì •
     public void RockRePrintHolder()
     {
-        // Ãâ·ÂµÈ °ÍÀÌ 1°³ ¹Û¿¡ ¾øÀ» ¶§
+        // ì¶œë ¥ëœ ê²ƒì´ 1ê°œ ë°–ì— ì—†ì„ ë•Œ
         if (rockCount <= 1)
         {
             GameObject rockHolder = GameObject.Find("RockHolder");
@@ -93,10 +93,10 @@ public class ItemManager : MonoBehaviour
     //} RockRePrintHolder()
 
     //{ UnitRePrintHolder()
-    // (À¯´Ö)Ãâ·Â »èÁ¦¿Í »èÁ¦½Ã Ãâ·ÂÀ§Ä¡¸¦ ÀçÁ¶Á¤
+    // (ìœ ë‹›)ì¶œë ¥ ì‚­ì œì™€ ì‚­ì œì‹œ ì¶œë ¥ìœ„ì¹˜ë¥¼ ì¬ì¡°ì •
     public void UnitRePrintHolder()
     {
-        // Ãâ·ÂµÈ °ÍÀÌ 1°³ ¹Û¿¡ ¾øÀ» ¶§
+        // ì¶œë ¥ëœ ê²ƒì´ 1ê°œ ë°–ì— ì—†ì„ ë•Œ
         if (unitCount <= 1)
         {
             GameObject unitHolder = GameObject.Find("UnitHolder");

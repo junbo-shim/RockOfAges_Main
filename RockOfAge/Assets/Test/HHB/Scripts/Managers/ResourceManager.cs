@@ -1,6 +1,8 @@
 using Cinemachine;
-using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -136,36 +138,30 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     {
         int id = ItemManager.itemManager.userRockChoosed[0];
         GameObject gameObject = GetGameObjectByID(id);
-
-        Debug.LogFormat("선택된 공 : {0}",id);
-        Debug.LogFormat("게임오브젝트 : {0}",gameObject.name);
         GameObject team1 = FindTopLevelGameObject("Team1");
-        Debug.Log(team1.name);
         GameObject userRock = Instantiate(gameObject, team1.transform);
         // 팀 1인지 2인지 구별하는 if가 필요합니다
         // 팀2꺼 startPoint 없습니다. 밑은 1번팀꺼입니다
 
-
         Vector3 startPointTransform = new Vector3(210f, 32f, 85f);
-        //Vector3 cameraPoint = new Vector3(212f, 40f, 85f);
+        Vector3 cameraTransform = new Vector3(210f, 32f, 82f);
         userRock.transform.position = startPointTransform;
-
         GameObject rockCamera = FindTopLevelGameObject("RockCamera");
-        Debug.Log(rockCamera.name);
+        //GameObject rockCamera = FindTopLevelGameObject("NewRockCamera");
         CinemachineVirtualCamera virtualRockCamera = rockCamera.GetComponent<CinemachineVirtualCamera>();
-        //virtualRockCamera.transform.position = cameraPoint;
-        
+        //CinemachineFreeLook virtualRockCamera = rockCamera.GetComponent<CinemachineFreeLook>();
+        virtualRockCamera.transform.position = cameraTransform;
         virtualRockCamera.Follow = userRock.transform;
         virtualRockCamera.LookAt = userRock.transform;
-
     }
 
-    public GameObject FindTopLevelGameObject(string name)
+    #region 검색용 함수
+    public GameObject FindTopLevelGameObject(string name_)
     {
         GameObject[] rootObjs = SceneManager.GetActiveScene().GetRootGameObjects();
         foreach (GameObject obj in rootObjs) 
         {
-            if (obj.name == name)
+            if (obj.name == name_)
             {
                 return obj;
             }
@@ -173,4 +169,92 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         return null;
     }
 
+    public List<GameObject> FindAllTargets(string rootName, string targetName)
+    {
+        //Debug.Log("FindAllTargets 들어옴");
+        GameObject root = FindTopLevelGameObject(rootName);
+        List<GameObject> results = new List<GameObject>();
+
+        if (root != null)
+        {
+            FindAllTargetsRecursive(root.transform, targetName, results);
+        }
+        else
+        {
+            Debug.LogWarning("Root GameObject not found.");
+        }
+
+        //foreach (GameObject obj in results)
+        //{
+        //    Debug.LogFormat("result : {0}",obj);
+        //}
+
+        return results;
+    }
+
+    private void FindAllTargetsRecursive(Transform rootTransform, string targetName, List<GameObject> results)
+    {
+        foreach (Transform childTransform in rootTransform)
+        {
+            GameObject childGameObject = childTransform.gameObject;
+            if (childGameObject.name.StartsWith(targetName))
+            {
+                results.Add(childGameObject);
+            }
+
+            FindAllTargetsRecursive(childTransform, targetName, results);
+        }
+
+    }
+
+    public TextMeshProUGUI FindUnitTextById(int id_)
+    {
+        //Debug.Log("FindUnitTextByID 들어옴");
+        List<GameObject> textObjs = new List<GameObject>();
+        textObjs = FindAllTargets("DefenceUI", "unitSelect");
+
+        //foreach (GameObject objs in textObjs) 
+        //{
+        //    Debug.LogFormat("{0}", objs.name);
+        //}
+
+        GameObject targetText = default;
+
+        foreach (var textObj in textObjs)
+        {
+            if (textObj.name.Contains(id_.ToString()) == true)
+            {
+                targetText = textObj;
+            }
+        }
+        //Debug.LogFormat("{0}",targetText);
+
+        TextMeshProUGUI unitCountTxt = targetText.GetComponentInChildren<TextMeshProUGUI>();
+        return unitCountTxt;
+    }
+
+    public GameObject FindUnitGameObjById(int id_)
+    {
+       // Debug.Log("FindUnitGameObjById 들어옴");
+        List<GameObject> objs = new List<GameObject>();
+        objs = FindAllTargets("DefenceUI", "unitSelect");
+
+        //foreach (GameObject obj in objs)
+        //{
+        //    Debug.LogFormat("{0}", obj.name);
+        //}
+
+        GameObject targetObj = default;
+
+        foreach (var obj in objs)
+        {
+            if (obj.name.Contains(id_.ToString()) == true)
+            {
+                targetObj = obj;
+            }
+        }
+        //Debug.LogFormat("{0}", targetObj);
+        return targetObj;
+    }
+    #endregion
 }

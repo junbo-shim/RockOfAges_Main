@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9105247915362822978}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: Bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 301482071071435016}
   - component: {fileID: 3522252306010182084}
   - component: {fileID: 8752984371908127271}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ Transform:
   m_GameObject: {fileID: 4795680292890135079}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 5.69, z: -93}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -132,6 +132,7 @@ MonoBehaviour:
   terrainLayer:
     serializedVersion: 2
     m_Bits: 128
+  gravityStrength: 100
 --- !u!1 &6461833304556225277
 GameObject:
   m_ObjectHideFlags: 0
@@ -142,7 +143,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7433633790702448144}
   - component: {fileID: 2048342475545501435}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: boulder1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

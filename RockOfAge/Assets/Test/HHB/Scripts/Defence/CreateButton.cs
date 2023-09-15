@@ -8,6 +8,8 @@ using TMPro;
 public class CreateButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public int id;
+    public int buildCount;
+    public int buildLimit;
     public Image unitImg;
     public GameObject _selectedImg;
 
@@ -18,7 +20,11 @@ public class CreateButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        _selectedImg.SetActive(true);
+        //Debug.LogFormat("{0}", id);
+        if (buildLimit > buildCount)
+        { 
+            _selectedImg.SetActive(true);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -28,6 +34,10 @@ public class CreateButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log(id);
+        if (buildCount < buildLimit)
+        {
+            buildCount++;
+            UIManager.uiManager.RePrintUnitCount(id); 
+        }
     }
 }

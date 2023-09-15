@@ -25,11 +25,16 @@ public class SelectButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        ChangeRockStateSelectToCreate();
+
+    }
+
+    public void ChangeRockStateSelectToCreate()
+    {
         ItemManager.itemManager.userRockChoosed[0] = id;
-        // 여기서 수비 버튼 인스턴스
-        UIManager.uiManager.PrintDefenceUI();
+        UIManager.uiManager.SwitchUIManager("defenceUI");
         CycleManager.cycleManager.userState = (int)UserState.DEFENCE;
-        CycleManager.cycleManager.rockState = (int)RockState.ROCKSELECT;
-        UIManager.uiManager.TurnOffRockSelectUI();
+        UIManager.uiManager.SwitchUIManager("rockSelectUI");
+        StartCoroutine(CycleManager.cycleManager.WaitForRock());
     }
 }

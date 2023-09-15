@@ -13,12 +13,46 @@ public class ObstacleBase : MonoBehaviour
     protected MeshFilter obstacleMeshFilter;
     protected Rigidbody obstacleRigidBody;
     protected Animator obstacleAnimator;
+    protected Renderer obstacleRenderer;
+    protected Material originMaterial;
 
     //타겟
     protected GameObject target;
 
+    protected float currHealth;
+    protected bool isBuildComplete = false;
+
+    public static readonly float BUILD_TIME = 5f;
+
+
+    protected void StartBuild(float time)
+    {
+        originMaterial = obstacleRenderer.material;
+        obstacleRenderer.material = BuildManager.instance.white;
+
+        StartCoroutine(BuildRoutine(time));
+
+    }
+
+    protected IEnumerator BuildRoutine(float buildTime)
+    {
+        float currTime = 0;
+        while(currTime < buildTime)
+        {
+            Debug.Log(currTime);
+
+            yield return Time.deltaTime;
+            currTime += Time.deltaTime;
+        }
+        Debug.Log("onenable");
+
+        isBuildComplete = true;
+        obstacleRenderer.material = originMaterial;
+
+    }
+
     //맵에 Build
-    public ObstacleBase Build(Vector3 position, Quaternion rotate)
+    public virtual ObstacleBase Build(Vector3 position, Quaternion rotate)
     {
         ObstacleBase obstacle = Instantiate(this, position, rotate);
         obstacle.transform.localScale = Vector3.one * .1f;
@@ -33,6 +67,8 @@ public class ObstacleBase : MonoBehaviour
         obstacleMeshFilter = GetComponent<MeshFilter>();
         obstacleRigidBody = GetComponent<Rigidbody>();
         obstacleAnimator = GetComponent<Animator>();
+        obstacleRenderer = GetComponentInChildren<Renderer>();
+        currHealth = status.Health;
     }
 
     //타겟 서치

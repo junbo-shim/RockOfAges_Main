@@ -17,7 +17,6 @@ public class HoldObstacleBase : ObstacleBase
     {
         base.Init();
         obstacleRigidBody.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-        obstacleRigidBody.velocity = Vector3.zero;
         obstacleRigidBody.isKinematic = true;
     }
 }

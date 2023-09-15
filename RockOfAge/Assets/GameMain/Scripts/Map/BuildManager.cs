@@ -13,6 +13,7 @@ public class BuildManager : MonoBehaviour
     //상의 해 봐야함
     public GameObject gridTest;
     public Material red;
+    public Material white;
 
 
     //커서의 현재 그리드위치
@@ -67,6 +68,25 @@ public class BuildManager : MonoBehaviour
         //좌표가 변하지 않았다면 다음의 계산들을 실행하지않는다. 
         if (!ChangeCurrGrid())
         {
+           
+            if (CanBuild())
+            {
+                if (Input.GetMouseButtonDown(1))
+                {
+                    ObstacleBase build = buildTarget.Build(viewer.transform.position, Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0));
+                    build.name = buildTarget.name + "_" + currCursorGridIndex.z + "_" + currCursorGridIndex.x;
+                    SetBitArrays(currCursorGridIndex, buildTarget.status.Size);
+                }
+
+            }
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                ChangeBuildRotation(-1);
+            }
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                ChangeBuildRotation(1);
+            }
             return;
         }
 
@@ -83,26 +103,8 @@ public class BuildManager : MonoBehaviour
         viewer.ShowViewer();
         viewer.UpdateMouseMove(CanBuild());
 
-        if (CanBuild())
-        {
-            if (Input.GetMouseButtonDown(1))
-            {
-                ObstacleBase build = buildTarget.Build(viewer.transform.position, Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0));
-                build.name = buildTarget.name + "_" + currCursorGridIndex.z + "_" + currCursorGridIndex.x;
-                SetBitArrays(currCursorGridIndex, buildTarget.status.Size);
-            }
-
-        }
 
 
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            ChangeBuildRotation(-1);
-        }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            ChangeBuildRotation(1);
-        }
 
     }
 
@@ -234,11 +236,11 @@ public class BuildManager : MonoBehaviour
     //이 정보는 유지된다.
     void ChangeBuildRotation(int diff)
     {
-        if(whereLookAt != BuildRotateDirection.LEFT && diff==1)
+        if(whereLookAt == BuildRotateDirection.LEFT && diff==1)
         {
             whereLookAt = BuildRotateDirection.UP;
         }
-        else if (whereLookAt != BuildRotateDirection.UP && diff == -1)
+         else if (whereLookAt == BuildRotateDirection.UP && diff == -1)
         {
             whereLookAt = BuildRotateDirection.LEFT;
         }

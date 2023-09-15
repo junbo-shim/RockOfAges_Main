@@ -4,10 +4,12 @@ using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
+using System.Collections;
+using Unity.VisualScripting;
 
 public class ButtonManager : GlobalSingleton<ButtonManager>
 {
-    #region Title ¹× Lobby ÇÏÀ§ Panel ¹× Popup µé
+    #region Title ë° Lobby í•˜ìœ„ Panel ë° Popup ë“¤
     private Transform titlePanel;
     private Transform loginPopup;
     private Transform signupPopup;
@@ -16,9 +18,11 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     private Transform createRoomPopup;
     private Transform joinLockedRoomPopup;
     private Transform waitPopup;
+
+    private Transform roomPanel;
     #endregion
 
-    #region Title Panel ¹öÆ°µé
+    #region Title Panel ë²„íŠ¼ë“¤
     private Button titleOptionButton;
     private Button quickStartButton;
     private Button loginButton;
@@ -32,10 +36,10 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     private Button registerButton;
     #endregion
 
-    #region Lobby Panel ¹öÆ°µé
+    #region Lobby Panel ë²„íŠ¼ë“¤
     private Button lobbyOptionButton;
 
-    private GameObject roomPrefab;
+    public GameObject roomPrefab;
     private Button createRoomButton;
     private Button JoinRandomButton;
 
@@ -43,13 +47,23 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     private Button commitPWButton;
     #endregion
 
+    #region RoomPanel ë²„íŠ¼ë“¤
+    private Button player1;
+    private Button player2;
+    private Button player3;
+    private Button player4;
 
+    public Button roomReadyButton;
+    public Button roomStartButton;
+    private bool isReadyOn;
+    #endregion
 
     protected override void Awake()
     {
         GetAllPanels();
         FinTitleButtons();
         FindLobbyButtons();
+        FindRoomButtons();
         ListentAllButton();
         MakePanelsDefault();
     }
@@ -59,11 +73,13 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         CheckCloseButton();
     }
 
-    #region ¸ğµç Panel À» NetworkManager·ÎºÎÅÍ ¹Ş¾Æ¿À´Â ¸Ş¼­µå
+    #region ëª¨ë“  Panel ì„ NetworkManagerë¡œë¶€í„° ë°›ì•„ì˜¤ëŠ” ë©”ì„œë“œ
     private void GetAllPanels() 
     {
         titlePanel = NetworkManager.Instance.TitlePanel;
         lobbyPanel = NetworkManager.Instance.LobbyPanel;
+        roomPanel = NetworkManager.Instance.RoomPanel;
+
         loginPopup = NetworkManager.Instance.LoginPopup;
         signupPopup = NetworkManager.Instance.SignupPopup;
 
@@ -73,7 +89,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     }
     #endregion
 
-    #region Title Panel ÀÇ ¸ğµç ¹öÆ°À» Ã£¾Æ¼­ ÀúÀåÇÏ´Â ¸Ş¼­µå
+    #region Title Panel ì˜ ëª¨ë“  ë²„íŠ¼ì„ ì°¾ì•„ì„œ ì €ì¥í•˜ëŠ” ë©”ì„œë“œ
     private void FinTitleButtons()
     {
         titleOptionButton = titlePanel.Find("Button_Option").GetComponent<Button>();
@@ -89,7 +105,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     }
     #endregion
 
-    #region Lobby Panel ÀÇ ¸ğµç ¹öÆ°À» Ã£¾Æ¼­ ÀúÀåÇÏ´Â ¸Ş¼­µå
+    #region Lobby Panel ì˜ ëª¨ë“  ë²„íŠ¼ì„ ì°¾ì•„ì„œ ì €ì¥í•˜ëŠ” ë©”ì„œë“œ
     private void FindLobbyButtons()
     {
         lobbyOptionButton = lobbyPanel.Find("Button_Option").GetComponent<Button>();
@@ -103,7 +119,20 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     }
     #endregion
 
-    #region ¹öÆ°¿¡ AddListener ¼¼ÆÃÇÏ´Â ¸Ş¼­µå
+    #region Room Panel ì˜ ëª¨ë“  ë²„íŠ¼ì„ ì°¾ì•„ì„œ ì €ì¥í•˜ëŠ” ë©”ì„œë“œ
+    private void FindRoomButtons() 
+    {
+        player1 = NetworkManager.Instance.RoomPanel.Find("Team1").Find("Player1").GetComponent<Button>();
+        player2 = NetworkManager.Instance.RoomPanel.Find("Team1").Find("Player2").GetComponent<Button>();
+        player3 = NetworkManager.Instance.RoomPanel.Find("Team2").Find("Player3").GetComponent<Button>();
+        player4 = NetworkManager.Instance.RoomPanel.Find("Team2").Find("Player4").GetComponent<Button>();
+
+        roomReadyButton = NetworkManager.Instance.RoomPanel.Find("Button_RoomReady").GetComponent<Button>();
+        roomStartButton = NetworkManager.Instance.RoomPanel.Find("Button_RoomStart").GetComponent<Button>();
+    }
+    #endregion
+
+    #region ë²„íŠ¼ì— AddListener ì„¸íŒ…í•˜ëŠ” ë©”ì„œë“œ
     private void ListentAllButton()
     {
         titleOptionButton.onClick.AddListener(PressOption);
@@ -125,7 +154,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     }
     #endregion
 
-    #region ¸ğµç ÆË¾÷Ã¢À» ÀÛ°Ô ¸¸µå´Â ¸Ş¼­µå
+    #region ëª¨ë“  íŒì—…ì°½ì„ ì‘ê²Œ ë§Œë“œëŠ” ë©”ì„œë“œ
     public void MakePanelsDefault()
     {
         loginPopup.localScale = Vector3.zero;
@@ -136,66 +165,94 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         createRoomPopup.localScale = Vector3.zero;
         joinLockedRoomPopup.localScale = Vector3.zero;
         waitPopup.localScale = Vector3.zero;
+
+        roomPanel.localScale = Vector3.zero;
     }
     #endregion
 
-    #region ¹öÆ° ±â´É ¸Ş¼­µå
+    #region ë¡œê·¸ì¸ ì‹œ ì ì‹œ ë²„íŠ¼ì„ Disable í•˜ëŠ” ë©”ì„œë“œ
+    public void PauseTitleButtons() 
+    {
+        titleOptionButton.interactable = false;
+        quickStartButton.interactable = false;
+        loginButton.interactable = false;
+        signupButton.interactable = false;
+        quitButton.interactable = false;
+    }
+    #endregion
+
+    #region ë¡œê·¸ì¸ ë²„íŠ¼ë“¤ì„ ë‹¤ì‹œ able ìƒíƒœë¡œ ë˜ëŒë¦¬ëŠ” ë©”ì„œë“œ
+    public void ResetTitleButtons() 
+    {
+        titleOptionButton.interactable = true;
+        quickStartButton.interactable = true;
+        loginButton.interactable = true;
+        signupButton.interactable = true;
+        quitButton.interactable = true;
+    }
+    #endregion
+
+    #region ë²„íŠ¼ ê¸°ëŠ¥ ë©”ì„œë“œ
     //Button Functions ====================================================================================
 
-    #region ¿É¼Ç¹öÆ°
+    #region ì˜µì…˜ë²„íŠ¼
     public void PressOption()
     {
         /*Empty For Now*/
     }
     #endregion
 
-    #region ºü¸¥ ½ÃÀÛ ¹öÆ°
+    #region ë¹ ë¥¸ ì‹œì‘ ë²„íŠ¼
     public void PressQuickStart()
     {
         NetworkManager.Instance.StartQuick();
+        PauseTitleButtons();
+        Invoke("ResetTitleButtons", 4f);
     }
     #endregion
 
-    #region ·Î±×ÀÎ ¹öÆ°
+    #region ë¡œê·¸ì¸ ë²„íŠ¼
     public void PressLogin()
     {
         loginPopup.localScale = Vector3.one;
 
         loginPopup.GetComponentInChildren<TMP_Text>().color = new Color(180, 180, 180);
-        loginPopup.GetComponentInChildren<TMP_Text>().text = "·Î±×ÀÎ";
+        loginPopup.GetComponentInChildren<TMP_Text>().text = "ë¡œê·¸ì¸";
     }
     #endregion
 
-    #region È¸¿ø°¡ÀÔ ¹öÆ°
+    #region íšŒì›ê°€ì… ë²„íŠ¼
     public void PressSignup()
     {
         signupPopup.localScale = Vector3.one;
     }
     #endregion
 
-    #region ³¡³»±â ¹öÆ°
+    #region ëë‚´ê¸° ë²„íŠ¼
     public void PressQuit()
     {
         Application.Quit();
     }
     #endregion
 
-    #region ·Î±×ÀÎ-°ÔÀÓ ½ÃÀÛ ¹öÆ°
+    #region ë¡œê·¸ì¸-ê²Œì„ ì‹œì‘ ë²„íŠ¼
     public void PressStart()
     {
         NetworkManager.Instance.Login();
+        PauseTitleButtons();
+        Invoke("ResetTitleButtons", 4f);
         Invoke("PressClose", 2f);
     }
     #endregion
 
-    #region ·Î±×ÀÎ-¸®¼Â ¹öÆ°
+    #region ë¡œê·¸ì¸-ë¦¬ì…‹ ë²„íŠ¼
     public void PressResetPW()
     {
         /*Empty For Now*/
     }
     #endregion
 
-    #region È¸¿ø°¡ÀÔ-ÁøÂ¥°¡ÀÔ ¹öÆ°
+    #region íšŒì›ê°€ì…-ì§„ì§œê°€ì… ë²„íŠ¼
     public void PressRegister()
     {
         NetworkManager.Instance.Register();
@@ -203,7 +260,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     }
     #endregion
 
-    #region ´İ±â ¹öÆ°
+    #region ë‹«ê¸° ë²„íŠ¼
     public void PressClose()
     {
         if (loginPopup.localScale == Vector3.one)
@@ -214,7 +271,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
             TMP_InputField passwordInput = loginPopup.Find("InputField_Password").GetComponent<TMP_InputField>();
 
             loginPopup.GetComponentInChildren<TMP_Text>().color = new Color(180, 180, 180);
-            loginPopup.GetComponentInChildren<TMP_Text>().text = "·Î±×ÀÎ";
+            loginPopup.GetComponentInChildren<TMP_Text>().text = "ë¡œê·¸ì¸";
             emailInput.text = default;
             passwordInput.text = default;
         }
@@ -227,7 +284,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
             TMP_InputField nicknameInput = signupPopup.Find("InputField_Nickname").GetComponent<TMP_InputField>();
 
             signupPopup.GetComponentInChildren<TMP_Text>().color = new Color(180, 180, 180);
-            signupPopup.GetComponentInChildren<TMP_Text>().text = "È¸¿ø°¡ÀÔ";
+            signupPopup.GetComponentInChildren<TMP_Text>().text = "íšŒì›ê°€ì…";
             emailInput.text = default;
             passwordInput.text = default;
             nicknameInput.text = default;
@@ -252,7 +309,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     }
     #endregion
 
-    #region ´İ±â ¹öÆ° È®ÀÎ ·ÎÁ÷
+    #region ë‹«ê¸° ë²„íŠ¼ í™•ì¸ ë¡œì§
     public void CheckCloseButton()
     {
         if (loginPopup.localScale == Vector3.one)
@@ -278,35 +335,69 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     }
     #endregion
 
-    #region ¹æ »ı¼º ¹öÆ°
+    #region ë°© ìƒì„± ë²„íŠ¼
     public void PressCreateRoomButton() 
     {
-        createRoomPopup.localScale = Vector3.one;
+        if (PhotonNetwork.IsMasterClient == false)
+        {
+            createRoomPopup.localScale = Vector3.one;
+        }
     }
     #endregion
 
-    #region ¹æ »ı¼º-ÁøÂ¥ »ı¼º ¹öÆ°
+    #region ë°© ìƒì„±-ì§„ì§œ ìƒì„± ë²„íŠ¼
     public void PressConfirmCreateButton() 
     {
         TMP_InputField roomNameInput = createRoomPopup.Find("InputField_RoomName").GetComponent<TMP_InputField>();
-        TMP_InputField roomPWInput = createRoomPopup.Find("InputField_RoomPW").GetComponent<TMP_InputField>();
+        //TMP_InputField roomPWInput = createRoomPopup.Find("InputField_RoomPW").GetComponent<TMP_InputField>();
 
+        // í¬í†¤ ë‚´ì˜ ë°© ìƒì„±
         RoomOptions roomOptions = new RoomOptions { MaxPlayers = 4 };
         PhotonNetwork.CreateRoom(roomNameInput.text, roomOptions, null, null);
-        GameObject room = Instantiate(roomPrefab, NetworkManager.Instance.RoomListContent);
+        Photon.Realtime.Room newRoom = PhotonNetwork.CurrentRoom;
 
-        NetworkManager.Instance.roomLists.Add(room);
+        // í¬í†¤ ë°©ì˜ ë°ì´í„° ì„¸íŒ… (ì»¤ìŠ¤í…€ í”„ë¡œí¼í‹°-Hashtable)
+        //ExitGames.Client.Photon.Hashtable roomHashTable = new ExitGames.Client.Photon.Hashtable();
+        //roomHashTable["password"] = roomPWInput.text;
+        //roomHashTable["Seat_1"] = "Empty";
+        //roomHashTable["Seat_2"] = "Empty";
+        //roomHashTable["Seat_3"] = "Empty";
+        //roomHashTable["Seat_4"] = "Empty";
+
+        //newRoom.SetCustomProperties(roomHashTable);
 
         PressClose();
+
+        roomPanel.localScale = Vector3.one;
+
+        NetworkManager.Instance.UpdateRoomDisplay();
     }
     #endregion
 
-    #region ·£´ı Âü¿© ¹öÆ°
-    public void PressJoinRandomButton() 
+    #region ëœë¤ ì°¸ì—¬ ë²„íŠ¼
+    public void PressJoinRandomButton()
     {
-        // ·ë ¸®½ºÆ® ÇÊ¿ä
-        // ·ëÀÌ ¾ø´Ù¸é Wait ÆË¾÷¿¡¼­ °æ°í¹®À» ¶ç¿ì°í 1.5ÃÊ µÚ ²¨Áü
-        // ·ëÀÌ ÀÖ´Ù¸é Wait ÆË¾÷¿¡¼­ Âü°¡ÁßÀ» ¶ç¿ì°í ¹æÀ¸·Î
+        PhotonNetwork.JoinRandomRoom();
+
+        roomPanel.localScale = Vector3.one;
+    }
+    #endregion
+
+    [PunRPC]
+    #region ë ˆë”” ë²„íŠ¼
+    public void PressRoomReadyButton() 
+    {
+
+    }
+    #endregion
+
+    #region ì‹œì‘ ë²„íŠ¼
+    public void PressRoomStartButton() 
+    {
+        if(PhotonNetwork.IsMasterClient) 
+        {
+            
+        }
     }
     #endregion
 

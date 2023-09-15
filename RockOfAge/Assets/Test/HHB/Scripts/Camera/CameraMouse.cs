@@ -4,29 +4,30 @@ using Cinemachine;
 
 public class CameraMouse : MonoBehaviour
 {
-    // topViewCamera ÄÄÆ÷³ÍÆ®
+    // topViewCamera ì»´í¬ë„ŒíŠ¸
     public CinemachineVirtualCamera nowOnCamera;
-    // ÈÙ Å¬¸¯½Ã ÀÌµ¿µÇ´Â Ä«¸Ş¶ó
+    // íœ  í´ë¦­ì‹œ ì´ë™ë˜ëŠ” ì¹´ë©”ë¼
     public CinemachineVirtualCamera nextOnCamera;
-    // µ¹ Ä«¸Ş¶ó
+    // ëŒ ì¹´ë©”ë¼
     public CinemachineVirtualCamera rockCamera;
-    // topViewCamera ¿òÁ÷ÀÓ Á¦¾î
+    //public CinemachineFreeLook rockCamera;
+    // topViewCamera ì›€ì§ì„ ì œì–´
     private CinemachineTransposer transposer;
-    // X,Z À¯Àú ÀÔ·Â
+    // X,Z ìœ ì € ì…ë ¥
     private float xInput;
     private float zInput;
-    // ¿òÁ÷ÀÓ ¹æÇâ
+    // ì›€ì§ì„ ë°©í–¥
     private Vector3 moveDir;
-    // ÃÖÁ¾ ¿òÁ÷ÀÓ Æ÷Áö¼Ç
+    // ìµœì¢… ì›€ì§ì„ í¬ì§€ì…˜
     private Vector3 targetPosition;
-    // Ä«¸Ş¶ó ÀÌµ¿ ¼Óµµ
-    private float cameraSpeed = 100f;
+    // ì¹´ë©”ë¼ ì´ë™ ì†ë„
+    private float cameraSpeed = 500f;
     // smoothDamp 
     private float smoothTime = 0.02f;
     // ref velocity
     private Vector3 velocity = Vector3.zero;
-    // ¸¶¿ì½º ÀÌµ¿ ¿§Áö°£°İ
-    private float edgeSize = 20f;
+    // ë§ˆìš°ìŠ¤ ì´ë™ ì—£ì§€ê°„ê²©
+    private float edgeSize = 50f;
 
 
     private void Start()
@@ -36,7 +37,7 @@ public class CameraMouse : MonoBehaviour
 
     private void Update()
     {
-        if (CycleManager.cycleManager.userState == (int)UserState.Defence)
+        //if (/*CycleManager.cycleManager.userState == (int)UserState.Defence*/)
         { 
             MoveCameraFromKeyBoard();
             RotateCameraTransition();    
@@ -60,10 +61,10 @@ public class CameraMouse : MonoBehaviour
 
                 targetPosition = transform.position + moveDistance;
 
-                // SmothDamp ¿ø·¡À§Ä¡/ ÃÖÁ¾À§Ä¡/ ÀÌÀü ÇÁ·¹ÀÓ ¼Óµµ/ ¼ö·Å½Ã°£(ÀÛÀ»¼ö·Ï »¡¸® ¿òÁ÷ÀÓ) 
+                // SmothDamp ì›ë˜ìœ„ì¹˜/ ìµœì¢…ìœ„ì¹˜/ ì´ì „ í”„ë ˆì„ ì†ë„/ ìˆ˜ë ´ì‹œê°„(ì‘ì„ìˆ˜ë¡ ë¹¨ë¦¬ ì›€ì§ì„) 
                 transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
 
-                // ´ÙÀ½ Ä«¸Ş¶óµµ °°ÀÌ ÀÌµ¿
+                // ë‹¤ìŒ ì¹´ë©”ë¼ë„ ê°™ì´ ì´ë™
                 if (nextOnCamera != null)
                 {
                     float nowX = transform.position.x;
@@ -92,7 +93,7 @@ public class CameraMouse : MonoBehaviour
     public void ChangeCameraToRock()
     {
         //IsMine
-        if (CycleManager.cycleManager.userState == (int)UserState.Attack)
+        if (CycleManager.cycleManager.userState == (int)UserState.ATTACK)
         {
             Debug.Log("top -> rock");
             rockCamera.gameObject.SetActive(true);
@@ -135,7 +136,7 @@ public class CameraMouse : MonoBehaviour
 
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
 
-        // ´ÙÀ½ Ä«¸Ş¶óµµ °°ÀÌ ÀÌµ¿
+        // ë‹¤ìŒ ì¹´ë©”ë¼ë„ ê°™ì´ ì´ë™
         if (nextOnCamera != null)
         {
             float nowX = transform.position.x;

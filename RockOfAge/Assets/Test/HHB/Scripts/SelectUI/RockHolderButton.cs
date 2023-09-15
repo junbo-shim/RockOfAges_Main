@@ -4,16 +4,20 @@ using UnityEngine.UI;
 
 public class RockHolderButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler, IPointerClickHandler
 {
-    #region º¯¼ö
-    // Á¦°Å ÀÌ¹ÌÁö
+    #region ë³€ìˆ˜
+    // ì œê±° ì´ë¯¸ì§€
+    [SerializeField]
     private GameObject _removeImage;
-    // RockButton¿¡¼­ ¹ŞÀº ID
+    // RockButtonì—ì„œ ë°›ì€ ID
     [HideInInspector]
     public int id;
-    // ÀÚ±â ÀÚ½ÅÀÇ ÀÌ¹ÌÁö
+    // ìê¸° ìì‹ ì˜ ì´ë¯¸ì§€
+    [SerializeField]
     private Image _image;
-    // Å¬¸¯ »ö Á¶Àı
+    // í´ë¦­ ìƒ‰ ì¡°ì ˆ
+    [SerializeField]
     private Color _orignialColor;
+    [SerializeField]
     private Color _clickedColor;
     #endregion
 
@@ -66,7 +70,7 @@ public class RockHolderButton : MonoBehaviour, IPointerExitHandler, IPointerEnte
     //} PackOnPointerEnter()
 
     //{ PackOnPointerClick()
-    public void PackOnPointerClick()
+    public virtual void PackOnPointerClick()
     {
         ItemManager.itemManager.rockSelected.Remove(id);
         ItemManager.itemManager.RockRePrintHolder();

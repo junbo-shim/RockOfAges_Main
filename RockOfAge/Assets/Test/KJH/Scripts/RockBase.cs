@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RockBase : MonoBehaviour
 {
-    protected float jumpForce = 3000f;
+    protected float jumpForce = 10000f;
     protected float attackPowerBase = 10f;
 
     public float maxSpeed = 50f;
@@ -59,7 +59,7 @@ public class RockBase : MonoBehaviour
     public virtual bool IsGround()
     {
         
-        float distance = 4f; // 레이 캐스트 거리
+        float distance = 0.5f; // 레이 캐스트 거리
         RaycastHit hit;
 
         // 레이 캐스트를 사용하여 지면과의 거리를 확인합니다.
@@ -81,33 +81,28 @@ public class RockBase : MonoBehaviour
     {
 
     }
-    protected IEnumerator ApplyBooster(float duration, Vector3 direction)
+    public void ApplyBoosterEffect(float duration, float boostForce, float upForce, Vector3 direction)
+    {
+        rRb.velocity = Vector3.zero;
+        rRb.AddForce(Vector3.up * upForce, ForceMode.Impulse);
+        StartCoroutine(ApplyBooster(duration, boostForce, direction));
+    }
+
+    protected IEnumerator ApplyBooster(float duration, float boostForce, Vector3 direction)
     {
         float time = 0;
-        while(time < duration)
+        while (time < duration)
         {
             float horizontalInput = Input.GetAxis("Horizontal");
-            rRb.velocity = direction * 500f - Vector3.Cross(direction, Vector3.up).normalized * horizontalInput * 100;
-        yield return new WaitForSeconds(Time.deltaTime);
+            rRb.velocity = direction * boostForce - Vector3.Cross(direction, Vector3.up).normalized * horizontalInput * 100;
+            yield return new WaitForSeconds(Time.deltaTime);
             time += Time.deltaTime;
         }
     }
 
-    protected virtual void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Booster"))
-        {
-            rRb.velocity = Vector3.zero;
-            Vector3 forceDirection = other.transform.forward.normalized; // 힘 방향 앞쪽으로 고정
-            
-            rRb.AddForce(Vector3.up * 500000f, ForceMode.Impulse);
-            StartCoroutine(ApplyBooster(0.3f, forceDirection));
-        }
-        else if (other.CompareTag("JumpPad")) // 점프대 태그를 확인합니다.
-        {
-         
-            rRb.AddForce(Vector3.up * 50000f, ForceMode.Acceleration); // 점프대 속도를 적용합니다.
-        }
-    }
+    //else if (other.CompareTag("JumpPad")) // 점프대 태그를 확인합니다.
+    //{
 
+    //    rRb.AddForce(Vector3.up * 50000f, ForceMode.Acceleration); // 점프대 속도를 적용합니다.
+    //}
 }

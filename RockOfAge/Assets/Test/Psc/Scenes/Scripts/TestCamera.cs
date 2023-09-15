@@ -5,6 +5,7 @@ using UnityEngine;
 public class TestCamera : MonoBehaviour
 {
     public GameObject target;
+    public Vector3 v;
 
     // Start is called before the first frame update
     void Start()
@@ -18,7 +19,8 @@ public class TestCamera : MonoBehaviour
         if (target != null)
         {
 
-            transform.position = target.transform.position + Vector3.up;
+            transform.position = target.transform.position + v;
+            transform.LookAt(target.transform.position);
         }
     }
 }

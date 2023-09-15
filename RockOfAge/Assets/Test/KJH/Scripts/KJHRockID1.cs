@@ -16,6 +16,7 @@ public class KJHRockID1 : RockBase, IHitObjectHandler
     }
     void FixedUpdate()
     {
+        Move(); // RockBase 클래스의 Move 메서드를 호출합니다.
         if (!IsGround())
         {
             // 중력 힘을 직접 적용
@@ -25,7 +26,6 @@ public class KJHRockID1 : RockBase, IHitObjectHandler
     }
     void Update()
     {
-        Move(); // RockBase 클래스의 Move 메서드를 호출합니다.
 
         if (Input.GetKeyDown(KeyCode.Space))
         {

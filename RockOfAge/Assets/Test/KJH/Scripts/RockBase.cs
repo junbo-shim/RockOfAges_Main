@@ -37,15 +37,36 @@ public class RockBase : MonoBehaviour
             Vector3 forceDirection = (cameraForward * verticalInput + cameraRight * horizontalInput);
             forceDirection.y = 0;
 
-            // 이동 방향에 따라 가속도를 조절합니다.
-            float acceleration = (Mathf.Abs(horizontalInput) > 0.1f && Mathf.Abs(verticalInput) > 0.1f) ? rockStatus.Acceleration * 2 : rockStatus.Acceleration;
-            rRb.AddForce(forceDirection * acceleration, ForceMode.Acceleration);
-        }
-        //최대속도 제한
-        float currentSpeed = rRb.velocity.magnitude;
-        if(currentSpeed > maxSpeed)
-        {
-            rRb.velocity = rRb.velocity.normalized * maxSpeed;
+            // 이전 프레임에서의 벨로시티 방향
+            Vector3 previousVelocityDirection = rRb.velocity.normalized;
+
+            // 새로운 이동 방향과 이전 벨로시티 방향 사이의 각도 계산
+            float angle = Vector3.Angle(previousVelocityDirection, forceDirection);
+
+            // 각도에 따라 벨로시티 값을 조절합니다.
+            // 여기서 45도 이상인 경우를 빠른 반응으로 설정합니다.
+            if (angle > 45f)
+            {
+                // 빠른 반응을 위해 벨로시티 값을 새 방향으로 바로 변경합니다.
+                rRb.velocity = forceDirection.normalized * maxSpeed + rRb.velocity * 0.5f;
+                rRb.angularVelocity = forceDirection.normalized * maxSpeed  + rRb.angularVelocity * 0.5f;
+            }
+            else
+            {
+                // 그렇지 않으면 가속도를 사용하여 천천히 방향을 변경합니다.
+                float acceleration = (Mathf.Abs(horizontalInput) > 0.1f && Mathf.Abs(verticalInput) > 0.1f) ? rockStatus.Acceleration : rockStatus.Acceleration * 2;
+
+                // 가속도를 사용하여 velocity를 계산하고 적용합니다.
+                Vector3 newVelocity = rRb.velocity + forceDirection * acceleration * Time.deltaTime;
+
+                // 최대 속도 제한
+                if (newVelocity.magnitude > maxSpeed)
+                {
+                    newVelocity = newVelocity.normalized * maxSpeed;
+                }
+
+                rRb.velocity = newVelocity;
+            }
         }
     }
 

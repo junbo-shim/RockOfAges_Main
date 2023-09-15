@@ -10,12 +10,15 @@ public class BuildViewer : MonoBehaviour
     private BuildHighLight highLight;
     private BuildColorHighLight colorHighLight;
 
+    private DragViewer drag;
+
     private void Awake()
     {
         meshFilter = GetComponent<MeshFilter>();
         meshRenderer = GetComponent<MeshRenderer>();
         highLight = GetComponentInChildren<BuildHighLight>();
         colorHighLight = GetComponentInChildren<BuildColorHighLight>();
+        drag = GetComponentInChildren<DragViewer>();
     }
 
     void ChangeTarget(ObstacleBase target)
@@ -23,27 +26,29 @@ public class BuildViewer : MonoBehaviour
         MeshFilter _meshFilter = target.GetComponent<MeshFilter>();
         if (_meshFilter == null)
         {
-            Debug.Assert(_meshFilter == null, "Å¸°Ù ¸Ş½¬ÇÊÅÍ ¾øÀ½");
+            Debug.Assert(_meshFilter == null, "íƒ€ê²Ÿ ë©”ì‰¬í•„í„° ì—†ìŒ");
             return;
         }
 
-        // sourceMeshFilter¿¡¼­ ¿øº» Mesh¸¦ ÂüÁ¶
+        // sourceMeshFilterì—ì„œ ì›ë³¸ Meshë¥¼ ì°¸ì¡°
         Mesh sourceMesh = _meshFilter.sharedMesh;
 
-        // »õ·Î¿î Mesh¸¦ »ı¼ºÇÏ°í ¿øº» Mesh¸¦ º¹»ç
+        // ìƒˆë¡œìš´ Meshë¥¼ ìƒì„±í•˜ê³  ì›ë³¸ Meshë¥¼ ë³µì‚¬
         Mesh copyMesh = new Mesh();
         copyMesh.vertices = sourceMesh.vertices;
         copyMesh.triangles = sourceMesh.triangles;
         copyMesh.normals = sourceMesh.normals;
         copyMesh.uv = sourceMesh.uv;
 
-        // º¹»çµÈ Mesh¸¦ »õ·Î¿î MeshFilter¿¡ ÇÒ´ç
+        // ë³µì‚¬ëœ Meshë¥¼ ìƒˆë¡œìš´ MeshFilterì— í• ë‹¹
         meshFilter.sharedMesh = copyMesh;
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Â÷ÈÄ »óÈ²¿¡ ¸Â°Ô º¯°æÇÒ°Í.
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ì°¨í›„ ìƒí™©ì— ë§ê²Œ ë³€ê²½í• ê²ƒ.
         ObstacleBase _target = target.GetComponent<ObstacleBase>();
         highLight.ChangeHighLight(_target.status.Size);
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        drag.previewObject = Instantiate(_target).gameObject;
 
         HideViewer();
     }
@@ -54,7 +59,7 @@ public class BuildViewer : MonoBehaviour
         colorHighLight.UpdateColorHighLightColor(canBuild);
     }
 
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Â÷ÈÄ obstacleBase·Î ¹Ù²Ü°Í
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ì°¨í›„ obstacleBaseë¡œ ë°”ê¿€ê²ƒ
     public void UpdateTargetChange(ObstacleBase target)
     {
         colorHighLight.UpdateColorHighLightSize(target.status.Size);

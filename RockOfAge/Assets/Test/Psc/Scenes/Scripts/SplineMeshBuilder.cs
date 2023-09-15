@@ -7,39 +7,39 @@ using UnityEngine.Splines;
 
 public class SplineMeshBuilder : MonoBehaviour
 {
-    //build½Ã¿¡ »ç¿ëÇÒ material
+    //buildì‹œì— ì‚¬ìš©í•  material
     public List<Material> materials = default;
 
-    //splineÀ» ÅëÇØ¼­ ¸¸µé¾î³¾ sideÀÇ Á¤Á¡
+    //splineì„ í†µí•´ì„œ ë§Œë“¤ì–´ë‚¼ sideì˜ ì •ì 
     List<Vector3> rightPoint = default;
     List<Vector3> leftPoint = default;
 
-    //splineÀÇ Á¤º¸¸¦ °¡Áö°í ÀÖ´Â container
-    //ÀÚµ¿À¸·Î ºÒ·¯¿È
+    //splineì˜ ì •ë³´ë¥¼ ê°€ì§€ê³  ìˆëŠ” container
+    //ìë™ìœ¼ë¡œ ë¶ˆëŸ¬ì˜´
     private SplineContainer[] splineContainer = default;
 
-    //ºĞÇÒÇÒ spline °¹¼ö 
+    //ë¶„í• í•  spline ê°¯ìˆ˜ 
     [SerializeField]
     private int resolution = 100;
-    //¿·¸éÀÇ ³ôÀÌ
+    //ì˜†ë©´ì˜ ë†’ì´
     [SerializeField]
     private float height = 4f;
-    //groundÀÇ ÆøÀÇ ¹İ(½ÇÁ¦ Å©±â´Â m_width*2)
+    //groundì˜ í­ì˜ ë°˜(ì‹¤ì œ í¬ê¸°ëŠ” m_width*2)
     [SerializeField]
     private float width = 3f;
 
-    //ÇÃ·¹ÀÌÇÒ ¸ÊÀÇ ÆÀ °¹¼ö
-    //ÀÏ´Ü Å×½ºÆ®¿ëÀ¸·Î 1°³¸¸ »ı¼º
-    public const int TEAM_COUNT = 2;
+    //í”Œë ˆì´í•  ë§µì˜ íŒ€ ê°¯ìˆ˜
+    //ì¼ë‹¨ í…ŒìŠ¤íŠ¸ìš©ìœ¼ë¡œ 1ê°œë§Œ ìƒì„±
+    public const int TEAM_COUNT = 1;
 
 
     private void Awake()
     {
-        //ÆÀ ¼ıÀÚ¸¸Å­ ¹è¿­ Å©±â ÁöÁ¤
+        //íŒ€ ìˆ«ìë§Œí¼ ë°°ì—´ í¬ê¸° ì§€ì •
         splineContainer = new SplineContainer[TEAM_COUNT];
 
-        //ÆÀ ¼ıÀÚ¸¸Å­ for¹®
-        //ÇØ´ç for¹®Àº Á¦ÀÏ »ó´Ü¿¡¼­ºÎÅÍ °Ë»öÇØ splineContainer¸¦ °¡Á®¿Â´Ù
+        //íŒ€ ìˆ«ìë§Œí¼ forë¬¸
+        //í•´ë‹¹ forë¬¸ì€ ì œì¼ ìƒë‹¨ì—ì„œë¶€í„° ê²€ìƒ‰í•´ splineContainerë¥¼ ê°€ì ¸ì˜¨ë‹¤
         for(int teamIndex = 0; teamIndex < TEAM_COUNT; teamIndex++)
         {
             splineContainer[teamIndex] = GameObject.Find("Team"+(teamIndex + 1)).transform.Find("BaseTerrains").GetComponentInChildren<SplineContainer>();
@@ -48,15 +48,15 @@ public class SplineMeshBuilder : MonoBehaviour
 
     void Start()
     {
-        //½ÃÀÛ½Ã »ı¼º ½ÃÀÛ.
-        //¾Æ¸¶ ÃßÈÄ¿¡´Â ÇØ´ç Å¬·¡½º ÀÚÃ¼°¡ editor¿µ¿ªÀ¸·Î º¯°æµÇ¼­ ¸Ê object¸¸ »ı¼º/ÃßÃâÇØ »ç¿ëÇÒ°Í
+        //ì‹œì‘ì‹œ ìƒì„± ì‹œì‘.
+        //ì•„ë§ˆ ì¶”í›„ì—ëŠ” í•´ë‹¹ í´ë˜ìŠ¤ ìì²´ê°€ editorì˜ì—­ìœ¼ë¡œ ë³€ê²½ë˜ì„œ ë§µ objectë§Œ ìƒì„±/ì¶”ì¶œí•´ ì‚¬ìš©í• ê²ƒ
         for(int teamIndex = 0; teamIndex < TEAM_COUNT; teamIndex++)
         {
             Generate(teamIndex);
         }
     }
 
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Å×½ºÆ® ÄÚµå
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!í…ŒìŠ¤íŠ¸ ì½”ë“œ
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Z))
@@ -68,57 +68,57 @@ public class SplineMeshBuilder : MonoBehaviour
 
     void Generate(int teamIndex)
     {
-        //spline¿¡¼­ ³ª´²Áø¸¸Å­ »ı¼ºÇÑ´Ù.
+        //splineì—ì„œ ë‚˜ëˆ ì§„ë§Œí¼ ìƒì„±í•œë‹¤.
         for (int splinceIndex = 0; splinceIndex < splineContainer[teamIndex].Splines.Count; splinceIndex++)
         {
-            //±¸Á¶°¡µ¶¼ºÀ» À§ÇÑ ºÎ¸ğÅ¬·¡½º »ı¼º
+            //êµ¬ì¡°ê°€ë…ì„±ì„ ìœ„í•œ ë¶€ëª¨í´ë˜ìŠ¤ ìƒì„±
             GameObject partsParent = new GameObject();
 
-            //µ¥ÀÌÅÍ ÃÊ±âÈ­
+            //ë°ì´í„° ì´ˆê¸°í™”
             partsParent.name = "SplineParts_" + splinceIndex;
             Global_PSC.InitLocalTransformData(partsParent.transform, splineContainer[teamIndex].transform.parent);
 
-            //½ÇÇà
+            //ì‹¤í–‰
             Build(splineContainer[teamIndex].Splines[splinceIndex], partsParent);
         }
 
     }
 
 
-    //´ÙÀ½ÀÇ ´Ü°è¸¦ µû¸¥´Ù.
-    //1. Á¤Á¡ ±¸ÇÏ±â
-    //2. ÇØ´ç ¸Ş½¬¸¦ ÀúÀåÇÒ Å¬·¡½º »ı¼º
-    //3. ¸Ş½¬ ¸¸µé±â
+    //ë‹¤ìŒì˜ ë‹¨ê³„ë¥¼ ë”°ë¥¸ë‹¤.
+    //1. ì •ì  êµ¬í•˜ê¸°
+    //2. í•´ë‹¹ ë©”ì‰¬ë¥¼ ì €ì¥í•  í´ë˜ìŠ¤ ìƒì„±
+    //3. ë©”ì‰¬ ë§Œë“¤ê¸°
     void Build(Spline spline, GameObject parent)
     {
-        //1. Á¤Á¡ ±¸ÇÏ±â
+        //1. ì •ì  êµ¬í•˜ê¸°
         GetVerts(spline);
 
-        //2. ÇØ´ç ¸Ş½¬¸¦ ÀúÀåÇÒ Å¬·¡½º »ı¼º
+        //2. í•´ë‹¹ ë©”ì‰¬ë¥¼ ì €ì¥í•  í´ë˜ìŠ¤ ìƒì„±
         GameObject up = ConcreateGameObject(materials[0], parent);
-        //3. ¸Ş½¬¸¸µé±â
+        //3. ë©”ì‰¬ë§Œë“¤ê¸°
         BuildUp(up, spline.Closed);
 
         GameObject right = ConcreateGameObject(materials[1], parent);
         BuildSide(right, rightPoint, spline.Closed);
 
         GameObject left = ConcreateGameObject(materials[1], parent);
-        //cullingÀ» À§ÇØ¼­ ¼ø¼­ º¯°æ
+        //cullingì„ ìœ„í•´ì„œ ìˆœì„œ ë³€ê²½
         leftPoint.Reverse();
         BuildSide(left, leftPoint, spline.Closed);
 
-        //·Îµù ¿Ï·á½Ã
+        //ë¡œë”© ì™„ë£Œì‹œ
         BuildManager.instance.InitTerrainData();
     }
 
-    //splineÀÇ µ¥ÀÌÅÍ¸¦ ±â¹İÀ¸·Î Á¤Á¡ »ı¼º
+    //splineì˜ ë°ì´í„°ë¥¼ ê¸°ë°˜ìœ¼ë¡œ ì •ì  ìƒì„±
     void GetVerts(Spline spline)
     {
-        // ¿À¸¥ÂÊ/¿ŞÂÊ Á¤Á¡À» ÀúÀåÇÑ list »õ·Î »ı¼º
+        // ì˜¤ë¥¸ìª½/ì™¼ìª½ ì •ì ì„ ì €ì¥í•œ list ìƒˆë¡œ ìƒì„±
         rightPoint = new List<Vector3>();
         leftPoint = new List<Vector3>();
 
-        // »ı¼ºÇÒ Á¤Á¡ÀÇ °£°İÀ» Á¤ÇÑ´Ù.
+        // ìƒì„±í•  ì •ì ì˜ ê°„ê²©ì„ ì •í•œë‹¤.
         int splineCount = spline.Count;
         if (resolution < splineCount)
         {
@@ -126,52 +126,52 @@ public class SplineMeshBuilder : MonoBehaviour
         }
         float step = (splineCount / (float)resolution);
 
-        //°¢ °£°İ¸¶´ÙÀÇ Á¤Á¡ »ı¼º
+        //ê° ê°„ê²©ë§ˆë‹¤ì˜ ì •ì  ìƒì„±
         for (int i = 0; i < resolution; i++)
         {
             float t = step * i;
 
-            //ÇØ´ç splineÀÇ º¯À§°ª(t)¿¡ ´ëÇÑ Á¤º¸¸¦ °¡Á®¿Â´Ù.
+            //í•´ë‹¹ splineì˜ ë³€ìœ„ê°’(t)ì— ëŒ€í•œ ì •ë³´ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
             SampleSplineWidth(spline, t, out Vector3 tmpRightPoint, out Vector3 tmpLeftPoint);
 
-            //°¡Á®¿Â µ¥ÀÌÅÍ ÀúÀå
+            //ê°€ì ¸ì˜¨ ë°ì´í„° ì €ì¥
             rightPoint.Add(tmpRightPoint);
             leftPoint.Add(tmpLeftPoint);
         }
     }
 
-    //ÇØ´ç splineÀÇ º¯À§°ª(time)¿¡ ´ëÇÑ Á¤º¸¸¦ °¡Á®¿Â´Ù.
+    //í•´ë‹¹ splineì˜ ë³€ìœ„ê°’(time)ì— ëŒ€í•œ ì •ë³´ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
     public void SampleSplineWidth(Spline spline, float time, out Vector3 rightPoint, out Vector3 leftPoint)
     {
-        //Evaluate¿¡ »ç¿ëÇÒ º¯¼öµé
+        //Evaluateì— ì‚¬ìš©í•  ë³€ìˆ˜ë“¤
         float3 position;
         float3 forward;
         float3 up;
 
-        //º¯À§°ª(time)¿¡ ´ëÇÑ splineÀÇ À§Ä¡¸¦ °¡Á®¿Â´Ù.
+        //ë³€ìœ„ê°’(time)ì— ëŒ€í•œ splineì˜ ìœ„ì¹˜ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
         spline.Evaluate(time, out position, out forward, out up);
 
         //float3->vector3
         Vector3 positionVector = position;
 
-        //À­¹æÇâ(up)°ú ¾Õ¹æÇâ(forward)ÀÇ ¿ÜÀû(cross,¿·¹æÇâ)À» ±¸ÇÑ´Ù. 
+        //ìœ—ë°©í–¥(up)ê³¼ ì•ë°©í–¥(forward)ì˜ ì™¸ì (cross,ì˜†ë°©í–¥)ì„ êµ¬í•œë‹¤. 
         Vector3 right = Vector3.Cross(forward, up).normalized;
 
-        //ÇöÀç splineÀÇ À§Ä¡¿¡¼­ ¿·¹æÇâÀ¸·Î width¸¸Å­ ¶³¾îÁø point¸¦ °è»êÇØ¼­ ÀúÀå.
+        //í˜„ì¬ splineì˜ ìœ„ì¹˜ì—ì„œ ì˜†ë°©í–¥ìœ¼ë¡œ widthë§Œí¼ ë–¨ì–´ì§„ pointë¥¼ ê³„ì‚°í•´ì„œ ì €ì¥.
         rightPoint = positionVector + (right * width);
         leftPoint = positionVector + (-right * width);
     }
 
-    //¸Ş½¬¸¦ ÀúÀåÇÒ object »ı¼º
+    //ë©”ì‰¬ë¥¼ ì €ì¥í•  object ìƒì„±
     GameObject ConcreateGameObject(Material material, GameObject parent)
     {
-        //mesh¿Í °ü·ÃµÈ component ºÙ¿©ÁÖ±â
+        //meshì™€ ê´€ë ¨ëœ component ë¶™ì—¬ì£¼ê¸°
         GameObject result = new GameObject();
         result.AddComponent<MeshFilter>();
         result.AddComponent<MeshRenderer>().material = material;
         result.AddComponent<MeshCollider>();
 
-        //ÇØ´ç objectÀÇ localÁ¤º¸ ÃÊ±âÈ­
+        //í•´ë‹¹ objectì˜ localì •ë³´ ì´ˆê¸°í™”
         Global_PSC.InitLocalTransformData(result.transform, parent.transform);
         result.layer = LayerMask.NameToLayer("Terrains");
 
@@ -179,8 +179,8 @@ public class SplineMeshBuilder : MonoBehaviour
     }
 
 
-    //À§ÂÊ mesh»ı¼º(¶¥)
-    //right¿Í leftÀÇ point Á¤º¸¸¦ ¸ğµÎ »ç¿ëÇÑ´Ù.
+    //ìœ„ìª½ meshìƒì„±(ë•…)
+    //rightì™€ leftì˜ point ì •ë³´ë¥¼ ëª¨ë‘ ì‚¬ìš©í•œë‹¤.
     void BuildUp(GameObject terrain, bool isClosed)
     {
         MeshFilter meshFilter = terrain.GetComponent<MeshFilter>();
@@ -188,35 +188,35 @@ public class SplineMeshBuilder : MonoBehaviour
 
         Mesh mesh = new Mesh();
      
-        //meshÀÇ ±¸¼º¿ä¼ÒÁß vertic°ú triangleÀÇ Á¤º¸¸¦ ÀúÀåÇÒ °ø°£ »ı¼º
+        //meshì˜ êµ¬ì„±ìš”ì†Œì¤‘ verticê³¼ triangleì˜ ì •ë³´ë¥¼ ì €ì¥í•  ê³µê°„ ìƒì„±
         List<Vector3> verts = new List<Vector3>();
         List<int> tris = new List<int>();
 
-        //triangleÀÇ ¼ø¼­¸¦ Ç¥ÇöÇØÁÙ offset°ª
+        //triangleì˜ ìˆœì„œë¥¼ í‘œí˜„í•´ì¤„ offsetê°’
         int offset = 0;
 
-        //left³ª right µÑÁß¿¡ ¹¹¸¦ ¾²´ø »ó°ü¾ø´Ù.
-        //°¡µ¶¼ºÀ» À§ÇØ µû·Î ÀúÀå
+        //leftë‚˜ right ë‘˜ì¤‘ì— ë­ë¥¼ ì“°ë˜ ìƒê´€ì—†ë‹¤.
+        //ê°€ë…ì„±ì„ ìœ„í•´ ë”°ë¡œ ì €ì¥
         int length = leftPoint.Count;
 
-        //°è»ê ½ÃÀÛ
+        //ê³„ì‚° ì‹œì‘
         for(int i = 1; i <=length; i++)
         {
-            //ÀÌÀü point¿Í ÇöÀç point¸¦ °¡Á®¿Â´Ù.
+            //ì´ì „ pointì™€ í˜„ì¬ pointë¥¼ ê°€ì ¸ì˜¨ë‹¤.
             Vector3 p1 = rightPoint[i - 1];
             Vector3 p2 = leftPoint[i - 1];
             Vector3 p3;
             Vector3 p4;
 
-            //¸¸¾à ¸¶Áö¸· pointÀÏ °æ¿ì
+            //ë§Œì•½ ë§ˆì§€ë§‰ pointì¼ ê²½ìš°
             if (i == length)
             {
-                //loop°¡ ¾Æ´Ï¶ó¸é ³¡³½´Ù.
+                //loopê°€ ì•„ë‹ˆë¼ë©´ ëë‚¸ë‹¤.
                 if (!isClosed)
                 {
                     break;
                 }
-                //¾Æ´Ï¶ó¸é Ã¹ point¸¦ °¡Á®¿Â´Ù.
+                //ì•„ë‹ˆë¼ë©´ ì²« pointë¥¼ ê°€ì ¸ì˜¨ë‹¤.
                 p3 = rightPoint[0];
                 p4 = leftPoint[0];
             }
@@ -226,52 +226,52 @@ public class SplineMeshBuilder : MonoBehaviour
                 p4 = leftPoint[i];
             }
 
-            //±âº»ÀûÀ¸·Î ÇØ´ç mesh´Â Æò¸éÀÌ¸ç, ¼øÂ÷ÀûÀ¸·Î ±¸¼ºµÈ´Ù.(ÀÌÀü Á¤Á¡¿¡ ¿¬°áÇÒ ÇÊ¿ä°¡¾ø´Ù.)
-            //¶ÇÇÑ ÁÂÇ¥¸¦ Áßº¹ »ç¿ëÇÏ±â ¶§¹®¿¡ triangleÀ» ±¸¼ºÇÒ¶§ ÀÌÀü ÁÂÇ¥¸¦ °í·ÁÇÏÁö¾Ê°í offset¸¸Å­ ÀÌµ¿ÇØ¼­ ±¸¼ºÇØµµµÈ´Ù. 
+            //ê¸°ë³¸ì ìœ¼ë¡œ í•´ë‹¹ meshëŠ” í‰ë©´ì´ë©°, ìˆœì°¨ì ìœ¼ë¡œ êµ¬ì„±ëœë‹¤.(ì´ì „ ì •ì ì— ì—°ê²°í•  í•„ìš”ê°€ì—†ë‹¤.)
+            //ë˜í•œ ì¢Œí‘œë¥¼ ì¤‘ë³µ ì‚¬ìš©í•˜ê¸° ë•Œë¬¸ì— triangleì„ êµ¬ì„±í• ë•Œ ì´ì „ ì¢Œí‘œë¥¼ ê³ ë ¤í•˜ì§€ì•Šê³  offsetë§Œí¼ ì´ë™í•´ì„œ êµ¬ì„±í•´ë„ëœë‹¤. 
 
             offset = 4 * (i - 1);
 
-            //¸¸µé¾îÁú Á¤Á¡Àº ´ÙÀ½°ú °°´Ù.
+            //ë§Œë“¤ì–´ì§ˆ ì •ì ì€ ë‹¤ìŒê³¼ ê°™ë‹¤.
             //left  right
             //1     0
             //3/5   2/4
             //7/9   6/8
             //11    10
 
-            //½Ã°è¹æÇâÀ¸·Î ±¸¼º
+            //ì‹œê³„ë°©í–¥ìœ¼ë¡œ êµ¬ì„±
             int t1 = offset + 0;
             int t2 = offset + 2;
             int t3 = offset + 3;
 
-            //½Ã°è¹æÇâÀ¸·Î ±¸¼º
+            //ì‹œê³„ë°©í–¥ìœ¼ë¡œ êµ¬ì„±
             int t4 = offset + 3;
             int t5 = offset + 1;
             int t6 = offset + 0;
 
-            //list´ë·Î Ãß°¡ÇÑ´Ù.
+            //listëŒ€ë¡œ ì¶”ê°€í•œë‹¤.
             verts.AddRange(new List<Vector3> { p1, p2, p3, p4 });
             tris.AddRange(new List<int> { t1,t2,t3,t4,t5,t6 });
 
         }
 
-        //mesh¿¡ ³Ö´Â´Ù.
+        //meshì— ë„£ëŠ”ë‹¤.
         mesh.vertices = verts.ToArray();
         mesh.triangles = tris.ToArray();
 
-        //bound¿Í normal Àç±¸¼º
+        //boundì™€ normal ì¬êµ¬ì„±
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
 
-        //mesh ³Ö´Â´Ù.
+        //mesh ë„£ëŠ”ë‹¤.
         meshFilter.mesh = mesh;
         meshCollider.sharedMesh = mesh;
 
     }
 
 
-    //À§ÂÊ mesh»ı¼º(¶¥)
-    //right¿Í leftÀÇ point Á¤º¸Áß ÇÏ³ª¸¸ »ç¿ëÇÑ´Ù.(height¸¸Å­ ³»·Áº¸³½´Ù.)
-    //ÀüÃ¼ÀûÀÎ ±¸Á¶´Â ¶¥À» »ı¼ºÇÒ¶§ÀÇ ±¸Á¶¿Í °°´Ù.
+    //ìœ„ìª½ meshìƒì„±(ë•…)
+    //rightì™€ leftì˜ point ì •ë³´ì¤‘ í•˜ë‚˜ë§Œ ì‚¬ìš©í•œë‹¤.(heightë§Œí¼ ë‚´ë ¤ë³´ë‚¸ë‹¤.)
+    //ì „ì²´ì ì¸ êµ¬ì¡°ëŠ” ë•…ì„ ìƒì„±í• ë•Œì˜ êµ¬ì¡°ì™€ ê°™ë‹¤.
     void BuildSide(GameObject terrain, List<Vector3> point, bool isClosed)
     {
         MeshFilter meshFilter = terrain.GetComponent<MeshFilter>();

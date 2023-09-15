@@ -17,7 +17,8 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     protected override void Awake()
     {
         FindUIObjects();
-        roomLists = new List<GameObject>();
+        cachedRoomList = new List<RoomInfo>();
+        displayRoomList = new List<GameObject>();
     }
 
     #region 서버연결-Photon
@@ -57,8 +58,11 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
             LobbyPanel.Find("Panel_Room").Find("Panel_RoomList").Find("Viewport").Find("Content").transform;
         roomInfo = LobbyPanel.Find("Panel_Room").Find("Panel_RoomInfo").transform;
 
-        playerName = LobbyPanel.Find("LobbyInfo_PlayerName").GetComponent<TMP_Text>();
-        playerLobbyNumbers = LobbyPanel.Find("LobbyInfo_PlayerNumber").GetComponent<TMP_Text>();
+        //playerName = LobbyPanel.Find("LobbyInfo_PlayerName").GetComponent<TMP_Text>();
+        //playerLobbyNumbers = LobbyPanel.Find("LobbyInfo_PlayerNumber").GetComponent<TMP_Text>();
+
+        // Room
+        RoomPanel = GameObject.Find("Panel_Room").transform;
     }
     #endregion
 

@@ -34,9 +34,10 @@ public class CreateButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        ObstacleBase obstacle = ResourceManager.Instance.unitResources[id].GetComponent<ObstacleBase>();
-        BuildManager.instance.ChangeBuildTarget(obstacle);
-
-          
+        if (buildCount < buildLimit)
+        {
+            buildCount++;
+            UIManager.uiManager.RePrintUnitCount(id); 
+        }
     }
 }

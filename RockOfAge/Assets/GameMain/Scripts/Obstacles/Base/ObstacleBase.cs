@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class ObstacleBase : MonoBehaviour
@@ -57,9 +56,6 @@ public class ObstacleBase : MonoBehaviour
     {
         ObstacleBase obstacle = Instantiate(this, position, rotate);
         obstacle.transform.localScale = Vector3.one * .1f;
-        GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(status.Id);
-        unitButton.GetComponent<CreateButton>().buildCount+=1;
-        UIManager.uiManager.RePrintUnitCount(status.Id);
 
         return obstacle;
     }

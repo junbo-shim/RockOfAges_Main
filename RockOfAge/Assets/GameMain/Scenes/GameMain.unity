@@ -7622,7 +7622,7 @@ GameObject:
   - component: {fileID: 1058596476}
   m_Layer: 7
   m_Name: CastleTerrains
-  m_TagString: Block
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16062,7 +16062,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1954570713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16077,7 +16077,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildTarget: {fileID: 1819548158}
   gridTest: {fileID: 1190693507}
-  red: {fileID: 0}
+  red: {fileID: 2100000, guid: a98feb765cf8bb9499c47ce5523b3df4, type: 2}
+  white: {fileID: 2100000, guid: 6e686a76dbb6e624a8ec4044b8368328, type: 2}
 --- !u!4 &1954570714
 Transform:
   m_ObjectHideFlags: 0
@@ -16835,6 +16836,8 @@ MonoBehaviour:
   userState: 0
   rockState: 0
   attackRockSelected: 0
+  team1Hp: 1000
+  team2Hp: 1000
 --- !u!1 &2085657708
 GameObject:
   m_ObjectHideFlags: 0

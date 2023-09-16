@@ -22,7 +22,7 @@ public class CreateButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
     {
         //Debug.LogFormat("{0}", id);
         if (buildLimit > buildCount)
-        { 
+        {
             _selectedImg.SetActive(true);
         }
     }
@@ -34,10 +34,9 @@ public class CreateButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (buildCount < buildLimit)
-        {
-            buildCount++;
-            UIManager.uiManager.RePrintUnitCount(id); 
-        }
+        ObstacleBase obstacle = ResourceManager.Instance.unitResources[id].GetComponent<ObstacleBase>();
+        BuildManager.instance.ChangeBuildTarget(obstacle);
+
+
     }
 }

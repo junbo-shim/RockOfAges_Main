@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class ObstacleBase : MonoBehaviour
@@ -37,7 +38,7 @@ public class ObstacleBase : MonoBehaviour
     protected IEnumerator BuildRoutine(float buildTime)
     {
         float currTime = 0;
-        while(currTime < buildTime)
+        while (currTime < buildTime)
         {
             Debug.Log(currTime);
 
@@ -56,6 +57,9 @@ public class ObstacleBase : MonoBehaviour
     {
         ObstacleBase obstacle = Instantiate(this, position, rotate);
         obstacle.transform.localScale = Vector3.one * .1f;
+        GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(status.Id);
+        unitButton.GetComponent<CreateButton>().buildCount += 1;
+        UIManager.uiManager.RePrintUnitCount(status.Id);
 
         return obstacle;
     }
@@ -73,13 +77,13 @@ public class ObstacleBase : MonoBehaviour
 
     //타겟 서치
     //아마 상위에 없어도 될거로 추정됨
-    protected virtual void SearchTarget(){}
+    protected virtual void SearchTarget() { }
 
     //죽음
-    protected virtual void Dead(){}
+    protected virtual void Dead() { }
 
     //공격 활성화
     protected virtual void ActiveAttack() { }
-    protected virtual void DeactiveAttack(){ }
-    
+    protected virtual void DeactiveAttack() { }
+
 }

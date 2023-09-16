@@ -146,6 +146,8 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         Vector3 startPointTransform = new Vector3(210f, 32f, 85f);
         Vector3 cameraTransform = new Vector3(210f, 32f, 82f);
         userRock.transform.position = startPointTransform;
+        Debug.LogFormat("스타트 포인트 : {0}",startPointTransform);
+        Debug.LogFormat("유저 락 포지션 : {0}",userRock.transform.position);
         GameObject rockCamera = FindTopLevelGameObject("RockCamera");
         //GameObject rockCamera = FindTopLevelGameObject("NewRockCamera");
         CinemachineVirtualCamera virtualRockCamera = rockCamera.GetComponent<CinemachineVirtualCamera>();

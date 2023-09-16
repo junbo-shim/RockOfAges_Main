@@ -18,6 +18,7 @@ public class ItemManager : MonoBehaviour
     {
         itemManager = this;
         DontDestroyOnLoad(itemManager);
+        userRockChoosed[0] = -1;
     }
 
     #region Functions

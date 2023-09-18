@@ -48,14 +48,13 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #endregion
 
     #region RoomPanel 버튼들
-    private Button player1;
-    private Button player2;
-    private Button player3;
-    private Button player4;
+    private Button joinTeam1Button;
+    private Button joinTeam2Button;
 
-    public Button roomReadyButton;
-    public Button roomStartButton;
-    private bool isReadyOn;
+    //public Button roomReadyButton;
+    public Button startReadyButton;
+    public Button goTeam1Button;
+    public Button goTeam2Button;
     #endregion
 
     protected override void Awake()
@@ -122,13 +121,23 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #region Room Panel 의 모든 버튼을 찾아서 저장하는 메서드
     private void FindRoomButtons() 
     {
-        player1 = NetworkManager.Instance.RoomPanel.Find("Team1").Find("Player1").GetComponent<Button>();
-        player2 = NetworkManager.Instance.RoomPanel.Find("Team1").Find("Player2").GetComponent<Button>();
-        player3 = NetworkManager.Instance.RoomPanel.Find("Team2").Find("Player3").GetComponent<Button>();
-        player4 = NetworkManager.Instance.RoomPanel.Find("Team2").Find("Player4").GetComponent<Button>();
+        startReadyButton = roomPanel.Find("Button_RoomStartReady").GetComponent<Button>();
 
-        roomReadyButton = NetworkManager.Instance.RoomPanel.Find("Button_RoomReady").GetComponent<Button>();
-        roomStartButton = NetworkManager.Instance.RoomPanel.Find("Button_RoomStart").GetComponent<Button>();
+        if (PhotonNetwork.IsMasterClient == true) 
+        {
+            startReadyButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "START";
+            startReadyButton.interactable = false;
+        }
+        else 
+        {
+            startReadyButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "READY";
+            startReadyButton.interactable = true;
+        }
+
+        goTeam1Button =
+            roomPanel.Find("Buttons").Find("JoinTeam1").GetComponent<Button>();
+        goTeam2Button =
+            roomPanel.Find("Buttons").Find("JoinTeam2").GetComponent<Button>();
     }
     #endregion
 
@@ -150,7 +159,10 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         JoinRandomButton.onClick.AddListener(PressJoinRandomButton);
 
         createConfirmButton.onClick.AddListener(PressConfirmCreateButton);
-        //commitPWButton.onClick
+        startReadyButton.onClick.AddListener(PressStartReadyButton);
+
+        goTeam1Button.onClick.AddListener(PressJoinTeam1);
+        goTeam1Button.onClick.AddListener(PressJoinTeam2);
     }
     #endregion
 
@@ -306,6 +318,11 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
             TMP_InputField roomPWInput = createRoomPopup.Find("InputField_RoomPW").GetComponent<TMP_InputField>();
             roomPWInput.text = default;
         }
+        else if (roomPanel.localScale == Vector3.one) 
+        {
+            roomPanel.localScale = Vector3.zero;
+            PhotonNetwork.LeaveRoom();
+        }
     }
     #endregion
 
@@ -332,6 +349,11 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
             closeButton = joinLockedRoomPopup.Find("Button_Close").GetComponent<Button>();
             closeButton.onClick.AddListener(PressClose);
         }
+        else if (roomPanel.localScale == Vector3.one) 
+        {
+            closeButton = roomPanel.Find("Button_Close").GetComponent<Button>();
+            closeButton.onClick.AddListener(PressClose);
+        }
     }
     #endregion
 
@@ -354,7 +376,8 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         // 포톤 내의 방 생성
         RoomOptions roomOptions = new RoomOptions { MaxPlayers = 4 };
         PhotonNetwork.CreateRoom(roomNameInput.text, roomOptions, null, null);
-        Photon.Realtime.Room newRoom = PhotonNetwork.CurrentRoom;
+        
+        //Photon.Realtime.Room newRoom = PhotonNetwork.CurrentRoom;
 
         // 포톤 방의 데이터 세팅 (커스텀 프로퍼티-Hashtable)
         //ExitGames.Client.Photon.Hashtable roomHashTable = new ExitGames.Client.Photon.Hashtable();
@@ -370,7 +393,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
 
         roomPanel.localScale = Vector3.one;
 
-        NetworkManager.Instance.UpdateRoomDisplay();
+        //NetworkManager.Instance.UpdateRoomDisplay();
     }
     #endregion
 
@@ -378,26 +401,106 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     public void PressJoinRandomButton()
     {
         PhotonNetwork.JoinRandomRoom();
-
         roomPanel.localScale = Vector3.one;
     }
     #endregion
 
-    [PunRPC]
-    #region 레디 버튼
-    public void PressRoomReadyButton() 
+    #region 팀 참여 버튼
+    private void PressJoinTeam1()
     {
+        if (PhotonNetwork.IsMasterClient == true) 
+        {
+            if (NetworkManager.Instance.team1Entry[0] == default && NetworkManager.Instance.team1Entry[1] == default)
+            {
+                NetworkManager.Instance.team1Entry[0] = 1;
+            }
+            else if (NetworkManager.Instance.team1Entry[0] == default && NetworkManager.Instance.team1Entry[1] != default)
+            {
+                NetworkManager.Instance.team1Entry[0] = 1;
+            }
+            else if (NetworkManager.Instance.team1Entry[0] != default && NetworkManager.Instance.team1Entry[1] == default)
+            {
+                NetworkManager.Instance.team1Entry[1] = 2;
+            }
+            else if (NetworkManager.Instance.team1Entry[0] != default && NetworkManager.Instance.team1Entry[1] != default)
+            {
+                /*Do Nothing*/
+            }
+        }
+        else 
+        {
+            if (NetworkManager.Instance.team1Entry[0] == default && NetworkManager.Instance.team1Entry[1] == default) 
+            {
+                NetworkManager.Instance.team1Entry[0] = 1;
+                photonView.RPC("SendMasterRoomPosition", RpcTarget.MasterClient, NetworkManager.Instance.team1Entry[0]);
+            }
+            else if (NetworkManager.Instance.team1Entry[0] == default && NetworkManager.Instance.team1Entry[1] != default) 
+            {
+                NetworkManager.Instance.team1Entry[0] = 1;
+                photonView.RPC("SendMasterRoomPosition", RpcTarget.MasterClient, NetworkManager.Instance.team1Entry[0]);
+            }
+            else if (NetworkManager.Instance.team1Entry[0] != default && NetworkManager.Instance.team1Entry[1] == default)
+            {
+                NetworkManager.Instance.team1Entry[1] = 2;
+                photonView.RPC("SendMasterRoomPosition", RpcTarget.MasterClient, NetworkManager.Instance.team1Entry[1]);
+            }
+            else if (NetworkManager.Instance.team1Entry[0] != default && NetworkManager.Instance.team1Entry[1] != default)
+            {
+                /*Do Nothing*/
+            }
+        }
+    }
 
+    private void PressJoinTeam2()
+    {
+        if (PhotonNetwork.IsMasterClient == true)
+        {
+            if (NetworkManager.Instance.team2Entry[0] == default && NetworkManager.Instance.team2Entry[1] == default)
+            {
+                NetworkManager.Instance.team2Entry[0] = 3;
+            }
+            else if (NetworkManager.Instance.team2Entry[0] == default && NetworkManager.Instance.team2Entry[1] != default)
+            {
+                NetworkManager.Instance.team2Entry[0] = 3;
+            }
+            else if (NetworkManager.Instance.team2Entry[0] != default && NetworkManager.Instance.team2Entry[1] == default)
+            {
+                NetworkManager.Instance.team2Entry[1] = 4;
+            }
+            else if (NetworkManager.Instance.team2Entry[0] != default && NetworkManager.Instance.team2Entry[1] != default)
+            {
+                /*Do Nothing*/
+            }
+        }
+        else
+        {
+            if (NetworkManager.Instance.team2Entry[0] == default && NetworkManager.Instance.team2Entry[1] == default)
+            {
+                NetworkManager.Instance.team2Entry[0] = 3;
+                photonView.RPC("SendMasterRoomPosition", RpcTarget.MasterClient, NetworkManager.Instance.team2Entry[0]);
+            }
+            else if (NetworkManager.Instance.team2Entry[0] == default && NetworkManager.Instance.team2Entry[1] != default)
+            {
+                NetworkManager.Instance.team2Entry[0] = 3;
+                photonView.RPC("SendMasterRoomPosition", RpcTarget.MasterClient, NetworkManager.Instance.team2Entry[0]);
+            }
+            else if (NetworkManager.Instance.team2Entry[0] != default && NetworkManager.Instance.team2Entry[1] == default)
+            {
+                NetworkManager.Instance.team2Entry[1] = 4;
+                photonView.RPC("SendMasterRoomPosition", RpcTarget.MasterClient, NetworkManager.Instance.team2Entry[1]);
+            }
+            else if (NetworkManager.Instance.team2Entry[0] != default && NetworkManager.Instance.team2Entry[1] != default)
+            {
+                /*Do Nothing*/
+            }
+        }
     }
     #endregion
 
     #region 시작 버튼
-    public void PressRoomStartButton() 
+    public void PressStartReadyButton() 
     {
-        if(PhotonNetwork.IsMasterClient) 
-        {
-            
-        }
+
     }
     #endregion
 

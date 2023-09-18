@@ -103,14 +103,16 @@ public class Catapult : MonoBehaviour
                 // 투석기와 돌 사이의 각도 계산
                 float angleToRock = Vector3.Angle(transform.forward, directionToTarget);
 
-                // 일직선 상에 있는지 확인하고 돌을 던지기
-                //float angleThreshold = 5f; // 각도 임계값을 설정합니다. 필요한 경우 이 값을 조절할 수 있습니다.
-                //if (angleToRock <= angleThreshold)
-                //{
-                //    ThrowRock();
-                //}
-
-                //hasThrownRock = true;
+                // 일직선 상에 있는지 확인하고 애니메이션을 실행하거나 종료합니다.
+                float angleThreshold = 10f; // 각도 임계값을 설정합니다. 필요한 경우 이 값을 조절할 수 있습니다.
+                if (angleToRock <= angleThreshold)
+                {
+                    animator.SetBool("Attack", true); // "IsAligned"는 애니메이터 불린 변수의 이름입니다. 원하는 이름으로 변경하세요.
+                }
+                else
+                {
+                    animator.SetBool("Attack", false);
+                }
             }
         }
     }

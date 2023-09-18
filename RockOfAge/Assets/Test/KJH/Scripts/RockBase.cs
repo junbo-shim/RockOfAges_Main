@@ -48,8 +48,8 @@ public class RockBase : MonoBehaviour
             if (angle > 45f)
             {
                 // 빠른 반응을 위해 벨로시티 값을 새 방향으로 바로 변경합니다.
-                rRb.velocity = forceDirection.normalized * maxSpeed + rRb.velocity * 0.5f;
-                rRb.angularVelocity = forceDirection.normalized * maxSpeed  + rRb.angularVelocity * 0.5f;
+                rRb.velocity = forceDirection * maxSpeed ;
+                rRb.angularVelocity = forceDirection * maxSpeed ;
             }
             else
             {

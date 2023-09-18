@@ -26,18 +26,18 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     // 로비에 들어오면 호출되는 메서드
     public override void OnJoinedLobby()
     {
-        base.OnJoinedLobby();
         TitlePanel.localScale = Vector3.zero;
         LobbyPanel.localScale = Vector3.one;
         Debug.Log("Join Success");
-
+        
+        
         //playerName.text = PlayerPrefs.GetString("name");
         //playerLobbyNumbers.text = PhotonNetwork.CountOfPlayersOnMaster.ToString() + "/20";
     }
     // 로비를 떠날시 호출되는 메서드
     public override void OnLeftLobby()
     {
-        base.OnLeftLobby();
+        
     }
     // 로비에 있는 Room 이 생성되거나 파괴될 시 호출되는 메서드
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -48,13 +48,11 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     // OnRoomListUpdate 의 List 를 클라이언트 변수에 캐싱하는 메서드
     private void CacheServerRoomList(List<RoomInfo> roomList) 
     {
-        //cachedRoomList.Clear();
-        //cachedRoomList = roomList;
-        //Debug.Log(cachedRoomList.Count);
     }
     // 방 UI 에 대한 변화를 반영하는 메서드
     public void UpdateRoomDisplay()
     {
+        #region Legacy 2
         //if (RoomListContent.childCount == 0) 
         //{
         //    /*Do Nothing*/
@@ -62,10 +60,10 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         //else if (RoomListContent.childCount > 0) 
         //{
 
-            //for (int i = 0; i < RoomListContent.childCount; i++) 
-            //{
-            //    Destroy(displayRoomList[i]);
-            //}
+        //for (int i = 0; i < RoomListContent.childCount; i++) 
+        //{
+        //    Destroy(displayRoomList[i]);
+        //}
         //}
 
         //if (cachedRoomList.Count > 0) 
@@ -82,6 +80,7 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         //    }
         //    Debug.Log(RoomListContent.childCount);
         //}
+        #endregion
 
         #region Legacy
         //if (RoomListContent.childCount >= 0)

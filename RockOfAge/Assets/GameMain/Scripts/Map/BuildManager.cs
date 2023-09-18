@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class BuildManager : MonoBehaviour
 {
@@ -42,7 +43,7 @@ public class BuildManager : MonoBehaviour
     public static readonly Vector3 FIXED_GRID_OFFSET = (Vector3.one - Vector3.up) * .5f;
 
     const int ONCE_ROTATE_EULER_ANGLE = 90;
-    public static readonly Vector3Int OUT_VECTOR  = new Vector3Int(-90000, 0, 0);
+    public static readonly Vector3Int OUT_VECTOR = new Vector3Int(-90000, 0, 0);
 
 
     private void Awake()
@@ -52,9 +53,6 @@ public class BuildManager : MonoBehaviour
         buildState = new BitArray(MAP_SIZE_X * MAP_SIZE_Z);
         viewer = GetComponentInChildren<BuildViewer>();
         viewer.HideViewer();
-
-
-        buildTarget.transform.localScale = Vector3.zero;
     }
 
 
@@ -69,7 +67,6 @@ public class BuildManager : MonoBehaviour
         ChangeCurrGrid();
 
         //테스트 코드
-        ChangeBuildTarget(buildTarget);
         if (buildTarget == null)
         {
             return;
@@ -87,7 +84,7 @@ public class BuildManager : MonoBehaviour
                 }
                 else
                 {
-                    
+
                     if (Input.GetMouseButtonDown(0))
                     {
                         clickGridIndex = currCursorGridIndex;
@@ -149,7 +146,7 @@ public class BuildManager : MonoBehaviour
             for (int x = -MAP_SIZE_X / 2; x < MAP_SIZE_X / 2; x++)
             {
                 RaycastHit raycastHit;
-                if (Physics.Raycast(new Vector3(x, MAP_SIZE_Y, z) + (Vector3.one - Vector3.up)*.5f, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
+                if (Physics.Raycast(new Vector3(x, MAP_SIZE_Y, z) + (Vector3.one - Vector3.up) * .5f, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
                 {
                     //건설 불가 타일 검사
                     if (raycastHit.collider.CompareTag("Block"))
@@ -161,9 +158,9 @@ public class BuildManager : MonoBehaviour
                     buildState.Set((z + MAP_SIZE_Z / 2) * MAP_SIZE_Z + (x + MAP_SIZE_X / 2), true);
 
                     ///////////////////////////////////////////////////////////테스트 코드
-                    GameObject gameObject = Instantiate(gridTest, raycastHit.point+Vector3.up*0.02f, Quaternion.FromToRotation(-Vector3.forward, raycastHit.normal));
+                    GameObject gameObject = Instantiate(gridTest, raycastHit.point + Vector3.up * 0.02f, Quaternion.FromToRotation(-Vector3.forward, raycastHit.normal));
                     gameObject.name = gridTest.name + "_" + z + "_" + x;
-                    gameObject.transform.localScale = Vector3.one*0.8f;
+                    gameObject.transform.localScale = Vector3.one * 0.8f;
                     /////////////////////////////////////////////////////////////////////
                 }
             }
@@ -211,7 +208,7 @@ public class BuildManager : MonoBehaviour
     //각 grid를 순회하며 size만큼의 건설 가능 데이터를 변경함
     void SetBitArrays(List<Vector3> grids, Vector2Int buildSize)
     {
-        for(int i  = 0; i < grids.Count; i++)
+        for (int i = 0; i < grids.Count; i++)
         {
             SetBitArrays(grids[i], buildSize);
         }
@@ -246,7 +243,7 @@ public class BuildManager : MonoBehaviour
         Vector3Int _currCursorGridIndex;
 
         //짝수인지 홀수인지에 따라서 맵핑되는 그리드 좌표 달라짐.
-        if(gridOffset.x == .5f)
+        if (gridOffset.x == .5f)
         {
             //홀수
             _currCursorGridIndex = new Vector3Int(Mathf.FloorToInt(mouseWorldPos.x), 0, Mathf.FloorToInt(mouseWorldPos.z));
@@ -293,11 +290,11 @@ public class BuildManager : MonoBehaviour
     //이 정보는 유지된다.
     void ChangeBuildRotation(int diff)
     {
-        if(whereLookAt == BuildRotateDirection.LEFT && diff==1)
+        if (whereLookAt == BuildRotateDirection.LEFT && diff == 1)
         {
             whereLookAt = BuildRotateDirection.UP;
         }
-         else if (whereLookAt == BuildRotateDirection.UP && diff == -1)
+        else if (whereLookAt == BuildRotateDirection.UP && diff == -1)
         {
             whereLookAt = BuildRotateDirection.LEFT;
         }
@@ -307,23 +304,27 @@ public class BuildManager : MonoBehaviour
         }
         viewer.transform.localEulerAngles = Vector3.up * ONCE_ROTATE_EULER_ANGLE * (int)whereLookAt;
     }
-        
+
     bool IsUIClick()
     {
-        return false;
+        return EventSystem.current.IsPointerOverGameObject();
     }
 
     //모드 참조
     bool IsDefance()
     {
-        return true;
+        if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
+        {
+            return true;
+        }
+        return false;
     }
 
     //현재 그리드 위치에 건설 가능한 지형이 존재하는지 체크
     bool IsTerrain()
     {
         RaycastHit raycastHit;
-        if (Physics.Raycast(currCursorGridIndex + gridOffset+ Vector3.up * MAP_SIZE_Y, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
+        if (Physics.Raycast(currCursorGridIndex + gridOffset + Vector3.up * MAP_SIZE_Y, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
         {
             return true;
         }
@@ -360,7 +361,14 @@ public class BuildManager : MonoBehaviour
     //true : 현재 건설 개수가 최대 건설보다 낮다
     bool GetItemLimitState()
     {
-        return true;
+        // gold & limit
+        float gold = default;
+        int buildLimit = default;
+        ResourceManager.Instance.GetUnitGoldAndBuildLimitFromID(buildTarget.status.Id, out gold, out buildLimit);
+        GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(buildTarget.status.Id);
+        int buildCount = unitButton.GetComponent<CreateButton>().buildCount;
+
+        return (buildCount < buildLimit);
     }
 
     //현재 grid위치의 주변 위치의 terrain의 상태를 전부 비교
@@ -368,12 +376,12 @@ public class BuildManager : MonoBehaviour
     {
         bool result = true;
 
-        for (int y = (int)(buildSize.y * .5f); y > -buildSize.y * .5f; y--) 
+        for (int y = (int)(buildSize.y * .5f); y > -buildSize.y * .5f; y--)
         {
             for (int x = (int)(buildSize.x * .5f); x > -buildSize.x * .5f; x--)
             {
                 result = result && GetBuildEnable(grid - Vector3Int.right * (x) - Vector3Int.forward * (y));
-            
+
             }
         }
         return result;

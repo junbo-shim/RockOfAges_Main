@@ -1,5 +1,9 @@
+using Cinemachine;
+using PlayFab.ClientModels;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
+using static Photon.Pun.UtilityScripts.PunTeams;
 
 public enum UserState
 { 
@@ -21,15 +25,22 @@ public class CycleManager : MonoBehaviour
     public int rockState;
     // 공격에서 공이 선택됨 bool
     public bool attackRockSelected = false;
-    ////! 서버 team1 team2 체력
-    //public float team1Hp = 1000f;
-    //public float team2Hp = 1000f;
+    // team1 team2 체력
+    public float team1Hp = 1000f;
+    public float team2Hp = 1000f;
     ////! 서버 player gold
     //public int gold = 1000;
+    // enter check bool 나중에 좋은 방법으로 바꾸기
+    private bool _isEntered = false;
     #endregion
 
     public void Awake()
     {
+        //if (!_isEntered)
+        //{
+        //    StartCoroutine(FixEnterRoutine());
+            
+        //}
         cycleManager = this;
         userState = (int)UserState.UNITSELECT;
         rockState = (int)RockState.ROCKSELECT;
@@ -37,6 +48,10 @@ public class CycleManager : MonoBehaviour
 
     private void Update()
     {
+        //if (!_isEntered) 
+        //{
+        //    return;
+        //}
         GameCycle();
     }
 
@@ -60,7 +75,7 @@ public class CycleManager : MonoBehaviour
     // 공하나 이상 선택 & 유저 enter -> defence
     public void UpdateSelectionCycle()
     {
-        if (userState == (int)UserState.UNITSELECT)
+        if (_isEntered == false && userState == (int)UserState.UNITSELECT)
         {
             // 공 하나 이상 선택시 문자출력 설정
             if (CheckUserBall() == true)
@@ -68,12 +83,14 @@ public class CycleManager : MonoBehaviour
                 UIManager.uiManager.PrintReadyText();
             }
             else { UIManager.uiManager.PrintNotReadyText(); }
+
             // 엔터누를시
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
             {
                 // 검증 후 다음 사이클로
                 if (CheckUserBall() == true)
                 {
+                    _isEntered = true;
                     UIManager.uiManager.ChangeStateUnitSelectToRockSelect();
                 }
                 else { return; }
@@ -129,8 +146,9 @@ public class CycleManager : MonoBehaviour
     //{ UpdateDefenceCycle()
     public void UpdateDefenceCycle()
     {
-        int userRock = ItemManager.itemManager.userRockChoosed[0];
-        if (userRock != 0 && userState == (int)UserState.DEFENCE && rockState == (int)RockState.ROCKCREATED)
+
+        // 소환시간초과시 C 누르면
+        if (Input.GetKeyDown(KeyCode.C))
         {
             ChangeStateDefenceToAttack();
         }
@@ -139,13 +157,13 @@ public class CycleManager : MonoBehaviour
 
     public void ChangeStateDefenceToAttack()
     {
-        // 소환시간초과시 C 누르면
-        if (Input.GetKeyDown(KeyCode.C))
+        int userRock = ItemManager.itemManager.userRockChoosed[0];
+        if (userRock != -1 && userState == (int)UserState.DEFENCE && rockState == (int)RockState.ROCKCREATED)
         {
             ResourceManager.Instance.InstatiateUserSelectedRock();
             userState = (int)UserState.ATTACK;
             rockState = (int)RockState.ROCKSELECT;
-            ItemManager.itemManager.userRockChoosed[0] = 0;
+            ItemManager.itemManager.userRockChoosed[0] = -1;
         }
     }
 
@@ -181,4 +199,86 @@ public class CycleManager : MonoBehaviour
     }
     //} UpdateGameEndCycle()
     #endregion
+
+    // 플레이어 이름을 넣으면 team에 맞는 카메라 레이어를 바꿔주는 함수
+    public void SetCameraLayerMask(string player_)
+    {
+        string team = default;
+
+        int teamNum = (int)((int.Parse(player_.Split("Player")[0]) + 1) * 0.5f);
+        team = "Team" + teamNum;
+
+        AddCullingMask(team);
+        AddLayer(team);
+    }
+
+    public void AddCullingMask(string team_)
+    {
+        GameObject playerObj = ResourceManager.Instance.FindTopLevelGameObject("PlayerCamera");
+        GameObject enemyObj = ResourceManager.Instance.FindTopLevelGameObject("EnemyCamera");
+        Camera playerCam = playerObj.GetComponent<Camera>();
+        Camera enemyCam = enemyObj.GetComponent<Camera>();
+
+        int team1 = Global_PSC.FindLayerToName("Team1");
+        int team2 = Global_PSC.FindLayerToName("Team2");
+
+        if (team_ == "Team1")
+        {
+            playerCam.cullingMask |= team1;
+            playerCam.cullingMask &= team2;
+            enemyCam.cullingMask |= team2;
+            enemyCam.cullingMask &= team1;
+        }
+        else
+        {
+            enemyCam.cullingMask |= team1;
+            enemyCam.cullingMask &= team2;
+            playerCam.cullingMask |= team2;
+            playerCam.cullingMask &= team1;
+        }
+    }
+
+
+    public void AddLayer(string team_)
+    {
+        #region mainCameras
+        GameObject[] playerCameras = new GameObject[4];
+        playerCameras[0] = ResourceManager.Instance.FindTopLevelGameObject("PlayerCamera");
+        playerCameras[1] = ResourceManager.Instance.FindTopLevelGameObject("TopViewCamera");
+        playerCameras[2] = ResourceManager.Instance.FindTopLevelGameObject("ClickedTopViewCamera");
+        playerCameras[3] = ResourceManager.Instance.FindTopLevelGameObject("RockCamera");
+        playerCameras[4] = ResourceManager.Instance.FindTopLevelGameObject("GameEndCamera");
+        #endregion
+
+        #region subCameras
+        GameObject[] enemyCameras = new GameObject[3];
+        enemyCameras[0] = ResourceManager.Instance.FindTopLevelGameObject("EnemyCamera");
+        enemyCameras[1] = ResourceManager.Instance.FindTopLevelGameObject("EnemyRockCamera");
+        enemyCameras[2] = ResourceManager.Instance.FindTopLevelGameObject("CastleViewCamera");
+        #endregion
+
+        foreach (var playerCamera in playerCameras)
+        {
+            if (team_ == "Team1")
+            {
+                playerCamera.gameObject.layer = LayerMask.NameToLayer("Team1");
+            }
+            else
+            { 
+                playerCamera.gameObject.layer = LayerMask.NameToLayer("Team2");
+            }
+        }
+
+        foreach (var enemyCamera in enemyCameras)
+        {
+            if (team_ == "Team1")
+            {
+                enemyCamera.gameObject.layer = LayerMask.NameToLayer("Team2");
+            }
+            else
+            {
+                enemyCamera.gameObject.layer = LayerMask.NameToLayer("Team1");
+            }
+        }
+    }
 }

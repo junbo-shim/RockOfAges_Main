@@ -1,6 +1,9 @@
+using Cinemachine;
 using PlayFab.ClientModels;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
+using static Photon.Pun.UtilityScripts.PunTeams;
 
 public enum UserState
 { 
@@ -197,9 +200,85 @@ public class CycleManager : MonoBehaviour
     //} UpdateGameEndCycle()
     #endregion
 
-    IEnumerator FixEnterRoutine()
+    // 플레이어 이름을 넣으면 team에 맞는 카메라 레이어를 바꿔주는 함수
+    public void SetCameraLayerMask(string player_)
     {
-        yield return new WaitForSeconds(2f);
-        _isEntered = true;
+        string team = default;
+
+        int teamNum = (int)((int.Parse(player_.Split("Player")[0]) + 1) * 0.5f);
+        team = "Team" + teamNum;
+
+        AddCullingMask(team);
+        AddLayer(team);
+    }
+
+    public void AddCullingMask(string team_)
+    {
+        GameObject playerObj = ResourceManager.Instance.FindTopLevelGameObject("PlayerCamera");
+        GameObject enemyObj = ResourceManager.Instance.FindTopLevelGameObject("EnemyCamera");
+        Camera playerCam = playerObj.GetComponent<Camera>();
+        Camera enemyCam = enemyObj.GetComponent<Camera>();
+
+        int team1 = Global_PSC.FindLayerToName("Team1");
+        int team2 = Global_PSC.FindLayerToName("Team2");
+
+        if (team_ == "Team1")
+        {
+            playerCam.cullingMask |= team1;
+            playerCam.cullingMask &= team2;
+            enemyCam.cullingMask |= team2;
+            enemyCam.cullingMask &= team1;
+        }
+        else
+        {
+            enemyCam.cullingMask |= team1;
+            enemyCam.cullingMask &= team2;
+            playerCam.cullingMask |= team2;
+            playerCam.cullingMask &= team1;
+        }
+    }
+
+
+    public void AddLayer(string team_)
+    {
+        #region mainCameras
+        GameObject[] playerCameras = new GameObject[4];
+        playerCameras[0] = ResourceManager.Instance.FindTopLevelGameObject("PlayerCamera");
+        playerCameras[1] = ResourceManager.Instance.FindTopLevelGameObject("TopViewCamera");
+        playerCameras[2] = ResourceManager.Instance.FindTopLevelGameObject("ClickedTopViewCamera");
+        playerCameras[3] = ResourceManager.Instance.FindTopLevelGameObject("RockCamera");
+        playerCameras[4] = ResourceManager.Instance.FindTopLevelGameObject("GameEndCamera");
+        #endregion
+
+        #region subCameras
+        GameObject[] enemyCameras = new GameObject[3];
+        enemyCameras[0] = ResourceManager.Instance.FindTopLevelGameObject("EnemyCamera");
+        enemyCameras[1] = ResourceManager.Instance.FindTopLevelGameObject("EnemyRockCamera");
+        enemyCameras[2] = ResourceManager.Instance.FindTopLevelGameObject("CastleViewCamera");
+        #endregion
+
+        foreach (var playerCamera in playerCameras)
+        {
+            if (team_ == "Team1")
+            {
+                playerCamera.gameObject.layer = LayerMask.NameToLayer("Team1");
+            }
+            else
+            { 
+                playerCamera.gameObject.layer = LayerMask.NameToLayer("Team2");
+            }
+        }
+
+        foreach (var enemyCamera in enemyCameras)
+        {
+            if (team_ == "Team1")
+            {
+                enemyCamera.gameObject.layer = LayerMask.NameToLayer("Team2");
+            }
+            else
+            {
+                enemyCamera.gameObject.layer = LayerMask.NameToLayer("Team1");
+            }
+        }
     }
 }

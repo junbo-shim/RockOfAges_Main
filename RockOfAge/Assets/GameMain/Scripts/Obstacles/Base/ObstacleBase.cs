@@ -10,6 +10,9 @@ public class ObstacleBase : MonoBehaviour
     //스테이터스
     public ObstacleStatus status;
 
+    //건설시 position
+    public float buildPositionY;
+
     //기본 데이터
     protected MeshFilter obstacleMeshFilter;
     protected Rigidbody obstacleRigidBody;
@@ -40,12 +43,9 @@ public class ObstacleBase : MonoBehaviour
         float currTime = 0;
         while (currTime < buildTime)
         {
-            Debug.Log(currTime);
-
             yield return Time.deltaTime;
             currTime += Time.deltaTime;
         }
-        Debug.Log("onenable");
 
         isBuildComplete = true;
         obstacleRenderer.material = originMaterial;

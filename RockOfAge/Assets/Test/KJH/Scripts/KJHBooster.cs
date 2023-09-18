@@ -13,7 +13,7 @@ public class KJHBooster : MonoBehaviour
         RockBase rockBase = other.GetComponent<RockBase>();
         if (rockBase != null)
         {
-            rockBase.ApplyBoosterEffect(duration, boostForce, upForce, transform.forward.normalized);
+            //rockBase.ApplyBoosterEffect(duration, boostForce, upForce, transform.forward.normalized);
         }
     }
 }

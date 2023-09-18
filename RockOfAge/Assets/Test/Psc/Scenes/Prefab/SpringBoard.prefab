@@ -224,6 +224,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: db7fb3106814eae45932b6194abd1333, type: 2}
+  buildPositionY: 0.01
 --- !u!54 &6100889804328855127
 Rigidbody:
   m_ObjectHideFlags: 0

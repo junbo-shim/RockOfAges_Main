@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using PlayFab;
 using PlayFab.ClientModels;
+using PlayFab.GroupsModels;
 
 public partial class NetworkManager : GlobalSingleton<NetworkManager>
 {
@@ -19,6 +20,9 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         FindUIObjects();
         cachedRoomList = new List<RoomInfo>();
         displayRoomList = new List<GameObject>();
+        playerRoomList = new Player[4];
+        team1Entry = new int[2];
+        team2Entry = new int[2];
     }
 
     #region 서버연결-Photon
@@ -75,7 +79,7 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
             CreateAccount = true };
 
         PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginFailure);
-
+        PhotonNetwork.NickName = PlayFabSettings.DeviceUniqueIdentifier;
         Invoke("ConnectToServer", 2f);
     }
     #endregion
@@ -94,7 +98,7 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         PlayerPrefs.SetString("name", emailInput.text);
 
         PlayFabClientAPI.LoginWithEmailAddress(request, OnLoginSuccess, OnLoginFailure);
-
+        PhotonNetwork.NickName = emailInput.text;
         Invoke("ConnectToServer", 3f);
     }
 

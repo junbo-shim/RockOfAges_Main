@@ -40,6 +40,11 @@ MonoBehaviour:
   - Fire
   - RespawnSpaceship
   - PressRoomReadyButton
+  - PressStartReadyButton
+  - MovePlayer
+  - ResetPlayerTeamAndNumber
+  - SavePlayerTeamAndNumber
+  - SendMasterRoomPosition
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

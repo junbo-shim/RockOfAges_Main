@@ -1,4 +1,4 @@
-using ExitGames.Client.Photon.StructWrapping;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -93,14 +93,18 @@ public class BuildManager : MonoBehaviour
                         clickGridIndex = currCursorGridIndex;
                         //시작 좌표 저장
                     }
-                    if (Input.GetMouseButton(0))
+                    else if (Input.GetMouseButton(0))
                     {
                         //드래그 좌표 저장
                     }
-                    if (Input.GetMouseButtonUp(0))
+                    else if (Input.GetMouseButtonUp(0))
                     {
                         //빌드 시작
-                        ObstacleBase build = buildTarget.Build(GetViewerPosition(clickGridIndex), Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0));
+                        Vector3 position;
+                        Quaternion rotation = Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0);
+                        GetViewerPosition(clickGridIndex, rotation, out position, out rotation);
+
+                        ObstacleBase build = buildTarget.Build(position, rotation);
                         build.name = buildTarget.name + "_" + currCursorGridIndex.z + "_" + currCursorGridIndex.x;
                         SetBitArrays(clickGridIndex, buildTarget.status.Size);
                         clickGridIndex = OUT_VECTOR;
@@ -169,6 +173,7 @@ public class BuildManager : MonoBehaviour
     //size만큼의 건설 가능 데이터를 변경함
     void SetBitArrays(Vector3 grid, Vector2Int buildSize)
     {
+
         //짝수 크기와 홀수 크기마다 맵핑되는 그리드 영역이 달라지기 때문에 적당한 계산 값을 도출해냈음
         //크기 3 일 경우
         //1.5 ~ -1.5 -> 1 ~ -1
@@ -182,13 +187,20 @@ public class BuildManager : MonoBehaviour
                 //입력된 그리드를 기반으로 그리드 위치 변경
                 Vector3 _grid = grid - Vector3Int.right * x - Vector3Int.forward * y;
 
+                int size = (int)((_grid.z + MAP_SIZE_Z * .5f) * MAP_SIZE_Z + (_grid.x + MAP_SIZE_X * .5f));
+                if (size < 0 || MAP_SIZE_X * MAP_SIZE_Z <= size)
+                {
+                    return;
+                }
                 //건설 가능 데이터 변경
-                buildState.Set((int)(_grid.z + MAP_SIZE_Z * .5f) * (int)MAP_SIZE_Z + (int)(_grid.x + MAP_SIZE_X * .5f), false);
+                buildState.Set(size, false);
 
                 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Test 코드
                 //gameobject에 접근
+
                 GameObject floor = GameObject.Find("GridTestCube_" + _grid.z + "_" + _grid.x);
-                floor.GetComponent<MeshRenderer>().material = red;
+                if(floor!=null)
+                    floor.GetComponent<MeshRenderer>().material = red;
                 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
         }
@@ -268,7 +280,7 @@ public class BuildManager : MonoBehaviour
         RaycastHit raycastHit;
         if (Physics.Raycast(currCursorGridIndex + gridOffset + Vector3.up * MAP_SIZE_Y, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
         {
-            Vector3 newPosition = raycastHit.point + viewer.transform.up * (viewer.gameObject.GetHeight(.1f) / 2);
+            Vector3 newPosition = raycastHit.point + viewer.transform.up * (viewer.gameObject.GetHeight(.1f) * .5f);
             viewer.transform.position = newPosition;
         }
     }
@@ -330,15 +342,18 @@ public class BuildManager : MonoBehaviour
         return GetBuildEnable(currCursorGridIndex, buildTarget.status.Size) && GetItemLimitState();
     }
 
-    Vector3 GetViewerPosition(Vector3 position)
+    bool GetViewerPosition(Vector3 position, Quaternion rotation, out Vector3 outPosition, out Quaternion outRotation)
     {
         RaycastHit raycastHit;
         if (Physics.Raycast(position + gridOffset + Vector3.up * MAP_SIZE_Y, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
         {
-            Vector3 newPosition = raycastHit.point + viewer.transform.up * (viewer.gameObject.GetHeight(.1f) / 2);
-            return newPosition;
+            outPosition = raycastHit.point + Vector3.up * buildTarget.buildPositionY;
+            outRotation = Quaternion.FromToRotation(Vector3.up, raycastHit.normal) * rotation;
+            return true;
         }
-        return OUT_VECTOR;
+        outPosition = OUT_VECTOR;
+        outRotation = Quaternion.identity;
+        return false;
     }
 
     //현재 건설된 아이템의 최대 건설 개수와 현재 건설 개수를 비교한다.
@@ -367,7 +382,13 @@ public class BuildManager : MonoBehaviour
     //그리드 좌표에 따라 건설 가능 데이터를 가져오는 메서드
     bool GetBuildEnable(Vector3 grid)
     {
-         return buildState.Get((int)((grid.z + MAP_SIZE_Z / 2) * MAP_SIZE_Z + (grid.x + MAP_SIZE_X / 2)));
+        int size = (int)((grid.z + MAP_SIZE_Z * .5f) * MAP_SIZE_Z + (grid.x + MAP_SIZE_X * .5f));
+        if(size < 0 || MAP_SIZE_X *MAP_SIZE_Z <= size)
+        {
+            return false;
+        }
+         
+        return buildState.Get(size);
     }
 }
 

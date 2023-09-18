@@ -1,129 +1,341 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RockBase : MonoBehaviour
+public class RockBase : MonoBehaviour, IHitObjectHandler
 {
-    protected float jumpForce = 1000f;
-    protected float attackPowerBase = 10f;
-
-    public float maxSpeed = 50f;
+    [SerializeField]
+    protected Transform rockObject;
+    [SerializeField]
+    protected Transform checkPoint;
+    [SerializeField]
     public RockStatus rockStatus;
-    public LayerMask terrainLayer; // Inspector에서 "Terrains" 레이어를 할당할 수 있는 변수 추가
-    protected Rigidbody rRb;
+    [SerializeField]
+    protected List<Mesh> forms;
+
+    protected Vector2 playerInput;
+
     protected Camera mainCamera;
+    protected Rigidbody rockRigidbody;
+    protected MeshRenderer rockRenderer;
+    protected MeshFilter rockMesh;
+    protected MeshCollider rockCollider;
+
+    //protected Vector3 direction;
+    protected float currHp;
+    protected bool isGround = false;
+    protected bool isSlope = false;
+
+    protected const float DAMAGE_LIMIT_MIN = 50f;
+    protected const float SLOPE_LIMIT_MAX = 60f;
+    protected const float COLLISION_ALLOW_ANGLE = 45f;
+    protected const float DEFAULT_JUMP_FORCE = 5f;
+    protected const float DEFAULT_GROUND_DRAG = .1f;
+    protected const float DEFAULT_AIR_MULTIPLE = .3f;
+    protected const float DEFAULT_SLOPE_MULTIPLE = 1.5f;
+
+    private void OnDrawGizmos()
+    {
+        if (rockObject != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(rockObject.position - Vector3.up * rockObject.gameObject.GetHeight(.5f), .05f);
+        }
+    }
 
     public  virtual void Init()
     {
-        rRb = GetComponent<Rigidbody>();
+        //추후 시네머신 카메라로 바꿀것
         mainCamera = Camera.main;
+
+        rockObject = transform.Find("RockObject");
+        checkPoint = transform.Find("CheckPoint");
+
+        rockRigidbody = rockObject.GetComponent<Rigidbody>();
+        rockMesh = rockObject.GetComponent<MeshFilter>();
+        rockCollider = rockObject.GetComponent<MeshCollider>();
+        rockRenderer = rockObject.GetComponent<MeshRenderer>();
+
+        rockStatus = new RockStatus(rockStatus);
+
+        rockRigidbody.mass = rockStatus.Weight;
+        currHp = rockStatus.Health;
     }
 
-    // 돌의 레이거리를 확인하기 위한 함수
-    private void OnDrawGizmos() 
-  {
-        Gizmos.DrawCube(transform.position, new Vector3(1, 3, 1));
-    }
-    public virtual void Move()
+    protected virtual void Move()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
+        playerInput = GetInput();
+        Move(playerInput);
+    }
 
-        if (Mathf.Abs(horizontalInput) > 0.1f || Mathf.Abs(verticalInput) > 0.1f)
+
+    protected virtual void Jump()
+    {
+        Jump(DEFAULT_JUMP_FORCE);
+    }
+
+
+    protected virtual void Move(Vector2 input)
+    {
+
+
+        float accel = rockStatus.Acceleration;
+        float maxSpeed = rockStatus.Speed;
+
+        Vector3 inputDirection = (Camera.main.transform.forward * input.y + Camera.main.transform.right * input.x).normalized;
+        Vector3 groundValocity = new Vector3(rockRigidbody.velocity.x, 0f, rockRigidbody.velocity.z);
+        inputDirection *= accel * Time.deltaTime;
+        groundValocity += inputDirection;
+
+        Vector3 newVelocity = (new Vector3(inputDirection.x, 0, inputDirection.z));
+        if (!isGround)
         {
-            Vector3 cameraForward = mainCamera.transform.forward;
-            Vector3 cameraRight = mainCamera.transform.right;
-
-            Vector3 forceDirection = (cameraForward * verticalInput + cameraRight * horizontalInput);
-            forceDirection.y = 0;
-
-            // 이전 프레임에서의 벨로시티 방향
-            Vector3 previousVelocityDirection = rRb.velocity.normalized;
-
-            // 새로운 이동 방향과 이전 벨로시티 방향 사이의 각도 계산
-            float angle = Vector3.Angle(previousVelocityDirection, forceDirection);
-
-            // 각도에 따라 벨로시티 값을 조절합니다.
-            // 여기서 45도 이상인 경우를 빠른 반응으로 설정합니다.
-            if (angle > 45f)
-            {
-                // 빠른 반응을 위해 벨로시티 값을 새 방향으로 바로 변경합니다.
-                rRb.velocity = forceDirection.normalized * maxSpeed + rRb.velocity * 0.5f;
-                rRb.angularVelocity = forceDirection.normalized * maxSpeed  + rRb.angularVelocity * 0.5f;
-            }
-            else
-            {
-                // 그렇지 않으면 가속도를 사용하여 천천히 방향을 변경합니다.
-                float acceleration = (Mathf.Abs(horizontalInput) > 0.1f && Mathf.Abs(verticalInput) > 0.1f) ? rockStatus.Acceleration : rockStatus.Acceleration * 2;
-
-                // 가속도를 사용하여 velocity를 계산하고 적용합니다.
-                Vector3 newVelocity = rRb.velocity + forceDirection * acceleration * Time.deltaTime;
-
-                // 최대 속도 제한
-                if (newVelocity.magnitude > maxSpeed)
-                {
-                    newVelocity = newVelocity.normalized * maxSpeed;
-                }
-
-                rRb.velocity = newVelocity;
-            }
+            rockRigidbody.velocity += newVelocity * DEFAULT_AIR_MULTIPLE;
         }
-    }
-
-    public virtual void Jump()
-    {
-        if (IsGround())
+        else if (CheckSlope())
         {
-            rRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            rockRigidbody.velocity += GetSlopeDirection(newVelocity)* DEFAULT_SLOPE_MULTIPLE;
         }
-    }
-    public virtual bool IsGround()
-    {
-        
-        float distance = 3f; // 레이 캐스트 거리
-        RaycastHit hit;
+        else
+        {
+            rockRigidbody.velocity += newVelocity;
+        }
 
-        // 레이 캐스트를 사용하여 지면과의 거리를 확인합니다.
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, distance, terrainLayer))
+        if (groundValocity.magnitude > maxSpeed)
+        {
+            rockRigidbody.velocity = groundValocity.normalized * maxSpeed + Vector3.up * rockRigidbody.velocity.y;
+        }
+        else if(isSlope && rockRigidbody.velocity.magnitude>maxSpeed)
+        {
+            rockRigidbody.velocity = rockRigidbody.velocity.normalized * maxSpeed;
+        }
+
+    }
+    protected virtual void Jump(float power)
+    {
+        rockRigidbody.velocity += Vector3.up * power;
+    }
+
+    [Obsolete]
+    protected virtual bool IsGround()
+    {
+        float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
+        Collider[] colliders = Physics.OverlapSphere(rockObject.position - Vector3.up * rockHeightHalf, .05f, Global_PSC.FindLayerToName("Terrains"));
+
+        if (colliders.Length > 0)
         {
             return true;
         }
-
         return false;
     }
 
+    protected virtual bool CheckGround()
+    {
+        isGround = false;
+        float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
+        
+        Collider[] colliders = Physics.OverlapSphere(rockObject.position - Vector3.up * rockHeightHalf, .05f, Global_PSC.FindLayerToName("Terrains"));
+        if (colliders.Length > 0)
+        {
+            isGround = true;
+        }
 
-    public virtual float Attack()
+        return isGround;
+    }
+    protected virtual bool CheckGroundRay()
+    {
+        isGround = false;
+        float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
+
+        if (Physics.Raycast(rockObject.position, Vector3.down, out slopeHit, rockHeightHalf + rockHeightHalf * .75f, Global_PSC.FindLayerToName("Terrains")))
+        {
+            isGround = true;
+        }
+
+        return isSlope;
+    }
+
+    RaycastHit slopeHit;
+    protected virtual bool CheckSlope()
+    {
+        isSlope = false;
+        float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
+
+        if (Physics.Raycast(rockObject.position, Vector3.down, out slopeHit, rockHeightHalf + rockHeightHalf * .75f, Global_PSC.FindLayerToName("Terrains")))
+        {
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            if (angle != 0 && angle <= SLOPE_LIMIT_MAX)
+            {
+                isSlope = true;
+            }
+        }
+
+        return isSlope;
+    }
+
+    protected Vector3 GetSlopeDirection(Vector3 direction)
+    {
+        return Vector3.ProjectOnPlane(direction, slopeHit.normal);
+    }
+
+    protected virtual void Attack(Collision collision)
+    {
+        IHitObjectHandler hitObject = collision.gameObject.GetComponentInParent<IHitObjectHandler>();
+        if (hitObject != null)
+        {
+            return;
+        }
+
+        foreach (ContactPoint contact in collision.contacts)
+        {
+            if (contact.otherCollider.gameObject == gameObject)
+            {
+                // 충돌 지점의 법선 벡터와 gameobject의 진행 방향을 계산합니다.
+                Vector3 collisionNormal = contact.normal;
+                Vector3 forwardDirection = rockRigidbody.velocity.normalized;
+
+                // 두 벡터의 각도를 계산합니다.
+                float angle = Vector3.Angle(collisionNormal, forwardDirection);
+
+                // 일정 각도 이내의 충돌을 확인합니다.
+                float maxCollisionAngle = COLLISION_ALLOW_ANGLE; // 예시: 45도 이내의 충돌을 확인
+                if (angle <= maxCollisionAngle)
+                {
+                    hitObject.Hit((int)GetDamageValue());
+                    break;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+        }
+    }
+
+
+    protected virtual float Attack()
     {
         return 0;
     }
 
-    public virtual void Fall()
+    protected virtual void Fall()
     {
 
     }
-    public void ApplyBoosterEffect(float duration, float boostForce, float upForce, Vector3 direction)
+    protected virtual void BackCheckPoint()
     {
-        rRb.velocity = Vector3.zero;
-        rRb.AddForce(Vector3.up * upForce, ForceMode.Impulse);
-        StartCoroutine(ApplyBooster(duration, boostForce, direction));
+
     }
 
-    protected IEnumerator ApplyBooster(float duration, float boostForce, Vector3 direction)
+    public void Hit(int damage)
     {
-        float time = 0;
-        while (time < duration)
+        HitReaction();
+        currHp -= damage;
+        if (currHp < 0)
         {
-            float horizontalInput = Input.GetAxis("Horizontal");
-            rRb.velocity = direction * boostForce - Vector3.Cross(direction, Vector3.up).normalized * horizontalInput * 100;
-            yield return new WaitForSeconds(Time.deltaTime);
-            time += Time.deltaTime;
+            Die();
+        }
+        else
+        {
+            ChangeForm(currHp);
+        }
+    
+    }
+
+    
+
+    public void SetCheckPoint()
+    {
+
+    }
+
+    protected virtual void ChangeDrag()
+    {
+
+        if (isGround)
+        {
+            rockRigidbody.drag = DEFAULT_GROUND_DRAG;
+        }
+        else
+        {
+            rockRigidbody.drag = 0;
         }
     }
 
-    //else if (other.CompareTag("JumpPad")) // 점프대 태그를 확인합니다.
-    //{
+    protected virtual void ChangeForm(float hp)
+    {
+        if (forms==null || forms.Count<1)
+        {
+            return;
+            
+        }
+        float changeRate = rockStatus.Health / forms.Count;
+        int formIndex = (int)(currHp / changeRate);
+        
+    }
 
-    //    rRb.AddForce(Vector3.up * 50000f, ForceMode.Acceleration); // 점프대 속도를 적용합니다.
-    //}
+    public void HitReaction(){}
+
+    protected virtual void Die(){}
+
+    protected Vector2 GetInput()
+    {
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+        playerInput = new Vector2(horizontalInput, verticalInput);
+        return playerInput;
+    }
+
+    protected bool IsMove()
+    {
+        return rockRigidbody.velocity.magnitude > 0;
+    }
+    protected bool IsMove(float speed)
+    {
+        return rockRigidbody.velocity.magnitude >= speed;
+    }
+
+    //공격력 * 0.5 * 최대체력 대비 현재체력 +공격력 * 0.5 * 최대속도 대비 현재속도
+    //예외 공격력 50이하 일 경우 50
+    protected float GetDamageValue()
+    {
+        float maxDamage = rockStatus.Damage;
+        float resultDamage = 0;
+
+        float healthRate = currHp / rockStatus.Health;
+        float speedRate = rockRigidbody.velocity.magnitude / rockStatus.Speed;
+
+        resultDamage += maxDamage * .5f * healthRate;
+        resultDamage += maxDamage * .5f * speedRate;
+
+        if (resultDamage < DAMAGE_LIMIT_MIN)
+        {
+            resultDamage = DAMAGE_LIMIT_MIN;
+        }
+
+        return resultDamage;
+    }
+
+    protected RockState rockState;
+    public enum RockState
+    {
+        MOVE,
+        JUMP
+    }
+
+    protected void ChangeRockState()
+    {
+        if (isGround)
+        {
+            rockState = RockState.MOVE;
+        }
+
+        else if (!isGround)
+        {
+            rockState = RockState.JUMP;
+        }
+    }
 }
+

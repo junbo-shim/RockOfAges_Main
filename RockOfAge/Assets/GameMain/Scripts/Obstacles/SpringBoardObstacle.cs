@@ -62,11 +62,12 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
     public void Push(Collision collision)
     {
         Vector3 eulerAngle = colliderParts.transform.localEulerAngles - Vector3.right * 20 + Vector3.up * 40;
-        collision.gameObject.GetComponent<Rigidbody>().AddForce(eulerAngle.normalized * 500f, ForceMode.Acceleration);
+        collision.gameObject.GetComponent<Rigidbody>().AddForce(eulerAngle.normalized * 50f, ForceMode.Acceleration);
     }
 
     public void Hit(int damage)
     {
+        Debug.Log("장애물 히트");
         if (!isAttacked)
         {
             return;

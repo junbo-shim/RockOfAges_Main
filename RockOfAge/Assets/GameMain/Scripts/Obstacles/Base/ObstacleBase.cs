@@ -24,10 +24,13 @@ public class ObstacleBase : MonoBehaviour
 
     //현재체력
     protected float currHealth;
+
     //건설완성=오브젝트활성화
     protected bool isBuildComplete = false;
+    public bool dragObstacle = false;
     
     public static readonly float BUILD_TIME = 5f;
+
 
 
     //제일 하단 스크립트에서 해당 함수를 불러온다(ONENABLE)
@@ -63,13 +66,13 @@ public class ObstacleBase : MonoBehaviour
         
         //스케일 변경
         obstacle.transform.localScale = Vector3.one * .1f;
-        
+
+        return obstacle;
         //버튼 데이터 변경
         GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(status.Id);
         unitButton.GetComponent<CreateButton>().buildCount += 1;
         UIManager.uiManager.RePrintUnitCount(status.Id);
 
-        return obstacle;
     }
 
     //초기화

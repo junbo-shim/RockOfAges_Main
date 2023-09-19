@@ -62,8 +62,7 @@ public class BuildManager : MonoBehaviour
     //해당 지형이 건설 가능한지를 판단한다.
     void Update()
     {
-
-        //좌표가 변하지 않았다면 다음의 계산들을 실행하지않는다. 
+        //현재 마우스의 좌표를 변경
         ChangeCurrGrid();
 
         //테스트 코드
@@ -307,12 +306,15 @@ public class BuildManager : MonoBehaviour
 
     bool IsUIClick()
     {
+        return false;
         return EventSystem.current.IsPointerOverGameObject();
     }
 
     //모드 참조
     bool IsDefance()
     {
+        return true;
+
         if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
         {
             return true;
@@ -361,6 +363,7 @@ public class BuildManager : MonoBehaviour
     //true : 현재 건설 개수가 최대 건설보다 낮다
     bool GetItemLimitState()
     {
+        return true;
         // gold & limit
         float gold = default;
         int buildLimit = default;

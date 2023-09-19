@@ -19,25 +19,28 @@ public class ObstacleBase : MonoBehaviour
     protected Animator obstacleAnimator;
     protected Renderer obstacleRenderer;
     protected Material originMaterial;
-
     //타겟
     protected GameObject target;
 
+    //현재체력
     protected float currHealth;
+    //건설완성=오브젝트활성화
     protected bool isBuildComplete = false;
-
+    
     public static readonly float BUILD_TIME = 5f;
 
 
+    //제일 하단 스크립트에서 해당 함수를 불러온다(ONENABLE)
     protected void StartBuild(float time)
     {
+        //마테리얼 교체
         originMaterial = obstacleRenderer.material;
         obstacleRenderer.material = BuildManager.instance.white;
 
         StartCoroutine(BuildRoutine(time));
-
     }
 
+    //일정 시간동안 대기하는 COROUTINE
     protected IEnumerator BuildRoutine(float buildTime)
     {
         float currTime = 0;
@@ -55,8 +58,13 @@ public class ObstacleBase : MonoBehaviour
     //맵에 Build
     public virtual ObstacleBase Build(Vector3 position, Quaternion rotate)
     {
+        //오브젝트 생성
         ObstacleBase obstacle = Instantiate(this, position, rotate);
+        
+        //스케일 변경
         obstacle.transform.localScale = Vector3.one * .1f;
+        
+        //버튼 데이터 변경
         GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(status.Id);
         unitButton.GetComponent<CreateButton>().buildCount += 1;
         UIManager.uiManager.RePrintUnitCount(status.Id);

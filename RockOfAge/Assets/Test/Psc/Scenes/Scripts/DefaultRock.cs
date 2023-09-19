@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class DefaultRock : RockBase
 {
-
-
     void Start()
     {
         Init();
@@ -12,6 +10,11 @@ public class DefaultRock : RockBase
 
     private void FixedUpdate()
     {
+        if (isFall)
+        {
+            return;
+        }
+
         if (playerInput.magnitude > 0)
         {
             Move(playerInput);
@@ -20,10 +23,16 @@ public class DefaultRock : RockBase
 
     private void Update()
     {
+        if (isFall)
+        {
+            return;
+        }
+
         GetInput();
         ChangeRockState();
         CheckGroundRay();
         ChangeDrag();
+        CheckFall();
 
 
         if (Input.GetKeyDown(KeyCode.Space) && isGround)

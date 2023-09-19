@@ -1,3 +1,4 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,6 +6,7 @@ using UnityEngine;
 
 public class RockBase : MonoBehaviour, IHitObjectHandler
 {
+    //돌 하위 오브젝트들
     [SerializeField]
     protected Transform rockObject;
     [SerializeField]
@@ -14,18 +16,24 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     [SerializeField]
     protected List<Mesh> forms;
 
+    //사용자 입력(Y축 제외)
     protected Vector2 playerInput;
 
+    //기본 컴포넌트
     protected Camera mainCamera;
     protected Rigidbody rockRigidbody;
     protected MeshRenderer rockRenderer;
     protected MeshFilter rockMesh;
     protected MeshCollider rockCollider;
-
-    //protected Vector3 direction;
+    
     protected float currHp;
+
     protected bool isGround = false;
     protected bool isSlope = false;
+    protected bool isFall = false;
+
+    RaycastHit slopeHit;
+    Coroutine fallCheckCoroutine = null;
 
     protected const float DAMAGE_LIMIT_MIN = 50f;
     protected const float SLOPE_LIMIT_MAX = 60f;
@@ -42,7 +50,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             Gizmos.color = Color.yellow;
             Gizmos.DrawSphere(rockObject.position - Vector3.up * rockObject.gameObject.GetHeight(.5f), .05f);
         }
-    }
+    } //사랑해요 성철이형 -재현-
+    //GOOD
 
     public  virtual void Init()
     {
@@ -51,6 +60,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
         rockObject = transform.Find("RockObject");
         checkPoint = transform.Find("CheckPoint");
+        checkPoint.position = rockObject.position;
 
         rockRigidbody = rockObject.GetComponent<Rigidbody>();
         rockMesh = rockObject.GetComponent<MeshFilter>();
@@ -63,60 +73,74 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         currHp = rockStatus.Health;
     }
 
+    //혹시 모를 오버로딩
     protected virtual void Move()
     {
         playerInput = GetInput();
         Move(playerInput);
     }
-
-
     protected virtual void Jump()
     {
         Jump(DEFAULT_JUMP_FORCE);
     }
 
 
+    //이동
     protected virtual void Move(Vector2 input)
     {
-
-
         float accel = rockStatus.Acceleration;
         float maxSpeed = rockStatus.Speed;
 
+        //카메라를 기준으로 좌표 변경
         Vector3 inputDirection = (Camera.main.transform.forward * input.y + Camera.main.transform.right * input.x).normalized;
+        //y축 고려 x
         Vector3 groundValocity = new Vector3(rockRigidbody.velocity.x, 0f, rockRigidbody.velocity.z);
+
+        //이동방향으로 
         inputDirection *= accel * Time.deltaTime;
         groundValocity += inputDirection;
 
+        //속도 변화
         Vector3 newVelocity = (new Vector3(inputDirection.x, 0, inputDirection.z));
+        //점프
         if (!isGround)
         {
             rockRigidbody.velocity += newVelocity * DEFAULT_AIR_MULTIPLE;
         }
+        //경사
         else if (CheckSlope())
         {
             rockRigidbody.velocity += GetSlopeDirection(newVelocity)* DEFAULT_SLOPE_MULTIPLE;
         }
+        //땅
         else
         {
             rockRigidbody.velocity += newVelocity;
         }
 
+
+        //속도 제한
+        //땅
         if (groundValocity.magnitude > maxSpeed)
         {
             rockRigidbody.velocity = groundValocity.normalized * maxSpeed + Vector3.up * rockRigidbody.velocity.y;
         }
+        //경사
         else if(isSlope && rockRigidbody.velocity.magnitude>maxSpeed)
         {
             rockRigidbody.velocity = rockRigidbody.velocity.normalized * maxSpeed;
         }
 
     }
+
+    //점프
     protected virtual void Jump(float power)
     {
         rockRigidbody.velocity += Vector3.up * power;
     }
 
+
+    //레거시 
     [Obsolete]
     protected virtual bool IsGround()
     {
@@ -130,6 +154,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         return false;
     }
 
+
+    //오버랩을 사용하는 checkGround
     protected virtual bool CheckGround()
     {
         isGround = false;
@@ -143,6 +169,9 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
         return isGround;
     }
+
+    //레이를 사용하는 checkGround
+    //경사 구조때문에 해당 메서드 사용 권장
     protected virtual bool CheckGroundRay()
     {
         isGround = false;
@@ -156,7 +185,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         return isSlope;
     }
 
-    RaycastHit slopeHit;
+    //경사로 체크
+    //레이 사용
     protected virtual bool CheckSlope()
     {
         isSlope = false;
@@ -174,33 +204,113 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         return isSlope;
     }
 
+    //떨어짐 체크
+    //레이 사용
+    //바닥이 없는 상황에서 계산 시작
+    protected virtual void CheckFall()
+    {
+        if (!Physics.Raycast(rockObject.position, Vector3.down, 1000, Global_PSC.FindLayerToName("Terrains")) && fallCheckCoroutine==null)
+        {
+            StartFallingCheck();
+        }
+    }
+
+    
+    //일정시간동안 검사하기 위해서 coroutine으로 검사 시작.
+    protected virtual void StartFallingCheck()
+    {
+        if (fallCheckCoroutine != null)
+        {
+            StopCoroutine(fallCheckCoroutine);
+            fallCheckCoroutine = null;
+        }
+
+        fallCheckCoroutine = StartCoroutine(FallingCheckRoutine(2));
+        
+    }
+
+    //일정 시간동안 바닥이 없을경우
+    // checkpoint로 back시킴
+    //이때 떨어지는화면->손->실제 플레이 순으로 진행되기 때문에 coroutine으로 구현
+    IEnumerator FallingCheckRoutine(float needTime)
+    {
+        float time = 0;
+        while (time < needTime)
+        {
+            if (isGround)
+            {
+                isFall = false;
+                fallCheckCoroutine = null;
+                yield break;
+            }
+            yield return Time.deltaTime;
+            time += Time.deltaTime;
+        }
+
+        isFall = true;
+        StartCoroutine(ComebackCheckPointRoutine());
+    }
+
+
+    IEnumerator ComebackCheckPointRoutine()
+    {
+        //카메라 정지
+        //떨어지면서 메아리 추가
+        Fall();
+        yield return new WaitForSeconds(1f);
+        //손 생성 애니메이션?
+        yield return new WaitForSeconds(1f);
+        //되돌리기
+        BackCheckPoint();
+    }
+
+    //경사에 있을 경우 힘의 방향을 해당 경사에 맞게 회전시킴
     protected Vector3 GetSlopeDirection(Vector3 direction)
     {
         return Vector3.ProjectOnPlane(direction, slopeHit.normal);
     }
 
-    protected virtual void Attack(Collision collision)
+
+    //공격
+    //hitobject가 있을 경우 해당 오브젝트를 공격한다.
+    //속도가 있어야하고
+    //징행 방향과 비슷한 방향이어야 공격이라 판단하며
+    //공격때 자신의 체력도 닳게한다.
+    public virtual void Attack(Collision collision)
     {
         IHitObjectHandler hitObject = collision.gameObject.GetComponentInParent<IHitObjectHandler>();
-        if (hitObject != null)
+        if (hitObject == null)
         {
-            return;
+            hitObject = collision.gameObject.GetComponent<IHitObjectHandler>();
+            if (hitObject == null)
+            {
+                return;
+            }
         }
 
+        Debug.Log(hitObject);
         foreach (ContactPoint contact in collision.contacts)
         {
-            if (contact.otherCollider.gameObject == gameObject)
+            Debug.Log(contact.thisCollider.transform.parent.gameObject + "/"+ gameObject);
+            if (contact.thisCollider.transform.parent.gameObject == gameObject)
             {
-                // 충돌 지점의 법선 벡터와 gameobject의 진행 방향을 계산합니다.
-                Vector3 collisionNormal = contact.normal;
-                Vector3 forwardDirection = rockRigidbody.velocity.normalized;
 
-                // 두 벡터의 각도를 계산합니다.
-                float angle = Vector3.Angle(collisionNormal, forwardDirection);
+                hitObject.Hit((int)GetDamageValue());
+                Debug.Log(GetDamageValue());
+                break;
 
-                // 일정 각도 이내의 충돌을 확인합니다.
-                float maxCollisionAngle = COLLISION_ALLOW_ANGLE; // 예시: 45도 이내의 충돌을 확인
-                if (angle <= maxCollisionAngle)
+                /* // 충돌 지점의 법선 벡터와 gameobject의 진행 방향을 계산합니다.
+                 Vector3 collisionNormal = contact.normal;
+                 Vector3 forwardDirection = rockRigidbody.velocity.normalized;
+
+                 // 두 벡터의 각도를 계산합니다.
+                 float angle = Vector3.Angle(collisionNormal, forwardDirection);
+
+                 // 일정 각도 이내의 충돌을 확인합니다.
+                 float maxCollisionAngle = COLLISION_ALLOW_ANGLE; // 예시: 45도 이내의 충돌을 확인
+                 Debug.Log(angle + "/" + maxCollisionAngle);
+ */
+               /* if (angle <= maxCollisionAngle)
                 {
                     hitObject.Hit((int)GetDamageValue());
                     break;
@@ -208,7 +318,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
                 else
                 {
                     continue;
-                }
+                }*/
             }
 
         }
@@ -222,13 +332,24 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     protected virtual void Fall()
     {
-
+        CinemachineVirtualCameraBase camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCameraBase;
+        camera.Follow = null;
     }
     protected virtual void BackCheckPoint()
     {
+        CinemachineVirtualCameraBase camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCameraBase;
+        camera.Follow = rockObject;
+        fallCheckCoroutine = null;
+        isFall = false;
+        rockRigidbody.velocity = Vector3.zero;
+        rockRigidbody.angularVelocity = Vector3.zero;
+        rockObject.position = checkPoint.position + Vector3.up * 10f;
 
+        Debug.Log(rockObject.position);
+        Debug.Log(checkPoint.position);
     }
 
+    //맞았을 경우 체력마다 다른 mesh를 보여준다.
     public void Hit(int damage)
     {
         HitReaction();
@@ -246,9 +367,9 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     
 
-    public void SetCheckPoint()
+    public void SetCheckPoint(Vector3 position)
     {
-
+        checkPoint.position = position;
     }
 
     protected virtual void ChangeDrag()
@@ -288,11 +409,17 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         return playerInput;
     }
 
-    protected bool IsMove()
+    public float NowSpeed()
+    {
+        return rockRigidbody.velocity.magnitude;
+
+    }
+
+    public bool IsMove()
     {
         return rockRigidbody.velocity.magnitude > 0;
     }
-    protected bool IsMove(float speed)
+    public bool IsMove(float speed)
     {
         return rockRigidbody.velocity.magnitude >= speed;
     }

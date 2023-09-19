@@ -4,16 +4,14 @@ using UnityEngine;
 
 public class TestCamera : MonoBehaviour
 {
+    public Transform player; // 플레이어 또는 대상 오브젝트
+    public float sensitivity = 2.0f; // 카메라 민감도 (조절 가능)
 
-    // Start is called before the first frame update
+    private float rotationX = 0;
+
     void Start()
     {
-
-        
+        Cursor.lockState = CursorLockMode.Confined; // 커서를 화면 중앙에 고정
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
 }

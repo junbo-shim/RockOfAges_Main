@@ -8668,7 +8668,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1233730110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10452,7 +10452,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1427298322}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0000000030892657, y: 0.98375034, z: -0.1795419, w: 0.000000016926782}
+  m_LocalRotation: {x: -0.0000000030892664, y: 0.98375034, z: -0.1795419, w: -0.000000016926785}
   m_LocalPosition: {x: 106.999985, y: 53, z: -2.4999847}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -13457,7 +13457,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1689187218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13623,7 +13623,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1736865549}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0000000030892657, y: 0.98375034, z: -0.1795419, w: 0.000000016926782}
+  m_LocalRotation: {x: -0.0000000030892664, y: 0.98375034, z: -0.1795419, w: -0.000000016926785}
   m_LocalPosition: {x: 106.999985, y: 53, z: -2.4999847}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -26350,12 +26350,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 385de643ea75aa84fb817e742b4dfc13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 50
+  rockObject: {fileID: 0}
+  checkPoint: {fileID: 0}
   rockStatus: {fileID: 11400000, guid: dab61d0b3f6ccc14fb6cf603baa77782, type: 2}
+  forms: []
+  jumpForce: 1000
+  maxSpeed: 50
+  gravityStrength: 100
+  attackPowerBase: 10
   terrainLayer:
     serializedVersion: 2
     m_Bits: 0
-  gravityStrength: 100
 --- !u!222 &7480491444755687100
 CanvasRenderer:
   m_ObjectHideFlags: 0

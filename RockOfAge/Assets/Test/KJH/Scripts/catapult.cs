@@ -1,57 +1,10 @@
-//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
 
-//public class Catapult : MonoBehaviour
-//{
-//    public float detectionRadius = 5f; // 원형 감지 범위 반지름
-//    public LayerMask Rock; // 감지할 레이어 설정
-//    private Quaternion initialRotation; // 투석기의 초기 로테이션
-
-//    void Start()
-//    {
-//        // 투석기의 초기 로테이션을 저장합니다.
-//        initialRotation = transform.rotation;
-//    }
-
-//    void Update()
-//    {
-//        // 투석기의 현재 위치
-//        Vector3 catapultPosition = transform.position;
-
-//        // 원형 감지 범위 내의 모든 Collider 가져오기
-//        Collider[] colliders = Physics.OverlapSphere(catapultPosition, detectionRadius, Rock);
-
-//        foreach (Collider collider in colliders)
-//        {
-//            // 감지한 객체의 위치
-//            Vector3 targetPosition = collider.transform.position;
-
-//            // 투석기를 감지한 객체(Rock)를 향하도록 회전시키기
-//            Vector3 directionToTarget = (targetPosition - catapultPosition).normalized;
-//            Quaternion targetRotation = Quaternion.LookRotation(directionToTarget, Vector3.up);
-
-//            // 투석기의 초기 로테이션을 기준으로 회전
-//            targetRotation *= initialRotation;
-
-//            // 투석기의 회전을 부드럽게 변경하려면 Quaternion.Slerp 또는 Quaternion.RotateTowards를 사용할 수 있습니다.
-
-//            // Y와 X 로테이션을 초기 로테이션으로 고정
-//            targetRotation.eulerAngles = new Vector3(initialRotation.eulerAngles.x, targetRotation.eulerAngles.y, initialRotation.eulerAngles.z);
-
-//            // 투석기의 회전 적용
-//            transform.rotation = targetRotation;
-
-//            // 여기에서 필요한 추가 동작을 수행하세요.
-//        }
-//    }
-//}
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class Catapult : MonoBehaviour
+public class Catapult : HoldObstacleBase
 {
     public float detectionRadius = 5f; // 원형 감지 범위 반지름
     public LayerMask Rock; // 감지할 레이어 설정
@@ -67,6 +20,8 @@ public class Catapult : MonoBehaviour
 
     void Start()
     {
+        Init();
+
         animator = GetComponent<Animator>();
         // 투석기의 초기 로테이션을 저장합니다.
         initialRotation = transform.rotation;

@@ -48,14 +48,14 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #endregion
 
     #region RoomPanel 버튼들
-    private Button joinTeam1Button;
-    private Button joinTeam2Button;
-
-    //public Button roomReadyButton;
     public Button startReadyButton;
-    public Button goTeam1Button;
-    public Button goTeam2Button;
+    public Button player1Button;
+    public Button player2Button;
+    public Button player3Button;
+    public Button player4Button;
     #endregion
+
+    public PhotonView dataContainerView;
 
     protected override void Awake()
     {
@@ -70,6 +70,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     protected override void Update()
     {
         CheckCloseButton();
+        CheckMasterClient();
     }
 
     #region 모든 Panel 을 NetworkManager로부터 받아오는 메서드
@@ -123,21 +124,26 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     {
         startReadyButton = roomPanel.Find("Button_RoomStartReady").GetComponent<Button>();
 
-        if (PhotonNetwork.IsMasterClient == true) 
+        player1Button = roomPanel.Find("PlayerButtons").Find("Player1").GetComponent<Button>();
+        player2Button = roomPanel.Find("PlayerButtons").Find("Player2").GetComponent<Button>();
+        player3Button = roomPanel.Find("PlayerButtons").Find("Player3").GetComponent<Button>();
+        player4Button = roomPanel.Find("PlayerButtons").Find("Player4").GetComponent<Button>();
+    }
+    #endregion
+
+    #region 방에 들어갔을 때 마스터 클라이언트임을 체크하면 바뀌는 Start, Ready 버튼
+    private void CheckMasterClient() 
+    {
+        if (PhotonNetwork.IsMasterClient == true)
         {
             startReadyButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "START";
             startReadyButton.interactable = false;
         }
-        else 
+        else
         {
             startReadyButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "READY";
             startReadyButton.interactable = true;
         }
-
-        goTeam1Button =
-            roomPanel.Find("Buttons").Find("JoinTeam1").GetComponent<Button>();
-        goTeam2Button =
-            roomPanel.Find("Buttons").Find("JoinTeam2").GetComponent<Button>();
     }
     #endregion
 
@@ -161,8 +167,10 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         createConfirmButton.onClick.AddListener(PressConfirmCreateButton);
         startReadyButton.onClick.AddListener(PressStartReadyButton);
 
-        goTeam1Button.onClick.AddListener(PressJoinTeam1);
-        goTeam1Button.onClick.AddListener(PressJoinTeam2);
+        player1Button.onClick.AddListener(PressPlayer1);
+        player2Button.onClick.AddListener(PressPlayer2);
+        player3Button.onClick.AddListener(PressPlayer3);
+        player4Button.onClick.AddListener(PressPlayer4);
     }
     #endregion
 
@@ -201,6 +209,20 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         loginButton.interactable = true;
         signupButton.interactable = true;
         quitButton.interactable = true;
+    }
+    #endregion
+
+    #region PlayerDataContainer 가 생성된 후 찾아올 메서드
+    public void FindDataContainer() 
+    {
+        dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
+    }
+    #endregion
+
+    #region 딜레이용 메서드
+    public void DelayForSecond()
+    {
+        /*Do Nothing*/
     }
     #endregion
 
@@ -376,24 +398,9 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         // 포톤 내의 방 생성
         RoomOptions roomOptions = new RoomOptions { MaxPlayers = 4 };
         PhotonNetwork.CreateRoom(roomNameInput.text, roomOptions, null, null);
-        
-        //Photon.Realtime.Room newRoom = PhotonNetwork.CurrentRoom;
-
-        // 포톤 방의 데이터 세팅 (커스텀 프로퍼티-Hashtable)
-        //ExitGames.Client.Photon.Hashtable roomHashTable = new ExitGames.Client.Photon.Hashtable();
-        //roomHashTable["password"] = roomPWInput.text;
-        //roomHashTable["Seat_1"] = "Empty";
-        //roomHashTable["Seat_2"] = "Empty";
-        //roomHashTable["Seat_3"] = "Empty";
-        //roomHashTable["Seat_4"] = "Empty";
-
-        //newRoom.SetCustomProperties(roomHashTable);
 
         PressClose();
-
         roomPanel.localScale = Vector3.one;
-
-        //NetworkManager.Instance.UpdateRoomDisplay();
     }
     #endregion
 
@@ -406,92 +413,82 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #endregion
 
     #region 팀 참여 버튼
-    private void PressJoinTeam1()
+    public void PressPlayer1()
     {
-        if (PhotonNetwork.IsMasterClient == true) 
+        if (PhotonNetwork.IsMasterClient == false)
         {
-            if (NetworkManager.Instance.team1Entry[0] == default && NetworkManager.Instance.team1Entry[1] == default)
-            {
-                NetworkManager.Instance.team1Entry[0] = 1;
-            }
-            else if (NetworkManager.Instance.team1Entry[0] == default && NetworkManager.Instance.team1Entry[1] != default)
-            {
-                NetworkManager.Instance.team1Entry[0] = 1;
-            }
-            else if (NetworkManager.Instance.team1Entry[0] != default && NetworkManager.Instance.team1Entry[1] == default)
-            {
-                NetworkManager.Instance.team1Entry[1] = 2;
-            }
-            else if (NetworkManager.Instance.team1Entry[0] != default && NetworkManager.Instance.team1Entry[1] != default)
-            {
-                /*Do Nothing*/
-            }
+            FindDataContainer();
+            dataContainerView.RPC("SendPlayerPosition", RpcTarget.MasterClient, dataContainerView.ViewID, 0);
         }
-        else 
+        else if (PhotonNetwork.IsMasterClient == true) 
         {
-            if (NetworkManager.Instance.team1Entry[0] == default && NetworkManager.Instance.team1Entry[1] == default) 
+            if (NetworkManager.Instance.playerSeats[0] == false) 
             {
-                NetworkManager.Instance.team1Entry[0] = 1;
-                photonView.RPC("SendMasterRoomPosition", RpcTarget.MasterClient, NetworkManager.Instance.team1Entry[0]);
+                NetworkManager.Instance.playerSeats[0] = true;
             }
-            else if (NetworkManager.Instance.team1Entry[0] == default && NetworkManager.Instance.team1Entry[1] != default) 
+            else if (NetworkManager.Instance.playerSeats[0] == true)
             {
-                NetworkManager.Instance.team1Entry[0] = 1;
-                photonView.RPC("SendMasterRoomPosition", RpcTarget.MasterClient, NetworkManager.Instance.team1Entry[0]);
-            }
-            else if (NetworkManager.Instance.team1Entry[0] != default && NetworkManager.Instance.team1Entry[1] == default)
-            {
-                NetworkManager.Instance.team1Entry[1] = 2;
-                photonView.RPC("SendMasterRoomPosition", RpcTarget.MasterClient, NetworkManager.Instance.team1Entry[1]);
-            }
-            else if (NetworkManager.Instance.team1Entry[0] != default && NetworkManager.Instance.team1Entry[1] != default)
-            {
-                /*Do Nothing*/
+                Debug.Log("Seat Already Taken");
             }
         }
     }
 
-    private void PressJoinTeam2()
+    public void PressPlayer2()
     {
-        if (PhotonNetwork.IsMasterClient == true)
+        if (PhotonNetwork.IsMasterClient == false)
         {
-            if (NetworkManager.Instance.team2Entry[0] == default && NetworkManager.Instance.team2Entry[1] == default)
+            FindDataContainer();
+            dataContainerView.RPC("SendPlayerPosition", RpcTarget.MasterClient, dataContainerView.ViewID, 1);
+        }
+        else if (PhotonNetwork.IsMasterClient == true) 
+        {
+            if (NetworkManager.Instance.playerSeats[1] == false)
             {
-                NetworkManager.Instance.team2Entry[0] = 3;
+                NetworkManager.Instance.playerSeats[1] = true;
             }
-            else if (NetworkManager.Instance.team2Entry[0] == default && NetworkManager.Instance.team2Entry[1] != default)
+            else if(NetworkManager.Instance.playerSeats[1] == true)
             {
-                NetworkManager.Instance.team2Entry[0] = 3;
-            }
-            else if (NetworkManager.Instance.team2Entry[0] != default && NetworkManager.Instance.team2Entry[1] == default)
-            {
-                NetworkManager.Instance.team2Entry[1] = 4;
-            }
-            else if (NetworkManager.Instance.team2Entry[0] != default && NetworkManager.Instance.team2Entry[1] != default)
-            {
-                /*Do Nothing*/
+                Debug.Log("Seat Already Taken");
             }
         }
-        else
+    }
+
+    public void PressPlayer3()
+    {
+        if (PhotonNetwork.IsMasterClient == false)
         {
-            if (NetworkManager.Instance.team2Entry[0] == default && NetworkManager.Instance.team2Entry[1] == default)
+            FindDataContainer();
+            dataContainerView.RPC("SendPlayerPosition", RpcTarget.MasterClient, dataContainerView.ViewID, 2);
+        }
+        else if (PhotonNetwork.IsMasterClient == true) 
+        {
+            if (NetworkManager.Instance.playerSeats[2] == false)
             {
-                NetworkManager.Instance.team2Entry[0] = 3;
-                photonView.RPC("SendMasterRoomPosition", RpcTarget.MasterClient, NetworkManager.Instance.team2Entry[0]);
+                NetworkManager.Instance.playerSeats[2] = true;
             }
-            else if (NetworkManager.Instance.team2Entry[0] == default && NetworkManager.Instance.team2Entry[1] != default)
+            else if (NetworkManager.Instance.playerSeats[2] == true)
             {
-                NetworkManager.Instance.team2Entry[0] = 3;
-                photonView.RPC("SendMasterRoomPosition", RpcTarget.MasterClient, NetworkManager.Instance.team2Entry[0]);
+                Debug.Log("Seat Already Taken");
             }
-            else if (NetworkManager.Instance.team2Entry[0] != default && NetworkManager.Instance.team2Entry[1] == default)
+        }
+    }
+
+    public void PressPlayer4()
+    {
+        if (PhotonNetwork.IsMasterClient == false)
+        {
+            FindDataContainer();
+            dataContainerView.RPC("SendPlayerPosition", RpcTarget.MasterClient, dataContainerView.ViewID, 3);
+        }
+        else if (PhotonNetwork.IsMasterClient == true) 
+        {
+            if (NetworkManager.Instance.playerSeats[3] == false)
             {
-                NetworkManager.Instance.team2Entry[1] = 4;
-                photonView.RPC("SendMasterRoomPosition", RpcTarget.MasterClient, NetworkManager.Instance.team2Entry[1]);
+                NetworkManager.Instance.playerSeats[3] = true;
             }
-            else if (NetworkManager.Instance.team2Entry[0] != default && NetworkManager.Instance.team2Entry[1] != default)
+            else if (NetworkManager.Instance.playerSeats[3] == true)
             {
-                /*Do Nothing*/
+                Debug.Log("Seat Already Taken");
             }
         }
     }

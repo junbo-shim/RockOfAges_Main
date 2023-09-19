@@ -6,6 +6,8 @@ using Photon.Realtime;
 using PlayFab;
 using PlayFab.ClientModels;
 using PlayFab.GroupsModels;
+using System.IO;
+using UnityEditor;
 
 public partial class NetworkManager : GlobalSingleton<NetworkManager>
 {
@@ -21,8 +23,9 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         cachedRoomList = new List<RoomInfo>();
         displayRoomList = new List<GameObject>();
         playerRoomList = new Player[4];
-        team1Entry = new int[2];
-        team2Entry = new int[2];
+
+        DataContainerPrefab = Resources.Load<GameObject>("DataContainer");
+        playerSeats = new bool[4] { false, false, false, false };
     }
 
     #region 서버연결-Photon

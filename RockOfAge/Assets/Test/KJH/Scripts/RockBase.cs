@@ -1,3 +1,4 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -208,7 +209,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //바닥이 없는 상황에서 계산 시작
     protected virtual void CheckFall()
     {
-        if (!Physics.Raycast(rockObject.position, Vector3.down, float.MaxValue, Global_PSC.FindLayerToName("Terrains")) && fallCheckCoroutine==null)
+        if (!Physics.Raycast(rockObject.position, Vector3.down, 1000, Global_PSC.FindLayerToName("Terrains")) && fallCheckCoroutine==null)
         {
             StartFallingCheck();
         }
@@ -248,7 +249,6 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
         isFall = true;
         StartCoroutine(ComebackCheckPointRoutine());
-        fallCheckCoroutine = null;
     }
 
 
@@ -332,15 +332,21 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     protected virtual void Fall()
     {
-
+        CinemachineVirtualCameraBase camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCameraBase;
+        camera.Follow = null;
     }
     protected virtual void BackCheckPoint()
     {
+        CinemachineVirtualCameraBase camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCameraBase;
+        camera.Follow = rockObject;
+        fallCheckCoroutine = null;
+        isFall = false;
         rockRigidbody.velocity = Vector3.zero;
         rockRigidbody.angularVelocity = Vector3.zero;
         rockObject.position = checkPoint.position + Vector3.up * 10f;
-        isFall = false;
 
+        Debug.Log(rockObject.position);
+        Debug.Log(checkPoint.position);
     }
 
     //맞았을 경우 체력마다 다른 mesh를 보여준다.

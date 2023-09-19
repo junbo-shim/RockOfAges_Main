@@ -23,9 +23,8 @@ public class BuildManager : MonoBehaviour
     private BuildRotateDirection whereLookAt;
     //좌클릭한 곳의 좌표
     private Vector3Int clickGridIndex = Vector3Int.zero;
-    //좌클릭후 드래그한 방향
-    //현재 Grid 좌표를 기반으로 판단
-    private Vector3 dragDirection = Vector3.zero;
+    //좌클릭한 곳의 좌표
+    private Vector3Int endGridIndex = Vector3Int.zero;
 
 
     //빌드 뷰어
@@ -35,6 +34,8 @@ public class BuildManager : MonoBehaviour
     //해당 지형의 건설 가능 상태를 저장 
     private BitArray buildState;
     private Vector3 gridOffset;
+
+    public bool isLeftClick = false;
 
     //맵 사이즈 
     public static readonly int MAP_SIZE_X = 256;
@@ -65,13 +66,27 @@ public class BuildManager : MonoBehaviour
         //현재 마우스의 좌표를 변경
         ChangeCurrGrid();
 
-        //테스트 코드
-        if (buildTarget == null)
+
+        //좌표 갱신
+        if (Input.GetMouseButtonDown(0))
         {
-            return;
+            isLeftClick=true;
+            //시작 좌표 저장
+            clickGridIndex = currCursorGridIndex;
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            //드래그 좌표 저장
+
+            endGridIndex = currCursorGridIndex;
         }
 
+
+        //테스트 코드
+        if (buildTarget == null)
+        {return;}
         ChangeBuildPosition();
+
         if (CanBuild())
         {
             if (!IsUIClick())
@@ -79,34 +94,29 @@ public class BuildManager : MonoBehaviour
                 //우선순위 우클릭->좌클릭
                 if (Input.GetMouseButtonDown(1))
                 {
+                    isLeftClick = false;
+                    clickGridIndex = OUT_VECTOR;
+                    endGridIndex = OUT_VECTOR;
+                    buildTarget = null;
                     //취소
                 }
-                else
+                
+                else if (Input.GetMouseButtonUp(0))
                 {
+                    //빌드 시작
+                    Vector3 position;
+                    Quaternion rotation = Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0);
+                    GetViewerPosition(clickGridIndex, rotation, out position, out rotation);
 
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        clickGridIndex = currCursorGridIndex;
-                        //시작 좌표 저장
-                    }
-                    else if (Input.GetMouseButton(0))
-                    {
-                        //드래그 좌표 저장
-                    }
-                    else if (Input.GetMouseButtonUp(0))
-                    {
-                        //빌드 시작
-                        Vector3 position;
-                        Quaternion rotation = Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0);
-                        GetViewerPosition(clickGridIndex, rotation, out position, out rotation);
-
-                        ObstacleBase build = buildTarget.Build(position, rotation);
-                        build.name = buildTarget.name + "_" + currCursorGridIndex.z + "_" + currCursorGridIndex.x;
-                        SetBitArrays(clickGridIndex, buildTarget.status.Size);
-                        clickGridIndex = OUT_VECTOR;
-                    }
-
+                    ObstacleBase build = buildTarget.Build(position, rotation);
+                    build.name = buildTarget.name + "_" + currCursorGridIndex.z + "_" + currCursorGridIndex.x;
+                    SetBitArrays(clickGridIndex, buildTarget.status.Size);
+                    isLeftClick = false;
+                    clickGridIndex = OUT_VECTOR;
+                    endGridIndex = OUT_VECTOR;
                 }
+
+                
 
             }
 

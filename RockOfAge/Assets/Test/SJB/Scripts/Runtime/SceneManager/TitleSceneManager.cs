@@ -8,7 +8,7 @@ public class TitleSceneManager : MonoBehaviour
     {
         ButtonManager.Instance.CreateThisManager();
         NetworkManager.Instance.CreateThisManager();
-        PlayerDataManager.Instance.CreateThisManager();
+        //PlayerDataManager.Instance.CreateThisManager();
         //ResourceManager.Instance.CreateThisManager();
     }
 }

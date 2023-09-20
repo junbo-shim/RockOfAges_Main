@@ -132,12 +132,10 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
         // 공의 input값을 참조로 받아서 위치를 설정해야할듯?
         //catMother.transform.rotation *= Quaternion.Euler(0f, 40f, 0f);
         catMother.transform.rotation = catMotherOrigianlRotation;
-        Debug.Log("2" + catMother.transform.rotation);
         // 디버프
-        SwitchDebuff(0.5f);
+        SetDebuff(0.5f, 2f, 0.5f);
         while (startTime <= 5f)
         {
-            
             startTime += Time.deltaTime;
             yield return null;
             catMother.transform.position = rockTransform.position + new Vector3(0.4f, 0.4f, 0f);
@@ -145,15 +143,20 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
             //catMother.transform.rotation *= Quaternion.Euler();
         }
         // 원수치 복구
-        SwitchDebuff(1f);
+        SetDebuffBack();
 
         obstacleAnimator.SetBool("isMoving", true);
 
         //catMother.transform.position = catMotherOriginalPosition;
     }
 
-    public void SwitchDebuff(float value)
+    public void SetDebuff(float velocityValue, float massValue, float jumpValue)
     {
-        rockTransform.GetComponentInParent<RockBase>().SetObstacleMultiple(value);
+        rockTransform.GetComponentInParent<RockBase>().SetObstacleMultiple(velocityValue, massValue, jumpValue);
+    }
+
+    public void SetDebuffBack()
+    {
+        rockTransform.GetComponentInParent<RockBase>().ResetDebuff();
     }
 }

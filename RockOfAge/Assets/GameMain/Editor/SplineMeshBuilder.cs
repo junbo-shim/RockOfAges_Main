@@ -1,12 +1,14 @@
-using System;
+
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Splines;
 
-public class SplineMeshBuilder : MonoBehaviour
+public class SplineMeshBuilder : EditorWindow
 {
+
     //build시에 사용할 material
     public List<Material> materials = default;
 
@@ -16,70 +18,105 @@ public class SplineMeshBuilder : MonoBehaviour
 
     //spline의 정보를 가지고 있는 container
     //자동으로 불러옴
-    private SplineContainer[] splineContainer = default;
+    public SplineContainer splineContainer = default;
 
     //분할할 spline 갯수 
-    [SerializeField]
-    private int resolution = 100;
+    public int resolution = 200;
     //옆면의 높이
-    [SerializeField]
-    private float height = 4f;
+    public float height = 30f;
     //ground의 폭의 반(실제 크기는 m_width*2)
-    [SerializeField]
-    private float width = 3f;
+    public float width = 40f;
 
     //플레이할 맵의 팀 갯수
     //일단 테스트용으로 1개만 생성
-    public const int TEAM_COUNT = 1;
+    public int teamIndex = 0;
 
-
-    private void Awake()
+    // 에디터 윈도우를 열기 위한 메뉴 아이템을 추가합니다.
+    [MenuItem("Tools/MeshBuilder")]
+    public static void ShowWindow()
     {
-        //팀 숫자만큼 배열 크기 지정
-        splineContainer = new SplineContainer[TEAM_COUNT];
-
-        //팀 숫자만큼 for문
-        //해당 for문은 제일 상단에서부터 검색해 splineContainer를 가져온다
-        for(int teamIndex = 0; teamIndex < TEAM_COUNT; teamIndex++)
-        {
-            splineContainer[teamIndex] = GameObject.Find("Team"+(teamIndex + 1)).transform.Find("BaseTerrains").GetComponentInChildren<SplineContainer>();
-        }
+        // 윈도우를 생성하고 엽니다.
+        GetWindow<SplineMeshBuilder>("Spline Mesh Builder");
     }
 
-    void Start()
+
+    private void OnGUI()
     {
-        //시작시 생성 시작.
-        //아마 추후에는 해당 클래스 자체가 editor영역으로 변경되서 맵 object만 생성/추출해 사용할것
-        for(int teamIndex = 0; teamIndex < TEAM_COUNT; teamIndex++)
+        splineContainer = GameObject.Find("Team" + (teamIndex + 1)).transform.Find("BaseTerrains").GetComponentInChildren<SplineContainer>();
+        // Display a label for materials.
+
+        Event e = Event.current;
+
+        // Handle material drag and drop.
+        if (e.type == EventType.DragUpdated || e.type == EventType.DragPerform)
+        {
+            DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+
+            if (e.type == EventType.DragPerform)
+            {
+                DragAndDrop.AcceptDrag();
+
+                foreach (Object draggedObject in DragAndDrop.objectReferences)
+                {
+                    if (draggedObject is Material material)
+                    {
+                        materials.Add(material);
+                    }
+                }
+            }
+
+            e.Use();
+        }
+
+        // Display the list of materials.
+        EditorGUILayout.LabelField("Materials");
+        foreach (Material material in materials)
+        {
+            EditorGUILayout.ObjectField(material, typeof(Material), false);
+        }
+
+        // Add a button to clear the list.
+        if (GUILayout.Button("Clear List"))
+        {
+            materials.Clear();
+        }
+
+
+
+        // Display a label for other options.
+        EditorGUILayout.LabelField("Other Options");
+
+        // Add other options here.
+        resolution = EditorGUILayout.IntField("Resolution", resolution);
+        height = EditorGUILayout.FloatField("Height", height);
+        width = EditorGUILayout.FloatField("Width", width);
+        teamIndex = EditorGUILayout.IntField("Team Index", teamIndex);
+
+
+
+        // Generate button.
+        if (GUILayout.Button("Generate Mesh"))
         {
             Generate(teamIndex);
         }
+
     }
 
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!테스트 코드
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            Generate(0);
-        }
-    }
-    /// //////////////////////////////////////////////
 
     void Generate(int teamIndex)
     {
         //spline에서 나눠진만큼 생성한다.
-        for (int splinceIndex = 0; splinceIndex < splineContainer[teamIndex].Splines.Count; splinceIndex++)
+        for (int splinceIndex = 0; splinceIndex < splineContainer.Splines.Count; splinceIndex++)
         {
             //구조가독성을 위한 부모클래스 생성
             GameObject partsParent = new GameObject();
 
             //데이터 초기화
             partsParent.name = "SplineParts_" + splinceIndex;
-            Global_PSC.InitLocalTransformData(partsParent.transform, splineContainer[teamIndex].transform.parent);
+            Global_PSC.InitLocalTransformData(partsParent.transform, splineContainer.transform.parent);
 
             //실행
-            Build(splineContainer[teamIndex].Splines[splinceIndex], partsParent);
+            Build(splineContainer.Splines[splinceIndex], partsParent);
         }
 
     }
@@ -95,20 +132,21 @@ public class SplineMeshBuilder : MonoBehaviour
         GetVerts(spline);
 
         //2. 해당 메쉬를 저장할 클래스 생성
-        GameObject up = ConcreateGameObject(materials[0], parent);
+        GameObject up = ConcreateGameObject(materials[0], parent, "Terrains");
         //3. 메쉬만들기
         BuildUp(up, spline.Closed);
+        up.tag = "Team0" + (teamIndex + 1);
 
-        GameObject right = ConcreateGameObject(materials[1], parent);
+        GameObject right = ConcreateGameObject(materials[1], parent, "Walls");
         BuildSide(right, rightPoint, spline.Closed);
 
-        GameObject left = ConcreateGameObject(materials[1], parent);
+        GameObject left = ConcreateGameObject(materials[1], parent, "Walls");
         //culling을 위해서 순서 변경
         leftPoint.Reverse();
         BuildSide(left, leftPoint, spline.Closed);
 
         //로딩 완료시
-        BuildManager.instance.InitTerrainData();
+        //BuildManager.instance.InitTerrainData();
     }
 
     //spline의 데이터를 기반으로 정점 생성
@@ -163,7 +201,7 @@ public class SplineMeshBuilder : MonoBehaviour
     }
 
     //메쉬를 저장할 object 생성
-    GameObject ConcreateGameObject(Material material, GameObject parent)
+    GameObject ConcreateGameObject(Material material, GameObject parent, string LayerName)
     {
         //mesh와 관련된 component 붙여주기
         GameObject result = new GameObject();
@@ -173,7 +211,7 @@ public class SplineMeshBuilder : MonoBehaviour
 
         //해당 object의 local정보 초기화
         Global_PSC.InitLocalTransformData(result.transform, parent.transform);
-        result.layer = LayerMask.NameToLayer("Terrains");
+        result.layer = LayerMask.NameToLayer(LayerName);
 
         return result;
     }

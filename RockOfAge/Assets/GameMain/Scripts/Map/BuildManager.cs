@@ -61,6 +61,8 @@ public class BuildManager : MonoBehaviour
         buildViewer.HideViewer();
         dragViewer = GetComponentInChildren<DragViewer>();
 
+
+        InitTerrainData();
     }
 
 

@@ -8,9 +8,11 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
     private Transform rockTransform;
     private Transform catMother;
     private Transform cat;
-    private float moveSpeed = 0.2f;
+    private float moveSpeed = 0.5f;
     private float turnSpeed = 50f;
     private bool isAttacked = false;
+    private Vector3 catMotherOriginalPosition;
+    private Quaternion catMotherOrigianlRotation;
 
     private void Awake()
     {
@@ -27,6 +29,9 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
         obstacleRenderer = transform.GetChild(0).GetComponentInChildren<SkinnedMeshRenderer>();
         currHealth = status.Health;
         standPosition = catMother.transform.position;
+        catMotherOrigianlRotation = catMother.transform.rotation;
+        catMotherOriginalPosition = catMother.transform.position;
+
     }
 
     private void Update()
@@ -35,14 +40,15 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
         {
             MoveCat(rockTransform);
         }
-        else
-        { Return(); }
+        else if (isAttacked && obstacleAnimator.GetBool("isMoving"))
+        { StartCoroutine(GoReturn()); }
+        else { return; }
     }
 
     //이동
     public void MoveCat(Transform rockTransform) 
     {
-        obstacleAnimator.SetBool("isMoving", true);
+       obstacleAnimator.SetBool("isMoving", true);
         Quaternion lookDir = Quaternion.LookRotation(rockTransform.position - catMother.position);
         catMother.rotation = Quaternion.Slerp(catMother.rotation, lookDir, turnSpeed * Time.deltaTime);
         catMother.transform.position = Vector3.Lerp(catMother.transform.position,
@@ -63,28 +69,37 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
 
     }
 
-    //복귀
-    public override void Return()
-    {
-        obstacleAnimator.SetBool("isAttack", false);
-        obstacleAnimator.SetBool("isMoving", true);
-        Quaternion lookDir = Quaternion.LookRotation(-catMother.transform.position + standPosition);
-        catMother.rotation = Quaternion.Slerp(catMother.rotation, lookDir, turnSpeed * Time.deltaTime);
-        catMother.transform.position = Vector3.Lerp(catMother.transform.position,
-            standPosition, moveSpeed * Time.deltaTime);
-        if (Vector3.Distance(catMother.transform.position, standPosition) <= 0.5f)
-        {
-            isAttacked = false;
-            obstacleAnimator.SetBool("isMoving", false);
-            catMother.LookAt(rockTransform);
-        }
 
+    IEnumerator GoReturn()
+    {
+       obstacleAnimator.SetBool("isAttack", false);
+       obstacleAnimator.SetBool("isMoving", true);
+        if (catMother.position != standPosition)
+        {
+            catMother.transform.position = Vector3.Lerp(catMother.transform.position,
+                standPosition, moveSpeed * Time.deltaTime);
+            Quaternion lookDir = Quaternion.LookRotation(standPosition - catMother.position);
+            catMother.rotation = lookDir;
+        }
+        yield return new WaitUntil(() => GetBack());
+        isAttacked = false;
+        obstacleAnimator.SetBool("isMoving", false);
+    }
+
+    private bool GetBack()
+    {
+        if (Vector3.Distance(catMother.transform.position, standPosition) <= 2f)
+        {
+            return true;
+        }
+        else { return false; }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Rock") && !isAttacked)
         {
+            Debug.Log("공격됨");
             ActiveAttack();
         }
     }
@@ -102,23 +117,46 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
     //공격 활성화
     protected override void ActiveAttack()
     {
+        isAttacked = true;
+        Debug.Log("들어옴");
         obstacleAnimator.SetBool("isMoving", false);
-        obstacleAnimator.SetBool("isAttack", true);
+        obstacleAnimator.SetTrigger("Attack");
+
+        //obstacleAnimator.SetBool("isAttack", true);
         StartCoroutine(AttackRock());       
     }
 
     IEnumerator AttackRock()
     {
-        //HitReaction();
-        cat.transform.rotation *= Quaternion.Euler(0f, 40f, 0f);
-        Vector3 catMotherOriginalPosition = catMother.transform.position;
-        catMother.transform.SetParent(rockTransform, false);
-        catMother.transform.localPosition = new Vector3(0f, 0f, -0.5f); ;
-        catMother.transform.localRotation = Quaternion.identity;
-        yield return new WaitForSeconds(5);
-        catMother.transform.parent = null;
-        catMother.transform.position = catMotherOriginalPosition;
-        isAttacked = true;
-        cat.transform.rotation *= Quaternion.Euler(0f, -40f, 0f);
+        float startTime = 0f;
+        // 공의 input값을 참조로 받아서 위치를 설정해야할듯?
+        //catMother.transform.rotation *= Quaternion.Euler(0f, 40f, 0f);
+        catMother.transform.rotation = catMotherOrigianlRotation;
+        // 디버프
+        SetDebuff(0.5f, 2f, 0.5f);
+        while (startTime <= 5f)
+        {
+            startTime += Time.deltaTime;
+            yield return null;
+            catMother.transform.position = rockTransform.position + new Vector3(0.4f, 0.4f, 0f);
+
+            //catMother.transform.rotation *= Quaternion.Euler();
+        }
+        // 원수치 복구
+        SetDebuffBack();
+
+        obstacleAnimator.SetBool("isMoving", true);
+
+        //catMother.transform.position = catMotherOriginalPosition;
+    }
+
+    public void SetDebuff(float velocityValue, float massValue, float jumpValue)
+    {
+        rockTransform.GetComponentInParent<RockBase>().SetObstacleMultiple(velocityValue, massValue, jumpValue);
+    }
+
+    public void SetDebuffBack()
+    {
+        rockTransform.GetComponentInParent<RockBase>().ResetDebuff();
     }
 }

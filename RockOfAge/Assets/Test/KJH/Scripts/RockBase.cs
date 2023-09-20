@@ -27,10 +27,17 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected MeshCollider rockCollider;
     
     protected float currHp;
+    protected float obstacleMultiple = 1;
 
     protected bool isGround = false;
     protected bool isSlope = false;
     protected bool isFall = false;
+    //{ 0920 홍한범
+    // 디버프 체크
+    public bool isDebuffed = false;
+    // 점프포스 감소
+    public float debuffJumpForce;
+    //} 0920 홍한범
 
     RaycastHit slopeHit;
     Coroutine fallCheckCoroutine = null;
@@ -42,6 +49,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected const float DEFAULT_GROUND_DRAG = .1f;
     protected const float DEFAULT_AIR_MULTIPLE = .3f;
     protected const float DEFAULT_SLOPE_MULTIPLE = 1.5f;
+    protected const float DEFAULT_OBSTACLE_MULTIPLE = 1f;
 
     private void OnDrawGizmos()
     {
@@ -53,7 +61,35 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     } //사랑해요 성철이형 -재현-
     //GOOD
 
-    public  virtual void Init()
+
+    //{ 0920 홍한범
+    // 속도에 대한 저항값, 질량에 대한 저항값을 적용할 수 있음
+    // 감소수치를 넣고 SetObstacleMultiple를 부르고 ResetDebuff를 부르면 풀림
+    // 모든값은 퍼센트로 줄임 Ex) 2배 2f, 0.5배 0.5f;
+    public void SetObstacleMultiple(float velocityValue, float massValue, float jumpValue)
+    {
+        if (isDebuffed == false)
+        {
+            obstacleMultiple *= velocityValue;
+            rockRigidbody.mass = rockStatus.Weight * massValue;
+            debuffJumpForce = jumpValue;
+            isDebuffed = true;
+        }
+    }
+
+    public void ResetDebuff()
+    {
+        if (isDebuffed == true)
+        {
+            obstacleMultiple = 1f;
+            rockRigidbody.mass = rockStatus.Weight;
+            debuffJumpForce = 1f;
+            isDebuffed = false;
+        }
+    }
+    //} 0920 홍한범
+
+    public virtual void Init()
     {
         //추후 시네머신 카메라로 바꿀것
         mainCamera = Camera.main;
@@ -71,6 +107,9 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
         rockRigidbody.mass = rockStatus.Weight;
         currHp = rockStatus.Health;
+        //{ 0920 홍한범
+        debuffJumpForce = 1f;
+        //} 0920 홍한범
     }
 
     //혹시 모를 오버로딩
@@ -88,8 +127,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //이동
     protected virtual void Move(Vector2 input)
     {
-        float accel = rockStatus.Acceleration;
-        float maxSpeed = rockStatus.Speed;
+        float accel = rockStatus.Acceleration * obstacleMultiple;
+        float maxSpeed = rockStatus.Speed * obstacleMultiple;
 
         //카메라를 기준으로 좌표 변경
         Vector3 inputDirection = (Camera.main.transform.forward * input.y + Camera.main.transform.right * input.x).normalized;
@@ -136,7 +175,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //점프
     protected virtual void Jump(float power)
     {
-        rockRigidbody.velocity += Vector3.up * power;
+        rockRigidbody.velocity += Vector3.up * (power*debuffJumpForce);
     }
 
 
@@ -158,9 +197,23 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //오버랩을 사용하는 checkGround
     protected virtual bool CheckGround()
     {
+
+        if (isSlope)
+        {
+            return CheckGroundRay();
+        }
+        else
+        {
+            return CheckGroundOverlap();
+        }
+
+    }
+    //오버랩을 사용하는 checkGround
+    protected virtual bool CheckGroundOverlap()
+    {
         isGround = false;
         float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
-        
+
         Collider[] colliders = Physics.OverlapSphere(rockObject.position - Vector3.up * rockHeightHalf, .05f, Global_PSC.FindLayerToName("Terrains"));
         if (colliders.Length > 0)
         {
@@ -381,7 +434,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         }
         else
         {
-            rockRigidbody.drag = 0;
+            rockRigidbody.drag = .01f/obstacleMultiple;
         }
     }
 

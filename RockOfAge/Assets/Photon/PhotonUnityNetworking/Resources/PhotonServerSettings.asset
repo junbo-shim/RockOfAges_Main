@@ -52,6 +52,7 @@ MonoBehaviour:
   - SendPlayer3Pos
   - SendPlayer4Pos
   - SendPlayerPosition
+  - ChangeMasterReadyValue
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

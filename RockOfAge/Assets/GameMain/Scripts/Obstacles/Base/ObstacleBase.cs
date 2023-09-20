@@ -67,18 +67,18 @@ public class ObstacleBase : MonoBehaviour
         //스케일 변경
         obstacle.transform.localScale = Vector3.one * .1f;
 
-        return obstacle;
         //버튼 데이터 변경
         GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(status.Id);
         unitButton.GetComponent<CreateButton>().buildCount += 1;
         UIManager.uiManager.RePrintUnitCount(status.Id);
 
+        return obstacle;
     }
 
     //초기화
     protected virtual void Init()
     {
-        status = Instantiate(status);
+        status = new ObstacleStatus(status);// Instantiate(status);
         obstacleMeshFilter = GetComponent<MeshFilter>();
         obstacleRigidBody = GetComponent<Rigidbody>();
         obstacleAnimator = GetComponent<Animator>();

@@ -118,9 +118,6 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     // id넣으면 gold와 buildlimit를 리턴하는 함수
     public void GetUnitGoldAndBuildLimitFromID(int id_, out float gold_, out int buildLimit_)
     {
-        gold_ = 1;
-        buildLimit_ = 1;
-        return;
         GameObject gameObject = GetGameObjectByID(id_);
         if (id_ > 10)
         {

@@ -33,9 +33,6 @@ public class ObstacleStatus : ScriptableObject
     }
 
 
-    private void Awake()
-    {
-    }
 
     public int Id { get => id; set => id = value; }
     public string ObstacleName { get => obstacleName; set => obstacleName = value; }

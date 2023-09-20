@@ -30,7 +30,7 @@ public class DefaultRock : RockBase
 
         GetInput();
         ChangeRockState();
-        CheckGroundRay();
+        CheckGround();
         ChangeDrag();
         CheckFall();
 

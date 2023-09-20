@@ -27,6 +27,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected MeshCollider rockCollider;
     
     protected float currHp;
+    protected float obstacleMultiple = 1;
 
     protected bool isGround = false;
     protected bool isSlope = false;
@@ -42,6 +43,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected const float DEFAULT_GROUND_DRAG = .1f;
     protected const float DEFAULT_AIR_MULTIPLE = .3f;
     protected const float DEFAULT_SLOPE_MULTIPLE = 1.5f;
+    protected const float DEFAULT_OBSTACLE_MULTIPLE = 1f;
 
     private void OnDrawGizmos()
     {
@@ -52,6 +54,13 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         }
     } //사랑해요 성철이형 -재현-
     //GOOD
+
+    public void SetObstacleMultiple(float value)
+    {
+        obstacleMultiple = value;
+        rockRigidbody.mass = rockStatus.Weight*value;
+
+    }
 
     public  virtual void Init()
     {
@@ -88,8 +97,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //이동
     protected virtual void Move(Vector2 input)
     {
-        float accel = rockStatus.Acceleration;
-        float maxSpeed = rockStatus.Speed;
+        float accel = rockStatus.Acceleration * obstacleMultiple;
+        float maxSpeed = rockStatus.Speed * obstacleMultiple;
 
         //카메라를 기준으로 좌표 변경
         Vector3 inputDirection = (Camera.main.transform.forward * input.y + Camera.main.transform.right * input.x).normalized;
@@ -158,9 +167,23 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //오버랩을 사용하는 checkGround
     protected virtual bool CheckGround()
     {
+
+        if (isSlope)
+        {
+            return CheckGroundRay();
+        }
+        else
+        {
+            return CheckGroundOverlap();
+        }
+
+    }
+    //오버랩을 사용하는 checkGround
+    protected virtual bool CheckGroundOverlap()
+    {
         isGround = false;
         float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
-        
+
         Collider[] colliders = Physics.OverlapSphere(rockObject.position - Vector3.up * rockHeightHalf, .05f, Global_PSC.FindLayerToName("Terrains"));
         if (colliders.Length > 0)
         {
@@ -381,7 +404,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         }
         else
         {
-            rockRigidbody.drag = 0;
+            rockRigidbody.drag = .01f/obstacleMultiple;
         }
     }
 

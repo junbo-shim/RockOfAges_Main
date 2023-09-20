@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Splines;
 
 public class BuildManager : MonoBehaviour
 {
     public static BuildManager instance;
-    public ObstacleBase buildTarget;
+    public ObstacleBase buildTarget = null;
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!테스트 코드
     //해당 정보는 item manager에 저장될 예정??
@@ -16,31 +17,36 @@ public class BuildManager : MonoBehaviour
     public Material red;
     public Material white;
 
-
-    //커서의 현재 그리드위치
-    private Vector3Int currCursorGridIndex = Vector3Int.zero;
     //건물이 바라보는 방향
     private BuildRotateDirection whereLookAt;
+    //드래그 중인 방향
+    private BuildDragDirection whereDragCursor;
+    //커서의 현재 그리드위치
+    private Vector3Int currCursorGridIndex = Vector3Int.zero;
     //좌클릭한 곳의 좌표
     private Vector3Int clickGridIndex = Vector3Int.zero;
-    //좌클릭후 드래그한 방향
-    //현재 Grid 좌표를 기반으로 판단
-    private Vector3 dragDirection = Vector3.zero;
+    //좌클릭한 곳의 좌표
+    private Vector3Int endGridIndex = Vector3Int.zero;
 
+    private List<Vector3Int> dragBuildPosition = default;
 
     //빌드 뷰어
     //렌더러만 가진 Viewer 오브젝트
-    private BuildViewer viewer;
+    private BuildViewer buildViewer;
+    private DragViewer dragViewer;
 
     //해당 지형의 건설 가능 상태를 저장 
     private BitArray buildState;
     private Vector3 gridOffset;
+
+    public bool isLeftClick = false;
 
     //맵 사이즈 
     public static readonly int MAP_SIZE_X = 256;
     public static readonly int MAP_SIZE_Z = 256;
     public static readonly int MAP_SIZE_Y = 50;
     public static readonly Vector3 FIXED_GRID_OFFSET = (Vector3.one - Vector3.up) * .5f;
+    public static readonly Vector3Int[] DIFF_VECTOR = new Vector3Int[] { Vector3Int.right, Vector3Int.forward, Vector3Int.left, Vector3Int.back };
 
     const int ONCE_ROTATE_EULER_ANGLE = 90;
     public static readonly Vector3Int OUT_VECTOR = new Vector3Int(-90000, 0, 0);
@@ -51,8 +57,12 @@ public class BuildManager : MonoBehaviour
         instance = this;
 
         buildState = new BitArray(MAP_SIZE_X * MAP_SIZE_Z);
-        viewer = GetComponentInChildren<BuildViewer>();
-        viewer.HideViewer();
+        buildViewer = GetComponentInChildren<BuildViewer>();
+        buildViewer.HideViewer();
+        dragViewer = GetComponentInChildren<DragViewer>();
+
+
+        InitTerrainData();
     }
 
 
@@ -62,56 +72,84 @@ public class BuildManager : MonoBehaviour
     //해당 지형이 건설 가능한지를 판단한다.
     void Update()
     {
-
-        //좌표가 변하지 않았다면 다음의 계산들을 실행하지않는다. 
-        ChangeCurrGrid();
-
         //테스트 코드
-        if (buildTarget == null)
+        if (Input.GetKeyDown(KeyCode.W))
         {
-            return;
+            if (buildTarget != null)
+                ChangeBuildTarget(buildTarget);
         }
 
-        ChangeBuildPosition();
-        if (CanBuild())
-        {
-            if (!IsUIClick())
-            {
-                //우선순위 우클릭->좌클릭
-                if (Input.GetMouseButtonDown(1))
-                {
-                    //취소
-                }
-                else
-                {
+        //현재 마우스의 좌표를 변경
+        ChangeCurrGrid();
 
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        clickGridIndex = currCursorGridIndex;
-                        //시작 좌표 저장
-                    }
-                    else if (Input.GetMouseButton(0))
-                    {
-                        //드래그 좌표 저장
-                    }
-                    else if (Input.GetMouseButtonUp(0))
+
+        //좌표 갱신
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (IsDefance() && IsTerrain() && buildTarget != null)
+            {
+                isLeftClick = true;
+                //시작 좌표 저장
+                clickGridIndex = currCursorGridIndex;
+                endGridIndex = currCursorGridIndex;
+                dragViewer.StartDrag(clickGridIndex);
+            }
+        }
+
+
+
+        if (isLeftClick && Input.GetMouseButton(0))
+        {
+            endGridIndex = currCursorGridIndex;
+            Vector3 end = ChangeBuildPosition();
+
+            if (GetBuildEnable(end))
+            {
+                dragViewer.ContinueDrag(end);
+            }
+            else
+            {
+                dragViewer.ContinueDrag(clickGridIndex);
+            }
+        }
+        else
+        {
+            ChangeBuildPosition();
+        }
+
+        //if (!IsUIClick())
+        {
+            //우선순위 우클릭->좌클릭
+            if (Input.GetMouseButtonDown(1))
+            {
+                DragEnd();
+                buildTarget = null;
+                //취소
+            }
+
+            else if (Input.GetMouseButtonUp(0))
+            {
+                if (isLeftClick && CanBuild())
+                {
+                    for (int i = 0; i < dragBuildPosition.Count; i++)
                     {
                         //빌드 시작
                         Vector3 position;
-                        Quaternion rotation = Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0);
-                        GetViewerPosition(clickGridIndex, rotation, out position, out rotation);
+                        Quaternion rotation;
+                        GetViewerPosition(dragBuildPosition[i], Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0), out position, out rotation);
 
                         ObstacleBase build = buildTarget.Build(position, rotation);
                         build.name = buildTarget.name + "_" + currCursorGridIndex.z + "_" + currCursorGridIndex.x;
-                        SetBitArrays(clickGridIndex, buildTarget.status.Size);
-                        clickGridIndex = OUT_VECTOR;
+                        SetBitArrays(dragBuildPosition[i], buildTarget.status.Size);
                     }
-
+                    DragEnd();
+                }
+                else
+                {
+                    DragEnd();
                 }
 
             }
-
-
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -124,14 +162,26 @@ public class BuildManager : MonoBehaviour
 
         //현재 상태에 따라서 해당 스크립트를 처리할지 정한다.
         //DEFANCE 모드, 현재 위치의 그리드에 지형이 존재, 현재 건설 가능한지
-        if (!IsDefance() || !IsTerrain())
+        if ((!IsDefance() || !IsTerrain() || buildTarget==null) && !isLeftClick)
         {
-            viewer.HideViewer();
+            buildViewer.HideViewer();
             return;
         }
 
-        viewer.ShowViewer();
-        viewer.UpdateMouseMove(CanBuild());
+        buildViewer.ShowViewer();
+        buildViewer.UpdateMouseMove(CanBuild());
+
+    }
+
+    private void DragEnd()
+    {
+        dragViewer.EndDrag();
+
+        isLeftClick = false;
+        clickGridIndex = OUT_VECTOR;
+        endGridIndex = OUT_VECTOR;
+
+        dragBuildPosition = null;
 
     }
 
@@ -226,7 +276,7 @@ public class BuildManager : MonoBehaviour
         //홀수
         //0.5, 0.5
         gridOffset = new Vector3((buildTarget.status.Size.x) % 2 * .5f, 0, (buildTarget.status.Size.y) % 2 * .5f);
-        viewer.UpdateTargetChange(target);
+        buildViewer.UpdateTargetChange(target);
         //gridOffset = new Vector3((int)(buildTarget.size.x + 1) % 2 * .5f, 0, (int)(buildTarget.size.y + 1) % 2 * .5f);
 
     }
@@ -272,13 +322,73 @@ public class BuildManager : MonoBehaviour
 
     //grid 정보가 바뀔때마다 불러온다.
     //viewer 위치를 갱신한다.
-    void ChangeBuildPosition()
+    Vector3Int ChangeBuildPosition()
     {
-        RaycastHit raycastHit;
-        if (Physics.Raycast(currCursorGridIndex + gridOffset + Vector3.up * MAP_SIZE_Y, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
+        if (!isLeftClick)
         {
-            Vector3 newPosition = raycastHit.point + viewer.transform.up * (viewer.gameObject.GetHeight(.1f) * .5f);
-            viewer.transform.position = newPosition;
+            RaycastHit raycastHit;
+            if (Physics.Raycast(currCursorGridIndex + gridOffset + Vector3.up * MAP_SIZE_Y, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
+            {
+                Vector3 newPosition = raycastHit.point + buildViewer.transform.up * (buildViewer.gameObject.GetHeight(.1f) * .5f);
+                buildViewer.transform.position = newPosition;
+                return new Vector3Int((int)raycastHit.point.x, (int)raycastHit.point.y, (int)raycastHit.point.z);
+            }
+            return OUT_VECTOR;
+        }
+        
+        else
+        {
+            //if (buildTarget.dragObstacle)
+            {
+               Vector3 gridDiff =  clickGridIndex - endGridIndex;
+               Debug.Log(gridDiff);
+
+                float absX = Mathf.Abs(gridDiff.x);
+                float absZ = Mathf.Abs(gridDiff.z);
+
+                int length;
+                int size;
+                Vector2 sizeVector = buildTarget.status.Size;
+
+                //월드좌표 수평
+                if (absX > absZ)
+                {
+                    length = (int)(absX / sizeVector.x);
+                    size = (int)sizeVector.x;
+                    if (gridDiff.x < 0)
+                    {
+                        whereDragCursor = BuildDragDirection.UP;
+                    }
+                    else
+                    {
+                        whereDragCursor = BuildDragDirection.DOWN;
+                    }
+                }
+                //월드좌표 수직
+                else
+                {
+                    length = (int)(absZ / sizeVector.y);
+                    size = (int)sizeVector.y;
+                    if (gridDiff.z < 0)
+                    {
+                        whereDragCursor = BuildDragDirection.RIGHT;
+                    }
+                    else
+                    {
+                        whereDragCursor = BuildDragDirection.LEFT;
+                    }
+                }
+
+                dragBuildPosition = new List<Vector3Int>();
+                for (int i = 0; i <= length; i++)
+                {
+                    dragBuildPosition.Add(clickGridIndex+ DIFF_VECTOR[(int)whereDragCursor] * size * i);
+                }
+                return dragBuildPosition[length];
+
+                //이후 빌드뷰어에서 여러개 생성하는 메서드 추가.
+            }
+
         }
     }
 
@@ -302,7 +412,8 @@ public class BuildManager : MonoBehaviour
         {
             whereLookAt = whereLookAt + diff;
         }
-        viewer.transform.localEulerAngles = Vector3.up * ONCE_ROTATE_EULER_ANGLE * (int)whereLookAt;
+        Vector3 localEuler = buildViewer.transform.localEulerAngles;
+        buildViewer.transform.localEulerAngles =new Vector3(localEuler.x, ONCE_ROTATE_EULER_ANGLE * (int)whereLookAt, localEuler.z);
     }
 
     bool IsUIClick()
@@ -313,6 +424,7 @@ public class BuildManager : MonoBehaviour
     //모드 참조
     bool IsDefance()
     {
+
         if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
         {
             return true;
@@ -340,10 +452,24 @@ public class BuildManager : MonoBehaviour
     //아이템의 limit상태와 해당 terrain의 건설 가능 상태를 &&한다.
     bool CanBuild()
     {
-        return GetBuildEnable(currCursorGridIndex, buildTarget.status.Size) && GetItemLimitState();
+        if (buildTarget == null)
+        {
+            return false;
+        }
+
+        if (isLeftClick)
+        {
+
+            return GetBuildEnable(dragBuildPosition, buildTarget.status.Size) && GetItemLimitState(dragBuildPosition.Count);
+        }
+        else
+        {
+            return GetBuildEnable(currCursorGridIndex, buildTarget.status.Size) && GetItemLimitState(1);
+        }
+
     }
 
-    bool GetViewerPosition(Vector3 position, Quaternion rotation, out Vector3 outPosition, out Quaternion outRotation)
+    bool GetViewerPosition(Vector3Int position, Quaternion rotation, out Vector3 outPosition, out Quaternion outRotation)
     {
         RaycastHit raycastHit;
         if (Physics.Raycast(position + gridOffset + Vector3.up * MAP_SIZE_Y, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
@@ -359,8 +485,13 @@ public class BuildManager : MonoBehaviour
 
     //현재 건설된 아이템의 최대 건설 개수와 현재 건설 개수를 비교한다.
     //true : 현재 건설 개수가 최대 건설보다 낮다
-    bool GetItemLimitState()
+    bool GetItemLimitState(int size)
     {
+        Debug.Log("?");
+        if(buildTarget == null)
+        {
+            return false;
+        }
         // gold & limit
         float gold = default;
         int buildLimit = default;
@@ -368,11 +499,27 @@ public class BuildManager : MonoBehaviour
         GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(buildTarget.status.Id);
         int buildCount = unitButton.GetComponent<CreateButton>().buildCount;
 
-        return (buildCount < buildLimit);
+        return (buildCount+size <= buildLimit);
     }
 
     //현재 grid위치의 주변 위치의 terrain의 상태를 전부 비교
-    bool GetBuildEnable(Vector3 grid, Vector2Int buildSize)
+    bool GetBuildEnable(List<Vector3Int> grids, Vector2Int buildSize)
+    {
+        bool result = true;
+
+        for (int i = 0; i < grids.Count;i++ )
+        {
+            result = result && GetBuildEnable(grids[i], buildSize);
+            if (!result)
+            {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    //현재 grid위치의 주변 위치의 terrain의 상태를 전부 비교
+    bool GetBuildEnable(Vector3Int grid, Vector2Int buildSize)
     {
         bool result = true;
 
@@ -380,8 +527,8 @@ public class BuildManager : MonoBehaviour
         {
             for (int x = (int)(buildSize.x * .5f); x > -buildSize.x * .5f; x--)
             {
-                result = result && GetBuildEnable(grid - Vector3Int.right * (x) - Vector3Int.forward * (y));
-
+                result = result && GetBuildEnable(grid - Vector3Int.right * x - Vector3Int.forward * y);
+                
             }
         }
         return result;
@@ -398,6 +545,7 @@ public class BuildManager : MonoBehaviour
          
         return buildState.Get(size);
     }
+
 }
 
 
@@ -411,3 +559,12 @@ public enum BuildRotateDirection
     DOWN = 2,
     LEFT = 3
 }
+
+public enum BuildDragDirection
+{
+    UP = 0,
+    RIGHT = 1,
+    DOWN = 2,
+    LEFT = 3
+}
+

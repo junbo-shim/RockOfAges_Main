@@ -45,6 +45,14 @@ MonoBehaviour:
   - ResetPlayerTeamAndNumber
   - SavePlayerTeamAndNumber
   - SendMasterRoomPosition
+  - SendTeam1Position
+  - SendTeam2Position
+  - SendPlayer1Pos
+  - SendPlayer2Pos
+  - SendPlayer3Pos
+  - SendPlayer4Pos
+  - SendPlayerPosition
+  - ChangeMasterReadyValue
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

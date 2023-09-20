@@ -5,33 +5,58 @@ using UnityEngine;
 
 public class BuildViewer : MonoBehaviour
 {
-    private MeshRenderer meshRenderer;
-    private MeshFilter meshFilter;
-    private BuildHighLight highLight;
-    private BuildColorHighLight colorHighLight;
 
-    private DragViewer drag;
+    [SerializeField]
+    private MeshRenderer meshRenderer;
+    [SerializeField]
+    private MeshFilter meshFilter;
+    [SerializeField]
+    private BuildHighLight highLight;
+    [SerializeField]
+    private BuildColorHighLight colorHighLight;
+    [SerializeField]
+    private DragViewer dragViewer;
+
 
     private void Awake()
     {
-        meshFilter = GetComponent<MeshFilter>();
-        meshRenderer = GetComponent<MeshRenderer>();
+        meshFilter = GetComponentInChildren<MeshFilter>();
+        meshRenderer = GetComponentInChildren<MeshRenderer>();
         highLight = GetComponentInChildren<BuildHighLight>();
         colorHighLight = GetComponentInChildren<BuildColorHighLight>();
-        drag = GetComponentInChildren<DragViewer>();
+        dragViewer = transform.parent.GetComponentInChildren<DragViewer>();
     }
 
     void ChangeTarget(ObstacleBase target)
     {
+        SkinnedMeshRenderer skinnedMeshRenderer = default;
         MeshFilter _meshFilter = target.GetComponent<MeshFilter>();
         if (_meshFilter == null)
         {
-            Debug.Assert(_meshFilter == null, "타겟 메쉬필터 없음");
-            return;
+            _meshFilter = target.GetComponentInChildren<MeshFilter>();
+            if (_meshFilter == null)
+            {
+                skinnedMeshRenderer = target.GetComponentInChildren<SkinnedMeshRenderer>();
+                if (skinnedMeshRenderer == null)
+                {
+                    Debug.Log("오류");
+                    return;
+                }
+            }
         }
 
         // sourceMeshFilter에서 원본 Mesh를 참조
-        Mesh sourceMesh = _meshFilter.sharedMesh;
+        Mesh sourceMesh;
+        if (_meshFilter != null)
+        {
+            meshFilter.transform.rotation = _meshFilter.transform.rotation;
+            sourceMesh = _meshFilter.sharedMesh;
+        }
+        else
+        {
+            meshFilter.transform.rotation = skinnedMeshRenderer.transform.rotation;
+            sourceMesh = skinnedMeshRenderer.sharedMesh;
+        }
 
         // 새로운 Mesh를 생성하고 원본 Mesh를 복사
         Mesh copyMesh = new Mesh();
@@ -40,15 +65,17 @@ public class BuildViewer : MonoBehaviour
         copyMesh.normals = sourceMesh.normals;
         copyMesh.uv = sourceMesh.uv;
 
+
         // 복사된 Mesh를 새로운 MeshFilter에 할당
         meshFilter.sharedMesh = copyMesh;
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!차후 상황에 맞게 변경할것.
         ObstacleBase _target = target.GetComponent<ObstacleBase>();
+
         highLight.ChangeHighLight(_target.status.Size);
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        drag.previewObject = Instantiate(_target).gameObject;
+        //drag.previewObject = Instantiate(_target).gameObject;
 
         HideViewer();
     }
@@ -57,6 +84,7 @@ public class BuildViewer : MonoBehaviour
     public void UpdateMouseMove(bool canBuild)
     {
         colorHighLight.UpdateColorHighLightColor(canBuild);
+        dragViewer.UpdateColor(canBuild);
     }
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!차후 obstacleBase로 바꿀것
@@ -103,3 +131,4 @@ public class BuildViewer : MonoBehaviour
     }
 
 }
+

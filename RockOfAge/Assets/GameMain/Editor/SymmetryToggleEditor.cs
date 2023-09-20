@@ -44,26 +44,26 @@ public class SymmetryToggleEditor : EditorWindow
 
                 if (isSymmetryEnabled)
                 {
-                    // ´ëÄª À§Ä¡ °è»ê
+                    // ëŒ€ì¹­ ìœ„ì¹˜ ê³„ì‚°
                     Vector3 symmetryPosition = position;
                     if (symmetryX)
                     {
-                        symmetryPosition.x *= -1; // X ÃàÀ» ±âÁØÀ¸·Î ´ëÄª
+                        symmetryPosition.x *= -1; // X ì¶•ì„ ê¸°ì¤€ìœ¼ë¡œ ëŒ€ì¹­
                     }
                     if (symmetryY)
                     {
-                        symmetryPosition.y *= -1; // Y ÃàÀ» ±âÁØÀ¸·Î ´ëÄª
+                        symmetryPosition.y *= -1; // Y ì¶•ì„ ê¸°ì¤€ìœ¼ë¡œ ëŒ€ì¹­
                     }
                     if (symmetryZ)
                     {
-                        symmetryPosition.z *= -1; // Z ÃàÀ» ±âÁØÀ¸·Î ´ëÄª
+                        symmetryPosition.z *= -1; // Z ì¶•ì„ ê¸°ì¤€ìœ¼ë¡œ ëŒ€ì¹­
                     }
 
-                    // ¿ÀºêÁ§Æ® º¹Á¦ ¹× ´ëÄª À§Ä¡¿¡ ¹èÄ¡
+                    // ì˜¤ë¸Œì íŠ¸ ë³µì œ ë° ëŒ€ì¹­ ìœ„ì¹˜ì— ë°°ì¹˜
                     GameObject newObject = Instantiate(selectedObject, symmetryPosition, selectedObject.transform.rotation);
                     newObject.transform.localScale = scale;
 
-                    // ·ÎÄÃ È¸Àü°ª ¹İÀü
+                    // ë¡œì»¬ íšŒì „ê°’ ë°˜ì „
                     Vector3 localRotation = newObject.transform.localEulerAngles;
                     if (rotateX)
                     {
@@ -75,7 +75,7 @@ public class SymmetryToggleEditor : EditorWindow
                     }
                     newObject.transform.localEulerAngles = localRotation;
 
-                    // »õ·Î »ı¼ºÇÑ ¿ÀºêÁ§Æ®¸¦ ¼±ÅÃ
+                    // ìƒˆë¡œ ìƒì„±í•œ ì˜¤ë¸Œì íŠ¸ë¥¼ ì„ íƒ
                     Selection.activeGameObject = newObject;
                 }
             }

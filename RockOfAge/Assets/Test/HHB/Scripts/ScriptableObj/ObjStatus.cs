@@ -21,6 +21,22 @@ public class ObstacleStatus : ScriptableObject
         this.tempString = obstacle.TempString;
     }
 
+    public void Copy(ObstacleStatus obstacle)
+    {
+        this.id = obstacle.Id;
+        this.obstacleName = obstacle.ObstacleName;
+        this.price = obstacle.Price;
+        this.health = obstacle.Health;
+        this.size = obstacle.Size;
+        this.buildLimit = obstacle.BuildLimit;
+        this.tempString = obstacle.TempString;
+    }
+
+
+    private void Awake()
+    {
+    }
+
     public int Id { get => id; set => id = value; }
     public string ObstacleName { get => obstacleName; set => obstacleName = value; }
     public float Price { get => price; set => price = value; }

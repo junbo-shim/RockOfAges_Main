@@ -78,7 +78,7 @@ public class ObstacleBase : MonoBehaviour
     //초기화
     protected virtual void Init()
     {
-        status = new ObstacleStatus(status);
+        status = Instantiate(status);
         obstacleMeshFilter = GetComponent<MeshFilter>();
         obstacleRigidBody = GetComponent<Rigidbody>();
         obstacleAnimator = GetComponent<Animator>();

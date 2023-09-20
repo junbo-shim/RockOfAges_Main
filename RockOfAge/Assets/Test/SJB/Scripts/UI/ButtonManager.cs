@@ -53,6 +53,8 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     public Button player2Button;
     public Button player3Button;
     public Button player4Button;
+
+    public bool isReady;
     #endregion
 
     public PhotonView dataContainerView;
@@ -67,7 +69,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         MakePanelsDefault();
     }
 
-    protected override void Update()
+    protected override void FixedUpdate()
     {
         CheckCloseButton();
         CheckMasterClient();
@@ -132,17 +134,34 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #endregion
 
     #region 방에 들어갔을 때 마스터 클라이언트임을 체크하면 바뀌는 Start, Ready 버튼
-    private void CheckMasterClient() 
+    private void CheckMasterClient()
     {
-        if (PhotonNetwork.IsMasterClient == true)
+        if (PhotonNetwork.InRoom == true)
         {
-            startReadyButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "START";
-            startReadyButton.interactable = false;
-        }
-        else
-        {
-            startReadyButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "READY";
-            startReadyButton.interactable = true;
+            FindDataContainer();
+            if (PhotonNetwork.IsMasterClient == true)
+            {
+                startReadyButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "START";
+
+                // NullReference Exception
+                if (dataContainerView.GetComponent<PlayerDataContainer>().otherPlayerReady == 3)
+                {
+                    startReadyButton.interactable = true;
+                }
+                else if (dataContainerView.GetComponent<PlayerDataContainer>().otherPlayerReady < 3)
+                {
+                    startReadyButton.interactable = false;
+                }
+                else
+                {
+                    Debug.Log("레디버튼 관련 에러 발생");
+                }
+            }
+            else
+            {
+                startReadyButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "READY";
+                startReadyButton.interactable = true;
+            }
         }
     }
     #endregion
@@ -216,13 +235,6 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     public void FindDataContainer() 
     {
         dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
-    }
-    #endregion
-
-    #region 딜레이용 메서드
-    public void DelayForSecond()
-    {
-        /*Do Nothing*/
     }
     #endregion
 
@@ -424,6 +436,24 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         {
             if (NetworkManager.Instance.playerSeats[0] == false) 
             {
+                string masterViewID = dataContainerView.ViewID.ToString();
+
+                if (NetworkManager.Instance.roomSetting.ContainsKey(masterViewID)) 
+                {
+                    string seatNumber = 
+                        NetworkManager.Instance.roomSetting[masterViewID].ToString();
+
+                    int index = int.Parse(seatNumber.Split("player")[1]);
+                    NetworkManager.Instance.playerSeats[index - 1] = false;
+                    NetworkManager.Instance.roomSetting[masterViewID] = "player1";
+                    Debug.LogFormat("master = player1, player{0} 에서 이동함", index);
+                }
+                else
+                {
+                    NetworkManager.Instance.roomSetting[masterViewID] = "player1";
+                    Debug.Log("master = player1");
+                }
+                PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
                 NetworkManager.Instance.playerSeats[0] = true;
             }
             else if (NetworkManager.Instance.playerSeats[0] == true)
@@ -444,6 +474,24 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         {
             if (NetworkManager.Instance.playerSeats[1] == false)
             {
+                string masterViewID = dataContainerView.ViewID.ToString();
+
+                if (NetworkManager.Instance.roomSetting.ContainsKey(masterViewID))
+                {
+                    string seatNumber =
+                        NetworkManager.Instance.roomSetting[masterViewID].ToString();
+
+                    int index = int.Parse(seatNumber.Split("player")[1]);
+                    NetworkManager.Instance.playerSeats[index - 1] = false;
+                    NetworkManager.Instance.roomSetting[masterViewID] = "player2";
+                    Debug.LogFormat("master = player2, player{0} 에서 이동함", index);
+                }
+                else
+                {
+                    NetworkManager.Instance.roomSetting[masterViewID] = "player2";
+                    Debug.Log("master = player2");
+                }
+                PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
                 NetworkManager.Instance.playerSeats[1] = true;
             }
             else if(NetworkManager.Instance.playerSeats[1] == true)
@@ -464,6 +512,24 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         {
             if (NetworkManager.Instance.playerSeats[2] == false)
             {
+                string masterViewID = dataContainerView.ViewID.ToString();
+
+                if (NetworkManager.Instance.roomSetting.ContainsKey(masterViewID))
+                {
+                    string seatNumber =
+                        NetworkManager.Instance.roomSetting[masterViewID].ToString();
+
+                    int index = int.Parse(seatNumber.Split("player")[1]);
+                    NetworkManager.Instance.playerSeats[index - 1] = false;
+                    NetworkManager.Instance.roomSetting[masterViewID] = "player3";
+                    Debug.LogFormat("master = player3, player{0} 에서 이동함", index);
+                }
+                else
+                {
+                    NetworkManager.Instance.roomSetting[masterViewID] = "player3";
+                    Debug.Log("master = player3");
+                }
+                PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
                 NetworkManager.Instance.playerSeats[2] = true;
             }
             else if (NetworkManager.Instance.playerSeats[2] == true)
@@ -484,6 +550,24 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         {
             if (NetworkManager.Instance.playerSeats[3] == false)
             {
+                string masterViewID = dataContainerView.ViewID.ToString();
+
+                if (NetworkManager.Instance.roomSetting.ContainsKey(masterViewID))
+                {
+                    string seatNumber =
+                        NetworkManager.Instance.roomSetting[masterViewID].ToString();
+
+                    int index = int.Parse(seatNumber.Split("player")[1]);
+                    NetworkManager.Instance.playerSeats[index - 1] = false;
+                    NetworkManager.Instance.roomSetting[masterViewID] = "player4";
+                    Debug.LogFormat("master = player4, player{0} 에서 이동함", index);
+                }
+                else
+                {
+                    NetworkManager.Instance.roomSetting[masterViewID] = "player4";
+                    Debug.Log("master = player4");
+                }
+                PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
                 NetworkManager.Instance.playerSeats[3] = true;
             }
             else if (NetworkManager.Instance.playerSeats[3] == true)
@@ -497,7 +581,28 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #region 시작 버튼
     public void PressStartReadyButton() 
     {
-
+        if (PhotonNetwork.IsMasterClient == true) 
+        {
+            PhotonNetwork.AutomaticallySyncScene = true;
+            // 로드할 씬의 이름 작성
+            //PhotonNetwork.LoadLevel();
+        }
+        else 
+        {
+            FindDataContainer();
+            if (isReady == false) 
+            {
+                isReady = true;
+                dataContainerView.RPC("ChangeMasterReadyValue", RpcTarget.MasterClient, isReady, dataContainerView.ViewID.ToString(), dataContainerView.IsMine);
+                startReadyButton.GetComponent<Image>().color = Color.grey;
+            }
+            else if (isReady == true)
+            {
+                isReady = false;
+                dataContainerView.RPC("ChangeMasterReadyValue", RpcTarget.MasterClient, isReady, dataContainerView.ViewID.ToString(), dataContainerView.IsMine);
+                startReadyButton.GetComponent<Image>().color = Color.white;
+            }
+        }
     }
     #endregion
 

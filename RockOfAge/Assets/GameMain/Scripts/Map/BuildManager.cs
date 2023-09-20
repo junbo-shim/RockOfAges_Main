@@ -8,7 +8,7 @@ using UnityEngine.Splines;
 public class BuildManager : MonoBehaviour
 {
     public static BuildManager instance;
-    public ObstacleBase buildTarget;
+    public ObstacleBase buildTarget = null;
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!테스트 코드
     //해당 정보는 item manager에 저장될 예정??
@@ -117,7 +117,7 @@ public class BuildManager : MonoBehaviour
             ChangeBuildPosition();
         }
 
-        if (!IsUIClick())
+        //if (!IsUIClick())
         {
             //우선순위 우클릭->좌클릭
             if (Input.GetMouseButtonDown(1))
@@ -418,14 +418,12 @@ public class BuildManager : MonoBehaviour
 
     bool IsUIClick()
     {
-        return false;
         return EventSystem.current.IsPointerOverGameObject();
     }
 
     //모드 참조
     bool IsDefance()
     {
-        return true;
 
         if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
         {
@@ -462,11 +460,11 @@ public class BuildManager : MonoBehaviour
         if (isLeftClick)
         {
 
-            return GetBuildEnable(dragBuildPosition, buildTarget.status.Size) && GetItemLimitState();
+            return GetBuildEnable(dragBuildPosition, buildTarget.status.Size) && GetItemLimitState(dragBuildPosition.Count);
         }
         else
         {
-            return GetBuildEnable(currCursorGridIndex, buildTarget.status.Size) && GetItemLimitState();
+            return GetBuildEnable(currCursorGridIndex, buildTarget.status.Size) && GetItemLimitState(1);
         }
 
     }
@@ -487,9 +485,13 @@ public class BuildManager : MonoBehaviour
 
     //현재 건설된 아이템의 최대 건설 개수와 현재 건설 개수를 비교한다.
     //true : 현재 건설 개수가 최대 건설보다 낮다
-    bool GetItemLimitState()
+    bool GetItemLimitState(int size)
     {
-        return true;
+        Debug.Log("?");
+        if(buildTarget == null)
+        {
+            return false;
+        }
         // gold & limit
         float gold = default;
         int buildLimit = default;
@@ -497,7 +499,7 @@ public class BuildManager : MonoBehaviour
         GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(buildTarget.status.Id);
         int buildCount = unitButton.GetComponent<CreateButton>().buildCount;
 
-        return (buildCount < buildLimit);
+        return (buildCount+size <= buildLimit);
     }
 
     //현재 grid위치의 주변 위치의 terrain의 상태를 전부 비교

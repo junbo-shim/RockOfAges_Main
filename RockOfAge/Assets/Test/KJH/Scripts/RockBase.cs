@@ -398,10 +398,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         rockRigidbody.angularVelocity = Vector3.zero;
         rockObject.position = checkPoint.position + Vector3.up * 6f;
 
+        camera.ForceCameraPosition(checkPoint.position, checkPoint.rotation);
 
-
-        Debug.Log(rockObject.position);
-        Debug.Log(checkPoint.position);
     }
 
     //맞았을 경우 체력마다 다른 mesh를 보여준다.

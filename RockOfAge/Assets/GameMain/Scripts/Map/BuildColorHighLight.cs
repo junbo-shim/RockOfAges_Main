@@ -5,8 +5,10 @@ using UnityEngine;
 public class BuildColorHighLight : MonoBehaviour, IHitObjectHandler
 {
     public Vector2 size;
-    private GameObject allowPlane;        // °Ç¼³ °¡´É½Ã
-    private GameObject denyPlane;        // °Ç¼³ ºÒ°¡´É½Ã
+    [SerializeField]
+    private GameObject allowPlane;        // ê±´ì„¤ ê°€ëŠ¥ì‹œ
+    [SerializeField]
+    private GameObject denyPlane;        // ê±´ì„¤ ë¶ˆê°€ëŠ¥ì‹œ
 
     void Awake()
     {
@@ -16,7 +18,7 @@ public class BuildColorHighLight : MonoBehaviour, IHitObjectHandler
         MeshRenderer allowRenderer =  denyPlane.GetComponent<MeshRenderer>();
         MeshRenderer denyRenderer = denyPlane.GetComponent<MeshRenderer>();
 
-        // ºÒ°¡´ÉÇÑ planeÀÌ ´õ À§¿¡ ¿À°Ô ·»´õ Å¥¸¦ Á¶Á¤
+        // ë¶ˆê°€ëŠ¥í•œ planeì´ ë” ìœ„ì— ì˜¤ê²Œ ë Œë” íë¥¼ ì¡°ì •
         denyRenderer.material.renderQueue = allowRenderer.material.renderQueue + 1;
     }
 

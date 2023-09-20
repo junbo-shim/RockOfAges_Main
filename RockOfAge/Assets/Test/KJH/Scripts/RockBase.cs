@@ -343,7 +343,9 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         isFall = false;
         rockRigidbody.velocity = Vector3.zero;
         rockRigidbody.angularVelocity = Vector3.zero;
-        rockObject.position = checkPoint.position + Vector3.up * 10f;
+        rockObject.position = checkPoint.position + Vector3.up * 6f;
+
+
 
         Debug.Log(rockObject.position);
         Debug.Log(checkPoint.position);

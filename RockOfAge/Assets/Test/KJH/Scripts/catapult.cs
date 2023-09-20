@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class Catapult : HoldObstacleBase
+public class Catapult : HoldObstacleBase, IHitObjectHandler
 {
     public float detectionRadius = 5f; // 원형 감지 범위 반지름
     public LayerMask Rock; // 감지할 레이어 설정
@@ -12,11 +12,12 @@ public class Catapult : HoldObstacleBase
 
     public Transform throwPoint; // 돌을 던질 위치
     public GameObject rockPrefab; // 던질 돌의 프리팹
+    public Animator animator; // 애니메이터 컴포넌트에 대한 참조
     private Quaternion initialRotation; // 투석기의 초기 로테이션
     private bool canThrowRock = true; // 돌을 던질 수 있는 상태인지 여부를 나타내는 변수
     private Vector3 targetPosition; // 감지한 객체의 위치
-    public Animator animator; // 애니메이터 컴포넌트에 대한 참조
     private bool hasThrownRock = false; // 돌을 이미 발사했는지 여부를 나타내는 변수
+    private Vector3 currentRockPosition;
 
     void Start()
     {
@@ -34,7 +35,7 @@ public class Catapult : HoldObstacleBase
 
         // 원형 감지 범위 내의 모든 Collider 가져오기
         Collider[] colliders = Physics.OverlapSphere(catapultPosition, detectionRadius, Rock);
-        //if (!hasThrownRock)
+        if(colliders.Length > 0 )
         {
             foreach (Collider collider in colliders)
             {
@@ -59,18 +60,31 @@ public class Catapult : HoldObstacleBase
                 float angleToRock = Vector3.Angle(transform.forward, directionToTarget);
 
                 // 일직선 상에 있는지 확인하고 애니메이션을 실행하거나 종료합니다.
-                float angleThreshold = 10f; // 각도 임계값을 설정합니다. 필요한 경우 이 값을 조절할 수 있습니다.
+                float angleThreshold = 8f; // 각도 임계값을 설정합니다. 필요한 경우 이 값을 조절할 수 있습니다.
                 if (angleToRock <= angleThreshold)
                 {
-                    animator.SetBool("Attack", true); // "IsAligned"는 애니메이터 불린 변수의 이름입니다. 원하는 이름으로 변경하세요.
+                    animator.SetBool("Attack", true);
                 }
                 else
                 {
                     animator.SetBool("Attack", false);
                 }
             }
+            // 돌을 이미 발사했고 바위가 투석기 감지 범위를 벗어난 경우에만
+            // 돌을 다시 던질 수 있게 설정
+            if (hasThrownRock && Vector3.Distance(catapultPosition, currentRockPosition) > detectionRadius)
+            {
+                hasThrownRock = false;
+            }
+        }
+        else
+        {
+            // 감지 범위 내에 바위가 없을 때는 애니메이션을 종료
+            animator.SetBool("Attack", false);
         }
     }
+    protected override void Dead() { }
+
     void OnDrawGizmos()
     {
         // 원형 감지 범위의 색상을 설정합니다.
@@ -92,26 +106,30 @@ public class Catapult : HoldObstacleBase
             float distanceToTarget = (targetPosition - throwPoint.position).magnitude;
 
             // 발사 속도를 거리에 비례하게 설정합니다.
-            float forceMultiplier = 10f;
+            float forceMultiplier = 15f;
             float force = Mathf.Sqrt(distanceToTarget * Physics.gravity.magnitude * forceMultiplier);
 
             // 돌을 해당 방향으로 발사합니다.
             Vector3 launchVelocity = (directionToTarget * force);
             rock.GetComponent<Rigidbody>().velocity = launchVelocity;
 
-            //StartCoroutine(Cooldown());
+            // 일정 시간(rockDestroyDelay)이 지난 후에 돌을 제거
+            StartCoroutine(DestroyRock(rock));
         }
     }
-
-    IEnumerator Cooldown()
+    IEnumerator DestroyRock(GameObject rock)
     {
-        // 돌을 던질 수 없는 상태로 설정
-        canThrowRock = false;
+        yield return new WaitForSeconds(2f);
+        Destroy(rock);
+    }
 
-        // 5초 대기
-        yield return new WaitForSeconds(5f);
+    public void Hit(int damage)
+    {
+        throw new System.NotImplementedException();
+    }
 
-        // 다시 돌을 던질 수 있는 상태로 설정
-        canThrowRock = true;
+    public void HitReaction()
+    {
+        throw new System.NotImplementedException();
     }
 }

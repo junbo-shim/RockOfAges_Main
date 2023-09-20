@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 using Photon.Pun;
 
 public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
@@ -11,15 +10,18 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
 
     public string roomName;
 
-
     public int player1ViewID;
     public int player2ViewID;
     public int player3ViewID;
     public int player4ViewID;
 
+    public int otherPlayerReady;
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
+
+        otherPlayerReady = default;
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) 
@@ -27,25 +29,27 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         
     }
 
-    [PunRPC]
     public void SavePlayerTeamAndNumber(int player1ViewID, int player2ViewID, int player3ViewID, int player4ViewID) 
     {
 
     }
 
-    [PunRPC]
     public void ResetPlayerTeamAndNumber(int player1ViewID, int player2ViewID, int player3ViewID, int player4ViewID) 
     {
 
     }
+    
+    public void SaveMasterDataContainer() 
+    {
+        
+    }
 
-    #region player (boolIdx + 1) 자리 가겠다는 요청을 master client 에게 RPC 로 변환하는 방법
+    #region player (boolIdx + 1) 자리 가겠다는 요청을 master client 에게 RPC 로 전달하는 메서드
     [PunRPC]
-    public void SendPlayerPosition(int photonViewID, int boolIdx)
+    public void SendPlayerPosition(int photonViewID, int boolIdx) // 포톤뷰ID 와 가고 싶은 자리의 인덱스를 매개변수로 받음
     {
         string inputKey = photonViewID.ToString();
         string seatName = "player" + (boolIdx + 1);
-
 
         // 조건문 { 
         // 만약 player 자리가 차 있다면
@@ -56,6 +60,7 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         // 만약 player 자리가 비어있다면
         else if (NetworkManager.Instance.playerSeats[boolIdx] == false)
         {
+            // roomSetting 해시테이블에 키로 photonViewID 가 존재하면
             if (NetworkManager.Instance.roomSetting.ContainsKey(inputKey))
             {
                 string seatNumber = NetworkManager.Instance.roomSetting[inputKey].ToString();
@@ -64,10 +69,12 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
                 Debug.Log(index);
                 NetworkManager.Instance.playerSeats[index-1] = false;
                 NetworkManager.Instance.roomSetting[inputKey] = seatName;
+                Debug.LogFormat("View ID : {0} 가 player{1} 에서 {2} 로 이동 했습니다.", photonViewID, index, seatName);
             }
             else
             {
                 NetworkManager.Instance.roomSetting.Add(inputKey, seatName);
+                Debug.LogFormat("View ID : {0} 가 {1} 로 이동 했습니다.", photonViewID, seatName);
             }
             PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
             NetworkManager.Instance.playerSeats[boolIdx] = true;
@@ -172,6 +179,29 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         //}
         //// 조건문 } 
         #endregion
+        // 조건문 }
+    }
+    #endregion
+
+    #region master client 의 otherPlayerReady 값을 RPC 로 수정하는 메서드
+    [PunRPC]
+    public void ChangeMasterReadyValue(bool isReadyValue, string photonViewID, bool isMine)
+    {
+        Debug.Log(photonViewID);
+        Debug.Log(isMine);
+
+        if (isReadyValue == false)
+        {
+            Debug.Log(isReadyValue);
+            NetworkManager.Instance.masterDataContainer.otherPlayerReady =
+                NetworkManager.Instance.masterDataContainer.otherPlayerReady - 1;
+        }
+        else if (isReadyValue == true)
+        {
+            Debug.Log(isReadyValue);
+            NetworkManager.Instance.masterDataContainer.otherPlayerReady =
+                NetworkManager.Instance.masterDataContainer.otherPlayerReady + 1;
+        }
     }
     #endregion
 

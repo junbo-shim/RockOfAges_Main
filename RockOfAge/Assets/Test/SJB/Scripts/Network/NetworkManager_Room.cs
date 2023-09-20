@@ -10,11 +10,12 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     public Transform RoomPanel { get; private set; }
     public TMP_Text roomName;
     public Player[] playerRoomList;
+
     public GameObject DataContainerPrefab { get; private set; }
     public PlayerDataContainer myDataContainer;
+    public PlayerDataContainer masterDataContainer;
 
     public ExitGames.Client.Photon.Hashtable roomSetting;
-
     public bool[] playerSeats;
 
     protected override void Update()
@@ -43,6 +44,10 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         if (dataContainer.GetComponent<PhotonView>().IsMine == true) 
         {
             myDataContainer = dataContainer.GetComponent<PlayerDataContainer>();
+        }
+        if (PhotonNetwork.IsMasterClient == true) 
+        {
+            masterDataContainer = myDataContainer;
         }
     }
 

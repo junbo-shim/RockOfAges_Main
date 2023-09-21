@@ -25,6 +25,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     //기본 컴포넌트
     protected Camera mainCamera;
+    //protected CinemachineFreeLook lookCamera;
     protected Rigidbody rockRigidbody;
     protected MeshRenderer rockRenderer;
     protected MeshFilter rockMesh;
@@ -102,7 +103,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     {
         //추후 시네머신 카메라로 바꿀것
         mainCamera = Camera.main;
-
+       
         rockObject = transform.Find("RockObject");
         checkPoint = transform.Find("CheckPoint");
         checkPoint.position = rockObject.position;
@@ -354,15 +355,15 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             }
         }
 
-        Debug.Log(hitObject);
+        //Debug.Log(hitObject);
         foreach (ContactPoint contact in collision.contacts)
         {
-            Debug.Log(contact.thisCollider.transform.parent.gameObject + "/"+ gameObject);
+            //Debug.Log(contact.thisCollider.transform.parent.gameObject + "/"+ gameObject);
             if (contact.thisCollider.transform.parent.gameObject == gameObject)
             {
 
                 hitObject.Hit((int)GetDamageValue());
-                Debug.Log(GetDamageValue());
+                //Debug.Log(GetDamageValue());
                 break;
 
                 /* // 충돌 지점의 법선 벡터와 gameobject의 진행 방향을 계산합니다.

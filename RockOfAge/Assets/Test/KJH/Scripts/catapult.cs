@@ -83,6 +83,7 @@ public class Catapult : HoldObstacleBase, IHitObjectHandler
             animator.SetBool("Attack", false);
         }
     }
+
     protected override void Dead() { }
 
     void OnDrawGizmos()

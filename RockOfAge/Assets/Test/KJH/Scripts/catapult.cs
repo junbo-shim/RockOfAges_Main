@@ -60,7 +60,7 @@ public class Catapult : HoldObstacleBase, IHitObjectHandler
                 float angleToRock = Vector3.Angle(transform.forward, directionToTarget);
 
                 // 일직선 상에 있는지 확인하고 애니메이션을 실행하거나 종료합니다.
-                float angleThreshold = 8f; // 각도 임계값을 설정합니다. 필요한 경우 이 값을 조절할 수 있습니다.
+                float angleThreshold = 10f; // 각도 임계값을 설정합니다. 필요한 경우 이 값을 조절할 수 있습니다.
                 if (angleToRock <= angleThreshold)
                 {
                     animator.SetBool("Attack", true);

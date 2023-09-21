@@ -1,9 +1,7 @@
 using Cinemachine;
-using PlayFab.ClientModels;
+using Photon.Pun;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using static Photon.Pun.UtilityScripts.PunTeams;
 
 public enum UserState
 { 
@@ -32,7 +30,16 @@ public class CycleManager : MonoBehaviour
     //public int gold = 1000;
     // enter check bool 나중에 좋은 방법으로 바꾸기
     private bool _isEntered = false;
+
+
+    // ! Photon
+    public PlayerDataContainer dataContainer;
+    public string layerName;
     #endregion
+
+
+
+
 
     public void Awake()
     {
@@ -44,6 +51,12 @@ public class CycleManager : MonoBehaviour
         cycleManager = this;
         userState = (int)UserState.UNITSELECT;
         rockState = (int)RockState.ROCKSELECT;
+
+        // ! Photon
+        dataContainer = NetworkManager.Instance.myDataContainer;
+        FindMyViewID();
+
+        SetCameraLayerMask(layerName);
     }
 
     private void Update()
@@ -54,6 +67,19 @@ public class CycleManager : MonoBehaviour
         //}
         GameCycle();
     }
+
+    // ! Photon
+    private void FindMyViewID()
+    {
+        foreach (var mydata in PhotonNetwork.CurrentRoom.CustomProperties)
+        {
+            if (mydata.Key.ToString() == dataContainer.GetComponent<PhotonView>().ViewID.ToString())
+            {
+                layerName = mydata.Value.ToString();
+            }
+        }
+    }
+
 
     #region GameCycle
     //{ GameCycle()
@@ -205,7 +231,12 @@ public class CycleManager : MonoBehaviour
     {
         string team = default;
 
-        int teamNum = (int)((int.Parse(player_.Split("Player")[0]) + 1) * 0.5f);
+        // ! Photon
+        //int teamNum = (int)((int.Parse(player_.Split("Player")[1]) + 1) * 0.5f);
+        char playerSplitNum = player_[6];
+        int temp = (int)char.GetNumericValue(playerSplitNum);
+        float temp2 = (temp + 1) * 0.5f;
+        int teamNum = (int)(temp2);
         team = "Team" + teamNum;
 
         AddCullingMask(team);
@@ -222,19 +253,85 @@ public class CycleManager : MonoBehaviour
         int team1 = Global_PSC.FindLayerToName("Team1");
         int team2 = Global_PSC.FindLayerToName("Team2");
 
+        // ! Photon
+        int maskDefault = Global_PSC.FindLayerToName("Default");
+        int maskTransparentFX = Global_PSC.FindLayerToName("TransparentFX");
+        int maskIgnoreRaycast = Global_PSC.FindLayerToName("Ignore Raycast");
+        int maskWater = Global_PSC.FindLayerToName("Water");
+        int maskUI = Global_PSC.FindLayerToName("UI");
+        int maskStones = Global_PSC.FindLayerToName("Stones");
+        int maskTerrains = Global_PSC.FindLayerToName("Terrains");
+        int maskObstacles = Global_PSC.FindLayerToName("Obstacles");
+        int maskWalls = Global_PSC.FindLayerToName("Walls");
+        int maskOutLand = Global_PSC.FindLayerToName("OutLand");
+        int maskCastle = Global_PSC.FindLayerToName("Castle");
+        int maskRock = Global_PSC.FindLayerToName("Rock");
+
+        // ! Photon
         if (team_ == "Team1")
         {
             playerCam.cullingMask |= team1;
-            playerCam.cullingMask &= team2;
+
+            playerCam.cullingMask |= maskDefault;
+            playerCam.cullingMask |= maskTransparentFX;
+            playerCam.cullingMask |= maskIgnoreRaycast;
+            playerCam.cullingMask |= maskWater;
+            playerCam.cullingMask |= maskUI;
+            playerCam.cullingMask |= maskStones;
+            playerCam.cullingMask |= maskTerrains;
+            playerCam.cullingMask |= maskObstacles;
+            playerCam.cullingMask |= maskWalls;
+            playerCam.cullingMask |= maskOutLand;
+            playerCam.cullingMask |= maskCastle;
+            playerCam.cullingMask |= maskRock;
+
             enemyCam.cullingMask |= team2;
-            enemyCam.cullingMask &= team1;
+
+            enemyCam.cullingMask |= maskDefault;
+            enemyCam.cullingMask |= maskTransparentFX;
+            enemyCam.cullingMask |= maskIgnoreRaycast;
+            enemyCam.cullingMask |= maskWater;
+            enemyCam.cullingMask |= maskUI;
+            enemyCam.cullingMask |= maskStones;
+            enemyCam.cullingMask |= maskTerrains;
+            enemyCam.cullingMask |= maskObstacles;
+            enemyCam.cullingMask |= maskWalls;
+            enemyCam.cullingMask |= maskOutLand;
+            enemyCam.cullingMask |= maskCastle;
+            enemyCam.cullingMask |= maskRock;
         }
-        else
+        // ! Photon
+        else if (team_ == "Team2")
         {
-            enemyCam.cullingMask |= team1;
-            enemyCam.cullingMask &= team2;
             playerCam.cullingMask |= team2;
-            playerCam.cullingMask &= team1;
+
+            playerCam.cullingMask |= maskDefault;
+            playerCam.cullingMask |= maskTransparentFX;
+            playerCam.cullingMask |= maskIgnoreRaycast;
+            playerCam.cullingMask |= maskWater;
+            playerCam.cullingMask |= maskUI;
+            playerCam.cullingMask |= maskStones;
+            playerCam.cullingMask |= maskTerrains;
+            playerCam.cullingMask |= maskObstacles;
+            playerCam.cullingMask |= maskWalls;
+            playerCam.cullingMask |= maskOutLand;
+            playerCam.cullingMask |= maskCastle;
+            playerCam.cullingMask |= maskRock;
+
+            enemyCam.cullingMask |= team1;
+
+            enemyCam.cullingMask |= maskDefault;
+            enemyCam.cullingMask |= maskTransparentFX;
+            enemyCam.cullingMask |= maskIgnoreRaycast;
+            enemyCam.cullingMask |= maskWater;
+            enemyCam.cullingMask |= maskUI;
+            enemyCam.cullingMask |= maskStones;
+            enemyCam.cullingMask |= maskTerrains;
+            enemyCam.cullingMask |= maskObstacles;
+            enemyCam.cullingMask |= maskWalls;
+            enemyCam.cullingMask |= maskOutLand;
+            enemyCam.cullingMask |= maskCastle;
+            enemyCam.cullingMask |= maskRock;
         }
     }
 
@@ -242,7 +339,8 @@ public class CycleManager : MonoBehaviour
     public void AddLayer(string team_)
     {
         #region mainCameras
-        GameObject[] playerCameras = new GameObject[4];
+        // ! Photon
+        GameObject[] playerCameras = new GameObject[5];
         playerCameras[0] = ResourceManager.Instance.FindTopLevelGameObject("PlayerCamera");
         playerCameras[1] = ResourceManager.Instance.FindTopLevelGameObject("TopViewCamera");
         playerCameras[2] = ResourceManager.Instance.FindTopLevelGameObject("ClickedTopViewCamera");

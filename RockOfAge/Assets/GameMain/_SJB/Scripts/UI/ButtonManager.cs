@@ -1,11 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
-using System.Collections.Generic;
-using System.Collections;
-using Unity.VisualScripting;
 
 public class ButtonManager : GlobalSingleton<ButtonManager>
 {
@@ -71,8 +69,21 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
 
     protected override void FixedUpdate()
     {
-        CheckCloseButton();
-        CheckMasterClient();
+        // ! Photon Test
+        //if (Input.GetKeyDown(KeyCode.F))
+        //{
+        //    foreach (var data in NetworkManager.Instance.roomSetting)
+        //    {
+        //        Debug.Log(data.Key);
+        //        Debug.Log(data.Value);
+        //        Debug.Log(NetworkManager.Instance.roomSetting);
+        //    }
+        //}
+        if (SceneManager.GetActiveScene().name == NetworkManager.Instance.PhotonScene) 
+        {
+            CheckCloseButton();
+            CheckMasterClient();
+        }
     }
 
     #region 모든 Panel 을 NetworkManager로부터 받아오는 메서드
@@ -443,15 +454,15 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
                     string seatNumber = 
                         NetworkManager.Instance.roomSetting[masterViewID].ToString();
 
-                    int index = int.Parse(seatNumber.Split("player")[1]);
+                    int index = int.Parse(seatNumber.Split("Player")[1]);
                     NetworkManager.Instance.playerSeats[index - 1] = false;
-                    NetworkManager.Instance.roomSetting[masterViewID] = "player1";
-                    Debug.LogFormat("master = player1, player{0} 에서 이동함", index);
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player1";
+                    Debug.LogFormat("master = Player1, Player{0} 에서 이동함", index);
                 }
                 else
                 {
-                    NetworkManager.Instance.roomSetting[masterViewID] = "player1";
-                    Debug.Log("master = player1");
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player1";
+                    Debug.Log("master = Player1");
                 }
                 PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
                 NetworkManager.Instance.playerSeats[0] = true;
@@ -481,15 +492,15 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
                     string seatNumber =
                         NetworkManager.Instance.roomSetting[masterViewID].ToString();
 
-                    int index = int.Parse(seatNumber.Split("player")[1]);
+                    int index = int.Parse(seatNumber.Split("Player")[1]);
                     NetworkManager.Instance.playerSeats[index - 1] = false;
-                    NetworkManager.Instance.roomSetting[masterViewID] = "player2";
-                    Debug.LogFormat("master = player2, player{0} 에서 이동함", index);
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player2";
+                    Debug.LogFormat("master = Player2, Player{0} 에서 이동함", index);
                 }
                 else
                 {
-                    NetworkManager.Instance.roomSetting[masterViewID] = "player2";
-                    Debug.Log("master = player2");
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player2";
+                    Debug.Log("master = Player2");
                 }
                 PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
                 NetworkManager.Instance.playerSeats[1] = true;
@@ -519,15 +530,15 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
                     string seatNumber =
                         NetworkManager.Instance.roomSetting[masterViewID].ToString();
 
-                    int index = int.Parse(seatNumber.Split("player")[1]);
+                    int index = int.Parse(seatNumber.Split("Player")[1]);
                     NetworkManager.Instance.playerSeats[index - 1] = false;
-                    NetworkManager.Instance.roomSetting[masterViewID] = "player3";
-                    Debug.LogFormat("master = player3, player{0} 에서 이동함", index);
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player3";
+                    Debug.LogFormat("master = Player3, Player{0} 에서 이동함", index);
                 }
                 else
                 {
-                    NetworkManager.Instance.roomSetting[masterViewID] = "player3";
-                    Debug.Log("master = player3");
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player3";
+                    Debug.Log("master = Player3");
                 }
                 PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
                 NetworkManager.Instance.playerSeats[2] = true;
@@ -557,15 +568,15 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
                     string seatNumber =
                         NetworkManager.Instance.roomSetting[masterViewID].ToString();
 
-                    int index = int.Parse(seatNumber.Split("player")[1]);
+                    int index = int.Parse(seatNumber.Split("Player")[1]);
                     NetworkManager.Instance.playerSeats[index - 1] = false;
-                    NetworkManager.Instance.roomSetting[masterViewID] = "player4";
-                    Debug.LogFormat("master = player4, player{0} 에서 이동함", index);
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player4";
+                    Debug.LogFormat("master = Player4, Player{0} 에서 이동함", index);
                 }
                 else
                 {
-                    NetworkManager.Instance.roomSetting[masterViewID] = "player4";
-                    Debug.Log("master = player4");
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player4";
+                    Debug.Log("master = Player4");
                 }
                 PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
                 NetworkManager.Instance.playerSeats[3] = true;
@@ -584,8 +595,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         if (PhotonNetwork.IsMasterClient == true) 
         {
             PhotonNetwork.AutomaticallySyncScene = true;
-            // 로드할 씬의 이름 작성
-            //PhotonNetwork.LoadLevel();
+            dataContainerView.RPC("StartGame", RpcTarget.All);
         }
         else 
         {

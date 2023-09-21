@@ -48,10 +48,6 @@ MonoBehaviour:
   playerID: 
   playerName: 
   roomName: 
-  player1ViewID: 0
-  player2ViewID: 0
-  player3ViewID: 0
-  player4ViewID: 0
   otherPlayerReady: 0
 --- !u!114 &8884712648900300517
 MonoBehaviour:

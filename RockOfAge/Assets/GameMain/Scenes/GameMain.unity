@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -8116,6 +8116,7 @@ MonoBehaviour:
   nowOnCamera: {fileID: 1054561371}
   nextOnCamera: {fileID: 1821725043}
   rockCamera: {fileID: 1006063546}
+  dataContainerView: {fileID: 0}
 --- !u!114 &1054561371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9800,7 +9801,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 16375
+    m_Bits: 0
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -9820,8 +9821,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1319889820}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.70090926, y: 0, z: 0, w: 0.7132505}
-  m_LocalPosition: {x: 0, y: 85, z: 0}
+  m_LocalRotation: {x: 0.0000000030892657, y: 0.98375034, z: -0.1795419, w: 0.000000016926782}
+  m_LocalPosition: {x: 106.999985, y: 53, z: -2.4999847}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10660,7 +10661,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 24567
+    m_Bits: 0
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 86986d9898751c9438105f15054a03ad, type: 2}
   m_TargetDisplay: 0
@@ -12736,6 +12737,7 @@ MonoBehaviour:
   nowOnCamera: {fileID: 1689187219}
   nextOnCamera: {fileID: 1821725043}
   rockCamera: {fileID: 1006063546}
+  dataContainerView: {fileID: 0}
 --- !u!114 &1689187219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13936,6 +13938,7 @@ MonoBehaviour:
   nowOnCamera: {fileID: 1821725043}
   nextOnCamera: {fileID: 1054561371}
   rockCamera: {fileID: 1006063546}
+  dataContainerView: {fileID: 0}
 --- !u!1 &1824779702
 GameObject:
   m_ObjectHideFlags: 0
@@ -15543,6 +15546,8 @@ MonoBehaviour:
   attackRockSelected: 0
   team1Hp: 1000
   team2Hp: 1000
+  dataContainer: {fileID: 0}
+  layerName: 
 --- !u!43 &2080687849
 Mesh:
   m_ObjectHideFlags: 0

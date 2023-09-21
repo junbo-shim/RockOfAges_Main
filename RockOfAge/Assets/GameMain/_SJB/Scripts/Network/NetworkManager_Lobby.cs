@@ -1,7 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using TMPro;
-using Photon.Pun;
 using Photon.Realtime;
 
 public partial class NetworkManager : GlobalSingleton<NetworkManager>

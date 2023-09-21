@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
@@ -10,12 +8,8 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
 
     public string roomName;
 
-    public int player1ViewID;
-    public int player2ViewID;
-    public int player3ViewID;
-    public int player4ViewID;
-
     public int otherPlayerReady;
+
 
     private void Awake()
     {
@@ -39,17 +33,12 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
 
     }
     
-    public void SaveMasterDataContainer() 
-    {
-        
-    }
-
     #region player (boolIdx + 1) 자리 가겠다는 요청을 master client 에게 RPC 로 전달하는 메서드
     [PunRPC]
     public void SendPlayerPosition(int photonViewID, int boolIdx) // 포톤뷰ID 와 가고 싶은 자리의 인덱스를 매개변수로 받음
     {
         string inputKey = photonViewID.ToString();
-        string seatName = "player" + (boolIdx + 1);
+        string seatName = "Player" + (boolIdx + 1);
 
         // 조건문 { 
         // 만약 player 자리가 차 있다면
@@ -65,11 +54,11 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
             {
                 string seatNumber = NetworkManager.Instance.roomSetting[inputKey].ToString();
                 
-                int index = int.Parse(seatNumber.Split("player")[1]);
+                int index = int.Parse(seatNumber.Split("Player")[1]);
                 Debug.Log(index);
                 NetworkManager.Instance.playerSeats[index-1] = false;
                 NetworkManager.Instance.roomSetting[inputKey] = seatName;
-                Debug.LogFormat("View ID : {0} 가 player{1} 에서 {2} 로 이동 했습니다.", photonViewID, index, seatName);
+                Debug.LogFormat("View ID : {0} 가 Player{1} 에서 {2} 로 이동 했습니다.", photonViewID, index, seatName);
             }
             else
             {
@@ -205,8 +194,12 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     }
     #endregion
 
-    public void ChangeCameraLayerMask(string player, string team)
-    { 
-        
+    #region master client 가 start button 을 눌렀을 때 loadlevel 하는 메서드
+    [PunRPC]
+    public void StartGame() 
+    {   
+        // 로드할 씬의 이름 작성
+        PhotonNetwork.LoadLevel("GameMain");
     }
+    #endregion
 }

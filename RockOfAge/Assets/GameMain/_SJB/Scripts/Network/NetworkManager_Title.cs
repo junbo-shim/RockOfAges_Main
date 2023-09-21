@@ -5,13 +5,13 @@ using Photon.Pun;
 using Photon.Realtime;
 using PlayFab;
 using PlayFab.ClientModels;
-using PlayFab.GroupsModels;
-using System.IO;
-using UnityEditor;
 
 public partial class NetworkManager : GlobalSingleton<NetworkManager>
 {
     //Title Login ===========================================================================================
+
+    public string PhotonScene { get; private set; }
+    public string GameScene { get; private set; }
 
     public Transform TitlePanel { get; private set; }
     public Transform LoginPopup { get; private set; }
@@ -20,6 +20,9 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     protected override void Awake()
     {
         FindUIObjects();
+        PhotonScene = "TitleScene";
+        GameScene = "GameMain";
+
         cachedRoomList = new List<RoomInfo>();
         displayRoomList = new List<GameObject>();
         playerRoomList = new Player[4];
@@ -80,10 +83,17 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
 
         var request = new LoginWithCustomIDRequest { CustomId = PlayFabSettings.DeviceUniqueIdentifier,
             CreateAccount = true };
-
         PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginFailure);
-        PhotonNetwork.NickName = PlayFabSettings.DeviceUniqueIdentifier;
-        Invoke("ConnectToServer", 2f);
+        
+        //if () 
+        //{
+            PhotonNetwork.NickName = PlayFabSettings.DeviceUniqueIdentifier;
+            Invoke("ConnectToServer", 2f);
+        //}
+        //else 
+        //{
+        //    Debug.Log("Playfab Quick Login failed");
+        //}
     }
     #endregion
 

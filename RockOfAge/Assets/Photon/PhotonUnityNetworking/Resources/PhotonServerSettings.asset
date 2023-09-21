@@ -53,6 +53,7 @@ MonoBehaviour:
   - SendPlayer4Pos
   - SendPlayerPosition
   - ChangeMasterReadyValue
+  - StartGame
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

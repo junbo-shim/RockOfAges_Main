@@ -1,6 +1,6 @@
 using UnityEngine;
 using Cinemachine;
-
+using Photon.Pun;
 
 public class CameraMouse : MonoBehaviour
 {
@@ -29,21 +29,37 @@ public class CameraMouse : MonoBehaviour
     // 마우스 이동 엣지간격
     private float edgeSize = 50f;
 
+    // ! Photon
+    public PhotonView dataContainerView;
+
+    // ! Photon
+    private void Awake()
+    {
+        dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
+    }
 
     private void Start()
     {
-        transposer = nowOnCamera.GetCinemachineComponent<CinemachineTransposer>();
+        // ! Photon
+        if (dataContainerView.IsMine == true) 
+        {
+            transposer = nowOnCamera.GetCinemachineComponent<CinemachineTransposer>();
+        }
     }
 
     private void Update()
     {
-        //if (/*CycleManager.cycleManager.userState == (int)UserState.Defence*/)
-        { 
-            MoveCameraFromKeyBoard();
-            RotateCameraTransition();    
-            MoveCameraFromMouse();
+        // ! Photon
+        if (dataContainerView.IsMine == true) 
+        {
+            if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
+            { 
+                MoveCameraFromKeyBoard();
+                RotateCameraTransition();    
+                MoveCameraFromMouse();
+            }
+            ChangeCameraToRock();
         }
-        ChangeCameraToRock();
     }
 
     //{ MoveCameraFromInput()

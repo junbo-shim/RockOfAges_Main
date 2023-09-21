@@ -1,7 +1,9 @@
 using Cinemachine;
+using RayFire;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class RockBase : MonoBehaviour, IHitObjectHandler
@@ -15,6 +17,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     public RockStatus rockStatus;
     [SerializeField]
     protected List<Mesh> forms;
+    [SerializeField]
+    protected RockTrail trail;
 
     //사용자 입력(Y축 제외)
     protected Vector2 playerInput;
@@ -29,9 +33,10 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected float currHp;
     protected float obstacleMultiple = 1;
 
-    protected bool isGround = false;
+    public bool isGround = false;
     protected bool isSlope = false;
     protected bool isFall = false;
+    protected bool isDestroy = false;
     //{ 0920 홍한범
     // 디버프 체크
     public bool isDebuffed = false;
@@ -41,6 +46,10 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     RaycastHit slopeHit;
     Coroutine fallCheckCoroutine = null;
+    protected Queue<RockTrail> trails;
+
+    protected RayfireRigid rayfireRigid;
+
 
     protected const float DAMAGE_LIMIT_MIN = 50f;
     protected const float SLOPE_LIMIT_MAX = 60f;
@@ -110,6 +119,9 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         //{ 0920 홍한범
         debuffJumpForce = 1f;
         //} 0920 홍한범
+
+        rayfireRigid = rockObject.GetComponent<RayfireRigid>();
+        trails = new Queue<RockTrail>();
     }
 
     //혹시 모를 오버로딩
@@ -176,6 +188,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected virtual void Jump(float power)
     {
         rockRigidbody.velocity += Vector3.up * (power*debuffJumpForce);
+        CreateTrail();
     }
 
 
@@ -377,6 +390,20 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         }
     }
 
+    public void CreateTrail()
+    {
+        if (trails.Count > 4)
+        {
+            GameObject trailObject = trails.Dequeue().gameObject;
+            if (trailObject != null)
+            {
+                Destroy(trailObject);
+            }
+        }
+
+        trails.Enqueue(Instantiate(trail, transform));
+    }
+
 
     protected virtual float Attack()
     {
@@ -407,7 +434,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     {
         HitReaction();
         currHp -= damage;
-        if (currHp < 0)
+        Debug.Log(currHp);
+        if (currHp <= 0)
         {
             Die();
         }
@@ -452,7 +480,14 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     public void HitReaction(){}
 
-    protected virtual void Die(){}
+    protected virtual void Die()
+    {
+        isDestroy = true;
+        rayfireRigid.Demolish();
+        //rayfireRigid.Activate();
+
+        //Destroy(gameObject);
+    }
 
     protected Vector2 GetInput()
     {

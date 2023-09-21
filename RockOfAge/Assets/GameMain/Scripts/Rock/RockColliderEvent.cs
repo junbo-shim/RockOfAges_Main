@@ -14,23 +14,18 @@ public class RockColliderEvent : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
 
-        Debug.Log("공격 인식");
-
-        Debug.Log(parent.NowSpeed());
 
         if (parent.IsMove(1))
         {
-            Debug.Log("공격 시작");
-            Debug.Log(collision.gameObject.layer+"/"+ LayerMask.NameToLayer("Obstacles"));
             if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
             {
-                Debug.Log("장해물 공격");
                 parent.Attack(collision);
             }
-            if (parent.IsMove(2.5f))
+            if (collision.gameObject.layer != LayerMask.NameToLayer("Terrains"))
             {
-                Debug.Log("아무데나 공격");
-                parent.Hit(10);
+                Debug.Log(collision.gameObject.layer);
+                Debug.Log(collision.gameObject.name);
+                parent.Hit(100);
             }
         }
     }

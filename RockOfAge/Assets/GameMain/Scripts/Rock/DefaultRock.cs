@@ -10,6 +10,11 @@ public class DefaultRock : RockBase
 
     private void FixedUpdate()
     {
+        if (isDestroy)
+        {
+            return;
+        }
+
         if (isFall)
         {
             return;
@@ -23,7 +28,7 @@ public class DefaultRock : RockBase
 
     private void Update()
     {
-        if (isFall)
+        if (isFall || isDestroy)
         {
             return;
         }

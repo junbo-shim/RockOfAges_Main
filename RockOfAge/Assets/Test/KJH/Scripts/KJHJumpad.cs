@@ -11,7 +11,7 @@ public class KJHJumpad : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer(playerLayerName))
         {
             Rigidbody rRb = collision.gameObject.GetComponent<Rigidbody>();
-            rRb.AddForce(Vector3.up * 5000f, ForceMode.Acceleration); // 점프대 속도를 적용합니다.
+            rRb.AddForce(Vector3.up * 100f, ForceMode.Acceleration); // 점프대 속도를 적용합니다.
         }
     }
 }

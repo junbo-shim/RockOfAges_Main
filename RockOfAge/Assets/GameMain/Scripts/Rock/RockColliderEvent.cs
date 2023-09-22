@@ -31,7 +31,6 @@ public class RockColliderEvent : MonoBehaviour
             AttackGate(collision);
         }
     }
-
     private void AttackObstacle(Collision collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacles"))

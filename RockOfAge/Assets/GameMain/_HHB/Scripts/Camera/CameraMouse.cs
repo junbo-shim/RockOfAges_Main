@@ -9,8 +9,8 @@ public class CameraMouse : MonoBehaviour
     // 휠 클릭시 이동되는 카메라
     public CinemachineVirtualCamera nextOnCamera;
     // 돌 카메라
-    public CinemachineVirtualCamera rockCamera;
-    //public CinemachineFreeLook rockCamera;
+    //public CinemachineVirtualCamera rockCamera;
+    public CinemachineFreeLook rockCamera;
     // topViewCamera 움직임 제어
     private CinemachineTransposer transposer;
     // X,Z 유저 입력

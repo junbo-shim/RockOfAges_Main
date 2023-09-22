@@ -67,7 +67,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         if (rockObject != null)
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(rockObject.position - Vector3.up * rockObject.gameObject.GetHeight(.5f), .05f);
+            Gizmos.DrawSphere(rockObject.position - Vector3.up * rockObject.gameObject.GetHeight(.05f), .05f);
         }
     } //사랑해요 성철이형 -재현-
     //GOOD
@@ -187,6 +187,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             rockRigidbody.velocity = rockRigidbody.velocity.normalized * maxSpeed;
         }
 
+        //Debug.Log(rockRigidbody.velocity.magnitude);
     }
 
     //점프

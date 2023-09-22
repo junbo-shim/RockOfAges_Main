@@ -8,6 +8,11 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
     private bool isAttacked = false;
 
     //init
+    private void Awake()
+    {
+        base.Init();
+    }
+
     private void Start()
     {
         //스프링이 튀어오를때 각도가 변하는 bone의 위치

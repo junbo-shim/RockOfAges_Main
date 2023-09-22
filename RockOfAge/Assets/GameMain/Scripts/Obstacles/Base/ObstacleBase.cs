@@ -65,7 +65,7 @@ public class ObstacleBase : MonoBehaviour
         ObstacleBase obstacle = Instantiate(this, position, rotate);
         
         //스케일 변경
-        obstacle.transform.localScale = Vector3.one * .1f;
+        obstacle.transform.localScale = obstacle.transform.localScale;
 
         //버튼 데이터 변경
         GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(status.Id);

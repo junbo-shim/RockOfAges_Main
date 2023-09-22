@@ -2,6 +2,7 @@ using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class Global_PSC
 {
@@ -90,5 +91,17 @@ public static class Global_PSC
         return 1f;
     }
 
+    public static GameObject FindTopLevelGameObject(string name_)
+    {
+        GameObject[] rootObjs = SceneManager.GetActiveScene().GetRootGameObjects();
+        foreach (GameObject obj in rootObjs)
+        {
+            if (obj.name == name_)
+            {
+                return obj;
+            }
+        }
+        return null;
+    }
 }
 

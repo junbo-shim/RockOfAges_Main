@@ -209,9 +209,9 @@ public class BuildManager : MonoBehaviour
                     buildState.Set((z + MAP_SIZE_Z / 2) * MAP_SIZE_Z + (x + MAP_SIZE_X / 2), true);
 
                     ///////////////////////////////////////////////////////////테스트 코드
-                    GameObject gameObject = Instantiate(gridTest, raycastHit.point + Vector3.up * 0.02f, Quaternion.FromToRotation(-Vector3.forward, raycastHit.normal));
-                    gameObject.name = gridTest.name + "_" + z + "_" + x;
-                    gameObject.transform.localScale = Vector3.one * 0.8f;
+                    //GameObject gameObject = Instantiate(gridTest, raycastHit.point + Vector3.up * 0.02f, Quaternion.FromToRotation(-Vector3.forward, raycastHit.normal));
+                    //gameObject.name = gridTest.name + "_" + z + "_" + x;
+                    //gameObject.transform.localScale = Vector3.one * 0.8f;
                     /////////////////////////////////////////////////////////////////////
                 }
             }
@@ -494,13 +494,13 @@ public class BuildManager : MonoBehaviour
     bool GetItemLimitState(int size)
     {
 
-
+/*
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("PscTestScene"))
         {
 
             return true;
         }
-        Debug.Log("?");
+        Debug.Log("?");*/
         if(buildTarget == null)
         {
             return false;

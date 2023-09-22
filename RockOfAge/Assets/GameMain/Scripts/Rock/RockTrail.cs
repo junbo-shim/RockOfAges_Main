@@ -21,7 +21,7 @@ public class RockTrail : MonoBehaviour
         trailRenderer = GetComponent<TrailRenderer>();
 
         isStart = false;
-        transform.position = rockMesh.position - Vector3.up * rockMesh.gameObject.GetHeight(.5f);
+        transform.position = rockMesh.position - Vector3.up * rockMesh.gameObject.GetHeight(.49f);
     }
 
     // Update is called once per frame
@@ -40,18 +40,13 @@ public class RockTrail : MonoBehaviour
 
         if (isStart)
         {
-            transform.position = rockMesh.position - Vector3.up * rockMesh.gameObject.GetHeight(.5f);
+            transform.position = rockMesh.position - Vector3.up * rockMesh.gameObject.GetHeight(.49f);
             trailRenderer.emitting = true;
         }
 
         if (isStart && !rockMainScript.isGround)
         {
             trailRenderer.emitting = false; 
-        }
-
-        if (isStart && trailRenderer.positionCount == 0)
-        {
-            Destroy(gameObject);
         }
     }
 }

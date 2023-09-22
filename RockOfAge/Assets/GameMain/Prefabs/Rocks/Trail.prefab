@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 4442214488066707509}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.033618774, y: -0.4988685, z: 0}
+  m_LocalPosition: {x: 90, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -127,14 +127,14 @@ TrailRenderer:
       m_NumAlphaKeys: 2
     numCornerVertices: 16
     numCapVertices: 0
-    alignment: 0
+    alignment: 1
     textureMode: 0
     textureScale: {x: 1, y: 1}
     shadowBias: 0
     generateLightingData: 0
   m_MinVertexDistance: 0.1
   m_MaskInteraction: 0
-  m_Autodestruct: 1
+  m_Autodestruct: 0
   m_Emitting: 0
   m_ApplyActiveColorSpace: 1
 --- !u!114 &743103346689614724

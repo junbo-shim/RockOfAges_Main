@@ -137,10 +137,10 @@ public class SplineMeshBuilder : EditorWindow
         BuildUp(up, spline.Closed);
         up.tag = "Team0" + (teamIndex + 1);
 
-        GameObject right = ConcreateGameObject(materials[1], parent, "Walls");
+        GameObject right = ConcreateGameObject(materials[1], parent, "Terrains");
         BuildSide(right, rightPoint, spline.Closed);
 
-        GameObject left = ConcreateGameObject(materials[1], parent, "Walls");
+        GameObject left = ConcreateGameObject(materials[1], parent, "Terrains");
         //culling을 위해서 순서 변경
         leftPoint.Reverse();
         BuildSide(left, leftPoint, spline.Closed);

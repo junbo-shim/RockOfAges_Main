@@ -32,6 +32,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected MeshCollider rockCollider;
     
     protected float currHp;
+    protected float rockHeightHalf;
     protected float obstacleMultiple = 1;
 
     public bool isGround = false;
@@ -115,6 +116,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
         rockStatus = new RockStatus(rockStatus);
 
+        rockHeightHalf = rockObject.gameObject.GetHeight(.1f)*.5f;
         rockRigidbody.mass = rockStatus.Weight;
         currHp = rockStatus.Health;
         //{ 0920 홍한범
@@ -123,6 +125,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
         rayfireRigid = rockObject.GetComponent<RayfireRigid>();
         trails = new Queue<RockTrail>();
+
+        CreateTrail();
     }
 
     //혹시 모를 오버로딩
@@ -197,7 +201,6 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     [Obsolete]
     protected virtual bool IsGround()
     {
-        float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
         Collider[] colliders = Physics.OverlapSphere(rockObject.position - Vector3.up * rockHeightHalf, .05f, Global_PSC.FindLayerToName("Terrains"));
 
         if (colliders.Length > 0)
@@ -211,45 +214,49 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //오버랩을 사용하는 checkGround
     protected virtual bool CheckGround()
     {
+        bool result;
 
         if (isSlope)
         {
-            return CheckGroundRay();
+            result = CheckGroundRay();
         }
         else
         {
-            return CheckGroundOverlap();
+            result = CheckGroundOverlap();
         }
+
+        if(!isGround && result)
+        {
+            StartCoroutine(CameraShakeRoutine(.1f, 3, 3));
+        }
+        isGround = result;
+
+        return result;
 
     }
     //오버랩을 사용하는 checkGround
     protected virtual bool CheckGroundOverlap()
     {
-        isGround = false;
-        float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
 
         Collider[] colliders = Physics.OverlapSphere(rockObject.position - Vector3.up * rockHeightHalf, .05f, Global_PSC.FindLayerToName("Terrains"));
         if (colliders.Length > 0)
         {
-            isGround = true;
+            return true;
         }
 
-        return isGround;
+        return false;
     }
 
     //레이를 사용하는 checkGround
     //경사 구조때문에 해당 메서드 사용 권장
     protected virtual bool CheckGroundRay()
     {
-        isGround = false;
-        float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
-
         if (Physics.Raycast(rockObject.position, Vector3.down, out slopeHit, rockHeightHalf + rockHeightHalf * .75f, Global_PSC.FindLayerToName("Terrains")))
         {
-            isGround = true;
+            return  true;
         }
 
-        return isSlope;
+        return false;
     }
 
     //경사로 체크
@@ -257,8 +264,6 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected virtual bool CheckSlope()
     {
         isSlope = false;
-        float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
-
         if (Physics.Raycast(rockObject.position, Vector3.down, out slopeHit, rockHeightHalf + rockHeightHalf * .75f, Global_PSC.FindLayerToName("Terrains")))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
@@ -327,8 +332,13 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         yield return new WaitForSeconds(1f);
         //손 생성 애니메이션?
         yield return new WaitForSeconds(1f);
-        //되돌리기
-        BackCheckPoint();
+
+        if (rockObject != null)
+        {
+
+            //되돌리기
+            BackCheckPoint();
+        }
     }
 
     //경사에 있을 경우 힘의 방향을 해당 경사에 맞게 회전시킴
@@ -345,6 +355,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //공격때 자신의 체력도 닳게한다.
     public virtual void Attack(Collision collision)
     {
+
         IHitObjectHandler hitObject = collision.gameObject.GetComponentInParent<IHitObjectHandler>();
         if (hitObject == null)
         {
@@ -391,6 +402,13 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         }
     }
 
+    public IEnumerator CameraShakeRoutine(float time, float AmplitudeGain, float FrequencyGain)
+    {
+        mainCamera.ShakeFreeLookCamera(AmplitudeGain, FrequencyGain);
+        yield return new WaitForSeconds(time);
+        mainCamera.ShakeFreeLookCamera(0, 0);
+    }
+
     public void CreateTrail()
     {
         if (trails.Count > 4)
@@ -402,10 +420,11 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             }
         }
 
-        trails.Enqueue(Instantiate(trail, transform));
+        trails.Enqueue(Instantiate(trail, transform.position, Quaternion.Euler(90,0,0), transform));
     }
 
 
+    [Obsolete]
     protected virtual float Attack()
     {
         return 0;

@@ -140,20 +140,26 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         GameObject userRock = Instantiate(gameObject, team1.transform);
         // 팀 1인지 2인지 구별하는 if가 필요합니다
         // 팀2꺼 startPoint 없습니다. 밑은 1번팀꺼입니다
-
-        Vector3 startPointTransform = new Vector3(210f, 32f, 85f);
-        Vector3 cameraTransform = new Vector3(210f, 32f, 82f);
-        userRock.transform.position = startPointTransform;
-        Debug.LogFormat("스타트 포인트 : {0}",startPointTransform);
-        Debug.LogFormat("유저 락 포지션 : {0}",userRock.transform.position);
-        GameObject rockCamera = FindTopLevelGameObject("RockCamera");
-        //GameObject rockCamera = FindTopLevelGameObject("NewRockCamera");
-        CinemachineVirtualCamera virtualRockCamera = rockCamera.GetComponent<CinemachineVirtualCamera>();
+        //Transform motherRock = userRock.transform;
+        //Transform childRock = motherRock.Find("RockObject");
+        Vector3 startPointTransform = new Vector3(111.55f, 31.21f, 120f);
+        //Vector3 cameraTransform = new Vector3(111.55f, 31.21f, 107.11f);
+        //childRock.transform.position = startPointTransform;
+        //Debug.LogFormat("스타트 포인트 : {0}",startPointTransform);
+        //Debug.LogFormat("유저 락 포지션 : {0}",userRock.transform.position);
+        ////GameObject rockCamera = FindTopLevelGameObject("RockCamera");
+        //GameObject rockCamera = FindTopLevelGameObject("RockCamera");
+        ////CinemachineVirtualCamera virtualRockCamera = rockCamera.GetComponent<CinemachineVirtualCamera>();
         //CinemachineFreeLook virtualRockCamera = rockCamera.GetComponent<CinemachineFreeLook>();
-        virtualRockCamera.transform.position = cameraTransform;
-        virtualRockCamera.Follow = userRock.transform;
-        virtualRockCamera.LookAt = userRock.transform;
+        //CinemachineComposer composer = virtualRockCamera.GetRig(0).GetComponent<CinemachineComposer>();
+        //virtualRockCamera.transform.position = cameraTransform;
+        //virtualRockCamera.Follow = childRock.transform;
+        //virtualRockCamera.LookAt = childRock.transform;
+        CameraManager.Instance.SetRockCamera(userRock, startPointTransform);
     }
+
+
+
 
     #region 검색용 함수
     public GameObject FindTopLevelGameObject(string name_)

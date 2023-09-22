@@ -58,7 +58,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         if (rockObject != null)
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(rockObject.position - Vector3.up * rockObject.gameObject.GetHeight(.5f), .05f);
+            Gizmos.DrawSphere(rockObject.position - Vector3.up * rockObject.gameObject.GetHeight(.05f), .05f);
         }
     } //사랑해요 성철이형 -재현-
     //GOOD
@@ -172,6 +172,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             rockRigidbody.velocity = rockRigidbody.velocity.normalized * maxSpeed;
         }
 
+        //Debug.Log(rockRigidbody.velocity.magnitude);
     }
 
     //점프
@@ -185,7 +186,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     [Obsolete]
     protected virtual bool IsGround()
     {
-        float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
+        float rockHeightHalf = rockObject.gameObject.GetHeight(.05f);
         Collider[] colliders = Physics.OverlapSphere(rockObject.position - Vector3.up * rockHeightHalf, .05f, Global_PSC.FindLayerToName("Terrains"));
 
         if (colliders.Length > 0)
@@ -214,7 +215,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected virtual bool CheckGroundOverlap()
     {
         isGround = false;
-        float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
+        float rockHeightHalf = rockObject.gameObject.GetHeight(.05f);
 
         Collider[] colliders = Physics.OverlapSphere(rockObject.position - Vector3.up * rockHeightHalf, .05f, Global_PSC.FindLayerToName("Terrains"));
         if (colliders.Length > 0)
@@ -230,7 +231,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected virtual bool CheckGroundRay()
     {
         isGround = false;
-        float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
+        float rockHeightHalf = rockObject.gameObject.GetHeight(.05f);
 
         if (Physics.Raycast(rockObject.position, Vector3.down, out slopeHit, rockHeightHalf + rockHeightHalf * .75f, Global_PSC.FindLayerToName("Terrains")))
         {
@@ -245,7 +246,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected virtual bool CheckSlope()
     {
         isSlope = false;
-        float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
+        float rockHeightHalf = rockObject.gameObject.GetHeight(.05f);
+
 
         if (Physics.Raycast(rockObject.position, Vector3.down, out slopeHit, rockHeightHalf + rockHeightHalf * .75f, Global_PSC.FindLayerToName("Terrains")))
         {

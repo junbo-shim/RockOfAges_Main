@@ -7,5 +7,6 @@ public class TestTileM : MonoBehaviour
     private void Awake()
     {
         ResourceManager.Instance.CreateThisManager();
+        CameraManager.Instance.CreateThisManager();
     }
 }

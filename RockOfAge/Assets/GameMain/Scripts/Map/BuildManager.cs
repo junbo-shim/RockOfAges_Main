@@ -428,7 +428,7 @@ public class BuildManager : MonoBehaviour
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("PscTestScene"))
         {
 
-            return true;
+            return false;
         }
 
         if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
@@ -458,6 +458,14 @@ public class BuildManager : MonoBehaviour
     //아이템의 limit상태와 해당 terrain의 건설 가능 상태를 &&한다.
     bool CanBuild()
     {
+
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("PscTestScene"))
+        {
+
+            return false;
+        }
+        Debug.Log("?");
+
         if (buildTarget == null)
         {
             return false;
@@ -494,13 +502,13 @@ public class BuildManager : MonoBehaviour
     bool GetItemLimitState(int size)
     {
 
-/*
+
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("PscTestScene"))
         {
 
             return true;
         }
-        Debug.Log("?");*/
+        Debug.Log("?");
         if(buildTarget == null)
         {
             return false;

@@ -34,6 +34,7 @@ public class CycleManager : MonoBehaviour
 
     // ! Photon
     public PlayerDataContainer dataContainer;
+    public PhotonView dataContainerView;
     public string layerName;
     #endregion
 
@@ -54,8 +55,8 @@ public class CycleManager : MonoBehaviour
 
         // ! Photon
         dataContainer = NetworkManager.Instance.myDataContainer;
+        dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
         FindMyViewID();
-
         SetCameraLayerMask(layerName);
     }
 
@@ -65,7 +66,12 @@ public class CycleManager : MonoBehaviour
         //{
         //    return;
         //}
-        GameCycle();
+
+        // ! Photon
+        if (dataContainerView.IsMine == true) 
+        {
+            GameCycle();
+        }
     }
 
     // ! Photon

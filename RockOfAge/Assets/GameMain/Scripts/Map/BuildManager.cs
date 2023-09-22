@@ -1,4 +1,3 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -497,7 +496,11 @@ public class BuildManager : MonoBehaviour
         int buildLimit = default;
         ResourceManager.Instance.GetUnitGoldAndBuildLimitFromID(buildTarget.status.Id, out gold, out buildLimit);
         GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(buildTarget.status.Id);
+        Debug.Log(unitButton);
         int buildCount = unitButton.GetComponent<CreateButton>().buildCount;
+        Debug.Log(buildCount);
+        Debug.Log(unitButton.GetComponent<CreateButton>().buildCount);
+
 
         return (buildCount+size <= buildLimit);
     }

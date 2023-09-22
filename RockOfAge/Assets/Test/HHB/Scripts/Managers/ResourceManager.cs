@@ -1,4 +1,5 @@
 using Cinemachine;
+using Photon.Pun;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -11,8 +12,20 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     // 유닛 리소스
     public Dictionary<int, GameObject> unitResources = new Dictionary<int, GameObject>();
 
+
+    // ! photon
+    public GameObject userRockObject;
+    public string playerNumber;
+    public Vector3 team1StartPoint;
+    public Vector3 team2StartPoint;
+    
+
     protected override void Awake()
     {
+        // ! Photon
+        team1StartPoint = new Vector3(-210f, 0f, -208f);
+        team2StartPoint = new Vector3(-13f, 0f, 6f);
+
         PackAwake();
     }
 
@@ -136,24 +149,63 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     {
         int id = ItemManager.itemManager.userRockChoosed[0];
         GameObject gameObject = GetGameObjectByID(id);
-        GameObject team1 = FindTopLevelGameObject("Team1");
-        GameObject userRock = Instantiate(gameObject, team1.transform);
+
+
+
+        // ! Photon
+        FindMyViewID();
+        if (playerNumber == "Player1" || playerNumber == "Player2")
+        {
+            GameObject team1 = FindTopLevelGameObject("Team1");
+            userRockObject = 
+                PhotonNetwork.Instantiate(gameObject.ToString(), team1StartPoint, Quaternion.identity);
+        }
+        else if (playerNumber == "Player3" || playerNumber == "Player4") 
+        {
+            GameObject team2 = FindTopLevelGameObject("Team2");
+            
+            // -> 디버그 필요 (gameObject)
+            userRockObject = 
+                PhotonNetwork.Instantiate(gameObject.ToString(), team2StartPoint, Quaternion.identity);
+        }
+        GameObject rockCamera = FindTopLevelGameObject("RockCamera");
+        CinemachineVirtualCamera virtualRockCamera = rockCamera.GetComponent<CinemachineVirtualCamera>();
+        virtualRockCamera.Follow = userRockObject.transform;
+        virtualRockCamera.LookAt = userRockObject.transform;
+
+
+
         // 팀 1인지 2인지 구별하는 if가 필요합니다
         // 팀2꺼 startPoint 없습니다. 밑은 1번팀꺼입니다
-
-        Vector3 startPointTransform = new Vector3(210f, 32f, 85f);
-        Vector3 cameraTransform = new Vector3(210f, 32f, 82f);
-        userRock.transform.position = startPointTransform;
-        Debug.LogFormat("스타트 포인트 : {0}",startPointTransform);
-        Debug.LogFormat("유저 락 포지션 : {0}",userRock.transform.position);
-        GameObject rockCamera = FindTopLevelGameObject("RockCamera");
+        #region Legacy
+        //Vector3 startPointTransform = new Vector3(210f, 32f, 85f);
+        //Vector3 cameraTransform = new Vector3(210f, 32f, 82f);
+        //userRock.transform.position = startPointTransform;
+        //Debug.LogFormat("스타트 포인트 : {0}",startPointTransform);
+        //Debug.LogFormat("유저 락 포지션 : {0}",userRock.transform.position);
+        //GameObject rockCamera = FindTopLevelGameObject("RockCamera");
         //GameObject rockCamera = FindTopLevelGameObject("NewRockCamera");
-        CinemachineVirtualCamera virtualRockCamera = rockCamera.GetComponent<CinemachineVirtualCamera>();
+        //CinemachineVirtualCamera virtualRockCamera = rockCamera.GetComponent<CinemachineVirtualCamera>();
         //CinemachineFreeLook virtualRockCamera = rockCamera.GetComponent<CinemachineFreeLook>();
-        virtualRockCamera.transform.position = cameraTransform;
-        virtualRockCamera.Follow = userRock.transform;
-        virtualRockCamera.LookAt = userRock.transform;
+        //virtualRockCamera.transform.position = cameraTransform;
+        //virtualRockCamera.Follow = userRock.transform;
+        //virtualRockCamera.LookAt = userRock.transform;
+        #endregion
     }
+
+
+    // ! Photon
+    private void FindMyViewID()
+    {
+        foreach (var mydata in PhotonNetwork.CurrentRoom.CustomProperties)
+        {
+            if (mydata.Key.ToString() == CycleManager.cycleManager.dataContainer.GetComponent<PhotonView>().ViewID.ToString())
+            {
+                playerNumber = mydata.Value.ToString();
+            }
+        }
+    }
+
 
     #region 검색용 함수
     public GameObject FindTopLevelGameObject(string name_)

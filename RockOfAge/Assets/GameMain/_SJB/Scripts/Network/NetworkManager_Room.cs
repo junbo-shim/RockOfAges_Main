@@ -44,9 +44,20 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         }
     }
 
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+
+
+    }
+
     public override void OnLeftRoom()
     {
         base.OnLeftRoom();
-        roomSetting.Clear();
+
+        if (roomSetting != null) 
+        {
+            roomSetting.Clear();
+        }
     }
 }

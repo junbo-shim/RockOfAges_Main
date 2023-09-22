@@ -106,14 +106,6 @@ public class CameraMouse : MonoBehaviour
     //{ MoveCameraFromMouse()
     public void MoveCameraFromMouse()
     {
-        Debug.Log(edgeSize + "w엣지_");
-        Debug.Log(Input.mousePosition.x+"x");
-        Debug.Log(Screen.width - edgeSize + "w엣지");
-
-        Debug.Log(edgeSize + "w헤이트_");
-        Debug.Log(Input.mousePosition.y + "y");
-        Debug.Log(Screen.height - edgeSize + "w헤이트");
-
         if (Input.mousePosition.x > Screen.width - edgeSize)
         {
             EdgeMove(Vector3.right);

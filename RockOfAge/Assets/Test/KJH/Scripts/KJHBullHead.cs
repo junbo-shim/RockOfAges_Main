@@ -168,21 +168,21 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         }
     }
 
-    //void OnDrawGizmos()
-    //{
-    //    // 부채꼴 감지 범위를 그립니다.
-    //    Gizmos.color = Color.blue;
-    //    float step = detectionAngle / 20; // 부채꼴을 20개의 선분으로 나눕니다.
-    //    for (float angle = -detectionAngle * 0.5f; angle <= detectionAngle * 0.5f; angle += step)
-    //    {
-    //        Vector3 direction = Quaternion.Euler(0, angle, 0) * transform.forward;
-    //        Gizmos.DrawLine(transform.position, transform.position + direction * detectionRadius);
-    //    }
+    void OnDrawGizmos()
+    {
+        // 부채꼴 감지 범위를 그립니다.
+        Gizmos.color = Color.blue;
+        float step = detectionAngle / 20; // 부채꼴을 20개의 선분으로 나눕니다.
+        for (float angle = -detectionAngle * 0.5f; angle <= detectionAngle * 0.5f; angle += step)
+        {
+            Vector3 direction = Quaternion.Euler(0, angle, 0) * transform.forward;
+            Gizmos.DrawLine(transform.position, transform.position + direction * detectionRadius);
+        }
 
-    //    // 원형 감지 범위를 그립니다.
-    //    Gizmos.color = Color.red;
-    //    Gizmos.DrawWireSphere(transform.position, detectionRadius);
-    //}
+        // 원형 감지 범위를 그립니다.
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+    }
     public void Wait()
     {
         isCharging = false;

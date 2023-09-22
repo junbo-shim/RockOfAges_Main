@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CastleWall : HoldObstacleBase, IHitObjectHandler
+public class StoneWall : HoldObstacleBase, IHitObjectHandler
 {
     private GameObject colliderParts = default;
     private bool isAttacked = false;

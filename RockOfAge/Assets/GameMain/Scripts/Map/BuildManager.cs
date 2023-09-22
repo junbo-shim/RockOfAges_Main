@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.Splines;
 
 public class BuildManager : MonoBehaviour
@@ -73,7 +74,7 @@ public class BuildManager : MonoBehaviour
     void Update()
     {
         //테스트 코드
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.Z))
         {
             if (buildTarget != null)
                 ChangeBuildTarget(buildTarget);
@@ -424,6 +425,11 @@ public class BuildManager : MonoBehaviour
     //모드 참조
     bool IsDefance()
     {
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("PscTestScene"))
+        {
+
+            return true;
+        }
 
         if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
         {
@@ -487,6 +493,13 @@ public class BuildManager : MonoBehaviour
     //true : 현재 건설 개수가 최대 건설보다 낮다
     bool GetItemLimitState(int size)
     {
+
+
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("PscTestScene"))
+        {
+
+            return true;
+        }
         Debug.Log("?");
         if(buildTarget == null)
         {

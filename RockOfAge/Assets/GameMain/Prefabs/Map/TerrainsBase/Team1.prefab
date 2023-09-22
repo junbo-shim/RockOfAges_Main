@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8629382100331743367}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part23
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 93061957027289221}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part24
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -391,7 +391,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4825772574610701492}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: rightdoor_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -453,7 +453,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7402287596006901581}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ref
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -543,7 +543,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 373512978989946983}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bone005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -575,7 +575,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 668413388800771624}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bone008
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -606,7 +606,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1853123264986559462}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: root_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -640,7 +640,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4438438306098577803}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -846,7 +846,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2604905640243370092}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part17
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -955,7 +955,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4496436343210785404}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part15
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -986,7 +986,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5868597044837399699}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part14
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1048,7 +1048,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2543054265052264655}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bone006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1079,7 +1079,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7319421581674762721}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part25
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1110,7 +1110,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6908849183088942585}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part10
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1141,7 +1141,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4790414061566645614}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part18
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1172,7 +1172,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 865682041076316493}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: leftdoor_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1205,7 +1205,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8230190797769129476}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: rightdoor_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1238,7 +1238,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5962090630258713850}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: root_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1272,7 +1272,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3351006103640977209}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: root_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1336,7 +1336,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4202927108166418048}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Castle_door_p3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1369,7 +1369,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9041839058220524446}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1567,7 +1567,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7717381387241373257}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part09
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1598,7 +1598,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8442389551097551815}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: rightdoor_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1660,7 +1660,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2685924301307317954}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bone003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1692,7 +1692,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8186522007414083123}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: shield_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1754,7 +1754,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6133388768584926099}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part16
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1874,7 +1874,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5977849883772098974}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: root_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1939,7 +1939,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9163648144479168545}
   - component: {fileID: 789181683913106014}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: castle_door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2028,7 +2028,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6005671872411424490}
   - component: {fileID: 8151235411505544968}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: castle_door_hit_rig_phase4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2122,7 +2122,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4250958108285770451}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bone007
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2154,7 +2154,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4398336368772559200}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: leftdoor_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2187,7 +2187,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1381650293231335392}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2218,7 +2218,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6141504075348623269}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bone003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2284,7 +2284,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3521828566283459935}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: shield_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2315,7 +2315,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3731134647855985555}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: rightdoor_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2573,7 +2573,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5033153430917299063}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part11
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2697,7 +2697,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 522153016168363091}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2759,7 +2759,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5624355245131471787}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bone002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2790,7 +2790,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3046591826226117223}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part20
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2821,7 +2821,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 739950053749264725}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bone006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2852,7 +2852,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 109317026780481617}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part07
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2883,7 +2883,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2414002117691438110}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ref
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2917,7 +2917,7 @@ GameObject:
   - component: {fileID: 2998856655103843872}
   m_Layer: 9
   m_Name: PlayerBase_Castle
-  m_TagString: Untagged
+  m_TagString: Team01
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3238,7 +3238,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1726441161765694265}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bone008
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3269,7 +3269,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4669485686260482744}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bone005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3334,7 +3334,7 @@ GameObject:
   - component: {fileID: 3385362093801399940}
   - component: {fileID: 8674643939857289399}
   - component: {fileID: 863376054856694479}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Castle_door_destroy_in
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3650,7 +3650,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7073039037320749607}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: leftdoor_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4668,7 +4668,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1101651328528690136}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part22
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4957,7 +4957,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5033428729099106728}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part08
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4988,7 +4988,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1374315421634140676}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Castle_door_destroy_out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5023,7 +5023,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2050515304652816521}
   - component: {fileID: 8669579452989342217}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: castle_door_hit_rig_phase4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5117,7 +5117,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2051844210479672794}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5148,7 +5148,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2540664023854770130}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part00
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5179,7 +5179,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1740801816297113335}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Castle_door_destroy_out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5243,7 +5243,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 444680786947736497}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part21
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5305,7 +5305,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7960413695249193519}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part12
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5336,7 +5336,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6526621078693828548}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bone004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5367,7 +5367,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2095700546464021718}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5398,7 +5398,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3259279278749093589}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: leftdoor_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5429,7 +5429,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2266566130096717718}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bone001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5526,7 +5526,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2707369698328297325}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Castle_door_p2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5559,7 +5559,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8029502293905791458}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Castle_door_p1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5845,7 +5845,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 116971135919130325}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ref
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5877,7 +5877,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5549174656354161355}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bone002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5908,7 +5908,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5792700371113577610}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part13
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5939,7 +5939,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8521043933789480511}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bone001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5971,7 +5971,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8401192585260187744}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part06
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6002,7 +6002,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1879138598693904528}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Part19
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6034,7 +6034,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3760277117122534122}
   - component: {fileID: 1842369191651551163}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Castle_Door
   m_TagString: Team01
   m_Icon: {fileID: 0}
@@ -6088,7 +6088,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7826316114339203414}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bone007
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6121,7 +6121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6179180021637017215}
   - component: {fileID: 5011749842460822124}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: castle_door_phase2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6210,7 +6210,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5947589331517396384}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Castle_door_p4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6242,7 +6242,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8978245110745043965}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bone004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6304,7 +6304,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5499318739799249148}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ref
   m_TagString: Untagged
   m_Icon: {fileID: 0}

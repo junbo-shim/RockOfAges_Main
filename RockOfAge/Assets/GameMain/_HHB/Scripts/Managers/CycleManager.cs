@@ -107,25 +107,29 @@ public class CycleManager : MonoBehaviour
     // 공하나 이상 선택 & 유저 enter -> defence
     public void UpdateSelectionCycle()
     {
-        if (_isEntered == false && userState == (int)UserState.UNITSELECT)
+        // ! Photon
+        if (dataContainerView.IsMine == true)
         {
-            // 공 하나 이상 선택시 문자출력 설정
-            if (CheckUserBall() == true)
+            if (_isEntered == false && userState == (int)UserState.UNITSELECT)
             {
-                UIManager.uiManager.PrintReadyText();
-            }
-            else { UIManager.uiManager.PrintNotReadyText(); }
-
-            // 엔터누를시
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
-            {
-                // 검증 후 다음 사이클로
+                // 공 하나 이상 선택시 문자출력 설정
                 if (CheckUserBall() == true)
                 {
-                    _isEntered = true;
-                    UIManager.uiManager.ChangeStateUnitSelectToRockSelect();
+                    UIManager.uiManager.PrintReadyText();
                 }
-                else { return; }
+                else { UIManager.uiManager.PrintNotReadyText(); }
+
+                // 엔터누를시
+                if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+                {
+                    // 검증 후 다음 사이클로
+                    if (CheckUserBall() == true)
+                    {
+                        _isEntered = true;
+                        UIManager.uiManager.ChangeStateUnitSelectToRockSelect();
+                    }
+                    else { return; }
+                }
             }
         }
     }
@@ -178,13 +182,16 @@ public class CycleManager : MonoBehaviour
     //{ UpdateDefenceCycle()
     public void UpdateDefenceCycle()
     {
-
-        // 소환시간초과시 C 누르면
-        if (Input.GetKeyDown(KeyCode.C))
+        // ! Photon
+        if (dataContainerView.IsMine == true)
         {
-            ChangeStateDefenceToAttack();
+            // 소환시간초과시 C 누르면
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                ChangeStateDefenceToAttack();
+            }
+            else { return; }
         }
-        else { return; }
     }
 
     public void ChangeStateDefenceToAttack()

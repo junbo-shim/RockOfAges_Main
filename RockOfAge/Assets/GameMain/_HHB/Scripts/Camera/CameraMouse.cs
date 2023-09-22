@@ -108,13 +108,18 @@ public class CameraMouse : MonoBehaviour
     //{ ChangeCameraToRock()
     public void ChangeCameraToRock()
     {
+        // ! Photon
         //IsMine
-        if (CycleManager.cycleManager.userState == (int)UserState.ATTACK)
+        if (dataContainerView.IsMine == true)
         {
-            Debug.Log("top -> rock");
-            rockCamera.gameObject.SetActive(true);
-            nowOnCamera.gameObject.SetActive(false);
-            nextOnCamera.gameObject.SetActive(false);
+            if (CycleManager.cycleManager.userState == (int)UserState.ATTACK)
+            {
+                //Debug.Log("top -> rock");
+                Debug.Log(rockCamera);
+                rockCamera.gameObject.SetActive(true);
+                nowOnCamera.gameObject.SetActive(false);
+                nextOnCamera.gameObject.SetActive(false);
+            }
         }
     }
     //} ChangeCameraToRock()

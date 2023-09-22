@@ -41,8 +41,10 @@ GameObject:
   m_Component:
   - component: {fileID: 6281434563977579448}
   - component: {fileID: 715961684356313466}
+  - component: {fileID: 6379890660550904247}
+  - component: {fileID: 4159001225017545906}
   m_Layer: 12
-  m_Name: 2
+  m_Name: 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,8 +85,49 @@ MonoBehaviour:
   checkPoint: {fileID: 0}
   rockStatus: {fileID: 11400000, guid: 7ba169556656322419d4ac5f4677b281, type: 2}
   forms: []
+  trail: {fileID: 0}
+  isGround: 0
   isDebuffed: 0
   debuffJumpForce: 0
+--- !u!114 &6379890660550904247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4599849324484323540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 4159001225017545906}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &4159001225017545906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4599849324484323540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &4907383526076117942
 GameObject:
   m_ObjectHideFlags: 0
@@ -160,7 +203,7 @@ GameObject:
   - component: {fileID: 3447082289874036531}
   - component: {fileID: 1690638980626314256}
   - component: {fileID: 5739377907521875866}
-  - component: {fileID: 6521426269154929080}
+  - component: {fileID: 1357841959843574049}
   m_Layer: 12
   m_Name: RockObject
   m_TagString: Untagged
@@ -190,7 +233,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8815967889280875438}
-  m_Mesh: {fileID: 98237133552829817, guid: b158812640b8bd54eaeef97502423de3, type: 3}
+  m_Mesh: {fileID: -1576781817300052973, guid: 7e7a9da27b1b5574a89ca24d4ba33c5a, type: 3}
 --- !u!23 &3447082289874036531
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -272,7 +315,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c4e97d6f61c237419fefcf93d51b0d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!64 &6521426269154929080
+--- !u!64 &1357841959843574049
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -289,8 +332,8 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 98237133552829817, guid: b158812640b8bd54eaeef97502423de3, type: 3}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}

@@ -1,7 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+using Photon.Pun;
 
 public class ObstacleBase : MonoBehaviour
 {
@@ -61,8 +60,12 @@ public class ObstacleBase : MonoBehaviour
     //맵에 Build
     public virtual ObstacleBase Build(Vector3 position, Quaternion rotate)
     {
+        // ! Photon-Alert
         //오브젝트 생성
-        ObstacleBase obstacle = Instantiate(this, position, rotate);
+        string ObstacleName = this.gameObject.name;
+
+        //ObstacleBase obstacle = Instantiate(this, position, rotate);
+        ObstacleBase obstacle = PhotonNetwork.Instantiate(ObstacleName, position, rotate).GetComponent<ObstacleBase>();
         
         //스케일 변경
         obstacle.transform.localScale = obstacle.transform.localScale;

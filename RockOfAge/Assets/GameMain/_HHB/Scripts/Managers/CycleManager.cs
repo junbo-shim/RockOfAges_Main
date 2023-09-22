@@ -13,6 +13,11 @@ public enum RockState
     ROCKSELECT = 0, ROCKCREATING = 1, ROCKCREATED = 2
 }
 
+public enum Result
+{ 
+    WIN = 0, LOSE = 1
+}
+
 
 public class CycleManager : MonoBehaviour
 {
@@ -127,6 +132,7 @@ public class CycleManager : MonoBehaviour
                     {
                         _isEntered = true;
                         UIManager.uiManager.ChangeStateUnitSelectToRockSelect();
+                    CameraManager.Instance.TurnOffSelectCamera();
                     }
                     else { return; }
                 }
@@ -353,12 +359,13 @@ public class CycleManager : MonoBehaviour
     {
         #region mainCameras
         // ! Photon
-        GameObject[] playerCameras = new GameObject[5];
+        GameObject[] playerCameras = new GameObject[6];
         playerCameras[0] = ResourceManager.Instance.FindTopLevelGameObject("PlayerCamera");
         playerCameras[1] = ResourceManager.Instance.FindTopLevelGameObject("TopViewCamera");
         playerCameras[2] = ResourceManager.Instance.FindTopLevelGameObject("ClickedTopViewCamera");
         playerCameras[3] = ResourceManager.Instance.FindTopLevelGameObject("RockCamera");
         playerCameras[4] = ResourceManager.Instance.FindTopLevelGameObject("GameEndCamera");
+        playerCameras[5] = ResourceManager.Instance.FindTopLevelGameObject("SelectCamera");
         #endregion
 
         #region subCameras

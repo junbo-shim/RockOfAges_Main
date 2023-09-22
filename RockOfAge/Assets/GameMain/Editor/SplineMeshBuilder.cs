@@ -10,8 +10,9 @@ public class SplineMeshBuilder : EditorWindow
 {
 
     //build시에 사용할 material
-    public List<Material> materials = default;
-
+    //public List<Material> materials = default;
+    public Material materialRoad;
+    public Material materialWall;
     //spline을 통해서 만들어낼 side의 정점
     List<Vector3> rightPoint = default;
     List<Vector3> leftPoint = default;
@@ -45,7 +46,7 @@ public class SplineMeshBuilder : EditorWindow
         splineContainer = GameObject.Find("Team" + (teamIndex + 1)).transform.Find("BaseTerrains").GetComponentInChildren<SplineContainer>();
         // Display a label for materials.
 
-        Event e = Event.current;
+       /* Event e = Event.current;
 
         // Handle material drag and drop.
         if (e.type == EventType.DragUpdated || e.type == EventType.DragPerform)
@@ -66,20 +67,18 @@ public class SplineMeshBuilder : EditorWindow
             }
 
             e.Use();
-        }
+        }*/
 
         // Display the list of materials.
         EditorGUILayout.LabelField("Materials");
-        foreach (Material material in materials)
-        {
-            EditorGUILayout.ObjectField(material, typeof(Material), false);
-        }
+        EditorGUILayout.ObjectField(materialRoad, typeof(Material), false);
+        EditorGUILayout.ObjectField(materialWall, typeof(Material), false);
 
         // Add a button to clear the list.
-        if (GUILayout.Button("Clear List"))
+        /*if (GUILayout.Button("Clear List"))
         {
             materials.Clear();
-        }
+        }*/
 
 
 
@@ -132,15 +131,15 @@ public class SplineMeshBuilder : EditorWindow
         GetVerts(spline);
 
         //2. 해당 메쉬를 저장할 클래스 생성
-        GameObject up = ConcreateGameObject(materials[0], parent, "Terrains");
+        GameObject up = ConcreateGameObject(materialRoad, parent, "Terrains");
         //3. 메쉬만들기
         BuildUp(up, spline.Closed);
         up.tag = "Team0" + (teamIndex + 1);
 
-        GameObject right = ConcreateGameObject(materials[1], parent, "Terrains");
+        GameObject right = ConcreateGameObject(materialWall, parent, "Terrains");
         BuildSide(right, rightPoint, spline.Closed);
 
-        GameObject left = ConcreateGameObject(materials[1], parent, "Terrains");
+        GameObject left = ConcreateGameObject(materialWall, parent, "Terrains");
         //culling을 위해서 순서 변경
         leftPoint.Reverse();
         BuildSide(left, leftPoint, spline.Closed);

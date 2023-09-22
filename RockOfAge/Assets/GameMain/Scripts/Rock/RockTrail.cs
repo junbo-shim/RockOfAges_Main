@@ -21,7 +21,7 @@ public class RockTrail : MonoBehaviour
         trailRenderer = GetComponent<TrailRenderer>();
 
         isStart = false;
-        transform.position = rockMesh.position - Vector3.up * rockMesh.gameObject.GetHeight(.49f);
+        transform.position = rockMesh.position - Vector3.up * rockMesh.gameObject.GetHeight(.49f)*0.1f;
     }
 
     // Update is called once per frame
@@ -40,7 +40,7 @@ public class RockTrail : MonoBehaviour
 
         if (isStart)
         {
-            transform.position = rockMesh.position - Vector3.up * rockMesh.gameObject.GetHeight(.49f);
+            transform.position = rockMesh.position - Vector3.up * rockMesh.gameObject.GetHeight(.49f) * 0.1f;
             trailRenderer.emitting = true;
         }
 

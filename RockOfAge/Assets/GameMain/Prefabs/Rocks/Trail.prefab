@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 90, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -75,7 +75,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 5
+  m_Time: 7
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
@@ -85,13 +85,31 @@ TrailRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.21794891
+        value: 1
         inSlope: 0
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.042968657
+        value: 1
+        inSlope: -0.084120385
+        outSlope: -0.084120385
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.26157883
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1.3096449
+        outSlope: -1.3096449
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.10216725
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -125,8 +143,8 @@ TrailRenderer:
       m_ColorSpace: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    numCornerVertices: 16
-    numCapVertices: 0
+    numCornerVertices: 50
+    numCapVertices: 50
     alignment: 1
     textureMode: 0
     textureScale: {x: 1, y: 1}

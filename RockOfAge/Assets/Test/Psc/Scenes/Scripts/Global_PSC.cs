@@ -1,9 +1,26 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class Global_PSC
 {
+    public static void ShakeFreeLookCamera(this Camera mainCamera, float AmplitudeGain, float FrequencyGain)
+    {
+
+        CinemachineFreeLook camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineFreeLook;
+
+        camera.GetRig(0).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = AmplitudeGain;
+        camera.GetRig(1).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = AmplitudeGain;
+        camera.GetRig(2).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = AmplitudeGain;
+
+        camera.GetRig(0).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_FrequencyGain = FrequencyGain;
+        camera.GetRig(1).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_FrequencyGain = FrequencyGain;
+        camera.GetRig(2).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_FrequencyGain = FrequencyGain;
+    }
+
+
     public static void InitLocalTransformData(Transform _GameObject, Transform parent=null)
     {
         _GameObject.parent = parent.transform;
@@ -74,5 +91,17 @@ public static class Global_PSC
         return 1f;
     }
 
+    public static GameObject FindTopLevelGameObject(string name_)
+    {
+        GameObject[] rootObjs = SceneManager.GetActiveScene().GetRootGameObjects();
+        foreach (GameObject obj in rootObjs)
+        {
+            if (obj.name == name_)
+            {
+                return obj;
+            }
+        }
+        return null;
+    }
 }
 

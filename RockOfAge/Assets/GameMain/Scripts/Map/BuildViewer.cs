@@ -17,7 +17,6 @@ public class BuildViewer : MonoBehaviour
     [SerializeField]
     private DragViewer dragViewer;
 
-
     private void Awake()
     {
         meshFilter = GetComponentInChildren<MeshFilter>();

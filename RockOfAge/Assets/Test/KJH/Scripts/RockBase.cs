@@ -1,4 +1,5 @@
 using Cinemachine;
+using RayFire;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     public RockStatus rockStatus;
     [SerializeField]
     protected List<Mesh> forms;
+    [SerializeField]
+    protected RockTrail trail;
 
     //사용자 입력(Y축 제외)
     protected Vector2 playerInput;
@@ -29,11 +32,13 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected MeshCollider rockCollider;
     
     protected float currHp;
+    protected float rockHeightHalf;
     protected float obstacleMultiple = 1;
 
-    protected bool isGround = false;
+    public bool isGround = false;
     protected bool isSlope = false;
     protected bool isFall = false;
+    protected bool isDestroy = false;
     //{ 0920 홍한범
     // 디버프 체크
     public bool isDebuffed = false;
@@ -43,6 +48,10 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     RaycastHit slopeHit;
     Coroutine fallCheckCoroutine = null;
+    protected Queue<RockTrail> trails;
+
+    protected RayfireRigid rayfireRigid;
+
 
     protected const float DAMAGE_LIMIT_MIN = 50f;
     protected const float SLOPE_LIMIT_MAX = 60f;
@@ -58,7 +67,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         if (rockObject != null)
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(rockObject.position - Vector3.up * rockObject.gameObject.GetHeight(.5f), .05f);
+            Gizmos.DrawSphere(rockObject.position - Vector3.up * rockObject.gameObject.GetHeight(.05f), .05f);
         }
     } //사랑해요 성철이형 -재현-
     //GOOD
@@ -107,11 +116,17 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
         rockStatus = new RockStatus(rockStatus);
 
+        rockHeightHalf = rockObject.gameObject.GetHeight(.1f)*.5f;
         rockRigidbody.mass = rockStatus.Weight;
         currHp = rockStatus.Health;
         //{ 0920 홍한범
         debuffJumpForce = 1f;
         //} 0920 홍한범
+
+        rayfireRigid = rockObject.GetComponent<RayfireRigid>();
+        trails = new Queue<RockTrail>();
+
+        CreateTrail();
     }
 
     //혹시 모를 오버로딩
@@ -172,12 +187,14 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             rockRigidbody.velocity = rockRigidbody.velocity.normalized * maxSpeed;
         }
 
+        //Debug.Log(rockRigidbody.velocity.magnitude);
     }
 
     //점프
     protected virtual void Jump(float power)
     {
         rockRigidbody.velocity += Vector3.up * (power*debuffJumpForce);
+        CreateTrail();
     }
 
 
@@ -185,7 +202,6 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     [Obsolete]
     protected virtual bool IsGround()
     {
-        float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
         Collider[] colliders = Physics.OverlapSphere(rockObject.position - Vector3.up * rockHeightHalf, .05f, Global_PSC.FindLayerToName("Terrains"));
 
         if (colliders.Length > 0)
@@ -199,45 +215,49 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //오버랩을 사용하는 checkGround
     protected virtual bool CheckGround()
     {
+        bool result;
 
         if (isSlope)
         {
-            return CheckGroundRay();
+            result = CheckGroundRay();
         }
         else
         {
-            return CheckGroundOverlap();
+            result = CheckGroundOverlap();
         }
+
+        if(!isGround && result)
+        {
+            StartCoroutine(CameraShakeRoutine(.1f, 3, 3));
+        }
+        isGround = result;
+
+        return result;
 
     }
     //오버랩을 사용하는 checkGround
     protected virtual bool CheckGroundOverlap()
     {
-        isGround = false;
-        float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
 
         Collider[] colliders = Physics.OverlapSphere(rockObject.position - Vector3.up * rockHeightHalf, .05f, Global_PSC.FindLayerToName("Terrains"));
         if (colliders.Length > 0)
         {
-            isGround = true;
+            return true;
         }
 
-        return isGround;
+        return false;
     }
 
     //레이를 사용하는 checkGround
     //경사 구조때문에 해당 메서드 사용 권장
     protected virtual bool CheckGroundRay()
     {
-        isGround = false;
-        float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
-
         if (Physics.Raycast(rockObject.position, Vector3.down, out slopeHit, rockHeightHalf + rockHeightHalf * .75f, Global_PSC.FindLayerToName("Terrains")))
         {
-            isGround = true;
+            return  true;
         }
 
-        return isSlope;
+        return false;
     }
 
     //경사로 체크
@@ -245,8 +265,6 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected virtual bool CheckSlope()
     {
         isSlope = false;
-        float rockHeightHalf = rockObject.gameObject.GetHeight(.5f);
-
         if (Physics.Raycast(rockObject.position, Vector3.down, out slopeHit, rockHeightHalf + rockHeightHalf * .75f, Global_PSC.FindLayerToName("Terrains")))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
@@ -315,8 +333,13 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         yield return new WaitForSeconds(1f);
         //손 생성 애니메이션?
         yield return new WaitForSeconds(1f);
-        //되돌리기
-        BackCheckPoint();
+
+        if (rockObject != null)
+        {
+
+            //되돌리기
+            BackCheckPoint();
+        }
     }
 
     //경사에 있을 경우 힘의 방향을 해당 경사에 맞게 회전시킴
@@ -333,6 +356,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //공격때 자신의 체력도 닳게한다.
     public virtual void Attack(Collision collision)
     {
+
         IHitObjectHandler hitObject = collision.gameObject.GetComponentInParent<IHitObjectHandler>();
         if (hitObject == null)
         {
@@ -379,7 +403,29 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         }
     }
 
+    public IEnumerator CameraShakeRoutine(float time, float AmplitudeGain, float FrequencyGain)
+    {
+        mainCamera.ShakeFreeLookCamera(AmplitudeGain, FrequencyGain);
+        yield return new WaitForSeconds(time);
+        mainCamera.ShakeFreeLookCamera(0, 0);
+    }
 
+    public void CreateTrail()
+    {
+        if (trails.Count > 4)
+        {
+            GameObject trailObject = trails.Dequeue().gameObject;
+            if (trailObject != null)
+            {
+                Destroy(trailObject);
+            }
+        }
+
+        trails.Enqueue(Instantiate(trail, transform.position, Quaternion.Euler(90,0,0), transform));
+    }
+
+
+    [Obsolete]
     protected virtual float Attack()
     {
         return 0;
@@ -409,7 +455,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     {
         HitReaction();
         currHp -= damage;
-        if (currHp < 0)
+        Debug.Log(currHp);
+        if (currHp <= 0)
         {
             Die();
         }
@@ -454,7 +501,14 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     public void HitReaction(){}
 
-    protected virtual void Die(){}
+    protected virtual void Die()
+    {
+        isDestroy = true;
+        rayfireRigid.Demolish();
+        //rayfireRigid.Activate();
+
+        //Destroy(gameObject);
+    }
 
     protected Vector2 GetInput()
     {

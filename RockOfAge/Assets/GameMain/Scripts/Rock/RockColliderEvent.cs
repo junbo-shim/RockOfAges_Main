@@ -6,32 +6,56 @@ public class RockColliderEvent : MonoBehaviour
 {
     RockBase parent;
 
+    readonly float SHAKE_TIME = .25f;
+    float power = 0;
+    float powerLimitMax = 0;
+
+    const float COLLISION_LIMIT_LOW = .5f;
+
     private void Awake()
     {
         parent = GetComponentInParent<RockBase>();
+        powerLimitMax = parent.rockStatus.Damage;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        Rigidbody rigidbody = GetComponent<Rigidbody>();
+        power = rigidbody.velocity.magnitude;
 
-        Debug.Log("공격 인식");
 
-        Debug.Log(parent.NowSpeed());
-
-        if (parent.IsMove(1))
+        if (parent.IsMove(COLLISION_LIMIT_LOW))
         {
-            Debug.Log("공격 시작");
-            Debug.Log(collision.gameObject.layer+"/"+ LayerMask.NameToLayer("Obstacles"));
-            if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
-            {
-                Debug.Log("장해물 공격");
-                parent.Attack(collision);
-            }
-            if (parent.IsMove(2.5f))
-            {
-                Debug.Log("아무데나 공격");
-                parent.Hit(10);
-            }
+            AttackObstacle(collision);
+            AttackWall(collision);
+            AttackGate(collision);
+        }
+    }
+    private void AttackObstacle(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
+        {
+            StartCoroutine(parent.CameraShakeRoutine(SHAKE_TIME, power, 3));
+            parent.Attack(collision);
+        }
+    }
+
+    private void AttackWall(Collision collision)
+    {
+        if (parent.IsMove(6) && collision.gameObject.layer == LayerMask.NameToLayer("Walls"))
+        {
+            StartCoroutine(parent.CameraShakeRoutine(SHAKE_TIME, power, 3));
+            parent.Hit(50);
+        }
+    }
+
+    private void AttackGate(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Castle"))
+        {
+            //추가적인 mode변경 coroutine 실행하면 됨
+            StartCoroutine(parent.CameraShakeRoutine(SHAKE_TIME, power, 3));
+            parent.Attack(collision);
         }
     }
 }

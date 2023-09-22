@@ -37,7 +37,7 @@ public class CameraMouse : MonoBehaviour
 
     private void Update()
     {
-        //if (/*CycleManager.cycleManager.userState == (int)UserState.Defence*/)
+        if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
         { 
             MoveCameraFromKeyBoard();
             RotateCameraTransition();    

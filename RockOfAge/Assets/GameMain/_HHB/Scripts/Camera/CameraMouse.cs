@@ -79,16 +79,7 @@ public class CameraMouse : MonoBehaviour
 
                 // SmothDamp 원래위치/ 최종위치/ 이전 프레임 속도/ 수렴시간(작을수록 빨리 움직임) 
                 transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
-
-                // 다음 카메라도 같이 이동
-                if (nextOnCamera != null)
-                {
-                    float nowX = transform.position.x;
-                    float nowZ = transform.position.z;
-                    float nextY = nextOnCamera.transform.position.y;
-                    nextOnCamera.transform.position = new Vector3(nowX, nextY, nowZ);
-                }
-
+                FollowNowOnCamera();
             }
         }
     }
@@ -114,8 +105,6 @@ public class CameraMouse : MonoBehaviour
         {
             if (CycleManager.cycleManager.userState == (int)UserState.ATTACK)
             {
-                //Debug.Log("top -> rock");
-                Debug.Log(rockCamera);
                 rockCamera.gameObject.SetActive(true);
                 nowOnCamera.gameObject.SetActive(false);
                 nextOnCamera.gameObject.SetActive(false);
@@ -127,23 +116,26 @@ public class CameraMouse : MonoBehaviour
     //{ MoveCameraFromMouse()
     public void MoveCameraFromMouse()
     {
-        if (Input.mousePosition.x > Screen.width - edgeSize)
+        if (ControlCameraPosition())
         {
-            EdgeMove(Vector3.right);
+            if (Input.mousePosition.x > Screen.width - edgeSize)
+            {
+                EdgeMove(Vector3.right);
+            }
+            else if (Input.mousePosition.x < edgeSize)
+            {
+                EdgeMove(Vector3.left);
+            }
+            else if (Input.mousePosition.y < edgeSize)
+            {
+                EdgeMove(-Vector3.forward);
+            }
+            else if (Input.mousePosition.y > Screen.height - edgeSize)
+            {
+                EdgeMove(-Vector3.back);
+            }
+            FollowNowOnCamera();
         }
-        if (Input.mousePosition.x < edgeSize)
-        {
-            EdgeMove(Vector3.left);
-        }
-        if (Input.mousePosition.y < edgeSize)
-        {
-            EdgeMove(-Vector3.forward);
-        }
-        if (Input.mousePosition.y > Screen.height - edgeSize)
-        {
-            EdgeMove(-Vector3.back);
-        }
-
     }
     //} MoveCameraFromMouse()
 
@@ -157,7 +149,56 @@ public class CameraMouse : MonoBehaviour
 
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
 
-        // 다음 카메라도 같이 이동
+    }
+    //} EdgeMove(Vector3 dir)
+
+    public bool ControlCameraPosition()
+    {
+        Vector3 cameraPosition = nowOnCamera.transform.position;
+        float minX = -150f;
+        float maxX = 150f;
+        float minZ = -150f;
+        float maxZ = 150f;
+
+        if (cameraPosition.x < maxX && cameraPosition.x > minX &&
+            cameraPosition.z < maxZ && cameraPosition.z > minZ)
+        {
+            return true; 
+        }
+        else
+        {
+            //Vector3 clampedPosition = new Vector3(Mathf.Clamp(cameraPosition.x, minX, maxX),cameraPosition.y,Mathf.Clamp(cameraPosition.z, minZ, maxZ));
+            //nowOnCamera.transform.position = clampedPosition;
+            ControlEdgeToMoveCamera();
+            return false;
+        }
+    }
+
+    public void ControlEdgeToMoveCamera()
+    {
+        Vector3 cameraPosition = nowOnCamera.transform.position;
+        if (cameraPosition.x >= 150f)
+        {
+            cameraPosition.x -= 5f;
+        }
+        if (cameraPosition.x <= -150f)
+        {
+            cameraPosition.x += 5f;
+        }
+        if (cameraPosition.z >= 150f)
+        {
+            cameraPosition.z -= 5f;
+        }
+        if (cameraPosition.z <= -150f)
+        {
+            cameraPosition.z += 5f;
+        }
+        nowOnCamera.transform.position = cameraPosition;
+        FollowNowOnCamera();
+    }
+
+    public void FollowNowOnCamera()
+    {
         if (nextOnCamera != null)
         {
             float nowX = transform.position.x;
@@ -166,5 +207,4 @@ public class CameraMouse : MonoBehaviour
             nextOnCamera.transform.position = new Vector3(nowX, nextY, nowZ);
         }
     }
-    //} EdgeMove(Vector3 dir)
 }

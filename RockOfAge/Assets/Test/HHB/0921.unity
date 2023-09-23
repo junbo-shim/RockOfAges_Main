@@ -1628,6 +1628,7 @@ GameObject:
   - component: {fileID: 141832153}
   - component: {fileID: 141832155}
   - component: {fileID: 141832154}
+  - component: {fileID: 141832156}
   m_Layer: 5
   m_Name: LobbyButton
   m_TagString: Untagged
@@ -1693,6 +1694,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 141832152}
   m_CullTransparentMesh: 1
+--- !u!114 &141832156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 141832152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 2
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 21300000, guid: da1909f48911f6449848eac10101c539, type: 3}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 141832154}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &143821882
 GameObject:
   m_ObjectHideFlags: 0
@@ -24825,6 +24870,7 @@ GameObject:
   - component: {fileID: 2025261943}
   - component: {fileID: 2025261945}
   - component: {fileID: 2025261944}
+  - component: {fileID: 2025261946}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -24890,6 +24936,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2025261942}
   m_CullTransparentMesh: 1
+--- !u!114 &2025261946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025261942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 2
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 21300000, guid: da1909f48911f6449848eac10101c539, type: 3}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 2025261944}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2027582009
 GameObject:
   m_ObjectHideFlags: 0
@@ -25672,7 +25762,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3a4e87d682ba1c4297a85e91245a92e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackUI: {fileID: 959344543}
   commonUI: {fileID: 630025679380767855}
   player1Txt: {fileID: 6806863271108445620}
   player2Txt: {fileID: 6251446997619437962}
@@ -25697,6 +25786,23 @@ MonoBehaviour:
   selectUnitSprite:
   - {fileID: 21300000, guid: 8e7f6fa250fe47041b8d9fd2529540f8, type: 3}
   - {fileID: 21300000, guid: a25125631f9d8c74a862587a598da606, type: 3}
+  attackUI: {fileID: 959344543}
+  player1NameTxt: {fileID: 0}
+  player2NameTxt: {fileID: 0}
+  player3NameTxt: {fileID: 0}
+  player4NameTxt: {fileID: 0}
+  player1ScoreTxt: {fileID: 0}
+  player2ScoreTxt: {fileID: 0}
+  player3ScoreTxt: {fileID: 0}
+  player4ScoreTxt: {fileID: 0}
+  player1Icon: {fileID: 0}
+  player2Icon: {fileID: 0}
+  player3Icon: {fileID: 0}
+  player4Icon: {fileID: 0}
+  player1userImg: {fileID: 0}
+  player2userImg: {fileID: 0}
+  player3userImg: {fileID: 0}
+  player4userImg: {fileID: 0}
   rockSprites:
   - {fileID: 21300000, guid: 1997df0aa385e9f478fa4097b89d754d, type: 3}
   - {fileID: 21300000, guid: 68c0544e349a60d4fae3f4a911c6415c, type: 3}
@@ -25719,6 +25825,7 @@ MonoBehaviour:
   readyTxt: {fileID: 291346765965360723}
   readyImg: {fileID: 8460971013483836605}
   userSelectUI: {fileID: 3520985901553886674}
+  endingUI: {fileID: 919533238}
 --- !u!114 &2077200390
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class ResourceManager : GlobalSingleton<ResourceManager>
 {
@@ -19,12 +20,13 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     public Vector3 team1StartPoint;
     public Vector3 team2StartPoint;
     
+    //Vector3 startPointTeam1 = new Vector3(111.55f, 31.21f, 120f);
 
     protected override void Awake()
     {
         // ! Photon
-        team1StartPoint = new Vector3(-210f, 0f, -208f);
-        team2StartPoint = new Vector3(-13f, 0f, 6f);
+        team1StartPoint = new Vector3(107f, 40f, 107f);
+        team2StartPoint = new Vector3(-107f, 40f, -107f);
 
         PackAwake();
     }
@@ -154,34 +156,35 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
 
 
 
+        GameObject userRockObject = null;
         // ! Photon-Alert
         FindMyViewID();
         if (playerNumber == "Player1" || playerNumber == "Player2")
         {
-            //GameObject team1 = FindTopLevelGameObject("Team1");
-            Debug.Log(gameObject);
-            GameObject userRockObject = 
-                PhotonNetwork.Instantiate(gameObject.name, team1StartPoint, Quaternion.identity);
-
-            GameObject rockCamera = FindTopLevelGameObject("RockCamera");
-            CinemachineVirtualCamera virtualRockCamera = rockCamera.GetComponent<CinemachineVirtualCamera>();
-            virtualRockCamera.Follow = userRockObject.transform;
-            virtualRockCamera.LookAt = userRockObject.transform;
+            userRockObject =
+               PhotonNetwork.Instantiate(gameObject.name, Vector3.zero, Quaternion.identity);
+            userRockObject.SetChildPosition(team1StartPoint, "RockObject");
+            Debug.Log(team1StartPoint);
+            if (userRockObject.GetComponent<PhotonView>().IsMine == true)
+            {
+                CameraManager.Instance.SetRockCamera(userRockObject, team1StartPoint);
+            }
         }
-        else if (playerNumber == "Player3" || playerNumber == "Player4") 
+        else if (playerNumber == "Player3" || playerNumber == "Player4")
         {
-            //GameObject team2 = FindTopLevelGameObject("Team2");
+            userRockObject =
+               PhotonNetwork.Instantiate(gameObject.name, Vector3.zero, Quaternion.identity);
+            userRockObject.SetChildPosition(team2StartPoint, "RockObject");
 
-            // -> 디버그 필요 (gameObject)
-            Debug.Log(gameObject);
-            GameObject userRockObject = 
-                PhotonNetwork.Instantiate(gameObject.name, team2StartPoint, Quaternion.identity);
-
-            GameObject rockCamera = FindTopLevelGameObject("RockCamera");
-            CinemachineVirtualCamera virtualRockCamera = rockCamera.GetComponent<CinemachineVirtualCamera>();
-            virtualRockCamera.Follow = userRockObject.transform;
-            virtualRockCamera.LookAt = userRockObject.transform;
+            if (userRockObject.GetComponent<PhotonView>().IsMine == true)
+            {
+                CameraManager.Instance.SetRockCamera(userRockObject, team2StartPoint);
+            }
         }
+        /*if (userRockObject != null)
+        {
+            userRockObject.transform.localScale = Vector3.one * 0.1f;
+        }*/
         //GameObject rockCamera = FindTopLevelGameObject("RockCamera");
         //CinemachineVirtualCamera virtualRockCamera = rockCamera.GetComponent<CinemachineVirtualCamera>();
         //virtualRockCamera.Follow = userRockObject.transform;

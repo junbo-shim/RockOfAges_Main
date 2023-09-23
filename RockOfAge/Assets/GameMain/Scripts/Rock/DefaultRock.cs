@@ -10,6 +10,11 @@ public class DefaultRock : RockBase
 
     private void FixedUpdate()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         if (isDestroy)
         {
             return;
@@ -28,6 +33,11 @@ public class DefaultRock : RockBase
 
     private void Update()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         if (isFall || isDestroy)
         {
             return;

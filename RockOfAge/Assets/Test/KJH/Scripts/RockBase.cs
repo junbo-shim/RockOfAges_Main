@@ -1,4 +1,5 @@
 using Cinemachine;
+using Photon.Pun;
 using RayFire;
 using System;
 using System.Collections;
@@ -30,6 +31,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected MeshRenderer rockRenderer;
     protected MeshFilter rockMesh;
     protected MeshCollider rockCollider;
+    protected PhotonView photonView;
     
     protected float currHp;
     protected float rockHeightHalf;
@@ -61,6 +63,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected const float DEFAULT_AIR_MULTIPLE = .3f;
     protected const float DEFAULT_SLOPE_MULTIPLE = 1.5f;
     protected const float DEFAULT_OBSTACLE_MULTIPLE = 1f;
+
 
     private void OnDrawGizmos()
     {
@@ -102,8 +105,18 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     public virtual void Init()
     {
-        //추후 시네머신 카메라로 바꿀것
-        mainCamera = Camera.main;
+        photonView = GetComponent<PhotonView>();
+        if (photonView.IsMine)
+        {
+
+            //추후 시네머신 카메라로 바꿀것
+            mainCamera = Camera.main;
+        }
+        else
+        {
+
+            //카메라 큐 추가할 공간
+        }
        
         rockObject = transform.Find("RockObject");
         checkPoint = transform.Find("CheckPoint");
@@ -282,10 +295,14 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //바닥이 없는 상황에서 계산 시작
     protected virtual void CheckFall()
     {
-        if (!Physics.Raycast(rockObject.position, Vector3.down, 1000, Global_PSC.FindLayerToName("Terrains")) && fallCheckCoroutine==null)
+        if (photonView.IsMine)
         {
-            StartFallingCheck();
+            if (!Physics.Raycast(rockObject.position, Vector3.down, 1000, Global_PSC.FindLayerToName("Terrains")) && fallCheckCoroutine == null)
+            {
+                StartFallingCheck();
+            }
         }
+        
     }
 
     

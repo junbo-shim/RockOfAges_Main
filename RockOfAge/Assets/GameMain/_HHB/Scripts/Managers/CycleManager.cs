@@ -44,9 +44,6 @@ public class CycleManager : MonoBehaviour
     #endregion
 
 
-
-
-
     public void Awake()
     {
         //if (!_isEntered)

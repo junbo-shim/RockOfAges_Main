@@ -14,6 +14,11 @@ public static class Global_PSC
         CinemachineFreeLook camera = camerabrain.ActiveVirtualCamera as CinemachineFreeLook;
         if (camera == null) return;
 
+        Debug.Log(camera);
+        Debug.Log(camera.GetRig(0));
+        Debug.Log(camera.GetRig(0).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>());
+        Debug.Log(camera.GetRig(0).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain);
+        Debug.Log(AmplitudeGain);
         camera.GetRig(0).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = AmplitudeGain;
         camera.GetRig(1).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = AmplitudeGain;
         camera.GetRig(2).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = AmplitudeGain;
@@ -105,6 +110,12 @@ public static class Global_PSC
             }
         }
         return null;
+    }
+
+    public static void SetChildPosition(this GameObject obj ,Vector3 position, string childName)
+    {
+        Debug.Log(position);
+        obj.transform.Find(childName).position = position;
     }
 }
 

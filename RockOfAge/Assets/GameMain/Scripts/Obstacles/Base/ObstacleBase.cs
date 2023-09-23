@@ -60,7 +60,7 @@ public class ObstacleBase : MonoBehaviour
     //맵에 Build
     public virtual ObstacleBase Build(Vector3 position, Quaternion rotate)
     {
-        // ! Photon-Alert
+        // ! Photon
         //오브젝트 생성
         string ObstacleName = this.gameObject.name;
 

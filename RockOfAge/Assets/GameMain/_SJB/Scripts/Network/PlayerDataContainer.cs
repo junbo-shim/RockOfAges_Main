@@ -199,7 +199,8 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     public void StartGame() 
     {   
         // 로드할 씬의 이름 작성
-        PhotonNetwork.LoadLevel("GameMain");
+        //PhotonNetwork.LoadLevel("GameMain");
+        PhotonNetwork.LoadLevel("0921");
     }
     #endregion
 }

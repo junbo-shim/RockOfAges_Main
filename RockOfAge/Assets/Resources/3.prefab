@@ -58,7 +58,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7067923856920535189}
@@ -79,10 +79,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42dbef0821751c54b8401261e5802a6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rockObject: {fileID: 0}
-  checkPoint: {fileID: 0}
+  rockObject: {fileID: 7067923856920535189}
+  checkPoint: {fileID: 8497033882785368660}
   rockStatus: {fileID: 11400000, guid: 7ba169556656322419d4ac5f4677b281, type: 2}
   forms: []
+  trail: {fileID: 743103346689614724, guid: 84546c159d51e96458f1d23a538363e7, type: 3}
+  isGround: 0
   isDebuffed: 0
   debuffJumpForce: 0
 --- !u!1 &4907383526076117942
@@ -161,6 +163,7 @@ GameObject:
   - component: {fileID: 1690638980626314256}
   - component: {fileID: 5739377907521875866}
   - component: {fileID: 5954938959619170858}
+  - component: {fileID: 797321531071263485}
   m_Layer: 12
   m_Name: RockObject
   m_TagString: Untagged
@@ -289,8 +292,29 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 8733353601492638029, guid: 28a38b6612c1f3b49a088f554aeda306, type: 3}
+--- !u!135 &797321531071263485
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8815967889280875438}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 3.8093686
+  m_Center: {x: -0.051593304, y: -0.02983284, z: -0.011404753}

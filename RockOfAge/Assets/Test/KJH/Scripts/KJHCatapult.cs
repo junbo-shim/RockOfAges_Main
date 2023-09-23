@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class Catapult : HoldObstacleBase, IHitObjectHandler
+public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
 {
     public float detectionRadius = 5f; // 원형 감지 범위 반지름
     public LayerMask Rock; // 감지할 레이어 설정

@@ -251,7 +251,7 @@ public class CycleManager : MonoBehaviour
         playerCameras[2] = ResourceManager.Instance.FindTopLevelGameObject("ClickedTopViewCamera");
         playerCameras[3] = ResourceManager.Instance.FindTopLevelGameObject("RockCamera");
         playerCameras[4] = ResourceManager.Instance.FindTopLevelGameObject("GameEndCamera");
-        playerCameras[6] = ResourceManager.Instance.FindTopLevelGameObject("SelectCamera");
+        playerCameras[5] = ResourceManager.Instance.FindTopLevelGameObject("SelectCamera");
         #endregion
 
         #region subCameras

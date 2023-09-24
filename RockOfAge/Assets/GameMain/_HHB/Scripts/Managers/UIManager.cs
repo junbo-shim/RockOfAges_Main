@@ -32,6 +32,8 @@ public partial class UIManager : MonoBehaviour
     public Image readyImg;
     // selectionUI
     public GameObject userSelectUI;
+    // endingUI
+    public GameObject endingUI;
     #endregion
 
     private void Awake()
@@ -42,10 +44,10 @@ public partial class UIManager : MonoBehaviour
         SwitchUIManager("commonUI");
         SwitchUIManager("attackUI");
         SwitchUIManager("defenceUI");
+        SwitchUIManager("endingUI");
     }
 
     #region Functions
-
     //{ SwitchUIManager()
     // UI 스케일을 1, 0.001로 왔다갔다 하는 함수 (매개변수에 UI하위의 게임오브젝트 이름)
     // selectUI는 한번쓰고 버림
@@ -64,6 +66,9 @@ public partial class UIManager : MonoBehaviour
                 break;
             case "defenceUI":
                 SwitchDefenceUI();
+                break;
+            case "endingUI":
+                SwitchEndingUI();
                 break;
         }
     }
@@ -122,6 +127,21 @@ public partial class UIManager : MonoBehaviour
             commonUI.transform.localScale = Vector3.one;
         }
     }
+
+    public void SwitchEndingUI()
+    {
+        Vector3 scale = endingUI.transform.localScale;
+        float minScale = 0.001f;
+        if (scale == Vector3.one)
+        {
+            endingUI.transform.localScale = Vector3.one * minScale;
+        }
+        else if (scale == Vector3.one * minScale)
+        {
+            endingUI.transform.localScale = Vector3.one;
+        }
+    }
+
     #endregion
     //} SwitchUIManager()
 

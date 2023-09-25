@@ -1,10 +1,9 @@
-using Cinemachine;
 using Photon.Pun;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
+
 
 public class ResourceManager : GlobalSingleton<ResourceManager>
 {
@@ -164,7 +163,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
             userRockObject =
                PhotonNetwork.Instantiate(gameObject.name, Vector3.zero, Quaternion.identity);
             userRockObject.SetChildPosition(team1StartPoint, "RockObject");
-            Debug.Log(team1StartPoint);
+
             if (userRockObject.GetComponent<PhotonView>().IsMine == true)
             {
                 CameraManager.Instance.SetRockCamera(userRockObject, team1StartPoint);
@@ -181,17 +180,6 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
                 CameraManager.Instance.SetRockCamera(userRockObject, team2StartPoint);
             }
         }
-        /*if (userRockObject != null)
-        {
-            userRockObject.transform.localScale = Vector3.one * 0.1f;
-        }*/
-        //GameObject rockCamera = FindTopLevelGameObject("RockCamera");
-        //CinemachineVirtualCamera virtualRockCamera = rockCamera.GetComponent<CinemachineVirtualCamera>();
-        //virtualRockCamera.Follow = userRockObject.transform;
-        //virtualRockCamera.LookAt = userRockObject.transform;
-
-
-
         // 팀 1인지 2인지 구별하는 if가 필요합니다
         // 팀2꺼 startPoint 없습니다. 밑은 1번팀꺼입니다
         #region Legacy

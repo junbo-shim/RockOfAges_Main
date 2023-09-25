@@ -10,6 +10,7 @@ public class DefaultRock : RockBase
 
     private void FixedUpdate()
     {
+        // ! PSC Editted
         if (!photonView.IsMine)
         {
             return;
@@ -33,6 +34,7 @@ public class DefaultRock : RockBase
 
     private void Update()
     {
+        // ! PSC Editted
         if (!photonView.IsMine)
         {
             return;

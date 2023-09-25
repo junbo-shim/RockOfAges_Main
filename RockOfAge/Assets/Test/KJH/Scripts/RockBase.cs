@@ -105,6 +105,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     public virtual void Init()
     {
+        // ! PSC Editted
         photonView = GetComponent<PhotonView>();
         if (photonView.IsMine)
         {
@@ -295,6 +296,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //바닥이 없는 상황에서 계산 시작
     protected virtual void CheckFall()
     {
+        // ! PSC Editted
         if (photonView.IsMine)
         {
             if (!Physics.Raycast(rockObject.position, Vector3.down, 1000, Global_PSC.FindLayerToName("Terrains")) && fallCheckCoroutine == null)

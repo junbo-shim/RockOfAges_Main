@@ -66,7 +66,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b02026f6b3dd98f46986ffae4a25e1ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dashPower: 2500
+  dashPower: 300
   useParent: 1
   forward: {x: 0, y: 0, z: 0}
   beforeVelocityZero: 0

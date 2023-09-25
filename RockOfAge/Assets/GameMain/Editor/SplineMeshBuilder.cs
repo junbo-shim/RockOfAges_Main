@@ -228,6 +228,7 @@ public class SplineMeshBuilder : EditorWindow
         //mesh의 구성요소중 vertic과 triangle의 정보를 저장할 공간 생성
         List<Vector3> verts = new List<Vector3>();
         List<int> tris = new List<int>();
+        List<Vector2> uvs = new List<Vector2>();
 
         //triangle의 순서를 표현해줄 offset값
         int offset = 0;
@@ -288,16 +289,20 @@ public class SplineMeshBuilder : EditorWindow
             //list대로 추가한다.
             verts.AddRange(new List<Vector3> { p1, p2, p3, p4 });
             tris.AddRange(new List<int> { t1,t2,t3,t4,t5,t6 });
+            uvs.AddRange(new List<Vector2> {new Vector2(p1.x, p1.z), new Vector2(p2.x, p2.z), new Vector2(p3.x, p3.z), new Vector2(p4.x, p4.z) });
 
+            //uvs.AddRange(new List<Vector2> { new Vector2(0,0), new Vector2(1,0), new Vector2(0,1), new Vector2(1,1) });
         }
 
         //mesh에 넣는다.
         mesh.vertices = verts.ToArray();
         mesh.triangles = tris.ToArray();
+        mesh.uv = uvs.ToArray();
 
         //bound와 normal 재구성
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
+
 
         //mesh 넣는다.
         meshFilter.mesh = mesh;
@@ -317,6 +322,7 @@ public class SplineMeshBuilder : EditorWindow
         Mesh mesh = new Mesh();
         List<Vector3> verts = new List<Vector3>();
         List<int> tris = new List<int>();
+        List<Vector2> uvs = new List<Vector2>();
 
         int offset = 0;
 
@@ -357,12 +363,14 @@ public class SplineMeshBuilder : EditorWindow
 
             verts.AddRange(new List<Vector3> { p1, p2, p3, p4 });
             tris.AddRange(new List<int> { t1, t2, t3, t4, t5, t6 });
+            //uvs.AddRange(new List<Vector2> { new Vector2(0,0), new Vector2(1,0), new Vector2(0,1), new Vector2(1,1) });
 
+            uvs.AddRange(new List<Vector2> {new Vector2(p1.x, p1.z), new Vector2(p2.x, p2.z), new Vector2(p3.x, p3.z), new Vector2(p4.x, p4.z) });
         }
-        
 
-        mesh.vertices = verts.ToArray();
-        mesh.triangles = tris.ToArray();
+        mesh.SetVertices(verts.ToArray());
+        mesh.SetTriangles(tris.ToArray(), 0);
+        mesh.uv = uvs.ToArray();
 
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();

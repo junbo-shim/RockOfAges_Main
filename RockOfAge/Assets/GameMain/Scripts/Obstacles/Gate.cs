@@ -40,6 +40,10 @@ public class Gate : MonoBehaviour, IHitObjectHandler
     // 성문의 root를 통해서 teamHp를 define
     public void DefineTeamHP()
     { 
+        if(CycleManager.cycleManager == null)
+        {
+            return;
+        }
         Transform root = gameObject.transform.root;
         if (root.name == "Team1")
         {

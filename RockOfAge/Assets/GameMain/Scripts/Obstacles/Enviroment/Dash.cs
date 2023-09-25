@@ -6,15 +6,33 @@ public class Dash : MonoBehaviour
 {
 
     [SerializeField]
-    float dashPower = 1;
+    float dashPower = default;
     [SerializeField]
-    Vector3 forward = Vector3.forward;
+    bool useParent = false;
     [SerializeField]
-    bool mustZero = false;
+    Vector3 forward = default;
+    [SerializeField]
+    bool beforeVelocityZero = false;
+    [SerializeField]
+    ForceMode forceMode = ForceMode.Impulse;
+
+    [SerializeField]
+    bool pushShaking = false;
+    [SerializeField]
+    float shakePower = 2f;
+
+    const float SHAKE_TIME = 0.1F;
 
     private void Awake()
     {
-        transform.forward = forward;
+        if(useParent)
+        {
+            transform.forward = transform.parent.forward;
+        }
+        else
+        {
+            transform.forward = forward;
+        }
     }
 
 
@@ -24,11 +42,16 @@ public class Dash : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
             Rigidbody rigidbody = other.GetComponent<Rigidbody>();
-            if (mustZero)
+            if (beforeVelocityZero)
             {
                 rigidbody.velocity = Vector3.zero;
             }
-            rigidbody.AddForce(transform.forward * dashPower, ForceMode.VelocityChange);
+            if (pushShaking)
+            {
+                RockBase rockOrigin = other.GetComponentInParent<RockBase>();
+                StartCoroutine(rockOrigin.CameraShakeRoutine(SHAKE_TIME, shakePower, 3));
+            }
+            rigidbody.AddForce(transform.forward * dashPower, forceMode);
         }
     }
 }

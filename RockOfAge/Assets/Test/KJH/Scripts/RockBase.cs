@@ -16,9 +16,11 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     [SerializeField]
     public RockStatus rockStatus;
     [SerializeField]
-    protected List<Mesh> forms;
+    public FallText fallText;
     [SerializeField]
     protected RockTrail trail;
+    [SerializeField]
+    protected List<Mesh> forms;
 
     //사용자 입력(Y축 제외)
     protected Vector2 playerInput;
@@ -113,6 +115,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         rockMesh = rockObject.GetComponent<MeshFilter>();
         rockCollider = rockObject.GetComponent<MeshCollider>();
         rockRenderer = rockObject.GetComponent<MeshRenderer>();
+        fallText = GetComponentInChildren<FallText>();
 
         rockStatus = new RockStatus(rockStatus);
 
@@ -329,14 +332,16 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     {
         //카메라 정지
         //떨어지면서 메아리 추가
+
         Fall();
         yield return new WaitForSeconds(1f);
+
         //손 생성 애니메이션?
         yield return new WaitForSeconds(1f);
+        fallText.ClearText();
 
         if (rockObject != null)
         {
-
             //되돌리기
             BackCheckPoint();
         }
@@ -437,7 +442,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         if (CycleManager.cycleManager.userState == (int)UserState.ATTACK)
         { 
             CinemachineVirtualCameraBase camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCameraBase;
-            camera.Follow = null;        
+            camera.Follow = null;   
+            fallText.StartFallText();     
         }
     }
     protected virtual void BackCheckPoint()

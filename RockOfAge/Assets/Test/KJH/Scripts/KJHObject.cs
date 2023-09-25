@@ -130,7 +130,7 @@ public class KJHObject : MonoBehaviour
     {
         isFly = true;
         rb.isKinematic = false;
-        rb.AddForce(Vector3.up * Random.Range(2f, 4f), ForceMode.Impulse);
+        rb.AddForce(Vector3.up * Random.Range(2f, 5f), ForceMode.Impulse);
 
         while (true)
         {

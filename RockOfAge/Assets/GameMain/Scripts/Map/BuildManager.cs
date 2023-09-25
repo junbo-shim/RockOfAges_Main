@@ -11,6 +11,7 @@ public class BuildManager : MonoBehaviour
     public static BuildManager instance;
     public ObstacleBase buildTarget = null;
 
+    public KJHObject kjhObject;
     //!!!!!!!!!!!!!!!!!!!!!!!!!테스트 코드
     //해당 정보는 item manager에 저장될 예정??
     //상의 해 봐야함
@@ -142,6 +143,7 @@ public class BuildManager : MonoBehaviour
                         ObstacleBase build = buildTarget.Build(position, rotation);
                         build.name = buildTarget.name + "_" + currCursorGridIndex.z + "_" + currCursorGridIndex.x;
                         SetBitArrays(dragBuildPosition[i], buildTarget.status.Size);
+                        MakePeople(build);
                     }
                     DragEnd();
                 }
@@ -473,6 +475,34 @@ public class BuildManager : MonoBehaviour
             return GetBuildEnable(currCursorGridIndex, buildTarget.status.Size) && GetItemLimitState(1);
         }
 
+    }
+    void MakePeople(ObstacleBase target)
+    {
+        //Vector3 targePposition = target.transform.position;
+        // 장애물 오브젝트 생성
+        Vector3 position;
+        Quaternion rotation;
+        GetViewerPosition(currCursorGridIndex, Quaternion.identity, out position, out rotation);
+        ObstacleBase build = target.Build(position, rotation);
+        build.name = target.name + "_" + currCursorGridIndex.z + "_" + currCursorGridIndex.x;
+        SetBitArrays(currCursorGridIndex, target.status.Size);
+
+        // 2D 스프라이트 오브젝트 생성
+        GameObject kjhObject = new GameObject("KJHObject"); // 빈 게임 오브젝트 생성
+        kjhObject.transform.position = position; // 위치 조정 (원하는 위치로 설정)
+        kjhObject.transform.rotation = rotation; // 회전 조정 (원하는 회전값으로 설정)
+
+        // KJHObject 스크립트 추가
+        KJHObject kjhScript = kjhObject.AddComponent<KJHObject>();
+
+        // 여기에서 KJHObject의 필드 및 설정값을 조정할 수 있음
+        // 예를 들어, kjhScript.rotationSpeed = 20f; // 회전 속도 변경
+
+        // 장애물 오브젝트의 자식으로 설정 (장애물과 함께 삭제되도록)
+        kjhObject.transform.parent = build.transform;
+
+        // 장애물 오브젝트에 연결된 KJHObject 스크립트에도 참조를 저장
+        //build.kjhObject = kjhScript;
     }
 
     bool GetViewerPosition(Vector3Int position, Quaternion rotation, out Vector3 outPosition, out Quaternion outRotation)

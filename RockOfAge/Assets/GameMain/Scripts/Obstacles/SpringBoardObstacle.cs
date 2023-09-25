@@ -103,10 +103,23 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
         {
             return;
         }
+
+        HitReaction();
+
+        currHealth -= damage;
+        if (currHealth <= 0)
+        {
+            Die();
+        }
     }
 
     public void HitReaction()
     {
         throw new System.NotImplementedException();
+    }
+
+    void Die()
+    {
+        Destroy(gameObject);
     }
 }

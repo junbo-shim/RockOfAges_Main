@@ -205,7 +205,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     [Obsolete]
     protected virtual bool IsGround()
     {
-        Collider[] colliders = Physics.OverlapSphere(rockObject.position - Vector3.up * rockHeightHalf, .05f, Global_PSC.FindLayerToName("Terrains"));
+        Collider[] colliders = Physics.OverlapSphere(rockObject.position - Vector3.up * rockHeightHalf, .05f, Global_PSC.FindLayerToName("Terrains")+ Global_PSC.FindLayerToName("Walls"));
 
         if (colliders.Length > 0)
         {
@@ -229,9 +229,21 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             result = CheckGroundOverlap();
         }
         // 0925 홍한범 조건추가
-        if (!isGround && result && CycleManager.cycleManager.userState == (int)UserState.ATTACK)
+        if (!isGround && result)
         {
-            StartCoroutine(CameraShakeRoutine(.1f, 3, 3));
+            if(CycleManager.cycleManager == null)
+            {
+                StartCoroutine(CameraShakeRoutine(.1f, 3, 3));
+            }
+            else
+            {
+                if (CycleManager.cycleManager.userState == (int)UserState.ATTACK)
+                {
+
+                    StartCoroutine(CameraShakeRoutine(.1f, 3, 3));
+                }
+            }
+            
         }
         isGround = result;
 
@@ -242,7 +254,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected virtual bool CheckGroundOverlap()
     {
 
-        Collider[] colliders = Physics.OverlapSphere(rockObject.position - Vector3.up * rockHeightHalf, .05f, Global_PSC.FindLayerToName("Terrains"));
+        Collider[] colliders = Physics.OverlapSphere(rockObject.position - Vector3.up * rockHeightHalf, .05f, Global_PSC.FindLayerToName("Terrains") + Global_PSC.FindLayerToName("Walls"));
         if (colliders.Length > 0)
         {
             return true;
@@ -255,7 +267,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //경사 구조때문에 해당 메서드 사용 권장
     protected virtual bool CheckGroundRay()
     {
-        if (Physics.Raycast(rockObject.position, Vector3.down, out slopeHit, rockHeightHalf + rockHeightHalf * .75f, Global_PSC.FindLayerToName("Terrains")))
+        if (Physics.Raycast(rockObject.position, Vector3.down, out slopeHit, rockHeightHalf + rockHeightHalf * .75f, Global_PSC.FindLayerToName("Terrains") + Global_PSC.FindLayerToName("Walls")))
         {
             return  true;
         }
@@ -438,8 +450,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     protected virtual void Fall()
     {
-        // 0925 홍한범 조건추가
-        if (CycleManager.cycleManager.userState == (int)UserState.ATTACK)
+        if(CycleManager.cycleManager == null || CycleManager.cycleManager.userState == (int)UserState.ATTACK)
         { 
             CinemachineVirtualCameraBase camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCameraBase;
             camera.Follow = null;   
@@ -448,9 +459,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     }
     protected virtual void BackCheckPoint()
     {
-        // 0925 홍한범 조건추가
-        if (CycleManager.cycleManager.userState == (int)UserState.ATTACK)
-        {        
+        if (CycleManager.cycleManager == null || CycleManager.cycleManager.userState == (int)UserState.ATTACK)
+        {
             CinemachineVirtualCameraBase camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCameraBase;
             camera.Follow = rockObject;
             fallCheckCoroutine = null;
@@ -468,7 +478,6 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     {
         HitReaction();
         currHp -= damage;
-        Debug.Log(currHp);
         if (currHp <= 0)
         {
             Die();

@@ -22,6 +22,7 @@ public class RockColliderEvent : MonoBehaviour
     {
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         power = rigidbody.velocity.magnitude;
+        Debug.Log(power);
 
 
         if (parent.IsMove(COLLISION_LIMIT_LOW))
@@ -42,7 +43,8 @@ public class RockColliderEvent : MonoBehaviour
 
     private void AttackWall(Collision collision)
     {
-        if (parent.IsMove(6) && collision.gameObject.layer == LayerMask.NameToLayer("Walls"))
+        Debug.Log(parent.IsMove(2));
+        if (parent.IsMove(2) && collision.gameObject.layer == LayerMask.NameToLayer("Walls"))
         {
             StartCoroutine(parent.CameraShakeRoutine(SHAKE_TIME, power, 3));
             parent.Hit(50);

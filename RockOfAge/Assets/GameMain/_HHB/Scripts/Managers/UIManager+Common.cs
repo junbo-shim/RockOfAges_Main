@@ -27,9 +27,7 @@ public partial class UIManager: MonoBehaviour
     public TextMeshProUGUI playerGold;
     #endregion
 
-
     #region Functions
-
     //{ GetRotationKey()
     // M 1초 누르면 카메라 켜짐
     public void GetRotationKey()
@@ -56,7 +54,6 @@ public partial class UIManager: MonoBehaviour
     }
     //} GetRotationKey()
 
-    //! 서버
     //{ RotateMirror()
     // 미러 카메라를 불러오는 함수
     public void RotateMirror()
@@ -88,13 +85,12 @@ public partial class UIManager: MonoBehaviour
     }
     //} PrintPlayerImg()
 
-    //! 서버
     //{ PrintTeamHP()
     // 팀1 과 팀2의 체력을 출력하는 함수
     public void PrintTeamHP()
     {
-        //team1HpImg.fillAmount = CycleManager.cycleManager.   /teamMaxHp;
-        //team2HpImg.fillAmount = CycleManager.cycleManager.   /teamMaxHp;
+        team1HpImg.fillAmount = CycleManager.cycleManager.team1Hp / 600f;
+        team2HpImg.fillAmount = CycleManager.cycleManager.team2Hp / 600f;
     }
     //} PrintTeamHP()
 

@@ -93,6 +93,7 @@ public static class Global_PSC
         return 1f;
     }
 
+    #region HHB GFUNC
     public static GameObject FindTopLevelGameObject(string name_)
     {
         GameObject[] rootObjs = SceneManager.GetActiveScene().GetRootGameObjects();
@@ -105,5 +106,35 @@ public static class Global_PSC
         }
         return null;
     }
+
+    public static List<GameObject> FindAllTargets(string rootName, string targetName)
+    {
+        GameObject root = FindTopLevelGameObject(rootName);
+        List<GameObject> results = new List<GameObject>();
+
+        if (root != null)
+        {
+            FindAllTargetsRecursive(root.transform, targetName, results);
+        }
+        else
+        {
+            Debug.LogWarning("Root GameObject not found.");
+        }
+        return results;
+    }
+
+    private static void FindAllTargetsRecursive(Transform rootTransform, string targetName, List<GameObject> results)
+    {
+        foreach (Transform childTransform in rootTransform)
+        {
+            GameObject childGameObject = childTransform.gameObject;
+            if (childGameObject.name.StartsWith(targetName))
+            {
+                results.Add(childGameObject);
+            }
+            FindAllTargetsRecursive(childTransform, targetName, results);
+        }
+    }
+    #endregion
 }
 

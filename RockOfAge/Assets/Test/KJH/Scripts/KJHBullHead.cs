@@ -37,7 +37,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     {
         if (attackSound != null)
         {
-            GameObject soundObject = new GameObject("ready");
+            GameObject soundObject = new GameObject("attack1");
             AudioSource audioSource = soundObject.AddComponent<AudioSource>();
             audioSource.clip = attackSound;
             audioSource.Play();
@@ -48,7 +48,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     {
         if (damageSound != null)
         {
-            GameObject soundObject = new GameObject("ready");
+            GameObject soundObject = new GameObject("pain1");
             AudioSource audioSource = soundObject.AddComponent<AudioSource>();
             audioSource.clip = damageSound;
             audioSource.Play();

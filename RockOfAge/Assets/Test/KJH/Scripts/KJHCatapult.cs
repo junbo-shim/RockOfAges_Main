@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
 {
@@ -18,6 +17,7 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
     public AudioClip rotateSound;
     public AudioClip throwingSound;
     public AudioClip relodingSound;
+    public AudioClip DeadSound;
 
     private Quaternion initialRotation; // 투석기의 초기 로테이션
     private bool canThrowRock = true; // 돌을 던질 수 있는 상태인지 여부를 나타내는 변수
@@ -56,7 +56,6 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
 
                 // 투석기의 초기 로테이션을 기준으로 회전
                 targetRotation *= initialRotation;
-
                 //x와 z 로테이션을 초기 로테이션으로 고정
                 targetRotation.eulerAngles = new Vector3(initialRotation.eulerAngles.x, targetRotation.eulerAngles.y, initialRotation.eulerAngles.z);
 
@@ -64,7 +63,7 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
                 if(!audioSource.isPlaying)
                 {
-                    audioSource.clip = relodingSound;
+                    audioSource.clip = rotateSound;
                     audioSource.Play();
                 }
                 // 투석기와 돌 사이의 각도 계산
@@ -132,11 +131,13 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
     }
     IEnumerator DestroyRock(GameObject rock)
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         Destroy(rock);
     }
     protected override void Dead() 
     {
+        audioSource.clip = DeadSound;
+        audioSource.Play();
         Destroy(gameObject);
     }
 

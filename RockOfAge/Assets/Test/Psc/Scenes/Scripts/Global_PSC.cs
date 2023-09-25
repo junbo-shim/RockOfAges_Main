@@ -9,7 +9,9 @@ public static class Global_PSC
     public static void ShakeFreeLookCamera(this Camera mainCamera, float AmplitudeGain, float FrequencyGain)
     {
 
-        CinemachineFreeLook camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineFreeLook;
+        CinemachineBrain camerabrsin = mainCamera.GetComponent<CinemachineBrain>();
+        if (camerabrsin == null) return;
+            CinemachineFreeLook camera = camerabrsin.ActiveVirtualCamera as CinemachineFreeLook;
 
         camera.GetRig(0).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = AmplitudeGain;
         camera.GetRig(1).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = AmplitudeGain;

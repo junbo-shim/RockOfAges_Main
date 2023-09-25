@@ -83,6 +83,8 @@ MonoBehaviour:
   checkPoint: {fileID: 0}
   rockStatus: {fileID: 11400000, guid: 7ba169556656322419d4ac5f4677b281, type: 2}
   forms: []
+  trail: {fileID: 0}
+  isGround: 0
   isDebuffed: 0
   debuffJumpForce: 0
 --- !u!1 &4907383526076117942

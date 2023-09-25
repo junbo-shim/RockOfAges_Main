@@ -11,8 +11,8 @@ public class SplineMeshBuilder : EditorWindow
 
     //build시에 사용할 material
     //public List<Material> materials = default;
-    public Material materialRoad;
-    public Material materialWall;
+    public Material materialRoad = default;
+    public Material materialWall = default;
     //spline을 통해서 만들어낼 side의 정점
     List<Vector3> rightPoint = default;
     List<Vector3> leftPoint = default;

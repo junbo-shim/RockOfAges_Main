@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Explosive : MonoBehaviour
+public class Explosive : HoldObstacleBase
 {
     public LayerMask Rock; // 감지할 레이어 설정
     public ParticleSystem explosionEffectPrefab;
@@ -12,6 +12,10 @@ public class Explosive : MonoBehaviour
 
     private bool exploded = false;
 
+    private void Start()
+    {
+        Init();
+    }
     private void OnCollisionEnter(Collision collision)
     {
         if (!exploded && collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
@@ -37,7 +41,7 @@ public class Explosive : MonoBehaviour
             }
         }
 
-        Destroy(gameObject);
+        //Destroy(gameObject);
 
     }
 }

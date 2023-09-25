@@ -11,8 +11,8 @@ public class SplineMeshBuilder : EditorWindow
 
     //build시에 사용할 material
     //public List<Material> materials = default;
-    public Material materialRoad;
-    public Material materialWall;
+    public Material materialRoad = default;
+    public Material materialWall = default;
     //spline을 통해서 만들어낼 side의 정점
     List<Vector3> rightPoint = default;
     List<Vector3> leftPoint = default;
@@ -71,8 +71,8 @@ public class SplineMeshBuilder : EditorWindow
 
         // Display the list of materials.
         EditorGUILayout.LabelField("Materials");
-        EditorGUILayout.ObjectField(materialRoad, typeof(Material), false);
-        EditorGUILayout.ObjectField(materialWall, typeof(Material), false);
+        materialRoad = EditorGUILayout.ObjectField(materialRoad, typeof(Material), true) as Material;
+        materialWall = EditorGUILayout.ObjectField(materialWall, typeof(Material), true) as Material;
 
         // Add a button to clear the list.
         /*if (GUILayout.Button("Clear List"))

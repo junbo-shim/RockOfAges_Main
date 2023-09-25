@@ -1,3 +1,4 @@
+
 using Photon.Pun;
 using System.Collections.Generic;
 using TMPro;
@@ -103,7 +104,6 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
             //Debug.Log(id_);
             if (unitResources.ContainsKey(id_))
             {
-                //Debug.Log(unitResources[id_]);
                 return unitResources[id_];
             }
             else { Debug.Log("unitResource Error"); return null; }
@@ -123,7 +123,6 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         if (id_ >= 0 && id_ <= 10)
         {
             coolDown_ = rock.rockStatus.Cooldown;
-            //Debug.Log(coolDown_);
             return coolDown_;
         }
         else { Debug.Log("Failed To Get CoolDown"); return coolDown_ = 0f; }
@@ -266,14 +265,8 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
 
     public TextMeshProUGUI FindUnitTextById(int id_)
     {
-        //Debug.Log("FindUnitTextByID 들어옴");
         List<GameObject> textObjs = new List<GameObject>();
-        textObjs = FindAllTargets("DefenceUI", "unitSelect");
-
-        //foreach (GameObject objs in textObjs) 
-        //{
-        //    Debug.LogFormat("{0}", objs.name);
-        //}
+        textObjs = Global_PSC.FindAllTargets("DefenceUI", "unitSelect");
 
         GameObject targetText = default;
 
@@ -284,23 +277,14 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
                 targetText = textObj;
             }
         }
-        //Debug.LogFormat("{0}",targetText);
-
         TextMeshProUGUI unitCountTxt = targetText.GetComponentInChildren<TextMeshProUGUI>();
         return unitCountTxt;
     }
 
     public GameObject FindUnitGameObjById(int id_)
     {
-       // Debug.Log("FindUnitGameObjById 들어옴");
         List<GameObject> objs = new List<GameObject>();
-        objs = FindAllTargets("DefenceUI", "unitSelect");
-
-        //foreach (GameObject obj in objs)
-        //{
-        //    Debug.LogFormat("{0}", obj.name);
-        //}
-
+        objs = Global_PSC.FindAllTargets("DefenceUI", "unitSelect");
         GameObject targetObj = default;
 
         foreach (var obj in objs)
@@ -310,8 +294,6 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
                 targetObj = obj;
             }
         }
-        //Debug.LogFormat("{0}", targetObj);
         return targetObj;
     }
-    #endregion
 }

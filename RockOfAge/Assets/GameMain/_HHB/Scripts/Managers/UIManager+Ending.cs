@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
+using Photon.Pun;
 
 // endingUI
 public partial class UIManager : MonoBehaviour
@@ -41,56 +42,134 @@ public partial class UIManager : MonoBehaviour
     public Image player3userImg;
     public Image player4userImg;
     #endregion
+
+    // 승자 - 왕관, 패자 - 체스
+    public Image crownImg;
+    public Image chessImg;
+
+
     #endregion
 
     #region Functions
 
-    // string을 넣으면 뒤에 숫자만 받아오는 함수
-    public int ConvertStringToInt(string player, out int playerNumber)
-    {
-        string str = player;
-        string result = Regex.Replace(str, @"[^0-9]", "");
-        playerNumber = int.Parse(result);
-        return playerNumber;
+    public void PrintResult()
+    { 
+    
+    
     }
+    //// string을 넣으면 뒤에 숫자만 받아오는 함수
+    //public int ConvertStringToInt(string player, out int playerNumber)
+    //{
+    //    string str = player;
+    //    string result = Regex.Replace(str, @"[^0-9]", "");
+    //    playerNumber = int.Parse(result);
+    //    return playerNumber;
+    //}
 
-    public void PrintPlayerName(string player)
+
+    //public void PrintPlayerName(string player)
+    //{
+    //    int playerNumber;
+    //    ConvertStringToInt(player, out playerNumber);
+    //    switch (playerNumber) 
+    //    {
+    //        case 1:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //        case 2:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //        case 3:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""]; 
+    //            break;
+    //        case 4:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //    }
+    //}
+
+    //public void PrintPlayerScore(string player)
+    //{
+    //    int playerNumber;
+    //    ConvertStringToInt(player, out playerNumber);
+    //    switch (playerNumber)
+    //    {
+    //        case 1:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //        case 2:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //        case 3:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""]; 
+    //            break;
+    //        case 4:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //    }
+    //}
+
+    //public void PrintPlayerIcon(string player)
+    //{
+    //    int playerNumber;
+    //    ConvertStringToInt(player, out playerNumber);
+    //    switch (playerNumber)
+    //    {
+    //        case 1:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //        case 2:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //        case 3:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""]; 
+    //            break;
+    //        case 4:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //    }
+
+    //}
+
+    //public void PrintUserImg(string player)
+    //{
+    //    int playerNumber;
+    //    ConvertStringToInt(player, out playerNumber);
+    //    switch (playerNumber)
+    //    {
+    //        case 1:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //        case 2:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //        case 3:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""]; 
+    //            break;
+    //        case 4:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //    }
+
+    //}
+
+    public void PrintCrownOrChess()
     {
-        int playerNumber;
-        ConvertStringToInt(player, out playerNumber);
-        switch (playerNumber) 
+        int result = CycleManager.cycleManager.resultState;
+        int win = (int)Result.WIN;
+        int lose = (int)Result.LOSE;
+        Vector3 scale = Vector3.one;
+        if (result == win)
         {
-            case 1:
-                //player1NameTxt.text = 
-                break;
-            case 2:
-                //player2NameTxt.text = 
-                break;
-            case 3:
-                //player3NameTxt.text = 
-                break;
-            case 4:
-                //player4NameTxt.text = 
-                break;
+            crownImg.transform.localScale = scale;  
+        }
+        else if (result == lose)
+        { 
+            chessImg.transform.localScale = scale;
         }
     }
 
-    public void PrintPlayerScore(string player)
-    { 
-    
-    }
 
-    public void PrintPlayerIcon(string player)
-    { 
-    
-    
-    }
-
-    public void PrintUserImg(string player)
-    { 
-    
-    
-    }
     #endregion
 
     //----------------- 준보형 이거 형이 뜯어가세요

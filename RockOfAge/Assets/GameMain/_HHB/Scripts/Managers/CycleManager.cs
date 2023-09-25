@@ -15,7 +15,7 @@ public enum RockState
 
 public enum Result
 { 
-    WIN = 0, LOSE = 1
+    WIN = 0, LOSE = 1, NOTDEFINED = 2
 }
 
 
@@ -26,11 +26,12 @@ public class CycleManager : MonoBehaviour
     #region 변수
     public int userState;
     public int rockState;
+    public int resultState;
     // 공격에서 공이 선택됨 bool
     public bool attackRockSelected = false;
     // team1 team2 체력
-    public float team1Hp = 1000f;
-    public float team2Hp = 1000f;
+    public float team1Hp = 600f;
+    public float team2Hp = 600f;
     ////! 서버 player gold
     //public int gold = 1000;
     // enter check bool 나중에 좋은 방법으로 바꾸기
@@ -54,6 +55,7 @@ public class CycleManager : MonoBehaviour
         cycleManager = this;
         userState = (int)UserState.UNITSELECT;
         rockState = (int)RockState.ROCKSELECT;
+        resultState = (int)Result.NOTDEFINED;
 
         // ! Photon
         dataContainer = NetworkManager.Instance.myDataContainer;
@@ -72,7 +74,10 @@ public class CycleManager : MonoBehaviour
         // ! Photon
         if (dataContainerView.IsMine == true) 
         {
-            GameCycle();
+            if (resultState == (int)Result.NOTDEFINED)
+            { 
+                GameCycle();
+            }
         }
     }
 
@@ -191,13 +196,13 @@ public class CycleManager : MonoBehaviour
             // 소환시간초과시 C 누르면
             if (Input.GetKeyDown(KeyCode.C))
             {
-                ChangeStateDefenceToAttack();
+                ChangeCycleDefenceToAttack();
             }
             else { return; }
         }
     }
 
-    public void ChangeStateDefenceToAttack()
+    public void ChangeCycleDefenceToAttack()
     {
         int userRock = ItemManager.itemManager.userRockChoosed[0];
         if (userRock != -1 && userState == (int)UserState.DEFENCE && rockState == (int)RockState.ROCKCREATED)
@@ -206,6 +211,8 @@ public class CycleManager : MonoBehaviour
             userState = (int)UserState.ATTACK;
             rockState = (int)RockState.ROCKSELECT;
             ItemManager.itemManager.userRockChoosed[0] = -1;
+            UIManager.uiManager.SwitchUIManager("attackUI");
+            UIManager.uiManager.SwitchUIManager("defenceUI");
         }
     }
 
@@ -222,21 +229,31 @@ public class CycleManager : MonoBehaviour
             rockState = (int)RockState.ROCKCREATED;        
         }
     }
-
-
-
-
-
     #endregion
 
 
     #region GameEndCycle
-    //{ UpdateGameEndCycle()
-    public void UpdateGameEndCycle()
+    public void DefineWinner()
+    { 
+        userState = (int)UserState.ENDING;
+        resultState = (int)Result.WIN;
+        if (userState == (int)UserState.ENDING && resultState != (int)Result.NOTDEFINED)
+        {
+            CameraManager.Instance.TurnOnGameEndCamera();
+            UIManager.uiManager.ShutDownAllUIExpectEnding();
+            UIManager.uiManager.PrintResult();
+        }
+    }
+
+    public void DefineLoser()
     {
-        if (userState == (int)UserState.ENDING)
-        { 
-        
+        userState = (int)UserState.ENDING;
+        resultState = (int)Result.LOSE;
+        if (userState == (int)UserState.ENDING && resultState != (int)Result.NOTDEFINED)
+        {
+            CameraManager.Instance.TurnOnGameEndCamera();
+            UIManager.uiManager.ShutDownAllUIExpectEnding();
+            UIManager.uiManager.PrintResult();
         }
     }
     //} UpdateGameEndCycle()
@@ -261,8 +278,8 @@ public class CycleManager : MonoBehaviour
 
     public void AddCullingMask(string team_)
     {
-        GameObject playerObj = ResourceManager.Instance.FindTopLevelGameObject("PlayerCamera");
-        GameObject enemyObj = ResourceManager.Instance.FindTopLevelGameObject("EnemyCamera");
+        GameObject playerObj = Global_PSC.FindTopLevelGameObject("PlayerCamera");
+        GameObject enemyObj = Global_PSC.FindTopLevelGameObject("EnemyCamera");
         Camera playerCam = playerObj.GetComponent<Camera>();
         Camera enemyCam = enemyObj.GetComponent<Camera>();
 
@@ -351,25 +368,26 @@ public class CycleManager : MonoBehaviour
         }
     }
 
-
     public void AddLayer(string team_)
     {
         #region mainCameras
-        // ! Photon
-        GameObject[] playerCameras = new GameObject[6];
-        playerCameras[0] = ResourceManager.Instance.FindTopLevelGameObject("PlayerCamera");
-        playerCameras[1] = ResourceManager.Instance.FindTopLevelGameObject("TopViewCamera");
-        playerCameras[2] = ResourceManager.Instance.FindTopLevelGameObject("ClickedTopViewCamera");
-        playerCameras[3] = ResourceManager.Instance.FindTopLevelGameObject("RockCamera");
-        playerCameras[4] = ResourceManager.Instance.FindTopLevelGameObject("GameEndCamera");
-        playerCameras[5] = ResourceManager.Instance.FindTopLevelGameObject("SelectCamera");
+        GameObject[] playerCameras = new GameObject[7];
+        playerCameras[0] = Global_PSC.FindTopLevelGameObject("PlayerCamera");
+        playerCameras[1] = Global_PSC.FindTopLevelGameObject("TopViewCamera");
+        playerCameras[2] = Global_PSC.FindTopLevelGameObject("ClickedTopViewCamera");
+        playerCameras[3] = Global_PSC.FindTopLevelGameObject("RockCamera");
+        playerCameras[4] = Global_PSC.FindTopLevelGameObject("SelectCamera");
+        // 4,5,6 추가됨
+        playerCameras[4] = Global_PSC.FindTopLevelGameObject("GameEndCameraTeam1"); // team1 성문
+        playerCameras[5] = Global_PSC.FindTopLevelGameObject("GameEndCameraTeam2"); // tema2 성문
+        playerCameras[6] = Global_PSC.FindTopLevelGameObject("GameEndResultCamera"); // 게임 엔드 카메라
         #endregion
 
         #region subCameras
         GameObject[] enemyCameras = new GameObject[3];
-        enemyCameras[0] = ResourceManager.Instance.FindTopLevelGameObject("EnemyCamera");
-        enemyCameras[1] = ResourceManager.Instance.FindTopLevelGameObject("EnemyRockCamera");
-        enemyCameras[2] = ResourceManager.Instance.FindTopLevelGameObject("CastleViewCamera");
+        enemyCameras[0] = Global_PSC.FindTopLevelGameObject("EnemyCamera");
+        enemyCameras[1] = Global_PSC.FindTopLevelGameObject("EnemyRockCamera");
+        // 2번빠짐
         #endregion
 
         foreach (var playerCamera in playerCameras)

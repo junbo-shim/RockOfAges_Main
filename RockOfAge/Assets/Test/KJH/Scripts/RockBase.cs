@@ -229,7 +229,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             result = CheckGroundOverlap();
         }
         // 0925 홍한범 조건추가
-        if (!isGround && result && CycleManager.cycleManager.userState == (int)UserState.ATTACK)
+        if (!isGround && result)
         {
             StartCoroutine(CameraShakeRoutine(.1f, 3, 3));
         }
@@ -372,7 +372,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             }
         }
 
-        //Debug.Log(hitObject);
+        Debug.Log(hitObject);
         foreach (ContactPoint contact in collision.contacts)
         {
             //Debug.Log(contact.thisCollider.transform.parent.gameObject + "/"+ gameObject);
@@ -380,7 +380,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             {
 
                 hitObject.Hit((int)GetDamageValue());
-                //Debug.Log(GetDamageValue());
+                Debug.Log(GetDamageValue());
                 break;
 
                 /* // 충돌 지점의 법선 벡터와 gameobject의 진행 방향을 계산합니다.

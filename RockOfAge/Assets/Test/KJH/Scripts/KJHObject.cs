@@ -21,6 +21,9 @@ public class KJHObject : MonoBehaviour
     private Quaternion originalCameraRotation; // 카메라의 초기 회전값 저장
     private bool cameraRotationStopped = false; // 카메라 회전 멈춤 상태를 나타내는 변수
     private bool isFly = false; // 날아가는 상태 여부
+    private bool isUnable = false;
+
+    public BoxCollider boxCollider;
 
     private void Awake()
     {
@@ -31,6 +34,7 @@ public class KJHObject : MonoBehaviour
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         sr.sprite = character[index];
         rb = GetComponent<Rigidbody>();
+        boxCollider = GetComponent<BoxCollider>();
 
         // character 리스트를 비워줌
         character.Clear();
@@ -116,13 +120,22 @@ public class KJHObject : MonoBehaviour
             jumpAndFall = StartCoroutine(BlowAway());
             cameraRotationStopped = true; // 카메라 회전 멈춤 상태 설정
         }
-
+        
         if (isFly && other.gameObject.layer == LayerMask.NameToLayer("Terrains") && rb.velocity.y < 0)
         {
             rb.isKinematic = true;
             StopAllCoroutines();
             transform.rotation = Quaternion.Euler(90, 0, Random.Range(0, 180));
             Destroy(gameObject, 2f);
+        }
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!isUnable && collision.gameObject.layer == LayerMask.NameToLayer("Terrains"))
+        {
+            boxCollider.isTrigger = true;
+            isUnable = true;
+            rb.isKinematic = true;
         }
     }
 

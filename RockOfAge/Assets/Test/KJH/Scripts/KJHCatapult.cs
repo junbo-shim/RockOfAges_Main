@@ -22,7 +22,6 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
     void Start()
     {
         Init();
-
         animator = GetComponent<Animator>();
         // 투석기의 초기 로테이션을 저장합니다.
         initialRotation = transform.rotation;
@@ -126,10 +125,19 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
 
     public void Hit(int damage)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("맞았는가");
+        currHealth -= damage;
+        if (currHealth <= 0)
+        {
+           Die();
+        }
     }
 
-    public void HitReaction()
+    public void Die()
+    {
+        Destroy(gameObject);
+    }
+public void HitReaction()
     {
         throw new System.NotImplementedException();
     }

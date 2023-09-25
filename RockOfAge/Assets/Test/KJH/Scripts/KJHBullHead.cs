@@ -21,6 +21,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
 
     void Start()
     {
+        Init();
         originalPosition = transform.position; // 시작 시 원래 위치 저장
 
         animator = GetComponent<Animator>(); // Animator 컴포넌트 가져오기
@@ -138,34 +139,34 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
                 float forceMagnitude = GetComponent<Rigidbody>().mass * chargeSpeed;
                 rockRigidbody.AddForce(forceDirection * forceMagnitude, ForceMode.Impulse);
             }
-            Debug.Log(collision.contacts[0].thisCollider);
+            //Debug.Log(collision.contacts[0].thisCollider);
            
                 // 몸통이 아닌 다른 부분에 충돌했을 때의 처리
                 Debug.Log("어딘가에 충돌");
                 animator.SetTrigger("Attack");
             
         }
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
-        {
-            Debug.Log("바위와 충돌: " + collision.gameObject.name);
+        //if (collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
+        //{
+        //    Debug.Log("바위와 충돌: " + collision.gameObject.name);
 
 
           
-            Debug.Log(collision.contacts[0].thisCollider);
-            // 충돌한 콜라이더가 몸통인지 확인
-            if (collision.contacts[0].thisCollider.CompareTag("BullBody"))
-            {
-                // 몸통에 충돌했을 때 모루 황소를 죽이는 코드를 여기에 추가하세요.
-                Debug.Log("몸통에 충돌");
-                Die();
-            }
-            else
-            {
-                // 몸통이 아닌 다른 부분에 충돌했을 때의 처리
-                Debug.Log("어딘가에 충돌");
-                animator.SetTrigger("Attack");
-            }
-        }
+        //    Debug.Log(collision.contacts[0].thisCollider);
+        //    // 충돌한 콜라이더가 몸통인지 확인
+        //    if (collision.contacts[0].thisCollider.CompareTag("BullBody"))
+        //    {
+        //        // 몸통에 충돌했을 때 모루 황소를 죽이는 코드를 여기에 추가하세요.
+        //        Debug.Log("몸통에 충돌");
+        //        Die();
+        //    }
+        //    else
+        //    {
+        //        // 몸통이 아닌 다른 부분에 충돌했을 때의 처리
+        //        Debug.Log("어딘가에 충돌");
+        //        animator.SetTrigger("Attack");
+        //    }
+        //}
     }
 
     void OnDrawGizmos()
@@ -206,7 +207,12 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     }
     public void Hit(int damage)
     {
-        // 아직 구현되지 않음
+        Debug.Log("맞았는가");
+        currHealth -= damage;
+        if (currHealth <= 0)
+        {
+            Die();
+        }
     }
 
     public void HitReaction()

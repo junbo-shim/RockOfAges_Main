@@ -12,7 +12,11 @@ public class KJHObject : MonoBehaviour
 
     [SerializeField]
     private float flyAwaySpeed = 5f; // 날아가는 속도
+                                     
+    [SerializeField]                    //스프라이트에 대한 사운드를 설정합니다.
+    private AudioClip[] characterSounds;
 
+    private AudioSource audioSource; // 이 스크립트에서 사용할 AudioSource
     private bool isHighJump; // 고점프 상태 여부를 나타내는 불리언 변수
     private Coroutine jumpCoroutine; // 점프 코루틴을 저장하기 위한 변수
     private Coroutine jumpAndFall; // 점프 후 낙하 코루틴
@@ -21,6 +25,9 @@ public class KJHObject : MonoBehaviour
     private Quaternion originalCameraRotation; // 카메라의 초기 회전값 저장
     private bool cameraRotationStopped = false; // 카메라 회전 멈춤 상태를 나타내는 변수
     private bool isFly = false; // 날아가는 상태 여부
+    private bool isUnable = false;
+
+    public BoxCollider boxCollider;
 
     private void Awake()
     {
@@ -31,6 +38,9 @@ public class KJHObject : MonoBehaviour
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         sr.sprite = character[index];
         rb = GetComponent<Rigidbody>();
+        boxCollider = GetComponent<BoxCollider>();
+        // AudioSource 컴포넌트를 가져와서 참조
+        audioSource = GetComponent<AudioSource>();
 
         // character 리스트를 비워줌
         character.Clear();
@@ -111,12 +121,16 @@ public class KJHObject : MonoBehaviour
             {
                 StopCoroutine(jumpCoroutine);
             }
+            // 랜덤한 스프라이트에 대한 랜덤한 사운드 재생
+            int characterIndex = Random.Range(0, characterSounds.Length);
+            PlayCharacterSound(characterIndex);
+
 
             // 카메라를 멈추고 점프를 멈추고 z축으로 계속 회전하는 코루틴 시작
             jumpAndFall = StartCoroutine(BlowAway());
             cameraRotationStopped = true; // 카메라 회전 멈춤 상태 설정
         }
-
+        
         if (isFly && other.gameObject.layer == LayerMask.NameToLayer("Terrains") && rb.velocity.y < 0)
         {
             rb.isKinematic = true;
@@ -125,12 +139,28 @@ public class KJHObject : MonoBehaviour
             Destroy(gameObject, 2f);
         }
     }
-
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!isUnable && collision.gameObject.layer == LayerMask.NameToLayer("Terrains"))
+        {
+            boxCollider.isTrigger = true;
+            isUnable = true;
+            rb.isKinematic = true;
+        }
+    }
+    private void PlayCharacterSound(int characterIndex)
+    {
+        if (characterIndex >= 0 && characterIndex < characterSounds.Length)
+        {
+            audioSource.clip = characterSounds[characterIndex];
+            audioSource.Play();
+        }
+    }
     IEnumerator BlowAway()
     {
         isFly = true;
         rb.isKinematic = false;
-        rb.AddForce(Vector3.up * Random.Range(2f, 4f), ForceMode.Impulse);
+        rb.AddForce(Vector3.up * Random.Range(2f, 5f), ForceMode.Impulse);
 
         while (true)
         {

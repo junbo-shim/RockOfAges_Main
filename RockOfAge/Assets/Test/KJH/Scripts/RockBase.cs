@@ -384,7 +384,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             }
         }
 
-        //Debug.Log(hitObject);
+        Debug.Log(hitObject);
         foreach (ContactPoint contact in collision.contacts)
         {
             //Debug.Log(contact.thisCollider.transform.parent.gameObject + "/"+ gameObject);
@@ -392,7 +392,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             {
 
                 hitObject.Hit((int)GetDamageValue());
-                //Debug.Log(GetDamageValue());
+                Debug.Log(GetDamageValue());
                 break;
 
                 /* // 충돌 지점의 법선 벡터와 gameobject의 진행 방향을 계산합니다.

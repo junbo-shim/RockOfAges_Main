@@ -1,4 +1,3 @@
-using Cinemachine;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -87,7 +86,6 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
             //Debug.Log(id_);
             if (unitResources.ContainsKey(id_))
             {
-                //Debug.Log(unitResources[id_]);
                 return unitResources[id_];
             }
             else { Debug.Log("unitResource Error"); return null; }
@@ -107,7 +105,6 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         if (id_ >= 0 && id_ <= 10)
         {
             coolDown_ = rock.rockStatus.Cooldown;
-            //Debug.Log(coolDown_);
             return coolDown_;
         }
         else { Debug.Log("Failed To Get CoolDown"); return coolDown_ = 0f; }
@@ -136,93 +133,16 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     {
         int id = ItemManager.itemManager.userRockChoosed[0];
         GameObject gameObject = GetGameObjectByID(id);
-        GameObject team1 = FindTopLevelGameObject("Team1");
+        GameObject team1 = Global_PSC.FindTopLevelGameObject("Team1");
         GameObject userRock = Instantiate(gameObject, team1.transform);
-        // 팀 1인지 2인지 구별하는 if가 필요합니다
-        // 팀2꺼 startPoint 없습니다. 밑은 1번팀꺼입니다
-        //Transform motherRock = userRock.transform;
-        //Transform childRock = motherRock.Find("RockObject");
         Vector3 startPointTransform = new Vector3(111.55f, 31.21f, 120f);
-        //Vector3 cameraTransform = new Vector3(111.55f, 31.21f, 107.11f);
-        //childRock.transform.position = startPointTransform;
-        //Debug.LogFormat("스타트 포인트 : {0}",startPointTransform);
-        //Debug.LogFormat("유저 락 포지션 : {0}",userRock.transform.position);
-        ////GameObject rockCamera = FindTopLevelGameObject("RockCamera");
-        //GameObject rockCamera = FindTopLevelGameObject("RockCamera");
-        ////CinemachineVirtualCamera virtualRockCamera = rockCamera.GetComponent<CinemachineVirtualCamera>();
-        //CinemachineFreeLook virtualRockCamera = rockCamera.GetComponent<CinemachineFreeLook>();
-        //CinemachineComposer composer = virtualRockCamera.GetRig(0).GetComponent<CinemachineComposer>();
-        //virtualRockCamera.transform.position = cameraTransform;
-        //virtualRockCamera.Follow = childRock.transform;
-        //virtualRockCamera.LookAt = childRock.transform;
         CameraManager.Instance.SetRockCamera(userRock, startPointTransform);
-    }
-
-
-
-
-    #region 검색용 함수
-    public GameObject FindTopLevelGameObject(string name_)
-    {
-        GameObject[] rootObjs = SceneManager.GetActiveScene().GetRootGameObjects();
-        foreach (GameObject obj in rootObjs) 
-        {
-            if (obj.name == name_)
-            {
-                return obj;
-            }
-        }
-        return null;
-    }
-
-    public List<GameObject> FindAllTargets(string rootName, string targetName)
-    {
-        //Debug.Log("FindAllTargets 들어옴");
-        GameObject root = FindTopLevelGameObject(rootName);
-        List<GameObject> results = new List<GameObject>();
-
-        if (root != null)
-        {
-            FindAllTargetsRecursive(root.transform, targetName, results);
-        }
-        else
-        {
-            Debug.LogWarning("Root GameObject not found.");
-        }
-
-        //foreach (GameObject obj in results)
-        //{
-        //    Debug.LogFormat("result : {0}",obj);
-        //}
-
-        return results;
-    }
-
-    private void FindAllTargetsRecursive(Transform rootTransform, string targetName, List<GameObject> results)
-    {
-        foreach (Transform childTransform in rootTransform)
-        {
-            GameObject childGameObject = childTransform.gameObject;
-            if (childGameObject.name.StartsWith(targetName))
-            {
-                results.Add(childGameObject);
-            }
-
-            FindAllTargetsRecursive(childTransform, targetName, results);
-        }
-
     }
 
     public TextMeshProUGUI FindUnitTextById(int id_)
     {
-        //Debug.Log("FindUnitTextByID 들어옴");
         List<GameObject> textObjs = new List<GameObject>();
-        textObjs = FindAllTargets("DefenceUI", "unitSelect");
-
-        //foreach (GameObject objs in textObjs) 
-        //{
-        //    Debug.LogFormat("{0}", objs.name);
-        //}
+        textObjs = Global_PSC.FindAllTargets("DefenceUI", "unitSelect");
 
         GameObject targetText = default;
 
@@ -233,23 +153,14 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
                 targetText = textObj;
             }
         }
-        //Debug.LogFormat("{0}",targetText);
-
         TextMeshProUGUI unitCountTxt = targetText.GetComponentInChildren<TextMeshProUGUI>();
         return unitCountTxt;
     }
 
     public GameObject FindUnitGameObjById(int id_)
     {
-       // Debug.Log("FindUnitGameObjById 들어옴");
         List<GameObject> objs = new List<GameObject>();
-        objs = FindAllTargets("DefenceUI", "unitSelect");
-
-        //foreach (GameObject obj in objs)
-        //{
-        //    Debug.LogFormat("{0}", obj.name);
-        //}
-
+        objs = Global_PSC.FindAllTargets("DefenceUI", "unitSelect");
         GameObject targetObj = default;
 
         foreach (var obj in objs)
@@ -259,8 +170,6 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
                 targetObj = obj;
             }
         }
-        //Debug.LogFormat("{0}", targetObj);
         return targetObj;
     }
-    #endregion
 }

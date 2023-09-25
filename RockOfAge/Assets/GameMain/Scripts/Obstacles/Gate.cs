@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,18 +16,48 @@ public class Gate : MonoBehaviour, IHitObjectHandler
 
     [Range(0, GATE_MAX_HP)]
     [SerializeField]
-    private float gateHP = GATE_MAX_HP;
+    //private float gateHP = GATE_MAX_HP;
+    //{ 0924 í™í•œë²”
+    // ê²Œì´íŠ¸ì˜ ì²´ë ¥ì„ ë°›ì•„ì˜´
+    private float gateHP = default;
+    //} 0924 í™í•œë²”
 
-    private void Awake()
+    //{ 0924 í™í•œë²”
+    // Awake -> Start
+    private void Start()
     {
         gateCollider = transform.Find("DoorCollider");
+        //{ 0924 í™í•œë²”
+        DefineTeamHP();
+        //} 0924 í™í•œë²”
         ChangePhase();
     }
+    //} 0924 í™í•œë²”
+
+
+    //{ 0924 í™í•œë²”
+    //{ UpdateTeamHP()
+    // ì„±ë¬¸ì˜ rootë¥¼ í†µí•´ì„œ teamHpë¥¼ define
+    public void DefineTeamHP()
+    { 
+        Transform root = gameObject.transform.root;
+        if (root.name == "Team1")
+        {
+            gateHP = CycleManager.cycleManager.team1Hp;
+        }
+        else if (root.name == "Team2")
+        {
+            gateHP = CycleManager.cycleManager.team2Hp;
+        }
+    }
+    //} UpdateTeamHP()
+    //} 0924 í™í•œë²”
+
 
     void ChangePhase()
     {
-        GatePhase prePhase = currPhase;
 
+        GatePhase prePhase = currPhase;
         if (gateHP == GATE_MAX_HP)
         {
             currPhase = GatePhase.NORMAL;
@@ -45,6 +74,7 @@ public class Gate : MonoBehaviour, IHitObjectHandler
         {
             currPhase = GatePhase.DESTROY;
             gateCollider.gameObject.SetActive(false);
+            CameraManager.Instance.ShowBreakDoor(this.gameObject);
         }
 
         if (prePhase != currPhase)
@@ -52,23 +82,52 @@ public class Gate : MonoBehaviour, IHitObjectHandler
             gateSkin[(int)prePhase].SetActive(false);
             gateSkin[(int)currPhase].SetActive(true);
         }
-
     }
+
+    //{ 0924 í™í•œë²”
+    //{PrintHP()
+    // ì²´ë ¥ ê¹ì¸ë§Œí¼ ì¶œë ¥
+    //[PunRPC]
+    public void PrintHP(int damge)
+    {
+        Transform root = gameObject.transform.root;
+        if (root.name == "Team1")
+        {
+            CycleManager.cycleManager.team1Hp -= damge;
+            gateHP = CycleManager.cycleManager.team1Hp;
+        }
+        else if (root.name == "Team2")
+        {
+            CycleManager.cycleManager.team2Hp -= damge;
+            gateHP = CycleManager.cycleManager.team2Hp;
+        }
+        UIManager.uiManager.PrintTeamHP();
+        Debug.Log("ì´ ê²Œì´íŠ¸ ì²´ë ¥" + gateHP);
+        Debug.Log("íŒ€1 :" + CycleManager.cycleManager.team1Hp);
+        Debug.Log("íŒ€2 :" + CycleManager.cycleManager.team2Hp);
+    }
+    //} 0924 í™í•œë²”
+    //}PrintHP()
+
+
+
 
     public void Hit(int damage)
     {
-        //±âÅ¸ ¼º¹® °ø°İ ´çÇÒ½Ã Ã³¸®
-        //¿¹»ó : Ä«¸Ş¶ó, ½ÎÀÌÅ¬Ã³¸®?
-
+        //ê¸°íƒ€ ì„±ë¬¸ ê³µê²© ë‹¹í• ì‹œ ì²˜ë¦¬
+        //ì˜ˆìƒ : ì¹´ë©”ë¼, ì‹¸ì´í´ì²˜ë¦¬?
         gateHP -= damage;
         HitReaction();
         ChangePhase();
+        //{ 0924 í™í•œë²”
+        PrintHP(damage);
+        //} 0924 í™í•œë²”
     }
 
     public void HitReaction()
     {
-        //¾Ö´Ï¸ŞÀÌ¼Ç, ÅØ½ºÆ®, ¼Ò¸® µî ½ÎÀÌÅ¬°ú´Â ¹«°üÇÑ ¸®¾×¼ÇÀ» ¿©±â¼­ ±¸Çö
-        //Æú¸®½Ì?
+        //ì• ë‹ˆë©”ì´ì…˜, í…ìŠ¤íŠ¸, ì†Œë¦¬ ë“± ì‹¸ì´í´ê³¼ëŠ” ë¬´ê´€í•œ ë¦¬ì•¡ì…˜ì„ ì—¬ê¸°ì„œ êµ¬í˜„
+        //í´ë¦¬ì‹±?
     }
 }
 

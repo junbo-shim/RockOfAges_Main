@@ -225,8 +225,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         {
             result = CheckGroundOverlap();
         }
-
-        if(!isGround && result)
+        // 0925 홍한범 조건추가
+        if (!isGround && result && CycleManager.cycleManager.userState == (int)UserState.ATTACK)
         {
             StartCoroutine(CameraShakeRoutine(.1f, 3, 3));
         }
@@ -433,21 +433,28 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     protected virtual void Fall()
     {
-        CinemachineVirtualCameraBase camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCameraBase;
-        camera.Follow = null;
+        // 0925 홍한범 조건추가
+        if (CycleManager.cycleManager.userState == (int)UserState.ATTACK)
+        { 
+            CinemachineVirtualCameraBase camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCameraBase;
+            camera.Follow = null;        
+        }
     }
     protected virtual void BackCheckPoint()
     {
-        CinemachineVirtualCameraBase camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCameraBase;
-        camera.Follow = rockObject;
-        fallCheckCoroutine = null;
-        isFall = false;
-        rockRigidbody.velocity = Vector3.zero;
-        rockRigidbody.angularVelocity = Vector3.zero;
-        rockObject.position = checkPoint.position + Vector3.up * 6f;
+        // 0925 홍한범 조건추가
+        if (CycleManager.cycleManager.userState == (int)UserState.ATTACK)
+        {        
+            CinemachineVirtualCameraBase camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCameraBase;
+            camera.Follow = rockObject;
+            fallCheckCoroutine = null;
+            isFall = false;
+            rockRigidbody.velocity = Vector3.zero;
+            rockRigidbody.angularVelocity = Vector3.zero;
+            rockObject.position = checkPoint.position + Vector3.up * 6f;
 
-        camera.ForceCameraPosition(checkPoint.position, checkPoint.rotation);
-
+            camera.ForceCameraPosition(checkPoint.position, checkPoint.rotation);        
+        }
     }
 
     //맞았을 경우 체력마다 다른 mesh를 보여준다.

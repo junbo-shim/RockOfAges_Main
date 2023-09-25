@@ -1,6 +1,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -10,6 +11,7 @@ public class BuildManager : MonoBehaviour
 {
     public static BuildManager instance;
     public ObstacleBase buildTarget = null;
+
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!테스트 코드
     //해당 정보는 item manager에 저장될 예정??

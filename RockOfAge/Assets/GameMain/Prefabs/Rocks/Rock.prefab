@@ -99,9 +99,9 @@ MonoBehaviour:
   rockObject: {fileID: 4332204774586086010}
   checkPoint: {fileID: 8632076663393539342}
   rockStatus: {fileID: 11400000, guid: 7ba169556656322419d4ac5f4677b281, type: 2}
-  fallText: {fileID: 0}
-  forms: []
+  fallText: {fileID: 3114901219923424516}
   trail: {fileID: 743103346689614724, guid: 84546c159d51e96458f1d23a538363e7, type: 3}
+  forms: []
   isGround: 0
   isDebuffed: 0
   debuffJumpForce: 0
@@ -121,6 +121,7 @@ GameObject:
   - component: {fileID: 9048569868123426111}
   - component: {fileID: 4483890610698335988}
   - component: {fileID: 6246463456872371463}
+  - component: {fileID: 6521477776134924949}
   m_Layer: 12
   m_Name: RockObject
   m_TagString: Untagged
@@ -137,7 +138,7 @@ Transform:
   m_GameObject: {fileID: 866980105989807749}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1082, y: 309, z: 1000}
+  m_LocalPosition: {x: 1061.4, y: 320, z: 1070.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -443,6 +444,27 @@ MeshCollider:
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: b599f6af45091a94ebb61e389556a3f5, type: 2}
 --- !u!135 &6246463456872371463
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866980105989807749}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 3.8473477
+  m_Center: {x: -0.08957237, y: -0.02983272, z: -0.011404753}
+--- !u!135 &6521477776134924949
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

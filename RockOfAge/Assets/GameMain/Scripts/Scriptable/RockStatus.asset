@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 8
   stoneName: "\uB3CC"
-  health: 2000
+  health: 100
   speed: 20
-  acceleration: 7
-  damage: 100
-  weight: 200
+  acceleration: 5
+  damage: 10
+  weight: 20
   cooldown: 6
   tempString: 

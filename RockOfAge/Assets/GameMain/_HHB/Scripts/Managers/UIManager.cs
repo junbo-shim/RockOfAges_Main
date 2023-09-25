@@ -142,6 +142,19 @@ public partial class UIManager : MonoBehaviour
         }
     }
 
+    //{ ShutDownAllUIExpectEnding()
+    // 다 끄고 게임 엔딩 UI만 킴
+    public void ShutDownAllUIExpectEnding()
+    {
+        commonUI.SetActive(false);
+        attackUI.SetActive(false);
+        defenceUI.SetActive(false);
+        rockSelectUI.SetActive(false);
+
+        SwitchUIManager("endingUI");
+    }
+    //} ShutDownAllUIExpectEnding()
+
     #endregion
     //} SwitchUIManager()
 

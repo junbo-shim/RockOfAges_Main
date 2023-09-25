@@ -440,7 +440,9 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     {
         // 0925 홍한범 조건추가
         if (CycleManager.cycleManager.userState == (int)UserState.ATTACK)
-        { 
+        {
+            Hit(300);
+
             CinemachineVirtualCameraBase camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCameraBase;
             camera.Follow = null;   
             fallText.StartFallText();     
@@ -466,9 +468,9 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //맞았을 경우 체력마다 다른 mesh를 보여준다.
     public void Hit(int damage)
     {
-        HitReaction();
         currHp -= damage;
-        Debug.Log(currHp);
+        HitReaction();
+        //Debug.Log(currHp);
         if (currHp <= 0)
         {
             Die();
@@ -512,7 +514,16 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         
     }
 
-    public void HitReaction(){}
+    public void HitReaction()
+    {
+        float maxHp = rockStatus.Health;
+        //{ 0925 홍한범
+        UIManager.uiManager.PrintFillAmountRockHp(currHp, maxHp);
+        // 손
+        GodHand godHand = FindObjectOfType<GodHand>();
+        godHand.FollowRock(this.gameObject);
+        //} 0925 홍한범
+    }
 
     protected virtual void Die()
     {
@@ -521,6 +532,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         //rayfireRigid.Activate();
 
         //Destroy(gameObject);
+
+
     }
 
     protected Vector2 GetInput()

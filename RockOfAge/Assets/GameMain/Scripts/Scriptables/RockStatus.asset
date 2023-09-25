@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 8
   stoneName: "\uB3CC"
-  health: 100
+  health: 2000
   speed: 20
   acceleration: 5
   damage: 10

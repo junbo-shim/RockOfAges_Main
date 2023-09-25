@@ -4,21 +4,25 @@ using UnityEngine;
 
 public class GodHand : MonoBehaviour
 {
-    private Transform rockPosition;
     private Animator animator;
 
 
     private void Start()
     {
-        rockPosition = GetComponent<Transform>();
         animator = GetComponent<Animator>();
         this.gameObject.transform.localScale = Vector3.one * 0.001f;
     }
 
+    public void StandBy(GameObject rock)
+    {
+        animator.SetBool("Grab", false);
+        this.gameObject.transform.localScale = Vector3.one * 0.2f;
+        Vector3 pos = Camera.main.transform.position - rock.transform.GetChild(1).transform.position;
+        transform.position = rock.transform.GetChild(1).transform.position; /*+ Vector3.up * 2f - Vector3.forward * 2f;*/
+    }
 
     public void FollowRock(GameObject rock)
     {
-        this.gameObject.transform.localScale = Vector3.one;
         if (rock != null)
         {
             StartCoroutine(WaitForHand(rock));
@@ -27,19 +31,20 @@ public class GodHand : MonoBehaviour
 
     IEnumerator WaitForHand(GameObject rock)
     {
+        this.gameObject.transform.localScale = Vector3.one * 0.2f;
         float timer = 0f;
-        Transform rockPosition = transform.GetChild(1).GetChild(0).GetChild(0).Find("RockPosition");
         animator.SetBool("Grab", true);
         GameObject godHand = this.gameObject;
         while (timer <= 3f)
         {
             timer += Time.deltaTime;
-            yield return null;
-            //godHand.transform.position = rockPosition.transform.position;
-            //godHand.transform.position = new Vector3(-2.4f, 11.8f, -109.3f);
-            godHand.transform.position = rock.transform.GetChild(0).transform.position;
+            yield return new WaitForSeconds(Time.deltaTime);
+            Vector3 pos = Camera.main.transform.position - rock.transform.GetChild(1).transform.position;
+            godHand.transform.position = rock.transform.GetChild(1).transform.position - Vector3.forward * .5f;
+            pos.y = 0;
+            godHand.transform.rotation = Quaternion.LookRotation(pos.normalized, Vector3.up);
         }
         animator.SetBool("Grab", false);
-        this.gameObject.transform.localScale = Vector3.one * 0.001f;
+        this.gameObject.transform.localScale = Vector3.zero;
     }
 }

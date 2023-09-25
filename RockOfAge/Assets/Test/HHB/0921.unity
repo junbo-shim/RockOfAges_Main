@@ -11343,7 +11343,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CollideAgainst:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 512
   m_IgnoreTag: 
   m_TransparentLayers:
     serializedVersion: 2
@@ -23162,7 +23162,6 @@ GameObject:
   - component: {fileID: 6308187910825231754}
   - component: {fileID: 6397468946010233609}
   - component: {fileID: 4078966615221968206}
-  - component: {fileID: 3442420960407243449}
   - component: {fileID: 5894958981918067880}
   m_Layer: 9
   m_Name: Fullcastle_big_partB
@@ -29807,28 +29806,6 @@ MonoBehaviour:
       m_Data: []
   m_Knots:
     m_KnotsLink: []
---- !u!64 &3377366589691050870
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6241440846334563063}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 9059438195545815128, guid: 3a13f53d88ed64a44b22e9505e830cdf, type: 3}
 --- !u!4 &3385362092767304283
 Transform:
   m_ObjectHideFlags: 0
@@ -29928,28 +29905,6 @@ RectTransform:
   m_AnchoredPosition: {x: -150, y: 120}
   m_SizeDelta: {x: 460.8, y: 409.6}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!64 &3442420960407243449
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 76934114692203475}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 7553517759746245316, guid: 3a13f53d88ed64a44b22e9505e830cdf, type: 3}
 --- !u!33 &3447692842754142217
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -30505,28 +30460,6 @@ Transform:
   - {fileID: 5598857574669013142}
   m_Father: {fileID: 4256366192174033013}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &3770800374006829246
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5769879263013734214}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 8250459568248773270, guid: 3a13f53d88ed64a44b22e9505e830cdf, type: 3}
 --- !u!4 &3770894436902354428
 Transform:
   m_ObjectHideFlags: 0
@@ -31956,7 +31889,6 @@ GameObject:
   - component: {fileID: 3771746556807635594}
   - component: {fileID: 6944265909920731090}
   - component: {fileID: 5468495197727809896}
-  - component: {fileID: 7039936478098341970}
   - component: {fileID: 7853253403756455630}
   m_Layer: 9
   m_Name: Fullcastle_big_partA
@@ -32286,28 +32218,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!64 &4845939802303730941
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8262407640469968234}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 7553517759746245316, guid: 3a13f53d88ed64a44b22e9505e830cdf, type: 3}
 --- !u!4 &4865985300638906267
 Transform:
   m_ObjectHideFlags: 0
@@ -34139,7 +34049,6 @@ GameObject:
   - component: {fileID: 3869163198427237206}
   - component: {fileID: 7145998301292105416}
   - component: {fileID: 7876335161486383001}
-  - component: {fileID: 3770800374006829246}
   - component: {fileID: 8557493305249598472}
   m_Layer: 9
   m_Name: Fullcastle_big_partA
@@ -34263,7 +34172,6 @@ GameObject:
   - component: {fileID: 6078134059934328722}
   - component: {fileID: 1804230047019060405}
   - component: {fileID: 9039786845625526258}
-  - component: {fileID: 6214402484305833584}
   - component: {fileID: 8761469376411327305}
   m_Layer: 9
   m_Name: Fullcastle_big_partC
@@ -35125,28 +35033,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!64 &6214402484305833584
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5831340067361997959}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 9059438195545815128, guid: 3a13f53d88ed64a44b22e9505e830cdf, type: 3}
 --- !u!1 &6221484811087220845
 GameObject:
   m_ObjectHideFlags: 0
@@ -35215,7 +35101,6 @@ GameObject:
   - component: {fileID: 3479557608647828733}
   - component: {fileID: 4812365400386850965}
   - component: {fileID: 1716916182681438756}
-  - component: {fileID: 3377366589691050870}
   - component: {fileID: 2795362047982836267}
   m_Layer: 9
   m_Name: Fullcastle_big_partC
@@ -36716,28 +36601,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!64 &7039936478098341970
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4624331786479694779}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 8250459568248773270, guid: 3a13f53d88ed64a44b22e9505e830cdf, type: 3}
 --- !u!1 &7040424294684439940
 GameObject:
   m_ObjectHideFlags: 0
@@ -38699,7 +38562,6 @@ GameObject:
   - component: {fileID: 4886971766135053835}
   - component: {fileID: 3175557966127132364}
   - component: {fileID: 2869060198240564671}
-  - component: {fileID: 4845939802303730941}
   - component: {fileID: 2682020122164802310}
   m_Layer: 9
   m_Name: Fullcastle_big_partB
@@ -40376,6 +40238,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5004461872873296246}
   m_CullTransparentMesh: 1
+--- !u!1001 &9205147994200316635
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9042136311767895156, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
+      propertyPath: m_Name
+      value: Rock
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
 --- !u!1 &9215149657093699589
 GameObject:
   m_ObjectHideFlags: 0
@@ -40435,3 +40354,4 @@ SceneRoots:
   - {fileID: 1950592346}
   - {fileID: 129568010}
   - {fileID: 301813534}
+  - {fileID: 9205147994200316635}

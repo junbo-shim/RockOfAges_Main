@@ -9874,7 +9874,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: add0d4174aa2b8745af53f17ae34a99f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cursorIcon: {fileID: 2800000, guid: a5f9cc9a5efbe894eb85de4851711ba8, type: 3}
+  cursorIcon: {fileID: 2800000, guid: ec096a945b9f60c4497ceb3cf4aea167, type: 3}
 --- !u!1 &1320550798
 GameObject:
   m_ObjectHideFlags: 0
@@ -24934,19 +24934,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 385de643ea75aa84fb817e742b4dfc13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rockObject: {fileID: 0}
-  checkPoint: {fileID: 0}
-  rockStatus: {fileID: 11400000, guid: dab61d0b3f6ccc14fb6cf603baa77782, type: 2}
-  forms: []
-  isDebuffed: 0
-  debuffJumpForce: 0
-  jumpForce: 1000
-  maxSpeed: 50
-  gravityStrength: 100
-  attackPowerBase: 10
-  terrainLayer:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!222 &7480491444755687100
 CanvasRenderer:
   m_ObjectHideFlags: 0

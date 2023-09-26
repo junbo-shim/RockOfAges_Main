@@ -40,7 +40,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     public bool isGround = false;
     protected bool isSlope = false;
     protected bool isFall = false;
-    protected bool isDestroy = false;
+    public bool isDestroy = false;
     //{ 0920 홍한범
     // 디버프 체크
     public bool isDebuffed = false;
@@ -130,6 +130,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         trails = new Queue<RockTrail>();
 
         CreateTrail();
+        UIManager.uiManager.PrintFillAmountRockHp(currHp, rockStatus.Health);
     }
 
     //혹시 모를 오버로딩
@@ -422,7 +423,12 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
                     continue;
                 }*/
             }
-
+        }
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Castle"))
+        {
+            isDestroy = true;
+            Invoke("EndAttack", 2f);
+            CycleManager.cycleManager.ChangeCycleAttackToSelect();        
         }
     }
 
@@ -543,11 +549,16 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         isDestroy = true;
         rayfireRigid.Demolish();
         //rayfireRigid.Activate();
-
+        Invoke("EndAttack", 2f);
+        CycleManager.cycleManager.ChangeCycleAttackToSelect();
         //Destroy(gameObject);
-
-
     }
+
+    private void EndAttack()
+    {
+        Destroy(gameObject);
+    }
+
 
     protected Vector2 GetInput()
     {

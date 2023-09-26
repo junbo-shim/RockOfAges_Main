@@ -136,12 +136,15 @@ public class CycleManager : MonoBehaviour
 
     #region AttackCycle
     //{ ChangeCycleAttackToDefence()
-    // 공격 싸이클에서 방어 싸이클로 전환하는 함수
-    public void ChangeCycleAttackToDefence()
+    // 공격에서 공선택으로 전환하는 함수
+    public void ChangeCycleAttackToSelect()
     {
         if (userState == (int)UserState.ATTACK)
         {
             userState = (int)UserState.DEFENCE;
+            rockState = (int)RockState.ROCKSELECT;
+            UIManager.uiManager.ChangeAttackToSelect();
+            CameraManager.Instance.TurnOnTopViewCamera();
         }
         else { Debug.Log("GAME LOGIC ERROR"); }
     }
@@ -184,6 +187,7 @@ public class CycleManager : MonoBehaviour
             int id = ItemManager.itemManager.userRockChoosed[0];
             float coolDown = default;
             ResourceManager.Instance.GetRockCoolDownFromId(id, out coolDown);
+            UIManager.uiManager.FillAmountRockRoutine(coolDown);
             yield return new WaitForSeconds(coolDown);
             rockState = (int)RockState.ROCKCREATED;        
         }

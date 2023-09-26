@@ -20,6 +20,11 @@ public class RockColliderEvent : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (parent.isDestroy) 
+        {
+            return;
+        
+        }
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         power = rigidbody.velocity.magnitude;
        // Debug.Log(power);

@@ -2,7 +2,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
-using Photon.Pun;
 
 // endingUI
 public partial class UIManager : MonoBehaviour

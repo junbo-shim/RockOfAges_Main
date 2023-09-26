@@ -641,12 +641,6 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         //Destroy(gameObject);
     }
 
-    private void EndAttack()
-    {
-        Destroy(gameObject);
-    }
-
-
     protected Vector2 GetInput()
     {
         float horizontalInput = Input.GetAxis("Horizontal");

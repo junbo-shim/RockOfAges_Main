@@ -5,7 +5,6 @@ using UnityEngine;
 public class CatObstacle : MoveObstacleBase, IHitObjectHandler
 {
     public AudioSource audioSource;
-    public AudioClip followingSound;
     public AudioClip attackSound;
 
     private float attackRange = 8f;
@@ -52,8 +51,6 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
     //이동
     public void MoveCat(Transform rockTransform) 
     {
-        audioSource.clip = followingSound;
-        audioSource.Play();
        obstacleAnimator.SetBool("isMoving", true);
         Quaternion lookDir = Quaternion.LookRotation(rockTransform.position - catMother.position);
         catMother.rotation = Quaternion.Slerp(catMother.rotation, lookDir, turnSpeed * Time.deltaTime);

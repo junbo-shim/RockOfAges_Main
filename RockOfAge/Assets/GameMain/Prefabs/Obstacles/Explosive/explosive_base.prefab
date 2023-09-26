@@ -92,12 +92,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d54bcd09132ee24085f44a50537d945, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  status: {fileID: 0}
+  buildPositionY: 0
+  kjhObjectPrefab: {fileID: 0}
+  dragObstacle: 0
   Rock:
     serializedVersion: 2
     m_Bits: 4096
   explosionEffectPrefab: {fileID: 19842296, guid: a0040bf7072bc2f4e82d887d50a9c5e2, type: 3}
-  explosionForce: 700
+  explosionForce: 100
   explosionRadius: 1
+  explosion: {fileID: 8300000, guid: d18c1a437c2e1c54aa51f6d43abab08c, type: 3}
 --- !u!65 &974023385209380968
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ public static class Global_PSC
 {
     public static void ShakeFreeLookCamera(this Camera mainCamera, float AmplitudeGain, float FrequencyGain)
     {
-        if (CycleManager.cycleManager.userState == (int)UserState.ATTACK)
+        if (CycleManager.cycleManager == null || CycleManager.cycleManager.userState == (int)UserState.ATTACK)
         { 
             CinemachineBrain camerabrsin = mainCamera.GetComponent<CinemachineBrain>();
             if (camerabrsin == null) return;

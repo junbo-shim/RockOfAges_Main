@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RockBase : MonoBehaviour, IHitObjectHandler
 {
@@ -20,7 +21,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     [SerializeField]
     protected RockTrail trail;
     [SerializeField]
-    protected List<Mesh> forms;
+    protected List<FormContainer> forms;
 
     //사용자 입력(Y축 제외)
     protected Vector2 playerInput;
@@ -53,6 +54,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected Queue<RockTrail> trails;
 
     protected RayfireRigid rayfireRigid;
+
+    protected int currLayer;
 
 
     protected const float DAMAGE_LIMIT_MIN = 50f;
@@ -209,8 +212,17 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
         if (colliders.Length > 0)
         {
+            foreach (Collider collider in colliders)
+            {
+                currLayer = collider.gameObject.layer;
+                if (currLayer == LayerMask.NameToLayer("Terrains"))
+                {
+                    break;
+                }
+            }
             return true;
         }
+        currLayer = 0;
         return false;
     }
 
@@ -231,19 +243,9 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         // 0925 홍한범 조건추가
         if (!isGround && result)
         {
-            if(CycleManager.cycleManager == null)
-            {
-                StartCoroutine(CameraShakeRoutine(.1f, 3, 3));
-            }
-            else
-            {
-                if (CycleManager.cycleManager.userState == (int)UserState.ATTACK)
-                {
 
-                    StartCoroutine(CameraShakeRoutine(.1f, 3, 3));
-                }
-            }
-            
+            StartCoroutine(CameraShakeRoutine(.1f, 3, 3));
+
         }
         isGround = result;
 
@@ -257,9 +259,18 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         Collider[] colliders = Physics.OverlapSphere(rockObject.position - Vector3.up * rockHeightHalf, .05f, Global_PSC.FindLayerToName("Terrains") + Global_PSC.FindLayerToName("Walls"));
         if (colliders.Length > 0)
         {
+            foreach (Collider collider in colliders)
+            {
+                currLayer = collider.gameObject.layer;
+                if (currLayer == LayerMask.NameToLayer("Terrains"))
+                {
+                    break;
+                }
+            }
             return true;
         }
 
+        currLayer = 0;
         return false;
     }
 
@@ -269,9 +280,10 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     {
         if (Physics.Raycast(rockObject.position, Vector3.down, out slopeHit, rockHeightHalf + rockHeightHalf * .75f, Global_PSC.FindLayerToName("Terrains") + Global_PSC.FindLayerToName("Walls")))
         {
+            currLayer = slopeHit.collider.gameObject.layer;
             return  true;
         }
-
+        currLayer = 0;
         return false;
     }
 
@@ -325,7 +337,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         float time = 0;
         while (time < needTime)
         {
-            if (isGround)
+            if (isGround && currLayer == LayerMask.NameToLayer("Terrains"))
             {
                 isFall = false;
                 fallCheckCoroutine = null;
@@ -356,12 +368,16 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             BackCheckPoint();
         }
 
-        // 손
-        GodHand godHand = FindObjectOfType<GodHand>();
-        yield return new WaitForSeconds(0.4f);
-        godHand.StandBy(this.gameObject);
-        yield return new WaitForSeconds(0.3f);
-        godHand.FollowRock(this.gameObject);
+        if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("PscTestScene"))
+        {
+            // 손
+            GodHand godHand = FindObjectOfType<GodHand>();
+            yield return new WaitForSeconds(0.4f);
+            godHand.StandBy(this.gameObject);
+            yield return new WaitForSeconds(0.3f);
+            godHand.FollowRock(this.gameObject);
+
+        }
 
     }
 
@@ -523,19 +539,24 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         if (forms==null || forms.Count<1)
         {
             return;
-            
         }
+
         float changeRate = rockStatus.Health / forms.Count;
         int formIndex = (int)(currHp / changeRate);
-        
+        rockMesh.sharedMesh = forms[formIndex].mesh;
+        rockRenderer.materials = forms[formIndex].material;
+
     }
 
     public void HitReaction()
     {
         float maxHp = rockStatus.Health;
-        //{ 0925 홍한범
-        UIManager.uiManager.PrintFillAmountRockHp(currHp, maxHp);
-        //} 0925 홍한범
+        if (UIManager.uiManager != null)
+        {
+            //{ 0925 홍한범
+            UIManager.uiManager.PrintFillAmountRockHp(currHp, maxHp);
+            //} 0925 홍한범
+        }
     }
 
     protected virtual void Die()

@@ -44,6 +44,9 @@ public class BuildViewer : MonoBehaviour
             }
         }
 
+        Debug.Log(skinnedMeshRenderer);
+        Debug.Log(_meshFilter);
+
         // sourceMeshFilter에서 원본 Mesh를 참조
         Mesh sourceMesh;
         if (_meshFilter != null)

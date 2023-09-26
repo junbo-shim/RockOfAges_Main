@@ -1,7 +1,9 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Splines;
@@ -127,6 +129,7 @@ public class SplineMeshBuilder : EditorWindow
     //3. 메쉬 만들기
     void Build(Spline spline, GameObject parent)
     {
+
         //1. 정점 구하기
         GetVerts(spline);
 
@@ -139,11 +142,14 @@ public class SplineMeshBuilder : EditorWindow
         GameObject right = ConcreateGameObject(materialWall, parent, "Terrains");
         BuildSide(right, rightPoint, spline.Closed);
 
+
         GameObject left = ConcreateGameObject(materialWall, parent, "Terrains");
         //culling을 위해서 순서 변경
         leftPoint.Reverse();
         BuildSide(left, leftPoint, spline.Closed);
 
+        GameObject front = ConcreateGameObject(materialWall, parent, "Terrains");
+        BuildSide(front, leftPoint[0], leftPoint[leftPoint.Count-1], rightPoint[0], rightPoint[leftPoint.Count - 1], spline.Closed);
         //로딩 완료시
         //BuildManager.instance.InitTerrainData();
     }
@@ -368,6 +374,8 @@ public class SplineMeshBuilder : EditorWindow
             uvs.AddRange(new List<Vector2> {new Vector2(p1.x, p1.z), new Vector2(p2.x, p2.z), new Vector2(p3.x, p3.z), new Vector2(p4.x, p4.z) });
         }
 
+        
+
         mesh.SetVertices(verts.ToArray());
         mesh.SetTriangles(tris.ToArray(), 0);
         mesh.uv = uvs.ToArray();
@@ -379,5 +387,64 @@ public class SplineMeshBuilder : EditorWindow
         meshCollider.sharedMesh = mesh;
 
     }
+    //위쪽 mesh생성(땅)
+    //right와 left의 point 정보중 하나만 사용한다.(height만큼 내려보낸다.)
+    //전체적인 구조는 땅을 생성할때의 구조와 같다.
+    void BuildSide(GameObject terrain, Vector3 l1, Vector3 l2, Vector3 r1, Vector3 r2, bool isClosed)
+    {
+        MeshFilter meshFilter = terrain.GetComponent<MeshFilter>();
+        MeshCollider meshCollider = terrain.GetComponent<MeshCollider>();
 
+        Mesh mesh = new Mesh();
+        List<Vector3> verts = new List<Vector3>();
+        List<int> tris = new List<int>();
+        List<Vector2> uvs = new List<Vector2>();
+
+        //left와 right는 cull때문에 생성이 역순이기 때문에 거꾸로 엮은다.
+        Vector3 p1 = l1;
+        Vector3 p2 = l1 - Vector3.up * height;
+        Vector3 p3 = r2;
+        Vector3 p4 = r2 - Vector3.up * height;
+
+        int t1 = 0;
+        int t2 = 2;
+        int t3 = 3;
+
+        int t4 = 3;
+        int t5 = 1;
+        int t6 = 0;
+
+        verts.AddRange(new List<Vector3> { p1, p2, p3, p4 });
+        tris.AddRange(new List<int> { t1, t2, t3, t4, t5, t6 });
+        uvs.AddRange(new List<Vector2> { new Vector2(p1.x, p1.z), new Vector2(p2.x, p2.z), new Vector2(p3.x, p3.z), new Vector2(p4.x, p4.z) });
+
+        p1 = r1;
+        p2 = r1 - Vector3.up * height;
+        p3 = l2;
+        p4 = l2 - Vector3.up * height;
+
+        t1 = 4;
+        t2 = 6;
+        t3 = 7;
+
+        t4 = 7;
+        t5 = 5;
+        t6 = 4;
+
+        verts.AddRange(new List<Vector3> { p1, p2, p3, p4 });
+        tris.AddRange(new List<int> { t1, t2, t3, t4, t5, t6 });
+        uvs.AddRange(new List<Vector2> { new Vector2(p1.x, p1.z), new Vector2(p2.x, p2.z), new Vector2(p3.x, p3.z), new Vector2(p4.x, p4.z) });
+
+
+        mesh.SetVertices(verts.ToArray());
+        mesh.SetTriangles(tris.ToArray(), 0);
+        mesh.uv = uvs.ToArray();
+
+        mesh.RecalculateBounds();
+        mesh.RecalculateNormals();
+
+        meshFilter.mesh = mesh;
+        meshCollider.sharedMesh = mesh;
+
+    }
 }

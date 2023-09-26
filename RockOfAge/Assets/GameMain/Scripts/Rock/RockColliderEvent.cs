@@ -32,12 +32,26 @@ public class RockColliderEvent : MonoBehaviour
             AttackGate(collision);
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        AttackObstacle(other);
+    }
+
     private void AttackObstacle(Collision collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
         {
             StartCoroutine(parent.CameraShakeRoutine(SHAKE_TIME, power, 3));
             parent.Attack(collision);
+        }
+    }
+
+    private void AttackObstacle(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
+        {
+            other.GetComponentInParent<ObstacleBase>().Delete();
         }
     }
 

@@ -422,6 +422,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildTarget: {fileID: 7060619030984037602, guid: eedfd0f7e34fc284d8ae962d9679d658, type: 3}
+  kjhObjectPrefab: {fileID: 2044133147384927099, guid: 8a36354b176d55b4c91e3978e6f53301, type: 3}
   gridTest: {fileID: 8169584564742873702}
   red: {fileID: 2100000, guid: a98feb765cf8bb9499c47ce5523b3df4, type: 2}
   white: {fileID: 2100000, guid: 6e686a76dbb6e624a8ec4044b8368328, type: 2}

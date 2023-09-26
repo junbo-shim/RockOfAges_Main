@@ -346,10 +346,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         //떨어지면서 메아리 추가
 
         Fall();
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
 
-        //손 생성 애니메이션?
-        yield return new WaitForSeconds(1f);
         fallText.ClearText();
 
         if (rockObject != null)
@@ -357,6 +355,14 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             //되돌리기
             BackCheckPoint();
         }
+
+        // 손
+        GodHand godHand = FindObjectOfType<GodHand>();
+        yield return new WaitForSeconds(0.4f);
+        godHand.StandBy(this.gameObject);
+        yield return new WaitForSeconds(0.3f);
+        godHand.FollowRock(this.gameObject);
+
     }
 
     //경사에 있을 경우 힘의 방향을 해당 경사에 맞게 회전시킴
@@ -384,7 +390,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             }
         }
 
-        //Debug.Log(hitObject);
+        Debug.Log(hitObject);
         foreach (ContactPoint contact in collision.contacts)
         {
             //Debug.Log(contact.thisCollider.transform.parent.gameObject + "/"+ gameObject);
@@ -392,7 +398,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             {
 
                 hitObject.Hit((int)GetDamageValue());
-                //Debug.Log(GetDamageValue());
+                Debug.Log(GetDamageValue());
                 break;
 
                 /* // 충돌 지점의 법선 벡터와 gameobject의 진행 방향을 계산합니다.
@@ -452,6 +458,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     {
         if(CycleManager.cycleManager == null || CycleManager.cycleManager.userState == (int)UserState.ATTACK)
         { 
+            Hit(300);
             CinemachineVirtualCameraBase camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCameraBase;
             camera.Follow = null;   
             fallText.StartFallText();     
@@ -467,7 +474,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             isFall = false;
             rockRigidbody.velocity = Vector3.zero;
             rockRigidbody.angularVelocity = Vector3.zero;
-            rockObject.position = checkPoint.position + Vector3.up * 6f;
+            rockObject.rotation = Quaternion.identity;
+            rockObject.position = checkPoint.position + Vector3.up * 10f;
 
             camera.ForceCameraPosition(checkPoint.position, checkPoint.rotation);        
         }
@@ -476,8 +484,9 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //맞았을 경우 체력마다 다른 mesh를 보여준다.
     public void Hit(int damage)
     {
-        HitReaction();
         currHp -= damage;
+        HitReaction();
+        //Debug.Log(currHp);
         if (currHp <= 0)
         {
             Die();
@@ -521,7 +530,13 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         
     }
 
-    public void HitReaction(){}
+    public void HitReaction()
+    {
+        float maxHp = rockStatus.Health;
+        //{ 0925 홍한범
+        UIManager.uiManager.PrintFillAmountRockHp(currHp, maxHp);
+        //} 0925 홍한범
+    }
 
     protected virtual void Die()
     {
@@ -530,6 +545,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         //rayfireRigid.Activate();
 
         //Destroy(gameObject);
+
+
     }
 
     protected Vector2 GetInput()

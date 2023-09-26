@@ -3,7 +3,12 @@ guid: 691b844100579a2458f71998df9b7361
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - buildTarget: {instanceID: 0}
+  - kjhObjectPrefab: {instanceID: 0}
+  - gridTest: {instanceID: 0}
+  - red: {instanceID: 0}
+  - white: {instanceID: 0}
   executionOrder: -5
   icon: {instanceID: 0}
   userData: 

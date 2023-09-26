@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -23,6 +24,8 @@ public class ObstacleBase : MonoBehaviour
     //타겟
     protected GameObject target;
 
+    //사람
+    public KJHObject kjhObjectPrefab;
     //현재체력
     protected float currHealth;
 
@@ -31,10 +34,35 @@ public class ObstacleBase : MonoBehaviour
     
     [SerializeField]
     public bool dragObstacle = false;
-    
+
     public static readonly float BUILD_TIME = 5f;
 
 
+    private void OnEnable()
+    {
+
+        MakePeople();
+    }
+
+    void MakePeople()
+    {
+
+        if (kjhObjectPrefab == null)
+        {
+            return;
+        }
+        int numberOfPeople = Random.Range(3, 10);
+        Vector3 targetPosition = transform.position;
+        for (int i = 0; i < numberOfPeople; i++)
+        {
+            //랜덤한 위치에 벡터 생성
+            Vector3 randomOffset = new Vector3(Random.Range(-1.5f, 1.5f), 1f, Random.Range(-1.5f, 1.5f));
+
+            //랜덤한 위치에 사람 생성
+            Vector3 peoplePosition = targetPosition + randomOffset;
+            KJHObject PeopleInstance = Instantiate(kjhObjectPrefab, peoplePosition, Quaternion.identity);
+        }
+    }
 
     //제일 하단 스크립트에서 해당 함수를 불러온다(ONENABLE)
     protected void StartBuild(float time)
@@ -65,7 +93,7 @@ public class ObstacleBase : MonoBehaviour
         obstacleRenderer.material = originMaterial;
         obstacleCollider.isTrigger = false;
         (obstacleCollider as MeshCollider).convex = false;
-
+        MakePeople();
     }
 
     bool isTest = true;
@@ -74,7 +102,7 @@ public class ObstacleBase : MonoBehaviour
     {
         //오브젝트 생성
         ObstacleBase obstacle = Instantiate(this, position, rotate);
-        
+
         //스케일 변경
         obstacle.transform.localScale = obstacle.transform.localScale;
 

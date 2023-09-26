@@ -24,7 +24,7 @@ public class MirrorRotate : MonoBehaviour
     }
 
     IEnumerator RotateObject()
-    { 
+    {
         float startAngle = 0f;
         float targetAngle = 80f;
         Vector3 center = _mirror.transform.position;
@@ -32,7 +32,7 @@ public class MirrorRotate : MonoBehaviour
         {
             startAngle += 10f;
             yield return new WaitForSeconds(0.05f);
-            _mirror.transform.RotateAround(center, Vector3.up, addAngle);
+            _mirror.transform.RotateAround(center, Vector3.back, addAngle);
         }
         _isRotating = true;
     }
@@ -46,7 +46,7 @@ public class MirrorRotate : MonoBehaviour
         {
             startAngle -= 10f;
             yield return new WaitForSeconds(0.05f);
-            _mirror.transform.RotateAround(center, Vector3.down, addAngle);
+            _mirror.transform.RotateAround(center, Vector3.forward, addAngle);
         }
         _isRotating = false;
     }

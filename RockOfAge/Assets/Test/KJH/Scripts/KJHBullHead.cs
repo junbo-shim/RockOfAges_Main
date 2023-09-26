@@ -7,6 +7,10 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     public LayerMask rockLayer;           // 바위 레이어
     public float chargeSpeed = 5f;        // 돌진 속도
     public float returnSpeed = 3f;        // 원래 위치로 돌아가는 속도
+    public AudioSource audioSource;
+    public AudioClip attackSound;
+    public AudioClip idleSound;
+    public AudioClip dieSound;
 
     private Vector3 originalPosition;      // 원래 위치
     private Vector3 lastDetectedRockPosition; // 마지막으로 감지된 바위 위치
@@ -18,18 +22,34 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     private bool isStaring = false; // 바위를 바라보고 있는지 여부
     private float stareTimer = 0f; // 바위를 바라보기 시작한 시간을 추적하는 타이머
 
+    private float idleSoundDelay = 2.0f; // 재생 딜레이 설정 (예: 5초)
+
+
 
     void Start()
     {
+        Init();
         originalPosition = transform.position; // 시작 시 원래 위치 저장
 
         animator = GetComponent<Animator>(); // Animator 컴포넌트 가져오기
+
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
     {
+
         if (!isCharging && !isReturning && !isStaring)
         {
+            if (!audioSource.isPlaying && Time.time > idleSoundDelay)
+            {
+                audioSource.clip = idleSound;
+                audioSource.Play();
+
+                // 딜레이를 다시 설정하여 다음 재생을 예약
+                idleSoundDelay = Time.time + 2.0f; // 다시 5초 후에 재생
+            }
             // 감지 범위 내에서 바위 감지
             Collider[] detectedRocks = Physics.OverlapSphere(transform.position, detectionRadius, rockLayer);
 
@@ -45,7 +65,6 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
                     lastDetectedRockPosition = rock.transform.position;
                     isStaring = true;
                     stareTimer = Time.time;
-
                     // Attack 애니메이션 트리거 리셋
                     animator.ResetTrigger("Attack");
 
@@ -64,15 +83,15 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
             // 2초가 지났는지 확인
             if (Time.time - stareTimer >= stareTime)
             {
-                lastDetectedRockPosition = target.transform.position; 
+                lastDetectedRockPosition = target.transform.position;
                 isStaring = false;
                 isCharging = true;
             }
         }
-       else if (isCharging)
-    {
-        ChargeToLastDetectedRock();
-    }
+        else if (isCharging)
+        {
+            ChargeToLastDetectedRock();
+        }
         else if (isReturning)
         {
             ReturnToOriginalPosition();
@@ -103,6 +122,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
 
     void ChargeToLastDetectedRock()
     {
+
         animator.SetBool("isCharging", true);
 
         Vector3 direction = (lastDetectedRockPosition - transform.position).normalized;
@@ -118,14 +138,18 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         {
             // 돌진 애니메이션 종료
             animator.SetBool("isCharging", false);
-            
-            Debug.Log("바위의 마지막 위치로 돌진 완료");
+
             Invoke("Wait", 1f);
         }
     }
-   
+
     void ReturnToOriginalPosition()
     {
+        if (currHealth <= 0)
+        {
+            isReturning = false;
+            animator.SetTrigger("Die");
+        }
         Vector3 direction = (originalPosition - transform.position).normalized;
         direction.y = 0; // Y 축 이동 금지
 
@@ -136,9 +160,8 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         // 복귀 완료 여부 확인
         if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(originalPosition.x, 0, originalPosition.z)) < 0.1f)
         {
-            // 돌진 애니메이션 종료
 
-            Debug.Log("원래 위치로 복귀 완료");
+            // 돌진 애니메이션 종료
             isReturning = false;
             animator.SetBool("isReturning", false);
         }
@@ -148,10 +171,18 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     {
         if (isCharging && collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
-            Debug.Log("바위와 충돌: " + collision.gameObject.name);
+            audioSource.clip = attackSound;
+            audioSource.Play();
+            // 충돌한 바위와의 방향 계산
+            Vector3 collisionDirection = collision.contacts[0].point - transform.position;
+            collisionDirection.y = 0f; // Y 축 이동 금지
 
+            // 방향 벡터를 정규화하여 바라봐야 할 방향으로 사용
+            collisionDirection.Normalize();
 
-            // 공격 애니메이션 시작
+            // 모루 황소가 바라봐야 할 방향을 설정
+            SetLookDirection(collisionDirection);
+
             // 충돌한 바위에 힘을 전달
             Rigidbody rockRigidbody = collision.gameObject.GetComponent<Rigidbody>();
             if (rockRigidbody != null)
@@ -160,34 +191,14 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
                 float forceMagnitude = GetComponent<Rigidbody>().mass * chargeSpeed;
                 rockRigidbody.AddForce(forceDirection * forceMagnitude, ForceMode.Impulse);
             }
-            Debug.Log(collision.contacts[0].thisCollider);
-           
-                // 몸통이 아닌 다른 부분에 충돌했을 때의 처리
-                Debug.Log("어딘가에 충돌");
-                animator.SetTrigger("Attack");
-            
+            animator.SetTrigger("Attack");
         }
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
-        {
-            Debug.Log("바위와 충돌: " + collision.gameObject.name);
-
-
-          
-            Debug.Log(collision.contacts[0].thisCollider);
-            // 충돌한 콜라이더가 몸통인지 확인
-            if (collision.contacts[0].thisCollider.CompareTag("BullBody"))
-            {
-                // 몸통에 충돌했을 때 모루 황소를 죽이는 코드를 여기에 추가하세요.
-                Debug.Log("몸통에 충돌");
-                Die();
-            }
-            else
-            {
-                // 몸통이 아닌 다른 부분에 충돌했을 때의 처리
-                Debug.Log("어딘가에 충돌");
-                animator.SetTrigger("Attack");
-            }
-        }
+    }
+    void SetLookDirection(Vector3 direction)
+    {
+        // 모루 황소를 주어진 방향으로 회전시킴
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = targetRotation;
     }
 
     void OnDrawGizmos()
@@ -211,15 +222,19 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         isReturning = true;
 
     }
-    private void Die()
+    protected override void Dead()
     {
+        audioSource.clip = dieSound;
+        audioSource.Play();
         // Die 애니메이션 재생
         animator.SetTrigger("Die");
 
-        // 1초 후에 사라지는 로직을 실행
-        Invoke("Disappear", 2f);
-    }
+        GetComponent<Rigidbody>().isKinematic = true; // 물리 시뮬레이션 비활성화
+        GetComponent<Collider>().enabled = false; // 콜라이더 비활성화 (옵션)
 
+        // 1.5초 후에 사라지는 로직을 실행
+        Invoke("Disappear", 1.5f);
+    }
     private void Disappear()
     {
         // 게임 오브젝트를 비활성화하거나 파괴
@@ -228,7 +243,11 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     }
     public void Hit(int damage)
     {
-        // 아직 구현되지 않음
+        currHealth -= damage;
+        if (currHealth <= 0)
+        {
+            Dead();
+        }
     }
 
     public void HitReaction()

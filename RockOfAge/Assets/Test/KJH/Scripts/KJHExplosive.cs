@@ -7,8 +7,9 @@ public class Explosive : HoldObstacleBase
 {
     public LayerMask Rock; // 감지할 레이어 설정
     public ParticleSystem explosionEffectPrefab;
-    public float explosionForce = 1000f;
-    public float explosionRadius = 5f;
+    public float explosionForce = 100f;
+    public float explosionRadius = 1f;
+    public AudioClip explosion;
 
     private bool exploded = false;
 
@@ -16,10 +17,22 @@ public class Explosive : HoldObstacleBase
     {
         Init();
     }
+    void PlayExplosionSound()
+    {
+        if (explosion != null)
+        {
+            GameObject soundObject = new GameObject("explosion2");
+            AudioSource audioSource = soundObject.AddComponent<AudioSource>();
+            audioSource.clip = explosion;
+            audioSource.Play();
+            Destroy(soundObject, explosion.length);
+        }
+    }
     private void OnCollisionEnter(Collision collision)
     {
         if (!exploded && collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
+            PlayExplosionSound();
             exploded = true;
             Explode(collision.contacts[0].point);
         }
@@ -40,8 +53,11 @@ public class Explosive : HoldObstacleBase
                 rb.AddExplosionForce(explosionForce, explosionPosition, explosionRadius, 0.35f, ForceMode.Impulse);
             }
         }
-
-        //Destroy(gameObject);
-
+        Dead();
+    }
+    protected override void Dead()
+    {
+        Destroy(gameObject);
     }
 }
+

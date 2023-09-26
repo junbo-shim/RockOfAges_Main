@@ -11,12 +11,15 @@ public class CowObstacle : HoldObstacleBase
     public int groundCount;
     private bool delayBool;
 
-
+    public AudioSource audioSource;
     private void Awake()
     {
         Init();
     }
-
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
     protected override void Init()
     {
         cow = GetComponent<Transform>();
@@ -31,6 +34,7 @@ public class CowObstacle : HoldObstacleBase
 
     private void OnCollisionEnter(Collision collision)
     {
+        audioSource.Play();
         Transform rock = collision.transform;
         if (!isSticked && collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {

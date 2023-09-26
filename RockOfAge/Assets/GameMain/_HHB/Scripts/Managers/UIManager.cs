@@ -42,7 +42,7 @@ public partial class UIManager : MonoBehaviour
         DontDestroyOnLoad(uiManager);
         SwitchUIManager("rockSelectUI");
         SwitchUIManager("commonUI");
-        //SwitchUIManager("attackUI");
+        SwitchUIManager("attackUI");
         SwitchUIManager("defenceUI");
         SwitchUIManager("endingUI");
     }

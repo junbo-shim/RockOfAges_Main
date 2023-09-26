@@ -346,10 +346,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         //떨어지면서 메아리 추가
 
         Fall();
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
 
-        //손 생성 애니메이션?
-        yield return new WaitForSeconds(1f);
         fallText.ClearText();
 
         if (rockObject != null)
@@ -357,6 +355,14 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             //되돌리기
             BackCheckPoint();
         }
+
+        // 손
+        GodHand godHand = FindObjectOfType<GodHand>();
+        yield return new WaitForSeconds(0.4f);
+        godHand.StandBy(this.gameObject);
+        yield return new WaitForSeconds(0.3f);
+        godHand.FollowRock(this.gameObject);
+
     }
 
     //경사에 있을 경우 힘의 방향을 해당 경사에 맞게 회전시킴
@@ -468,7 +474,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             isFall = false;
             rockRigidbody.velocity = Vector3.zero;
             rockRigidbody.angularVelocity = Vector3.zero;
-            rockObject.position = checkPoint.position + Vector3.up * 6f;
+            rockObject.rotation = Quaternion.identity;
+            rockObject.position = checkPoint.position + Vector3.up * 10f;
 
             camera.ForceCameraPosition(checkPoint.position, checkPoint.rotation);        
         }
@@ -528,9 +535,6 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         float maxHp = rockStatus.Health;
         //{ 0925 홍한범
         UIManager.uiManager.PrintFillAmountRockHp(currHp, maxHp);
-        // 손
-        GodHand godHand = FindObjectOfType<GodHand>();
-        godHand.FollowRock(this.gameObject);
         //} 0925 홍한범
     }
 

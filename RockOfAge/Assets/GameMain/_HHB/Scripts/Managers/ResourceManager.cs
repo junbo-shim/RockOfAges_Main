@@ -135,7 +135,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         GameObject gameObject = GetGameObjectByID(id);
         GameObject team1 = Global_PSC.FindTopLevelGameObject("Team1");
         GameObject userRock = Instantiate(gameObject, team1.transform);
-        Vector3 startPointTransform = new Vector3(111.55f, 31.21f, 120f);
+        Vector3 startPointTransform = new Vector3(114f, 32f, 108f);
         CameraManager.Instance.SetRockCamera(userRock, startPointTransform);
     }
 

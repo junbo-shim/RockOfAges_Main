@@ -7,11 +7,6 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     public LayerMask rockLayer;           // 바위 레이어
     public float chargeSpeed = 5f;        // 돌진 속도
     public float returnSpeed = 3f;        // 원래 위치로 돌아가는 속도
-    public AudioClip attackSound;
-    public AudioClip damageSound;
-    public AudioClip idleSound;
-    //public AudioSource audioSource;
-
 
     private Vector3 originalPosition;      // 원래 위치
     private Vector3 lastDetectedRockPosition; // 마지막으로 감지된 바위 위치
@@ -22,6 +17,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     private float stareTime = 0.8f; // 바위를 바라보는 시간 
     private bool isStaring = false; // 바위를 바라보고 있는지 여부
     private float stareTimer = 0f; // 바위를 바라보기 시작한 시간을 추적하는 타이머
+    private SoundManager soundManager;
 
 
     void Start()
@@ -31,41 +27,10 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
 
         animator = GetComponent<Animator>(); // Animator 컴포넌트 가져오기
 
-        //audioSource = GetComponent<AudioSource>();  
+        // 모루 황소 오브젝트에 추가한 빈 GameObject의 SoundManager 스크립트를 가져옵니다.
+        soundManager = GetComponentInChildren<SoundManager>();
     }
-    void PlayAttackSound()
-    {
-        if (attackSound != null)
-        {
-            GameObject soundObject = new GameObject("attack1");
-            AudioSource audioSource = soundObject.AddComponent<AudioSource>();
-            audioSource.clip = attackSound;
-            audioSource.Play();
-            Destroy(soundObject, attackSound.length);
-        }
-    }
-    void PlayDamageSound()
-    {
-        if (damageSound != null)
-        {
-            GameObject soundObject = new GameObject("pain1");
-            AudioSource audioSource = soundObject.AddComponent<AudioSource>();
-            audioSource.clip = damageSound;
-            audioSource.Play();
-            Destroy(soundObject, damageSound.length);
-        }
-    }
-    void PlayIdleSound()
-    {
-        if (idleSound != null)
-        {
-            GameObject soundObject = new GameObject("ready");
-            AudioSource audioSource = soundObject.AddComponent<AudioSource>();
-            audioSource.clip = idleSound;
-            audioSource.Play();
-            Destroy(soundObject, idleSound.length);
-        }
-    }
+   
     void Update()
     {
         
@@ -91,7 +56,11 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
                     lastDetectedRockPosition = rock.transform.position;
                     isStaring = true;
                     stareTimer = Time.time;
-
+                    //소리
+                    if (soundManager != null)
+                    {
+                        soundManager.PlayAttackSound();
+                    }
                     // Attack 애니메이션 트리거 리셋
                     animator.ResetTrigger("Attack");
 
@@ -142,8 +111,6 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         // 도착 여부 확인
         if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(lastDetectedRockPosition.x, 0, lastDetectedRockPosition.z)) < 0.1f)
         {
-            //audioSource.clip = attackSound;
-            //audioSource.Play();
 
             // 돌진 애니메이션 종료
             animator.SetBool("isCharging", false);
@@ -196,27 +163,6 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
                 animator.SetTrigger("Attack");
             
         }
-        //if (collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
-        //{
-        //    Debug.Log("바위와 충돌: " + collision.gameObject.name);
-
-
-          
-        //    Debug.Log(collision.contacts[0].thisCollider);
-        //    // 충돌한 콜라이더가 몸통인지 확인
-        //    if (collision.contacts[0].thisCollider.CompareTag("BullBody"))
-        //    {
-        //        // 몸통에 충돌했을 때 모루 황소를 죽이는 코드를 여기에 추가하세요.
-        //        Debug.Log("몸통에 충돌");
-        //        Die();
-        //    }
-        //    else
-        //    {
-        //        // 몸통이 아닌 다른 부분에 충돌했을 때의 처리
-        //        Debug.Log("어딘가에 충돌");
-        //        animator.SetTrigger("Attack");
-        //    }
-        //}
     }
 
     void OnDrawGizmos()
@@ -242,8 +188,10 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     }
     protected override void Dead()
     {
-        //audioSource.clip = damageSound;
-        //audioSource.Play();
+        if (soundManager != null)
+        {
+            soundManager.PlayDamageSound();
+        }
         // Die 애니메이션 재생
         animator.SetTrigger("Die");
 

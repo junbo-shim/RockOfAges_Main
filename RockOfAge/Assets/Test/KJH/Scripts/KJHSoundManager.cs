@@ -1,24 +1,47 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class KJHSoundManager : MonoBehaviour
+public class SoundManager : MonoBehaviour
 {
-    public AudioClip[] characterSounds; // 각 스프라이트에 대한 사운드 배열
+    public AudioClip attackSound;
+    public AudioClip damageSound;
+    public AudioClip idleSound;
 
     private AudioSource audioSource;
 
+    // 사운드 매니저의 이름을 저장하는 변수
+    public string soundManagerName;
+
     private void Awake()
     {
+        // 각각의 사운드 매니저 인스턴스에 이름을 설정합니다.
+        gameObject.name = soundManagerName;
+
         audioSource = GetComponent<AudioSource>();
     }
 
-    // 스프라이트에 대한 사운드를 재생하는 함수
-    public void PlayCharacterSound(int characterIndex)
+    public void PlayAttackSound()
     {
-        if (characterIndex >= 0 && characterIndex < characterSounds.Length)
+        if (attackSound != null)
         {
-            audioSource.clip = characterSounds[characterIndex];
+            audioSource.clip = attackSound;
+            audioSource.Play();
+        }
+    }
+
+    public void PlayDamageSound()
+    {
+        if (damageSound != null)
+        {
+            audioSource.clip = damageSound;
+            audioSource.Play();
+        }
+    }
+
+    public void PlayIdleSound()
+    {
+        if (idleSound != null)
+        {
+            audioSource.clip = idleSound;
             audioSource.Play();
         }
     }

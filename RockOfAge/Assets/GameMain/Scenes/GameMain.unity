@@ -8115,7 +8115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nowOnCamera: {fileID: 1054561371}
   nextOnCamera: {fileID: 1821725043}
-  rockCamera: {fileID: 1006063546}
+  rockCamera: {fileID: 0}
 --- !u!114 &1054561371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9746,6 +9746,7 @@ GameObject:
   - component: {fileID: 1319889822}
   - component: {fileID: 1319889821}
   - component: {fileID: 1319889824}
+  - component: {fileID: 1319889825}
   m_Layer: 13
   m_Name: PlayerCamera
   m_TagString: MainCamera
@@ -9861,6 +9862,19 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1319889825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1319889820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: add0d4174aa2b8745af53f17ae34a99f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cursorIcon: {fileID: 2800000, guid: ec096a945b9f60c4497ceb3cf4aea167, type: 3}
 --- !u!1 &1320550798
 GameObject:
   m_ObjectHideFlags: 0
@@ -12735,7 +12749,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nowOnCamera: {fileID: 1689187219}
   nextOnCamera: {fileID: 1821725043}
-  rockCamera: {fileID: 1006063546}
+  rockCamera: {fileID: 0}
 --- !u!114 &1689187219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13935,7 +13949,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nowOnCamera: {fileID: 1821725043}
   nextOnCamera: {fileID: 1054561371}
-  rockCamera: {fileID: 1006063546}
+  rockCamera: {fileID: 0}
 --- !u!1 &1824779702
 GameObject:
   m_ObjectHideFlags: 0
@@ -15479,7 +15493,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3a4e87d682ba1c4297a85e91245a92e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackUI: {fileID: 959344543}
+  hpImg: {fileID: 0}
   commonUI: {fileID: 630025679380767855}
   player1Txt: {fileID: 6806863271108445620}
   player2Txt: {fileID: 6251446997619437962}
@@ -15504,6 +15518,25 @@ MonoBehaviour:
   selectUnitSprite:
   - {fileID: 21300000, guid: 8e7f6fa250fe47041b8d9fd2529540f8, type: 3}
   - {fileID: 21300000, guid: a25125631f9d8c74a862587a598da606, type: 3}
+  attackUI: {fileID: 959344543}
+  player1NameTxt: {fileID: 0}
+  player2NameTxt: {fileID: 0}
+  player3NameTxt: {fileID: 0}
+  player4NameTxt: {fileID: 0}
+  player1ScoreTxt: {fileID: 0}
+  player2ScoreTxt: {fileID: 0}
+  player3ScoreTxt: {fileID: 0}
+  player4ScoreTxt: {fileID: 0}
+  player1Icon: {fileID: 0}
+  player2Icon: {fileID: 0}
+  player3Icon: {fileID: 0}
+  player4Icon: {fileID: 0}
+  player1userImg: {fileID: 0}
+  player2userImg: {fileID: 0}
+  player3userImg: {fileID: 0}
+  player4userImg: {fileID: 0}
+  crownImg: {fileID: 0}
+  chessImg: {fileID: 0}
   rockSprites:
   - {fileID: 21300000, guid: 1997df0aa385e9f478fa4097b89d754d, type: 3}
   - {fileID: 21300000, guid: 68c0544e349a60d4fae3f4a911c6415c, type: 3}
@@ -15526,6 +15559,7 @@ MonoBehaviour:
   readyTxt: {fileID: 291346765965360723}
   readyImg: {fileID: 8460971013483836605}
   userSelectUI: {fileID: 3520985901553886674}
+  endingUI: {fileID: 0}
 --- !u!114 &2077200390
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15540,6 +15574,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   userState: 0
   rockState: 0
+  resultState: 0
   attackRockSelected: 0
   team1Hp: 1000
   team2Hp: 1000
@@ -24899,19 +24934,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 385de643ea75aa84fb817e742b4dfc13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rockObject: {fileID: 0}
-  checkPoint: {fileID: 0}
-  rockStatus: {fileID: 11400000, guid: dab61d0b3f6ccc14fb6cf603baa77782, type: 2}
-  forms: []
-  isDebuffed: 0
-  debuffJumpForce: 0
-  jumpForce: 1000
-  maxSpeed: 50
-  gravityStrength: 100
-  attackPowerBase: 10
-  terrainLayer:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!222 &7480491444755687100
 CanvasRenderer:
   m_ObjectHideFlags: 0

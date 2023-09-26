@@ -5,7 +5,6 @@ using UnityEngine;
 public class CatObstacle : MoveObstacleBase, IHitObjectHandler
 {
     public AudioSource audioSource;
-    public AudioClip followingSound;
     public AudioClip attackSound;
 
     private float attackRange = 8f;
@@ -17,6 +16,7 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
     private bool isAttacked = false;
     private Vector3 catMotherOriginalPosition;
     private Quaternion catMotherOrigianlRotation;
+    private float attackSoundDelay = 0.3f; // 재생 딜레이 설정 (예: 5초)
 
     private void Awake()
     {
@@ -52,8 +52,6 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
     //이동
     public void MoveCat(Transform rockTransform) 
     {
-        audioSource.clip = followingSound;
-        audioSource.Play();
        obstacleAnimator.SetBool("isMoving", true);
         Quaternion lookDir = Quaternion.LookRotation(rockTransform.position - catMother.position);
         catMother.rotation = Quaternion.Slerp(catMother.rotation, lookDir, turnSpeed * Time.deltaTime);
@@ -105,8 +103,7 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Rock") && !isAttacked)
         {
-            audioSource.clip = attackSound;
-            audioSource.Play();
+            
             Debug.Log("공격됨");
             ActiveAttack();
         }
@@ -144,6 +141,14 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
         SetDebuff(0.5f, 2f, 0.5f);
         while (startTime <= 5f)
         {
+            if (!audioSource.isPlaying && Time.time > attackSoundDelay)
+            {
+                audioSource.clip = attackSound;
+                audioSource.Play();
+
+                // 딜레이를 다시 설정하여 다음 재생을 예약
+                attackSoundDelay = Time.time + 0.3f; // 다시 5초 후에 재생
+            }
             startTime += Time.deltaTime;
             yield return null;
             catMother.transform.position = rockTransform.position + new Vector3(0.4f, 0.4f, 0f);
@@ -157,7 +162,11 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
 
         //catMother.transform.position = catMotherOriginalPosition;
     }
-
+    //public void AtaackAudio()
+    //{
+    //    audioSource.clip = attackSound;
+    //    audioSource.Play();
+    //}
     public void SetDebuff(float velocityValue, float massValue, float jumpValue)
     {
         rockTransform.GetComponentInParent<RockBase>().SetObstacleMultiple(velocityValue, massValue, jumpValue);

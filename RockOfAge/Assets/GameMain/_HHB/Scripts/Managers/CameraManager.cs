@@ -7,11 +7,6 @@ public class CameraManager : GlobalSingleton<CameraManager>
 {
     public static Queue<GameObject> enemyCameraQueue = new Queue<GameObject>(2);
 
-    protected override void Update()
-    {
-        
-    }
-
     public void SetRockCamera(GameObject userRock, Vector3 startPoint)
     {
         Transform motherRock = userRock.transform;
@@ -122,5 +117,13 @@ public class CameraManager : GlobalSingleton<CameraManager>
             Debug.Log("CAMERA LOGIC ERROR");
         }
 
+    }
+
+    public void TurnOnTopViewCamera()
+    {
+        GameObject topViewCamera = Global_PSC.FindTopLevelGameObject("TopViewCamera");
+        GameObject rockCamera = Global_PSC.FindTopLevelGameObject("RockCamera");
+        rockCamera.SetActive(false);
+        topViewCamera.SetActive(true);
     }
 }

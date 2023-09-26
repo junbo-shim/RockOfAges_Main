@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,6 +23,13 @@ public partial class UIManager : MonoBehaviour
         SwitchUIManager("commonUI");
     }
     //} ChangeStateUnitSelectToRockSelect()
+
+    public void ChangeAttackToSelect()
+    {
+        ItemManager.itemManager.userRockChoosed[0] = 0;
+        SwitchUIManager("rockSelectUI");
+        SwitchUIManager("attackUI");
+    }
 
     // 유저가 선택한 유닛들을 버튼을 프린트하는 함수
     public void InstantiateUserSelect()

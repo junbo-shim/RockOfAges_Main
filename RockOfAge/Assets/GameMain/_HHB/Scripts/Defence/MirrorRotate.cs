@@ -1,7 +1,5 @@
 using UnityEngine;
-using System;
 using System.Collections;
-using Unity.VisualScripting;
 
 public class MirrorRotate : MonoBehaviour
 {

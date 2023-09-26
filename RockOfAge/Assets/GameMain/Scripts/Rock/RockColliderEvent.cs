@@ -25,9 +25,15 @@ public class RockColliderEvent : MonoBehaviour
             return;
         }
 
+        if (parent.isDestroy) 
+        {
+            return;
+        
+        }
+
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         power = rigidbody.velocity.magnitude;
-        Debug.Log(power);
+       // Debug.Log(power);
 
 
         if (parent.IsMove(COLLISION_LIMIT_LOW))
@@ -37,6 +43,12 @@ public class RockColliderEvent : MonoBehaviour
             AttackGate(collision);
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        AttackObstacle(other);
+    }
+
     private void AttackObstacle(Collision collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
@@ -46,9 +58,16 @@ public class RockColliderEvent : MonoBehaviour
         }
     }
 
+    private void AttackObstacle(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
+        {
+            other.GetComponentInParent<ObstacleBase>().Delete();
+        }
+    }
+
     private void AttackWall(Collision collision)
     {
-        Debug.Log(parent.IsMove(2));
         if (parent.IsMove(2) && collision.gameObject.layer == LayerMask.NameToLayer("Walls"))
         {
             StartCoroutine(parent.CameraShakeRoutine(SHAKE_TIME, power, 3));

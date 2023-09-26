@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -9,6 +10,7 @@ public class BuildManager : MonoBehaviour
 {
     public static BuildManager instance;
     public ObstacleBase buildTarget = null;
+
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!테스트 코드
     //해당 정보는 item manager에 저장될 예정??
@@ -138,7 +140,13 @@ public class BuildManager : MonoBehaviour
                         Quaternion rotation;
                         GetViewerPosition(dragBuildPosition[i], Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0), out position, out rotation);
 
-                        ObstacleBase build = buildTarget.Build(position, rotation);
+                        if (buildTarget.dragObstacle && i!=0 && i!= dragBuildPosition.Count-1)
+                        {
+                            Debug.LogWarning(whereDragCursor);
+                            rotation = Quaternion.Euler(0, (int)whereDragCursor * ONCE_ROTATE_EULER_ANGLE, 0);
+                        }
+
+                        ObstacleBase build = buildTarget.Build(position, rotation, i, dragBuildPosition.Count);
                         build.name = buildTarget.name + "_" + currCursorGridIndex.z + "_" + currCursorGridIndex.x;
                         SetBitArrays(dragBuildPosition[i], buildTarget.status.Size);
                     }
@@ -189,6 +197,7 @@ public class BuildManager : MonoBehaviour
     //terrain 비교시 tag로 team, 기본 건설 불가 타일등을 비교하는 부분 추가해야할거같음
     public void InitTerrainData()
     {
+        int checkLayer = Global_PSC.FindLayerToName("Terrains") + Global_PSC.FindLayerToName("Walls") + Global_PSC.FindLayerToName("Obstacles");
         //모든 좌표를 검사한다.
         buildState.SetAll(false);
         for (int z = -MAP_SIZE_Z / 2; z < MAP_SIZE_Z / 2; z++)
@@ -196,14 +205,25 @@ public class BuildManager : MonoBehaviour
             for (int x = -MAP_SIZE_X / 2; x < MAP_SIZE_X / 2; x++)
             {
                 RaycastHit raycastHit;
-                if (Physics.Raycast(new Vector3(x, MAP_SIZE_Y, z) + (Vector3.one - Vector3.up) * .5f, Vector3.down, out raycastHit, float.MaxValue, Global_PSC.FindLayerToName("Terrains")))
+                if (Physics.Raycast(new Vector3(x, MAP_SIZE_Y, z) + (Vector3.one - Vector3.up) * .5f, Vector3.down, out raycastHit, float.MaxValue, checkLayer))
                 {
-                    //건설 불가 타일 검사
-                    if (raycastHit.collider.CompareTag("Block"))
+                    //건설 불가 타일 검사(안부셔지는 장애물)
+                    if (raycastHit.collider.gameObject.layer == LayerMask.NameToLayer("Walls"))
                     {
                         continue;
                     }
 
+                    //건설 불가 타일 검사(부셔지는 장애물)
+                    if (raycastHit.collider.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
+                    {
+                        continue;
+                    }
+
+                    //건설 불가 타일 검사(특정 타일)
+                    if (raycastHit.collider.CompareTag("Block"))
+                    {
+                        continue;
+                    }
                     //건설 불가 타일 검사 통과시 
                     buildState.Set((z + MAP_SIZE_Z / 2) * MAP_SIZE_Z + (x + MAP_SIZE_X / 2), true);
 
@@ -427,7 +447,7 @@ public class BuildManager : MonoBehaviour
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("PscTestScene"))
         {
 
-            return false;
+            return true;
         }
 
         if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
@@ -505,7 +525,7 @@ public class BuildManager : MonoBehaviour
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("PscTestScene"))
         {
 
-            return true;
+            return false;
         }
         Debug.Log("?");
         if(buildTarget == null)

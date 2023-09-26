@@ -13,6 +13,12 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
     public Transform throwPoint; // 돌을 던질 위치
     public GameObject rockPrefab; // 던질 돌의 프리팹
     public Animator animator; // 애니메이터 컴포넌트에 대한 참조
+    public AudioSource audioSource;
+    public AudioClip rotateSound;
+    public AudioClip throwingSound;
+    public AudioClip relodingSound;
+    public AudioClip DeadSound;
+
     private Quaternion initialRotation; // 투석기의 초기 로테이션
     private bool canThrowRock = true; // 돌을 던질 수 있는 상태인지 여부를 나타내는 변수
     private Vector3 targetPosition; // 감지한 객체의 위치
@@ -22,10 +28,10 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
     void Start()
     {
         Init();
-
         animator = GetComponent<Animator>();
         // 투석기의 초기 로테이션을 저장합니다.
         initialRotation = transform.rotation;
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -50,12 +56,16 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
 
                 // 투석기의 초기 로테이션을 기준으로 회전
                 targetRotation *= initialRotation;
-
                 //x와 z 로테이션을 초기 로테이션으로 고정
                 targetRotation.eulerAngles = new Vector3(initialRotation.eulerAngles.x, targetRotation.eulerAngles.y, initialRotation.eulerAngles.z);
 
                 // 회전 속도를 적용하여 부드럽게 회전
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+                if(!audioSource.isPlaying)
+                {
+                    audioSource.clip = rotateSound;
+                    audioSource.Play();
+                }
                 // 투석기와 돌 사이의 각도 계산
                 float angleToRock = Vector3.Angle(transform.forward, directionToTarget);
 
@@ -84,7 +94,6 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
         }
     }
 
-    protected override void Dead() { }
 
     void OnDrawGizmos()
     {
@@ -113,6 +122,8 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
             // 돌을 해당 방향으로 발사합니다.
             Vector3 launchVelocity = (directionToTarget * force);
             rock.GetComponent<Rigidbody>().velocity = launchVelocity;
+            audioSource.clip = throwingSound;
+            audioSource.Play();
 
             // 일정 시간(rockDestroyDelay)이 지난 후에 돌을 제거
             StartCoroutine(DestroyRock(rock));
@@ -120,16 +131,26 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
     }
     IEnumerator DestroyRock(GameObject rock)
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         Destroy(rock);
+    }
+    protected override void Dead() 
+    {
+        audioSource.clip = DeadSound;
+        audioSource.Play();
+        Destroy(gameObject);
     }
 
     public void Hit(int damage)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("맞았는가");
+        currHealth -= damage;
+        if (currHealth <= 0)
+        {
+            Dead();
+        }
     }
-
-    public void HitReaction()
+public void HitReaction()
     {
         throw new System.NotImplementedException();
     }

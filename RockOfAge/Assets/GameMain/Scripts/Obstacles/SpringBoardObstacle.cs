@@ -96,7 +96,8 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
     {
         if (!isBuildComplete)
         {
-            PhotonNetwork.Destroy(gameObject);
+            //PhotonNetwork.Destroy(gameObject);
+            Delete();
         }
 
         Debug.Log("장애물 히트");
@@ -104,10 +105,23 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
         {
             return;
         }
+
+        HitReaction();
+
+        currHealth -= damage;
+        if (currHealth <= 0)
+        {
+            Die();
+        }
     }
 
     public void HitReaction()
     {
         throw new System.NotImplementedException();
+    }
+
+    void Die()
+    {
+        Destroy(gameObject);
     }
 }

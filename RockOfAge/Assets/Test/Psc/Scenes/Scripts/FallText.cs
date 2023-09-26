@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Splines;
 
 public class FallText : MonoBehaviour
 {
@@ -39,9 +40,14 @@ public class FallText : MonoBehaviour
 
     IEnumerator FallTextRoutine()
     {
+
         for(int i = 0; i < fallingText.Length; i++)
         {
             yield return new WaitForSeconds(.1f);
+            if (rockObject == null)
+            {
+                yield break ;
+            }
             TMP_Text text = Instantiate(textObject, rockObject.position, Quaternion.identity, transform);
             text.transform.rotation = Camera.main.transform.rotation;   
             text.text = fallingText[i].ToString();

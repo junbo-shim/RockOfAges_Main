@@ -42,6 +42,7 @@ public class CycleManager : MonoBehaviour
     public PlayerDataContainer dataContainer;
     public PhotonView dataContainerView;
     public string layerName;
+    public string userID = default;
     #endregion
 
 
@@ -89,6 +90,7 @@ public class CycleManager : MonoBehaviour
             if (mydata.Key.ToString() == dataContainer.GetComponent<PhotonView>().ViewID.ToString())
             {
                 layerName = mydata.Value.ToString();
+                cycleManager.userID = layerName;
             }
         }
     }
@@ -174,11 +176,13 @@ public class CycleManager : MonoBehaviour
     #region AttackCycle
     //{ ChangeCycleAttackToDefence()
     // 공격 싸이클에서 방어 싸이클로 전환하는 함수
-    public void ChangeCycleAttackToDefence()
+    public void ChangeCycleAttackToSelect()
     {
         if (userState == (int)UserState.ATTACK)
         {
             userState = (int)UserState.DEFENCE;
+            rockState = (int)RockState.ROCKSELECT;
+            UIManager.uiManager.ChangeStateUnitSelectToRockSelect();
         }
         else { Debug.Log("GAME LOGIC ERROR"); }
     }
@@ -384,7 +388,7 @@ public class CycleManager : MonoBehaviour
         #endregion
 
         #region subCameras
-        GameObject[] enemyCameras = new GameObject[3];
+        GameObject[] enemyCameras = new GameObject[2];
         enemyCameras[0] = Global_PSC.FindTopLevelGameObject("EnemyCamera");
         enemyCameras[1] = Global_PSC.FindTopLevelGameObject("EnemyRockCamera");
         // 2번빠짐
@@ -406,6 +410,8 @@ public class CycleManager : MonoBehaviour
         {
             if (team_ == "Team1")
             {
+                Debug.Log(enemyCamera.name);
+                Debug.Log(enemyCamera.gameObject.layer.ToString());
                 enemyCamera.gameObject.layer = LayerMask.NameToLayer("Team2");
             }
             else

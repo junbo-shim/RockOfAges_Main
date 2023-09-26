@@ -4,7 +4,6 @@ using RayFire;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class RockBase : MonoBehaviour, IHitObjectHandler
@@ -33,7 +32,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected MeshRenderer rockRenderer;
     protected MeshFilter rockMesh;
     protected MeshCollider rockCollider;
-    protected PhotonView photonView;
+    public PhotonView photonView;
+    //public PhotonView PhotonView { get; private set; }
     
     protected float currHp;
     protected float rockHeightHalf;
@@ -105,22 +105,60 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     }
     //} 0920 홍한범
 
+    // ! Photon
+    private int CheckRockID(string rockViewID) 
+    {
+        int result = ReturnRockFirstNumber(rockViewID);
+        int team1 = 1;
+        int team2 = 2;
+
+        // Warning : Player 1, Player 2 일 경우
+        if (result == 1 || result == 2) 
+        {
+            return team1;
+        }
+        // Warning : Player 3, Player 4 일 경우
+        else
+        {
+            return team2;
+        }
+    }
+
+    private int ReturnRockFirstNumber(string rockViewID)
+    {
+        char firstNumber = rockViewID.ToCharArray()[0];
+        return firstNumber;
+    }
+
     public virtual void Init()
     {
         // ! PSC Editted
         photonView = GetComponent<PhotonView>();
+        CheckRockID(photonView.ViewID.ToString());
+
+         
         if (photonView.IsMine)
         {
-
             //추후 시네머신 카메라로 바꿀것
             mainCamera = Camera.main;
         }
         else
         {
+            //if (ReturnRockFirstNumber(photonView.ViewID.ToString()))
+            //{
 
+            //}
+            //if (CheckRockID(photonView.ViewID.ToString()) == 1)
+            //{
+            //    CameraManager.enemyCameraQueue.Enqueue(gameObject);
+            //}
+            //else if (CheckRockID(photonView.ViewID.ToString()) == 2)
+            //{
+            //    CameraManager.enemyCameraQueue.Enqueue(gameObject);
+            //}
             //카메라 큐 추가할 공간
         }
-       
+
         rockObject = transform.Find("RockObject");
         checkPoint = transform.Find("CheckPoint");
         checkPoint.position = rockObject.position;
@@ -397,11 +435,10 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             //Debug.Log(contact.thisCollider.transform.parent.gameObject + "/"+ gameObject);
             if (contact.thisCollider.transform.parent.gameObject == gameObject)
             {
-
+                // ! Photon
                 hitObject.Hit((int)GetDamageValue());
-                //Debug.Log(GetDamageValue());
                 break;
-
+                #region Legacy
                 /* // 충돌 지점의 법선 벡터와 gameobject의 진행 방향을 계산합니다.
                  Vector3 collisionNormal = contact.normal;
                  Vector3 forwardDirection = rockRigidbody.velocity.normalized;
@@ -412,19 +449,31 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
                  // 일정 각도 이내의 충돌을 확인합니다.
                  float maxCollisionAngle = COLLISION_ALLOW_ANGLE; // 예시: 45도 이내의 충돌을 확인
                  Debug.Log(angle + "/" + maxCollisionAngle);
- */
-               /* if (angle <= maxCollisionAngle)
-                {
-                    hitObject.Hit((int)GetDamageValue());
-                    break;
-                }
-                else
-                {
-                    continue;
-                }*/
+                */
+                /* if (angle <= maxCollisionAngle)
+                 {
+                     hitObject.Hit((int)GetDamageValue());
+                     break;
+                 }
+                 else
+                 {
+                     continue;
+                 }*/
+                #endregion
             }
-
         }
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Castle"))
+        {
+            Invoke("EndAttack", 2f);
+            CycleManager.cycleManager.ChangeCycleAttackToSelect();
+        }
+    }
+
+    // ! Photon
+    private void EndAttack() 
+    {
+        PhotonNetwork.Destroy(gameObject);
     }
 
     public IEnumerator CameraShakeRoutine(float time, float AmplitudeGain, float FrequencyGain)
@@ -536,7 +585,10 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected virtual void Die()
     {
         isDestroy = true;
+        CycleManager.cycleManager.ChangeCycleAttackToSelect();
         rayfireRigid.Demolish();
+        Invoke("EndAttack", 2f);
+
         //rayfireRigid.Activate();
 
         //Destroy(gameObject);

@@ -17,11 +17,14 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     public Transform LoginPopup { get; private set; }
     public Transform SignupPopup { get; private set; }
 
+    public string playerNickName;
+
+
     protected override void Awake()
     {
         FindUIObjects();
         PhotonScene = "TitleScene";
-        GameScene = "GameMain";
+        GameScene = "0921";
 
         cachedRoomList = new List<RoomInfo>();
         displayRoomList = new List<GameObject>();
@@ -83,17 +86,7 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
 
         var request = new LoginWithCustomIDRequest { CustomId = PlayFabSettings.DeviceUniqueIdentifier,
             CreateAccount = true };
-        PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginFailure);
-        
-        //if () 
-        //{
-            PhotonNetwork.NickName = PlayFabSettings.DeviceUniqueIdentifier;
-            Invoke("ConnectToServer", 2f);
-        //}
-        //else 
-        //{
-        //    Debug.Log("Playfab Quick Login failed");
-        //}
+        PlayFabClientAPI.LoginWithCustomID(request, OnQuickLoginSuccess, OnLoginFailure);
     }
     #endregion
 
@@ -111,14 +104,21 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         PlayerPrefs.SetString("name", emailInput.text);
 
         PlayFabClientAPI.LoginWithEmailAddress(request, OnLoginSuccess, OnLoginFailure);
-        PhotonNetwork.NickName = emailInput.text;
-        Invoke("ConnectToServer", 3f);
+    }
+
+    private void OnQuickLoginSuccess(LoginResult result) 
+    {
+        playerNickName = result.PlayFabId;
+        Invoke("ConnectToServer", 2f);
     }
 
     private void OnLoginSuccess(LoginResult result) 
     {
         LoginPopup.GetComponentInChildren<TMP_Text>().color = Color.green;
         LoginPopup.GetComponentInChildren<TMP_Text>().text = "로그인 성공";
+
+        var request = new GetPlayerProfileRequest();
+        PlayFabClientAPI.GetPlayerProfile(request, OnGetProfileSuccess, OnGetProfileFailure);
     }
 
     private void OnLoginFailure(PlayFabError error)
@@ -126,6 +126,21 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         Debug.LogFormat("로그인 실패\n오류 코드 : {0}", error);
         LoginPopup.GetComponentInChildren<TMP_Text>().color = Color.red;
         LoginPopup.GetComponentInChildren<TMP_Text>().text = "로그인 실패, 오류 코드 : " + error;
+    }
+
+    private void OnGetProfileSuccess(GetPlayerProfileResult result) 
+    {
+        Debug.Log("플레이어 정보 읽기 성공");
+        playerNickName = result.PlayerProfile.DisplayName;
+        Invoke("ConnectToServer", 3f);
+    }
+
+    private void OnGetProfileFailure(PlayFabError error) 
+    {
+        Debug.LogFormat("플레이어 정보 읽기 실패\n오류 코드 : {0}", error);
+
+        var request = new GetPlayerProfileRequest();
+        PlayFabClientAPI.GetPlayerProfile(request, OnGetProfileSuccess, OnGetProfileFailure);
     }
     #endregion
 

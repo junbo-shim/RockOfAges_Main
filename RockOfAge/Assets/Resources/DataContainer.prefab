@@ -45,9 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7138967e58969d40a98e2ec3b59bc97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerID: 
-  playerName: 
-  roomName: 
   otherPlayerReady: 0
 --- !u!114 &8884712648900300517
 MonoBehaviour:

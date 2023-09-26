@@ -1158,7 +1158,7 @@ GameObject:
   - component: {fileID: 8207236455412835050}
   - component: {fileID: 5640999794219051919}
   m_Layer: 0
-  m_Name: Cat
+  m_Name: 18
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

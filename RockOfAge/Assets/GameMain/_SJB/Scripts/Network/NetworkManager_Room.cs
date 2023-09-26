@@ -47,8 +47,6 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         base.OnPlayerLeftRoom(otherPlayer);
-
-
     }
 
     public override void OnLeftRoom()
@@ -58,6 +56,11 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         if (roomSetting != null) 
         {
             roomSetting.Clear();
+        }
+
+        if (myDataContainer != null) 
+        {
+            PhotonNetwork.Destroy(myDataContainer.GetComponent<PhotonView>());
         }
     }
 }

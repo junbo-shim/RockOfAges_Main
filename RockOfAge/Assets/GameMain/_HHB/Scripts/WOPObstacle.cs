@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class WOPObstacle : HoldObstacleBase
 {
@@ -31,7 +32,7 @@ public class WOPObstacle : HoldObstacleBase
     //죽음
     protected override void Dead() 
     {
-        Destroy(this.gameObject);
+        PhotonNetwork.Destroy(this.gameObject);
     }
 
     private void TurnAroundObstacle()

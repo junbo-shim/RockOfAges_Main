@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class CowObstacle : HoldObstacleBase
 {
@@ -59,7 +60,7 @@ public class CowObstacle : HoldObstacleBase
     {
         cow.SetParent(null);
         yield return new WaitForSeconds(1f);
-        Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
     }
 
     IEnumerator DelayBool()

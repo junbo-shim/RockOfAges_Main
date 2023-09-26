@@ -1833,7 +1833,7 @@ Transform:
   m_GameObject: {fileID: 179067955}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 823, y: -106, z: 0}
+  m_LocalPosition: {x: -7, y: 299, z: 1845}
   m_LocalScale: {x: 300, y: 10, z: 300}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11730,6 +11730,7 @@ MonoBehaviour:
   nowOnCamera: {fileID: 1054561371}
   nextOnCamera: {fileID: 1821725043}
   rockCamera: {fileID: 1006063548}
+  dataContainerView: {fileID: 0}
 --- !u!114 &1054561371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14409,7 +14410,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 16375
+    m_Bits: 0
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -15631,7 +15632,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 24567
+    m_Bits: 0
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 86986d9898751c9438105f15054a03ad, type: 2}
   m_TargetDisplay: 0
@@ -19554,6 +19555,7 @@ MonoBehaviour:
   nowOnCamera: {fileID: 1821725043}
   nextOnCamera: {fileID: 1054561371}
   rockCamera: {fileID: 1006063548}
+  dataContainerView: {fileID: 0}
 --- !u!1 &1824779702
 GameObject:
   m_ObjectHideFlags: 0
@@ -20625,9 +20627,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1918064891}
   - component: {fileID: 1918064892}
-  m_Layer: 0
+  - component: {fileID: 1918064893}
+  m_Layer: 11
   m_Name: Castle_Door
-  m_TagString: Team01
+  m_TagString: Team02
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -20641,7 +20644,7 @@ Transform:
   m_GameObject: {fileID: 1918064890}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 823, y: -99, z: 0}
+  m_LocalPosition: {x: -7, y: 306, z: 1845}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -20670,6 +20673,29 @@ MonoBehaviour:
   - {fileID: 680748446}
   - {fileID: 2088965016}
   gateHP: 0
+--- !u!114 &1918064893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918064890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 1918064892}
+  sceneViewId: 2
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1919693535
 GameObject:
   m_ObjectHideFlags: 0
@@ -22016,7 +22042,7 @@ Transform:
   m_GameObject: {fileID: 2027582009}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 823, y: -99, z: 0}
+  m_LocalPosition: {x: -7, y: 306, z: 1845}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -22586,6 +22612,10 @@ MonoBehaviour:
   attackRockSelected: 0
   team1Hp: 600
   team2Hp: 600
+  dataContainer: {fileID: 0}
+  dataContainerView: {fileID: 0}
+  layerName: 
+  userID: 
 --- !u!1 &2085657708
 GameObject:
   m_ObjectHideFlags: 0
@@ -28387,7 +28417,7 @@ Transform:
   m_GameObject: {fileID: 5650856980066121765}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 823, y: -99, z: 0}
+  m_LocalPosition: {x: 1, y: 312, z: 1828}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -30449,7 +30479,7 @@ Transform:
   m_GameObject: {fileID: 8846078298418112441}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 823, y: -99, z: 0}
+  m_LocalPosition: {x: 1, y: 312, z: 1828}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -38114,7 +38144,7 @@ Transform:
   m_GameObject: {fileID: 2054295334910029851}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 823, y: -106, z: 0}
+  m_LocalPosition: {x: 1, y: 305, z: 1828}
   m_LocalScale: {x: 300, y: 10, z: 300}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -39767,6 +39797,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3760277116020811317}
   - component: {fileID: 1842369192765856612}
+  - component: {fileID: 8846078298418112442}
   m_Layer: 11
   m_Name: Castle_Door
   m_TagString: Team01
@@ -39774,6 +39805,29 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8846078298418112442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8846078298418112441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 1842369192765856612}
+  sceneViewId: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!4 &8867137070962489420
 Transform:
   m_ObjectHideFlags: 0
@@ -40238,63 +40292,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5004461872873296246}
   m_CullTransparentMesh: 1
---- !u!1001 &9205147994200316635
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981963209024137726, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9042136311767895156, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
-      propertyPath: m_Name
-      value: Rock
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: a5a28b7bfd19907438e54ace1e831037, type: 3}
 --- !u!1 &9215149657093699589
 GameObject:
   m_ObjectHideFlags: 0
@@ -40354,4 +40351,3 @@ SceneRoots:
   - {fileID: 1950592346}
   - {fileID: 129568010}
   - {fileID: 301813534}
-  - {fileID: 9205147994200316635}

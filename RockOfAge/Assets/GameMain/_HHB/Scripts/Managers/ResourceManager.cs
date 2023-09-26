@@ -45,7 +45,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
             }
             else { Debug.Log("Failed To Load Rock" + i);}
         }
-        for (int i = 11; i < 13; i++)
+        for (int i = 11; i < 20; i++)
         {
             //GameObject unitPrefab = Resources.Load<GameObject>("Units/" + i);
             GameObject unitPrefab = Resources.Load<GameObject>(i.ToString());
@@ -152,28 +152,21 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         int id = ItemManager.itemManager.userRockChoosed[0];
         GameObject gameObject = GetGameObjectByID(id);
 
+        GameObject userRockObject =
+               PhotonNetwork.Instantiate(gameObject.name, Vector3.zero, Quaternion.identity);
+        userRockObject.SetChildPosition(team1StartPoint, "RockObject");
 
-
-        GameObject userRockObject = null;
         // ! Photon-Alert
         FindMyViewID();
         if (playerNumber == "Player1" || playerNumber == "Player2")
         {
-            userRockObject =
-               PhotonNetwork.Instantiate(gameObject.name, Vector3.zero, Quaternion.identity);
-            userRockObject.SetChildPosition(team1StartPoint, "RockObject");
-
             if (userRockObject.GetComponent<PhotonView>().IsMine == true)
             {
                 CameraManager.Instance.SetRockCamera(userRockObject, team1StartPoint);
             }
         }
         else if (playerNumber == "Player3" || playerNumber == "Player4")
-        {
-            userRockObject =
-               PhotonNetwork.Instantiate(gameObject.name, Vector3.zero, Quaternion.identity);
-            userRockObject.SetChildPosition(team2StartPoint, "RockObject");
-
+        { 
             if (userRockObject.GetComponent<PhotonView>().IsMine == true)
             {
                 CameraManager.Instance.SetRockCamera(userRockObject, team2StartPoint);
@@ -212,57 +205,6 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
 
 
     #region 검색용 함수
-    public GameObject FindTopLevelGameObject(string name_)
-    {
-        GameObject[] rootObjs = SceneManager.GetActiveScene().GetRootGameObjects();
-        foreach (GameObject obj in rootObjs) 
-        {
-            if (obj.name == name_)
-            {
-                return obj;
-            }
-        }
-        return null;
-    }
-
-    public List<GameObject> FindAllTargets(string rootName, string targetName)
-    {
-        //Debug.Log("FindAllTargets 들어옴");
-        GameObject root = FindTopLevelGameObject(rootName);
-        List<GameObject> results = new List<GameObject>();
-
-        if (root != null)
-        {
-            FindAllTargetsRecursive(root.transform, targetName, results);
-        }
-        else
-        {
-            Debug.LogWarning("Root GameObject not found.");
-        }
-
-        //foreach (GameObject obj in results)
-        //{
-        //    Debug.LogFormat("result : {0}",obj);
-        //}
-
-        return results;
-    }
-
-    private void FindAllTargetsRecursive(Transform rootTransform, string targetName, List<GameObject> results)
-    {
-        foreach (Transform childTransform in rootTransform)
-        {
-            GameObject childGameObject = childTransform.gameObject;
-            if (childGameObject.name.StartsWith(targetName))
-            {
-                results.Add(childGameObject);
-            }
-
-            FindAllTargetsRecursive(childTransform, targetName, results);
-        }
-
-    }
-
     public TextMeshProUGUI FindUnitTextById(int id_)
     {
         List<GameObject> textObjs = new List<GameObject>();
@@ -296,4 +238,6 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         }
         return targetObj;
     }
+    #endregion
 }
+

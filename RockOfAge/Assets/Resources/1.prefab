@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 6564753682107293335}
   - component: {fileID: 3123156956091566398}
   - component: {fileID: 6895403020130294788}
+  - component: {fileID: 5293160586235432411}
   m_Layer: 12
   m_Name: RockObject
   m_TagString: Untagged
@@ -436,6 +437,22 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 3.8473477
   m_Center: {x: -0.08957237, y: -0.02983272, z: -0.011404753}
+--- !u!114 &5293160586235432411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2445573117503978258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &5532189106983819219
 GameObject:
   m_ObjectHideFlags: 0
@@ -508,6 +525,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8981963209024137726}
   - component: {fileID: 2746066612626366483}
+  - component: {fileID: 8916191740023332484}
   m_Layer: 0
   m_Name: 1
   m_TagString: Untagged
@@ -525,7 +543,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8366549035736036781}
@@ -553,6 +571,30 @@ MonoBehaviour:
   fallText: {fileID: 0}
   trail: {fileID: 743103346689614724, guid: 84546c159d51e96458f1d23a538363e7, type: 3}
   forms: []
+  photonView: {fileID: 0}
   isGround: 0
   isDebuffed: 0
   debuffJumpForce: 0
+--- !u!114 &8916191740023332484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9042136311767895156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 5293160586235432411}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

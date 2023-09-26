@@ -54,6 +54,16 @@ MonoBehaviour:
   - SendPlayerPosition
   - ChangeMasterReadyValue
   - StartGame
+  - MakeOthersDequeue
+  - MakeOthersEnqueue
+  - ChangeCheck
+  - ChangeID
+  - PrintHP
+  - SendHitToMaster
+  - ActivateHitInMaster
+  - UpdateGateHP
+  - RPCHit
+  - HitReaction
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
 {
@@ -95,7 +96,7 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
     {
         if (!isBuildComplete)
         {
-            Destroy(gameObject);
+            PhotonNetwork.Destroy(gameObject);
         }
 
         Debug.Log("장애물 히트");

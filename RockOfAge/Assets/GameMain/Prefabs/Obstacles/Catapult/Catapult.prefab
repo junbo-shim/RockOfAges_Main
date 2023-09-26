@@ -281,6 +281,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 7874c6c5501f0a64192d36378d81f0a0, type: 2}
   buildPositionY: 0
+  kjhObjectPrefab: {fileID: 2044133147384927099, guid: 8a36354b176d55b4c91e3978e6f53301, type: 3}
   dragObstacle: 0
   detectionRadius: 10
   Rock:
@@ -290,6 +291,11 @@ MonoBehaviour:
   throwPoint: {fileID: 7128650361885459335}
   rockPrefab: {fileID: 7788854359641586706, guid: eac375eb169135d4faff999d25faba4d, type: 3}
   animator: {fileID: 135898000595859776}
+  audioSource: {fileID: 0}
+  rotateSound: {fileID: 8300000, guid: 520882d63df6a5c479059ed7f5acd2a5, type: 3}
+  throwingSound: {fileID: 8300000, guid: 4d7a40af6be9a2e4eaab20dc2429bc88, type: 3}
+  relodingSound: {fileID: 8300000, guid: 8026f70d7bd14a94e9c833c9c5960940, type: 3}
+  DeadSound: {fileID: 8300000, guid: 8bc51da913ff495479fd0bfbc4a4b76f, type: 3}
 --- !u!1 &4611856796849270021
 GameObject:
   m_ObjectHideFlags: 0

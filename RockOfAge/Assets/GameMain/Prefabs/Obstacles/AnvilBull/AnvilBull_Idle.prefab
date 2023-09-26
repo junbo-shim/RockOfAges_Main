@@ -612,7 +612,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7436182173033290781}
   serializedVersion: 4
-  m_Mass: 200
+  m_Mass: 10
   m_Drag: 1
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -645,14 +645,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 97a5264bf24ab344cbd787db7ebb352c, type: 2}
   buildPositionY: 0
+  kjhObjectPrefab: {fileID: 0}
   dragObstacle: 0
-  detectionRadius: 5
+  detectionRadius: 4
   detectionAngle: 100
   rockLayer:
     serializedVersion: 2
     m_Bits: 4096
   chargeSpeed: 10
   returnSpeed: 5
+  audioSource: {fileID: 0}
+  attackSound: {fileID: 8300000, guid: 9c685f03f54143242b49a8560600a5d3, type: 3}
+  idleSound: {fileID: 8300000, guid: 1ca17e1897ec47547bab857ab898d655, type: 3}
+  dieSound: {fileID: 8300000, guid: 270c75434be37c9469c924d58c6b1156, type: 3}
 --- !u!4 &7816402758034884263 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4643476848c898040b5def78ab0f3cb3, type: 3}

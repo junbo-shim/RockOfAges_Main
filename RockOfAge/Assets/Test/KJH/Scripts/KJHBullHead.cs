@@ -98,6 +98,28 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         }
     }
 
+    /*bool isTest = true;
+
+    //맵에 Build
+    public override ObstacleBase Build(Vector3 position, Quaternion rotate, int currIndex, int count)
+    {
+        //오브젝트 생성
+        ObstacleBase obstacle = Instantiate(this, position, rotate);
+
+        //스케일 변경
+        obstacle.transform.localScale = obstacle.transform.localScale;
+        Destroy(obstacle.transform.GetChild(0).gameObject);
+
+        if (!isTest)
+        {
+            //버튼 데이터 변경
+            GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(status.Id);
+            unitButton.GetComponent<CreateButton>().buildCount += 1;
+            UIManager.uiManager.RePrintUnitCount(status.Id);
+        }
+        return obstacle;
+    }*/
+
     void ChargeToLastDetectedRock()
     {
 

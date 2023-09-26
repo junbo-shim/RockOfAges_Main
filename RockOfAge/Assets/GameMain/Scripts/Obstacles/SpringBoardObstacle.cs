@@ -95,7 +95,7 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
     {
         if (!isBuildComplete)
         {
-            Destroy(gameObject);
+            Delete();
         }
 
         Debug.Log("장애물 히트");

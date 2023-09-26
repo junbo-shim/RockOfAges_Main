@@ -7,6 +7,8 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
     private GameObject colliderParts = default;
     private bool isAttacked = false;
 
+    public AudioSource audioSource;
+
     //init
     private void Awake()
     {
@@ -15,6 +17,7 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
 
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         //스프링이 튀어오를때 각도가 변하는 bone의 위치
         colliderParts = transform.GetChild(0).GetChild(1).GetChild(1).gameObject;
         //초기 animation 상태
@@ -30,6 +33,7 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
     //충돌처리
     private void OnCollisionEnter(Collision collision)
     {
+        audioSource.Play();
         CheckState(collision);
     }
     private void OnCollisionStay(Collision collision)

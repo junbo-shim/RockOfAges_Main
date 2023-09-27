@@ -1,10 +1,6 @@
-using PlayFab.GroupsModels;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-
 
 public enum Position 
 { 
@@ -16,24 +12,26 @@ public class FragmentControl : MonoBehaviour
     private RectTransform fragmentRect;
     float startX = -512f;
     float startY = -376f;
+    int randomRoot;
     Vector2 startPosition;
     Vector2 targetPosition;
-    private void Awake()
+
+    public void PackFragmentMovement()
     {
         fragmentRect = GetComponent<RectTransform>();
-        targetPosition = default;
-        startPosition = new Vector2(startX, startY);
-    }
+        float targetPositionX = UnityEngine.Random.Range(-574f, -432f);
+        float tartgetPositionY = -480f;
 
-    private void Start()
-    {
+        targetPosition = new Vector2 (targetPositionX, tartgetPositionY);   
+
+        float randomX = UnityEngine.Random.Range(-100f, 100f);
+        startPosition = new Vector2(startX + randomX, startY);
         DefineTargetPosition();
     }
 
     private void DefineTargetPosition()
-    {
-    
-        int randomRoot = UnityEngine.Random.Range((int)Position.LEFT, (int)Position.LENGTH);
+    {    
+        randomRoot = UnityEngine.Random.Range((int)Position.LEFT, (int)Position.LENGTH);
         switch (randomRoot) 
         {
             case (int)Position.LEFT:
@@ -45,44 +43,82 @@ public class FragmentControl : MonoBehaviour
             case (int)Position.RIGHT:
                 MoveRight(fragmentRect);
                 break;
-        }
-            
+        }            
     }
 
     private void MoveLeft(RectTransform fragment)
     {
-        targetPosition = new Vector2(-574f, -480f);
-        StartCoroutine(MoveRectWithLerp(targetPosition, fragment));
+        float randomX = UnityEngine.Random.Range(-220f, -200f);
+        float randomY = UnityEngine.Random.Range(-10f, 10f);
+        Vector2 controlPoint = new Vector2(startPosition.x + randomX, startPosition.y + randomY);
+
+        StartCoroutine(MoveRectWithBezier(targetPosition, fragment, controlPoint));
     }
 
     private void MoveRight(RectTransform fragment) 
     {
-        targetPosition = new Vector2(-512f, -480f);
-        StartCoroutine(MoveRectWithLerp(targetPosition, fragment));
+        float randomX = UnityEngine.Random.Range(200f, 220f);
+        float randomY = UnityEngine.Random.Range(-10f, 10f);
+        Vector2 controlPoint = new Vector2(startPosition.x + randomX, startPosition.y + randomY);
+
+        StartCoroutine(MoveRectWithBezier(targetPosition, fragment, controlPoint));
     }
 
     private void MoveMid(RectTransform fragment)
     {
-        targetPosition = new Vector2(-432f, -480f);
-        StartCoroutine(MoveRectWithLerp(targetPosition, fragment));
-
+        Vector2 controlPoint = (startPosition + targetPosition) * 0.5f;
+        StartCoroutine(MoveRectWithBezier(targetPosition, fragment, controlPoint));
     }
 
-    IEnumerator MoveRectWithLerp(Vector2 targetPosition, RectTransform fragement)
+    #region LERP LEGACY
+    //IEnumerator MoveRectWithLerp(Vector2 targetPosition, RectTransform fragement)
+    //{
+    //    float startTime = 0f;
+    //    float timer = 0.4f;
+    //    while (startTime < timer)
+    //    {
+    //        {
+    //            float alpha = startTime / timer;
+    //            fragement.anchoredPosition = Vector2.Lerp(startPosition, targetPosition, alpha);
+    //            startTime += Time.deltaTime;
+    //            yield return null;
+    //            if (Vector2.Distance(fragement.anchoredPosition, targetPosition) <= 0.001f)
+    //            {
+    //                RockObjectPooling.objectPooling.ReturnRockWithTimer(gameObject);
+    //            }
+    //        }
+    //    }
+    //}
+    #endregion
+
+    IEnumerator MoveRectWithBezier(Vector2 targetPosition, RectTransform fragment, Vector2 controlPoint)
     {
         float startTime = 0f;
-        float timer = 0.3f;
-        while (startTime < timer)
+        float duration = 0.5f;
+        Vector2 newPosition;
+
+        while (startTime < duration)
         {
-            if (RockObjectPooling.objectPooling.LimitRockCount())
+            float t = startTime / duration;
+            newPosition = CalculateBezier(startPosition, controlPoint, targetPosition, t);
+            fragment.anchoredPosition = newPosition;
+
+            startTime += Time.deltaTime;
+            yield return null;
+
+            if (Vector2.Distance(fragment.anchoredPosition, targetPosition) <= 0.001f)
             {
-                float alpha = startTime / timer;
-                fragement.anchoredPosition = Vector2.Lerp(startPosition, targetPosition, alpha);
-                startTime += Time.deltaTime;
-                yield return null;
+                RockObjectPooling.objectPooling.ReturnRockWithTimer(gameObject);
             }
-            else { yield return null; }
         }
     }
 
+    private Vector2 CalculateBezier(Vector2 start, Vector2 control, Vector2 end, float t)
+    {
+        float u = 1 - t;
+        float tt = t * t;
+        float uu = u * u;
+        Vector2 p = (uu * start) + (2 * u * t * control) + (tt * end);
+        return p;
+    }
 }

@@ -207,10 +207,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 6afaea86de5613f46861b75687e2c720, type: 2}
   buildPositionY: 0
+  kjhObjectPrefab: {fileID: 0}
   dragObstacle: 0
   _collider: {fileID: 8159128207315195875}
   isSticked: 0
   groundCount: 0
+  audioSource: {fileID: 0}
 --- !u!54 &145884133613915489
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -408,10 +410,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 6afaea86de5613f46861b75687e2c720, type: 2}
   buildPositionY: 0
+  kjhObjectPrefab: {fileID: 0}
   dragObstacle: 0
   _collider: {fileID: 563943232821311929}
   isSticked: 0
   groundCount: 0
+  audioSource: {fileID: 0}
 --- !u!54 &8180475673446645621
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -646,10 +650,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 6afaea86de5613f46861b75687e2c720, type: 2}
   buildPositionY: 0
+  kjhObjectPrefab: {fileID: 0}
   dragObstacle: 0
   _collider: {fileID: 6633276089463680251}
   isSticked: 0
   groundCount: 0
+  audioSource: {fileID: 0}
 --- !u!54 &7537483376258023097
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -847,10 +853,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 6afaea86de5613f46861b75687e2c720, type: 2}
   buildPositionY: 0
+  kjhObjectPrefab: {fileID: 0}
   dragObstacle: 0
   _collider: {fileID: 6673431458075807960}
   isSticked: 0
   groundCount: 0
+  audioSource: {fileID: 0}
 --- !u!54 &1336787946809939074
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1048,10 +1056,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 6afaea86de5613f46861b75687e2c720, type: 2}
   buildPositionY: 0
+  kjhObjectPrefab: {fileID: 0}
   dragObstacle: 0
   _collider: {fileID: 5547994797007903722}
   isSticked: 0
   groundCount: 0
+  audioSource: {fileID: 0}
 --- !u!54 &550776954259983273
 Rigidbody:
   m_ObjectHideFlags: 0

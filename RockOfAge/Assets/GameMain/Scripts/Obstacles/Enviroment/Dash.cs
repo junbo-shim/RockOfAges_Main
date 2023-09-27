@@ -21,6 +21,7 @@ public class Dash : MonoBehaviour
     [SerializeField]
     float shakePower = 2f;
 
+    
     const float SHAKE_TIME = 0.1F;
 
     private void Awake()
@@ -35,10 +36,8 @@ public class Dash : MonoBehaviour
         }
     }
 
-
     private void OnTriggerEnter(Collider other)
     {
-
         if (other.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
             Rigidbody rigidbody = other.GetComponent<Rigidbody>();

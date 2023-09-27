@@ -71,6 +71,7 @@ MonoBehaviour:
   forward: {x: 0, y: 0, z: 0}
   beforeVelocityZero: 0
   forceMode: 1
+  audioSource: {fileID: 0}
   pushShaking: 0
   shakePower: 2
 --- !u!1 &963690608566398869

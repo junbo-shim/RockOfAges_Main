@@ -67,9 +67,6 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
                     stareTimer = Time.time;
                     // Attack 애니메이션 트리거 리셋
                     animator.ResetTrigger("Attack");
-                    // 모루 황소가 바라봐야 할 방향을 설정
-                    SetLookDirection(directionToRock);
-
                     break;
                 }
             }
@@ -110,7 +107,6 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         // 돌진 중인 모루 황소를 이동 및 회전
         transform.position += direction * chargeSpeed * Time.deltaTime;
         Quaternion targetRotation = Quaternion.LookRotation(direction);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * chargeSpeed);
 
         // 도착 여부 확인
         if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(lastDetectedRockPosition.x, 0, lastDetectedRockPosition.z)) < 0.1f)
@@ -151,10 +147,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
 
             // 방향 벡터를 정규화하여 바라봐야 할 방향으로 사용
             collisionDirection.Normalize();
-
-            // 모루 황소가 바라봐야 할 방향을 설정
-            SetLookDirection(collisionDirection);
-
+                       
             // 충돌한 바위에 힘을 전달
             Rigidbody rockRigidbody = collision.gameObject.GetComponent<Rigidbody>();
             if (rockRigidbody != null)
@@ -166,13 +159,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
             animator.SetTrigger("Attack");
         }
     }
-    void SetLookDirection(Vector3 direction)
-    {
-        // Y축 회전만 변경하도록 수정
-        direction.y = 0; // Y 축 회전을 고정시킵니다.
-        Quaternion targetRotation = Quaternion.LookRotation(direction);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * chargeSpeed);
-    }
+    
     void OnDrawGizmos()
     {
         // 부채꼴 감지 범위를 그립니다.

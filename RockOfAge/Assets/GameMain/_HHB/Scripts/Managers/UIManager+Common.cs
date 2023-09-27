@@ -6,24 +6,29 @@ using UnityEngine.UI;
 public partial class UIManager: MonoBehaviour
 {
     #region 변수
+    [Header("UI")]
     public GameObject commonUI;
     // M키 누른시간과 bool 변수
     private bool _mButtonPressed = false;
     private float _pressedTime = 0f;
     // 플레이어 이름
+    [Header("PLAYER NAME TEXT")]
     public TextMeshProUGUI player1Txt;
     public TextMeshProUGUI player2Txt;
     public TextMeshProUGUI player3Txt;
     public TextMeshProUGUI player4Txt;
     // 플레이어 체력
+    [Header("TEAM HP IMG")]
     public Image team1HpImg;
     public Image team2HpImg;
     // 플레이어 이미지
+    [Header("PLAYER IMG")]
     public Image player1Img;
     public Image player2Img;
     public Image player3Img;
     public Image player4Img;
     // 플레이어 체력
+    [Header("PLAYER GOLD TEXT")]
     public TextMeshProUGUI playerGold;
     #endregion
 

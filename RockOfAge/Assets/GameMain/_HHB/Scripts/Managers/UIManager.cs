@@ -16,7 +16,7 @@ public partial class UIManager : MonoBehaviour
     public static UIManager uiManager;
 
     #region 변수
-    // Card
+    [Header("CARD")]
     public Sprite[] rockSprites;
     public Sprite[] obstructionSprites;
     public Image cardImage;
@@ -26,11 +26,14 @@ public partial class UIManager : MonoBehaviour
     public TextMeshProUGUI cardInfoTxt;
     public TextMeshProUGUI cardGoldTxt;
     // Holder
+    [Header("ROCK HOLDER")]
     public Sprite[] rockHolderSprites;
     // Selection To Defence
+    [Header("PLAYERS SELECT READY")]
     public TextMeshProUGUI readyTxt;
     public Image readyImg;
     // selectionUI
+    [Header("UI")]
     public GameObject userSelectUI;
     // endingUI
     public GameObject endingUI;
@@ -182,8 +185,7 @@ public partial class UIManager : MonoBehaviour
         // 방해물일때
         if (id_ > 10)
         {
-            Debug.Log(name_);
-            cardNameTxt.text = name_.ToString();
+            cardNameTxt.text = name_;
             cardInfoTxt.text = explain_;
             cardGoldTxt.text = gold_.ToString();
             cardClockImage.gameObject.SetActive(false);

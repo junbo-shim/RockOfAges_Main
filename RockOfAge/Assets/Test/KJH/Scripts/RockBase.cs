@@ -506,8 +506,10 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     }
 
     // ! Photon
-    private void EndAttack() 
+    private void EndAttack()
     {
+        // ! Photon - Alert
+        CycleManager.cycleManager.CheckTeamAndDequeue(photonView.ViewID.ToString(), gameObject);
         PhotonNetwork.Destroy(gameObject);
     }
 
@@ -634,11 +636,6 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         CycleManager.cycleManager.ChangeCycleAttackToSelect();
         rayfireRigid.Demolish();
         Invoke("EndAttack", 2f);
-
-        //rayfireRigid.Activate();
-        Invoke("EndAttack", 2f);
-        CycleManager.cycleManager.ChangeCycleAttackToSelect();
-        //Destroy(gameObject);
     }
 
     protected Vector2 GetInput()

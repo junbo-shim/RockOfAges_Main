@@ -1,9 +1,7 @@
-
 using Photon.Pun;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 
 public class ResourceManager : GlobalSingleton<ResourceManager>
@@ -19,6 +17,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     public string playerNumber;
     public Vector3 team1StartPoint;
     public Vector3 team2StartPoint;
+    public PhotonView dataContainerView;
     
     //Vector3 startPointTeam1 = new Vector3(111.55f, 31.21f, 120f);
 
@@ -27,6 +26,8 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         // ! Photon
         team1StartPoint = new Vector3(107f, 40f, 107f);
         team2StartPoint = new Vector3(-107f, 40f, -107f);
+
+        dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
 
         PackAwake();
     }
@@ -156,7 +157,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
                PhotonNetwork.Instantiate(gameObject.name, Vector3.zero, Quaternion.identity);
         userRockObject.SetChildPosition(team1StartPoint, "RockObject");
 
-        // ! Photon-Alert
+        // ! Photon
         FindMyViewID();
         if (playerNumber == "Player1" || playerNumber == "Player2")
         {
@@ -172,6 +173,10 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
                 CameraManager.Instance.SetRockCamera(userRockObject, team2StartPoint);
             }
         }
+
+        // ! Photon
+        CycleManager.cycleManager.CheckTeamAndSaveQueue(dataContainerView.ViewID.ToString(), userRockObject);
+
         // 팀 1인지 2인지 구별하는 if가 필요합니다
         // 팀2꺼 startPoint 없습니다. 밑은 1번팀꺼입니다
         #region Legacy

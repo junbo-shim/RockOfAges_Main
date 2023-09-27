@@ -470,7 +470,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
             if (NetworkManager.Instance.playerSeats[0] == false) 
             {
                 string masterNickName = NetworkManager.Instance.playerNickName;
-                int masterViewID = dataContainerView.ViewID;
+                string masterViewID = dataContainerView.ViewID.ToString();
 
                 //int beforeSeat = default;
                 Debug.Log(NetworkManager.Instance.playerNickName);
@@ -484,14 +484,16 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
                     //beforeSeat = index - 1;
 
                     NetworkManager.Instance.playerSeats[index - 1] = false;
-                    NetworkManager.Instance.roomSetting[masterViewID] = "Player1";
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player1_Team1";
                     NetworkManager.Instance.roomSetting["Player1"] = masterNickName;
+                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
                     Debug.LogFormat("master = Player1, Player{0} 에서 이동함", index);
                 }
                 else
                 {
-                    NetworkManager.Instance.roomSetting[masterViewID] = "Player1";
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player1_Team1";
                     NetworkManager.Instance.roomSetting["Player1"] = masterNickName;
+                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
                     Debug.Log("master = Player1");
                 }
                 PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
@@ -519,7 +521,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
             if (NetworkManager.Instance.playerSeats[1] == false)
             {
                 string masterNickName = NetworkManager.Instance.playerNickName;
-                int masterViewID = dataContainerView.ViewID;
+                string masterViewID = dataContainerView.ViewID.ToString();
 
                 Debug.Log(NetworkManager.Instance.playerNickName);
                 if (NetworkManager.Instance.roomSetting.ContainsKey(masterViewID))
@@ -529,14 +531,16 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
 
                     int index = int.Parse(seatNumber.Split("Player")[1]);
                     NetworkManager.Instance.playerSeats[index - 1] = false;
-                    NetworkManager.Instance.roomSetting[masterViewID] = "Player2";
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player2_Team1";
                     NetworkManager.Instance.roomSetting["Player2"] = masterNickName;
+                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
                     Debug.LogFormat("master = Player2, Player{0} 에서 이동함", index);
                 }
                 else
                 {
-                    NetworkManager.Instance.roomSetting[masterViewID] = "Player2";
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player2_Team1";
                     NetworkManager.Instance.roomSetting["Player2"] = masterNickName;
+                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
                     Debug.Log("master = Player2");
                 }
                 PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
@@ -563,7 +567,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
             if (NetworkManager.Instance.playerSeats[2] == false)
             {
                 string masterNickName = NetworkManager.Instance.playerNickName;
-                int masterViewID = dataContainerView.ViewID;
+                string masterViewID = dataContainerView.ViewID.ToString();
 
                 Debug.Log(NetworkManager.Instance.playerNickName);
                 if (NetworkManager.Instance.roomSetting.ContainsKey(masterViewID))
@@ -573,14 +577,16 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
 
                     int index = int.Parse(seatNumber.Split("Player")[1]);
                     NetworkManager.Instance.playerSeats[index - 1] = false;
-                    NetworkManager.Instance.roomSetting[masterViewID] = "Player3";
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player3_Team2";
                     NetworkManager.Instance.roomSetting["Player3"] = masterNickName;
+                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
                     Debug.LogFormat("master = Player3, Player{0} 에서 이동함", index);
                 }
                 else
                 {
-                    NetworkManager.Instance.roomSetting[masterViewID] = "Player3";
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player3_Team2";
                     NetworkManager.Instance.roomSetting["Player3"] = masterNickName;
+                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
                     Debug.Log("master = Player3");
                 }
                 PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
@@ -607,7 +613,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
             if (NetworkManager.Instance.playerSeats[3] == false)
             {
                 string masterNickName = NetworkManager.Instance.playerNickName;
-                int masterViewID = dataContainerView.ViewID;
+                string masterViewID = dataContainerView.ViewID.ToString();
 
                 Debug.Log(NetworkManager.Instance.playerNickName);
                 if (NetworkManager.Instance.roomSetting.ContainsKey(masterViewID))
@@ -617,14 +623,16 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
 
                     int index = int.Parse(seatNumber.Split("Player")[1]);
                     NetworkManager.Instance.playerSeats[index - 1] = false;
-                    NetworkManager.Instance.roomSetting[masterViewID] = "Player4";
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player4_Team2";
                     NetworkManager.Instance.roomSetting["Player4"] = masterNickName;
+                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
                     Debug.LogFormat("master = Player4, Player{0} 에서 이동함", index);
                 }
                 else
                 {
-                    NetworkManager.Instance.roomSetting[masterViewID] = "Player4";
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player4_Team2";
                     NetworkManager.Instance.roomSetting["Player4"] = masterNickName;
+                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
                     Debug.Log("master = Player4");
                 }
                 PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);

@@ -46,6 +46,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   otherPlayerReady: 0
+  Player1Name: 
+  Player2Name: 
+  Player3Name: 
+  Player4Name: 
+  Player1ViewID: 0
+  Player2ViewID: 0
+  Player3ViewID: 0
+  Player4ViewID: 0
+  Player1Num: 
+  Player2Num: 
+  Player3Num: 
+  Player4Num: 
 --- !u!114 &8884712648900300517
 MonoBehaviour:
   m_ObjectHideFlags: 0

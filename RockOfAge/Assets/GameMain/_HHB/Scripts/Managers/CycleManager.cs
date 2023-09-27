@@ -2,6 +2,7 @@ using Cinemachine;
 using Photon.Pun;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public enum UserState
 { 
@@ -41,8 +42,7 @@ public class CycleManager : MonoBehaviour
     // ! Photon
     public PlayerDataContainer dataContainer;
     public PhotonView dataContainerView;
-    public string layerName;
-    public string userID = default;
+    public string layerPlayerName;
     #endregion
 
 
@@ -62,7 +62,7 @@ public class CycleManager : MonoBehaviour
         dataContainer = NetworkManager.Instance.myDataContainer;
         dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
         FindMyViewID();
-        SetCameraLayerMask(layerName);
+        SetCameraLayerMask(layerPlayerName);
     }
 
     private void Update()
@@ -89,8 +89,7 @@ public class CycleManager : MonoBehaviour
         {
             if (mydata.Key.ToString() == dataContainer.GetComponent<PhotonView>().ViewID.ToString())
             {
-                layerName = mydata.Value.ToString();
-                cycleManager.userID = layerName;
+                layerPlayerName = mydata.Value.ToString();
             }
         }
     }
@@ -136,7 +135,7 @@ public class CycleManager : MonoBehaviour
                     {
                         _isEntered = true;
                         UIManager.uiManager.ChangeStateUnitSelectToRockSelect();
-                    CameraManager.Instance.TurnOffSelectCamera();
+                        CameraManager.Instance.TurnOffSelectCamera();
                     }
                     else { return; }
                 }
@@ -207,12 +206,62 @@ public class CycleManager : MonoBehaviour
         }
     }
 
+    // ! Photon
+    public void CheckTeamAndSaveQueue(string myViewID, GameObject createdRock) 
+    {
+        string myTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[myViewID].ToString().Split('_')[1];
+
+        string temp = createdRock.GetComponent<PhotonView>().ViewID.ToString();
+        string rockNumber = temp.Split()[0];
+
+        if (myTeamNumber == "Team1") 
+        {
+            if (rockNumber == "3" || rockNumber == "4") 
+            {
+                CameraManager.enemyCameraQueue.Enqueue(createdRock);
+            }
+        }
+        else if (myTeamNumber == "Team2") 
+        {
+            if (rockNumber == "1" || rockNumber == "2") 
+            {
+                CameraManager.enemyCameraQueue.Enqueue(createdRock);
+            }
+        }
+    }
+
+    // ! Photon
+    public void CheckTeamAndDequeue(string myViewID, GameObject deadRock) 
+    {
+        string myTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[myViewID].ToString().Split('_')[1];
+
+        string temp = deadRock.GetComponent<PhotonView>().ViewID.ToString();
+        string rockNumber = temp.Split()[0];
+
+        if (myTeamNumber == "Team1")
+        {
+            if (rockNumber == "3" || rockNumber == "4")
+            {
+                CameraManager.enemyCameraQueue.Dequeue();
+            }
+        }
+        else if (myTeamNumber == "Team2")
+        {
+            if (rockNumber == "1" || rockNumber == "2")
+            {
+                CameraManager.enemyCameraQueue.Dequeue();
+            }
+        }
+    }
+
+
     public void ChangeCycleDefenceToAttack()
     {
         int userRock = ItemManager.itemManager.userRockChoosed[0];
         if (userRock != -1 && userState == (int)UserState.DEFENCE && rockState == (int)RockState.ROCKCREATED)
         {
             ResourceManager.Instance.InstatiateUserSelectedRock();
+
             userState = (int)UserState.ATTACK;
             rockState = (int)RockState.ROCKSELECT;
             ItemManager.itemManager.userRockChoosed[0] = -1;

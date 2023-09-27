@@ -106,9 +106,11 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         PlayFabClientAPI.LoginWithEmailAddress(request, OnLoginSuccess, OnLoginFailure);
     }
 
-    private void OnQuickLoginSuccess(LoginResult result) 
+    private void OnQuickLoginSuccess(LoginResult result)
     {
-        playerNickName = result.PlayFabId;
+        // 중복 검출 로직 필요
+        int random = (int)Random.Range(0, 1000000);
+        playerNickName = random.ToString();
         Invoke("ConnectToServer", 2f);
     }
 

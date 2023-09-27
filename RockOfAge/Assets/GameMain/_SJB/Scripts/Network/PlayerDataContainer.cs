@@ -12,16 +12,22 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     //public string roomName;
 
     public int otherPlayerReady;
-    public string Player1Name { get; private set; }
-    public string Player2Name { get; private set; }
-    public string Player3Name { get; private set; }
-    public string Player4Name { get; private set; }
+    public string Player1Name;
+    public string Player2Name;
+    public string Player3Name;
+    public string Player4Name;
 
-    public int Player1ViewID { get; private set; }
-    public int Player2ViewID { get; private set; }
-    public int Player3ViewID { get; private set; }
-    public int Player4ViewID { get; private set; }
+    public string Player1ViewID;
+    public string Player2ViewID;
+    public string Player3ViewID;
+    public string Player4ViewID;
 
+    public string Player1Num;
+    public string Player2Num;
+    public string Player3Num;
+    public string Player4Num;
+
+    
 
 
 
@@ -53,7 +59,8 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         if(SceneManager.GetActiveScene().name == NetworkManager.Instance.GameScene)
         {
             SavePlayerNames();
-            SavePlayerTeamAndNumber();
+            SaveViewID();
+            SaveNumberAndTeam();
         }
     }
     #endregion
@@ -66,9 +73,20 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         Player4Name = PhotonNetwork.CurrentRoom.CustomProperties["Player4"].ToString();
     }
 
-    public void SavePlayerTeamAndNumber() 
+    public void SaveViewID() 
     {
+        Player1ViewID = PhotonNetwork.CurrentRoom.CustomProperties[Player1Name].ToString();
+        Player2ViewID = PhotonNetwork.CurrentRoom.CustomProperties[Player2Name].ToString();
+        Player3ViewID = PhotonNetwork.CurrentRoom.CustomProperties[Player3Name].ToString();
+        Player4ViewID = PhotonNetwork.CurrentRoom.CustomProperties[Player4Name].ToString();
+    }
 
+    public void SaveNumberAndTeam() 
+    {
+        Player1Num = PhotonNetwork.CurrentRoom.CustomProperties[Player1ViewID].ToString();
+        Player2Num = PhotonNetwork.CurrentRoom.CustomProperties[Player2ViewID].ToString();
+        Player3Num = PhotonNetwork.CurrentRoom.CustomProperties[Player3ViewID].ToString();
+        Player4Num = PhotonNetwork.CurrentRoom.CustomProperties[Player4ViewID].ToString();
     }
 
     public void ResetPlayerTeamAndNumber(int player1ViewID, int player2ViewID, int player3ViewID, int player4ViewID)
@@ -101,23 +119,35 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         // 만약 player 자리가 비어있다면
         else if (NetworkManager.Instance.playerSeats[boolIdx] == false)
         {
+            string teamNumber = default;
+            string seatNumber = NetworkManager.Instance.roomSetting[senderNickName].ToString();
+
+            int index = int.Parse(seatNumber.Split("Player")[1]);
+
+            if (index <= 2)
+            {
+                teamNumber = "_Team1";
+            }
+            else if (index >= 2) 
+            {
+                teamNumber = "_Team2";
+            }
+
             // roomSetting 해시테이블에 키로 photonViewID 가 존재하면
             if (NetworkManager.Instance.roomSetting.ContainsKey(senderViewID))
             {
-                string seatNumber = NetworkManager.Instance.roomSetting[senderNickName].ToString();
-                
-                int index = int.Parse(seatNumber.Split("Player")[1]);
-                Debug.Log(index);
                 NetworkManager.Instance.playerSeats[index-1] = false;
-                NetworkManager.Instance.roomSetting[senderViewID] = seatName;
+                NetworkManager.Instance.roomSetting[senderViewID.ToString()] = seatName + teamNumber;
                 NetworkManager.Instance.roomSetting[seatName] = senderNickName;
+                NetworkManager.Instance.roomSetting[senderNickName] = senderViewID.ToString();
                 Debug.LogFormat("{0} 가 Player{1} 에서 {2} 로 이동 했습니다.", senderNickName, index, seatName);
             }
             else
             {
                 //NetworkManager.Instance.roomSetting.Add(senderNickName, seatName);
-                NetworkManager.Instance.roomSetting[senderViewID] = seatName;
+                NetworkManager.Instance.roomSetting[senderViewID.ToString()] = seatName + teamNumber;
                 NetworkManager.Instance.roomSetting[seatName] = senderNickName;
+                NetworkManager.Instance.roomSetting[senderNickName] = senderViewID.ToString();
                 Debug.LogFormat("{0} 가 {1} 로 이동 했습니다.", senderNickName, seatName);
             }
             PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);

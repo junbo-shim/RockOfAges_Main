@@ -73,7 +73,10 @@ public class ObstacleBase : MonoBehaviour
 
         if (obstacleCollider != null)
         {
-            (obstacleCollider as MeshCollider).convex = true;
+            if(obstacleCollider is MeshCollider)
+            {
+                (obstacleCollider as MeshCollider).convex = true;
+            }
             obstacleCollider.isTrigger = true;
         }
 
@@ -99,7 +102,10 @@ public class ObstacleBase : MonoBehaviour
         if (obstacleCollider != null)
         {
             obstacleCollider.isTrigger = false;
-            (obstacleCollider as MeshCollider).convex = false;
+            if (obstacleCollider is MeshCollider)
+            {
+                (obstacleCollider as MeshCollider).convex = false;
+            }
         }
         MakePeople();
     }

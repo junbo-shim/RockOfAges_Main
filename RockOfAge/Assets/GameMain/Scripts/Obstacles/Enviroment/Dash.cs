@@ -16,8 +16,6 @@ public class Dash : MonoBehaviour
     [SerializeField]
     ForceMode forceMode = ForceMode.Impulse;
 
-    public AudioSource audioSource;
-
     [SerializeField]
     bool pushShaking = false;
     [SerializeField]
@@ -38,17 +36,8 @@ public class Dash : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        audioSource = GetComponent<AudioSource>();
-
-    }
-
-
     private void OnTriggerEnter(Collider other)
     {
-        audioSource.Play();
-
         if (other.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
             Rigidbody rigidbody = other.GetComponent<Rigidbody>();

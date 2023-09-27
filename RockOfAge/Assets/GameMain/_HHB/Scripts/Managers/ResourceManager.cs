@@ -14,7 +14,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
 
     // ! photon
     //public GameObject userRockObject;
-    public string playerNumber;
+    public string playerTeamNumber;
     public Vector3 team1StartPoint;
     public Vector3 team2StartPoint;
     public PhotonView dataContainerView;
@@ -28,7 +28,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         team2StartPoint = new Vector3(-107f, 40f, -107f);
 
         dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
-
+        playerTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[dataContainerView.ViewID.ToString()].ToString();
         PackAwake();
     }
 
@@ -157,16 +157,21 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
                PhotonNetwork.Instantiate(gameObject.name, Vector3.zero, Quaternion.identity);
         userRockObject.SetChildPosition(team1StartPoint, "RockObject");
 
+        Debug.Log(playerTeamNumber);
+        Debug.Log(playerTeamNumber.Split('_')[0]);
+
+        string playerNum = playerTeamNumber.Split('_')[0];
+
         // ! Photon
         FindMyViewID();
-        if (playerNumber == "Player1" || playerNumber == "Player2")
+        if (playerNum == "Player1" || playerNum == "Player2")
         {
             if (userRockObject.GetComponent<PhotonView>().IsMine == true)
             {
                 CameraManager.Instance.SetRockCamera(userRockObject, team1StartPoint);
             }
         }
-        else if (playerNumber == "Player3" || playerNumber == "Player4")
+        else if (playerNum == "Player3" || playerNum == "Player4")
         { 
             if (userRockObject.GetComponent<PhotonView>().IsMine == true)
             {
@@ -175,7 +180,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         }
 
         // ! Photon
-        CycleManager.cycleManager.CheckTeamAndSaveQueue(dataContainerView.ViewID.ToString(), userRockObject);
+        //CycleManager.cycleManager.CheckTeamAndSaveQueue(dataContainerView.ViewID.ToString(), userRockObject);
 
         // 팀 1인지 2인지 구별하는 if가 필요합니다
         // 팀2꺼 startPoint 없습니다. 밑은 1번팀꺼입니다
@@ -203,7 +208,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         {
             if (mydata.Key.ToString() == CycleManager.cycleManager.dataContainer.GetComponent<PhotonView>().ViewID.ToString())
             {
-                playerNumber = mydata.Value.ToString();
+                playerTeamNumber = mydata.Value.ToString();
             }
         }
     }

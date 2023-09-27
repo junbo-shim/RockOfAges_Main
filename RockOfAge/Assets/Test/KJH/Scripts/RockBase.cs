@@ -509,7 +509,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     private void EndAttack()
     {
         // ! Photon - Alert
-        CycleManager.cycleManager.CheckTeamAndDequeue(photonView.ViewID.ToString(), gameObject);
+        //CycleManager.cycleManager.CheckTeamAndDequeue(photonView.ViewID.ToString(), gameObject);
         PhotonNetwork.Destroy(gameObject);
     }
 

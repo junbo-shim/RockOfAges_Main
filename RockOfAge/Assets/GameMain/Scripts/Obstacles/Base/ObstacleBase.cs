@@ -132,7 +132,7 @@ public class ObstacleBase : MonoBehaviour
     }
     public virtual void Delete()
     {
-        Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
     }
 
     //타겟 서치

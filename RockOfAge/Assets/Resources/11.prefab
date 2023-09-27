@@ -315,6 +315,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: b961965cba4e08a489f3e2ec6a82e177, type: 2}
   buildPositionY: 0
+  kjhObjectPrefab: {fileID: 0}
   dragObstacle: 0
 --- !u!65 &158850201523792974
 BoxCollider:

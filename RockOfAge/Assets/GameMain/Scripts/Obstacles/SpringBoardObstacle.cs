@@ -111,7 +111,7 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
         currHealth -= damage;
         if (currHealth <= 0)
         {
-            Die();
+            Dead();
         }
     }
 
@@ -120,8 +120,8 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
         throw new System.NotImplementedException();
     }
 
-    void Die()
+    protected override void Dead()
     {
-        Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
     }
 }

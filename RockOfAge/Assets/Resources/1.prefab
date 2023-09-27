@@ -573,6 +573,7 @@ MonoBehaviour:
   forms: []
   photonView: {fileID: 0}
   isGround: 0
+  isDestroy: 0
   isDebuffed: 0
   debuffJumpForce: 0
 --- !u!114 &8916191740023332484

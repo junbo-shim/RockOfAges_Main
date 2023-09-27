@@ -120,9 +120,7 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         else if (NetworkManager.Instance.playerSeats[boolIdx] == false)
         {
             string teamNumber = default;
-            string seatNumber = NetworkManager.Instance.roomSetting[senderNickName].ToString();
-
-            int index = int.Parse(seatNumber.Split("Player")[1]);
+            int index = boolIdx + 1;
 
             if (index <= 2)
             {

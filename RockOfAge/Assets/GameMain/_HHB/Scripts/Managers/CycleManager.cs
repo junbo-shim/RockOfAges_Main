@@ -42,7 +42,7 @@ public class CycleManager : MonoBehaviour
     // ! Photon
     public PlayerDataContainer dataContainer;
     public PhotonView dataContainerView;
-    public string layerPlayerName;
+    public string layerPlayerTeamName;
     #endregion
 
 
@@ -62,7 +62,7 @@ public class CycleManager : MonoBehaviour
         dataContainer = NetworkManager.Instance.myDataContainer;
         dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
         FindMyViewID();
-        SetCameraLayerMask(layerPlayerName);
+        SetCameraLayerMask(layerPlayerTeamName);
     }
 
     private void Update()
@@ -89,7 +89,7 @@ public class CycleManager : MonoBehaviour
         {
             if (mydata.Key.ToString() == dataContainer.GetComponent<PhotonView>().ViewID.ToString())
             {
-                layerPlayerName = mydata.Value.ToString();
+                layerPlayerTeamName = mydata.Value.ToString();
             }
         }
     }
@@ -317,15 +317,17 @@ public class CycleManager : MonoBehaviour
     // 플레이어 이름을 넣으면 team에 맞는 카메라 레이어를 바꿔주는 함수
     public void SetCameraLayerMask(string player_)
     {
-        string team = default;
-
         // ! Photon
+        string team = layerPlayerTeamName.Split('_')[1];
+        #region Legacy
         //int teamNum = (int)((int.Parse(player_.Split("Player")[1]) + 1) * 0.5f);
-        char playerSplitNum = player_[6];
-        int temp = (int)char.GetNumericValue(playerSplitNum);
-        float temp2 = (temp + 1) * 0.5f;
-        int teamNum = (int)(temp2);
-        team = "Team" + teamNum;
+
+        //char playerSplitNum = player_[6];
+        //int temp = (int)char.GetNumericValue(playerSplitNum);
+        //float temp2 = (temp + 1) * 0.5f;
+        //int teamNum = (int)(temp2);
+        //team = "Team" + teamNum;
+        #endregion
 
         AddCullingMask(team);
         AddLayer(team);

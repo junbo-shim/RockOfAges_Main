@@ -482,7 +482,7 @@ public class BuildManager : MonoBehaviour
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("PscTestScene"))
         {
 
-            return false;
+           // return true;
         }
         Debug.Log("?");
 
@@ -526,7 +526,7 @@ public class BuildManager : MonoBehaviour
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("PscTestScene"))
         {
 
-            return false;
+            return true;
         }
         Debug.Log("?");
         if(buildTarget == null)

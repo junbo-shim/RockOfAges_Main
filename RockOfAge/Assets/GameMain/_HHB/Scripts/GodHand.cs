@@ -37,6 +37,7 @@ public class GodHand : MonoBehaviour
         GameObject godHand = this.gameObject;
         while (timer <= 3f)
         {
+            if (rock == null) { yield break; }
             timer += Time.deltaTime;
             yield return new WaitForSeconds(Time.deltaTime);
             Vector3 pos = Camera.main.transform.position - rock.transform.GetChild(1).transform.position;

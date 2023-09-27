@@ -175,6 +175,7 @@ public class CycleManager : MonoBehaviour
             ItemManager.itemManager.userRockChoosed[0] = -1;
             UIManager.uiManager.SwitchUIManager("attackUI");
             UIManager.uiManager.SwitchUIManager("defenceUI");
+            UIManager.uiManager.SwitchRockReadyInfo();
         }
     }
 
@@ -189,11 +190,10 @@ public class CycleManager : MonoBehaviour
             ResourceManager.Instance.GetRockCoolDownFromId(id, out coolDown);
             UIManager.uiManager.FillAmountRockRoutine(coolDown);
             yield return new WaitForSeconds(coolDown);
-            rockState = (int)RockState.ROCKCREATED;        
+            rockState = (int)RockState.ROCKCREATED;
         }
     }
     #endregion
-
 
     #region GameEndCycle
     public void DefineWinner()

@@ -442,9 +442,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         }
         if (collision.gameObject.layer == LayerMask.NameToLayer("Castle"))
         {
-            isDestroy = true;
-            Invoke("EndAttack", 2f);
-            CycleManager.cycleManager.ChangeCycleAttackToSelect();        
+            StartCoroutine(EndAttackRoutine());    
         }
     }
 
@@ -567,17 +565,18 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     protected virtual void Die()
     {
-        isDestroy = true;
         rayfireRigid.Demolish();
         //rayfireRigid.Activate();
-        Invoke("EndAttack", 2f);
-        CycleManager.cycleManager.ChangeCycleAttackToSelect();
+        StartCoroutine(EndAttackRoutine());
         //Destroy(gameObject);
     }
 
-    private void EndAttack()
+    IEnumerator EndAttackRoutine()
     {
-        Destroy(gameObject);
+        isDestroy = true;
+        Destroy(gameObject, 3f);
+        yield return new WaitForSeconds(2f);
+        CycleManager.cycleManager.ChangeCycleAttackToSelect();
     }
 
 

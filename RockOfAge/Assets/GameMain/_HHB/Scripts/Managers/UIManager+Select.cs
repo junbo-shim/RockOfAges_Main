@@ -78,18 +78,18 @@ public partial class UIManager : MonoBehaviour
     {
         GameObject motherObj = GameObject.Find("DefenceUI");
         ItemManager.itemManager.unitSelected.Sort();
-        for (int n = 0; n < ItemManager.itemManager.unitSelected.Count; n++)
-        {
-            //foreach (var a in ItemManager.itemManager.unitSelected)
-            //{
-            //    Debug.LogFormat("선택된 유닛 : {0}", a);
-            //}
 
+        foreach(var item in ItemManager.itemManager.unitSelected)
+        { 
+            Debug.Log(item);    
+        }
+
+        foreach (int n in ItemManager.itemManager.unitSelected)
+        {
             GameObject unitImg = Instantiate(unitSelect, motherObj.transform.Find("DefenceHolder").Find("UnitButton").Find("UnitView").Find("Viewport").Find("Content"));
-            unitImg.name = "unitSelect" + (n+11);
-            //Debug.Log(n+10);
+            unitImg.name = "unitSelect" + n;
             CreateButton creatButton = FindObjectOfType<CreateButton>();
-            creatButton.id = ItemManager.itemManager.unitSelected[n];
+            creatButton.id = n;
             creatButton.buildCount = 0;
 
             TextMeshProUGUI[] textElements = unitImg.GetComponentsInChildren<TextMeshProUGUI>();

@@ -110,7 +110,7 @@ public class ObstacleBase : MonoBehaviour
         MakePeople();
     }
 
-    bool isTest = true;
+    //bool isTest = true;
     //맵에 Build
     public virtual ObstacleBase Build(Vector3 position, Quaternion rotate, int currIndex, int count)
     {
@@ -120,7 +120,7 @@ public class ObstacleBase : MonoBehaviour
         //스케일 변경
         obstacle.transform.localScale = obstacle.transform.localScale;
 
-        if (!isTest) 
+        //if (!isTest) 
         { 
             //버튼 데이터 변경
             GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(status.Id);

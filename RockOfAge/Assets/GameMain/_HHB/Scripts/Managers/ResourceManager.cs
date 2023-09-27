@@ -11,7 +11,6 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     // 유닛 리소스
     public Dictionary<int, GameObject> unitResources = new Dictionary<int, GameObject>();
 
-
     // ! photon
     //public GameObject userRockObject;
     public string playerTeamNumber;
@@ -20,6 +19,10 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     public PhotonView dataContainerView;
     
     //Vector3 startPointTeam1 = new Vector3(111.55f, 31.21f, 120f);
+    public static Vector3 team1StartPos { get; private set;}
+    public static Vector3 team2StartPos { get; private set; }
+    public static Vector3 team1EndPos { get; private set; }
+    public static Vector3 team2EndPos { get; private set; }
 
     protected override void Awake()
     {
@@ -30,6 +33,10 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
         playerTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[dataContainerView.ViewID.ToString()].ToString();
         PackAwake();
+        team1StartPos = Global_PSC.FindTopLevelGameObject("Team2").transform.GetChild(3).position + Vector3.up * 5;
+        team2StartPos = Global_PSC.FindTopLevelGameObject("Team1").transform.GetChild(3).position + Vector3.up * 5;
+        team1EndPos = Global_PSC.FindTopLevelGameObject("Team2").transform.GetChild(1).position;
+        team2EndPos = Global_PSC.FindTopLevelGameObject("Team1").transform.GetChild(1).position;
     }
 
     //{ AwakePack()
@@ -240,6 +247,13 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         objs = Global_PSC.FindAllTargets("DefenceUI", "unitSelect");
         GameObject targetObj = default;
 
+        Debug.Log("들어온 아이디" + id_);
+
+        foreach (var obj in objs)
+        {
+            Debug.Log("찾은 대상들" + obj.name);
+        }
+
         foreach (var obj in objs)
         {
             if (obj.name.Contains(id_.ToString()) == true)
@@ -247,6 +261,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
                 targetObj = obj;
             }
         }
+        Debug.Log("내가 가져오고 싶은 대상" + targetObj.name);
         return targetObj;
     }
     #endregion

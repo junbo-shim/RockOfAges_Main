@@ -527,7 +527,7 @@ public class BuildManager : MonoBehaviour
 
             return true;
         }
-        Debug.Log("?");
+
         if(buildTarget == null)
         {
             return false;

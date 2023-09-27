@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -46,13 +47,13 @@ public class StoneWall : HoldObstacleBase, IHitObjectHandler
         ObstacleBase obstacle;
         if (currIndex == 0 || currIndex == count - 1)
         {
-            obstacle = Instantiate(mainObject, position, rotate);
+            obstacle = PhotonNetwork.Instantiate(mainObject.name, position, rotate).GetComponent<ObstacleBase>();
         }
         else
         {
-            obstacle = Instantiate(subObject, position, rotate);
+            obstacle = PhotonNetwork.Instantiate("StoneWallSub", position, rotate).GetComponent<ObstacleBase>();
         }
-        obstacle.transform.localScale = Vector3.one * .1f;
+        //obstacle.transform.localScale = Vector3.one * .1f;
         return obstacle;
 
     }

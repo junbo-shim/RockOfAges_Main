@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7650402836078708503}
   - component: {fileID: 3610534031458089970}
   - component: {fileID: 5593023281643203537}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: WallLong
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,7 +91,7 @@ GameObject:
   - component: {fileID: 8496608826257790853}
   - component: {fileID: 2653588284352136695}
   - component: {fileID: 1808443124353182377}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SM_Park_wall_B_1_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -198,7 +198,7 @@ GameObject:
   - component: {fileID: 2495022514031456913}
   - component: {fileID: 6619812893373457411}
   - component: {fileID: 8601595401297265649}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SM_Park_wall_B_1_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}

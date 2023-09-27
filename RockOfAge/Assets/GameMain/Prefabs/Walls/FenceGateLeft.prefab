@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 190531028950388332}
   - component: {fileID: 6630514319662461367}
   - component: {fileID: 7505791546029943459}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SM_Park_Gate_01_left_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 7473534240539505245}
   - component: {fileID: 6675844079805832390}
   - component: {fileID: 6182526469656194671}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SM_Park_Gate_01_left_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,7 +222,7 @@ GameObject:
   m_Component:
   - component: {fileID: 428883124255280586}
   - component: {fileID: 1896999671720466739}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: FenceGateLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}

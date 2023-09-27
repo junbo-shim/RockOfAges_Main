@@ -50,10 +50,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 9bbe1ccc9a495ca41b8c956cb491ce54, type: 2}
   buildPositionY: 0
+  kjhObjectPrefab: {fileID: 0}
   dragObstacle: 1
   mainObject: {fileID: 3027147742962528195}
-  subObject: {fileID: 0}
-  connectObject: {fileID: 0}
+  subObject: {fileID: 124588465074315047, guid: 2c40319f2d9c63240974c1edb6259c85, type: 3}
+  connectObject: {fileID: 5590133061641818543, guid: 5d008010f59527a44a4f713dd0052f5a, type: 3}
 --- !u!54 &6191974599119090371
 Rigidbody:
   m_ObjectHideFlags: 0

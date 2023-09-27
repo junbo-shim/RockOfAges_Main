@@ -362,7 +362,7 @@ public class BuildManager : MonoBehaviour
             //if (buildTarget.dragObstacle)
             {
                Vector3 gridDiff =  clickGridIndex - endGridIndex;
-               Debug.Log(gridDiff);
+               //Debug.Log(gridDiff);
 
                 float absX = Mathf.Abs(gridDiff.x);
                 float absZ = Mathf.Abs(gridDiff.z);
@@ -484,7 +484,7 @@ public class BuildManager : MonoBehaviour
 
            // return true;
         }
-        Debug.Log("?");
+        //Debug.Log("?");
 
         if (buildTarget == null)
         {
@@ -528,7 +528,7 @@ public class BuildManager : MonoBehaviour
 
             return true;
         }
-        Debug.Log("?");
+        //Debug.Log("?");
         if(buildTarget == null)
         {
             return false;
@@ -539,7 +539,6 @@ public class BuildManager : MonoBehaviour
         ResourceManager.Instance.GetUnitGoldAndBuildLimitFromID(buildTarget.status.Id, out gold, out buildLimit);
         GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(buildTarget.status.Id);
         int buildCount = unitButton.GetComponent<CreateButton>().buildCount;
-
         return (buildCount+size <= buildLimit);
     }
 

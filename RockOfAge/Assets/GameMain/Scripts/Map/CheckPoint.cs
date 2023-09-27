@@ -9,7 +9,11 @@ public class CheckPoint : MonoBehaviour
         if(other.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
             RockBase rock = other.GetComponentInParent<RockBase>();
-            rock.SetCheckPoint(transform.position+Vector3.up*5);
+            if (rock != null)
+            {
+
+                rock.SetCheckPoint(transform.position+Vector3.up*5);
+            }
         }
     }
 }

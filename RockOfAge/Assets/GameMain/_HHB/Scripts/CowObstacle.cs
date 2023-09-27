@@ -35,7 +35,10 @@ public class CowObstacle : HoldObstacleBase
 
     private void OnCollisionEnter(Collision collision)
     {
-        audioSource.Play();
+        if (audioSource != null)
+        {
+            audioSource.Play();
+        }
         Transform rock = collision.transform;
         if (!isSticked && collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {

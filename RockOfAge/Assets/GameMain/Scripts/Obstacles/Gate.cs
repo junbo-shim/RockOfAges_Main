@@ -139,7 +139,7 @@ public class Gate : MonoBehaviourPun, IHitObjectHandler, IPunObservable
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            gateHP -= 600;
+            gateHP -= damage;
             Debug.Log(gateHP - damage);
             Debug.Log(gateHP);
         }
@@ -147,7 +147,7 @@ public class Gate : MonoBehaviourPun, IHitObjectHandler, IPunObservable
         {
             Debug.Log(gateHP - damage);
             Debug.Log(gateHP);
-            photonView.RPC("RPCHit", RpcTarget.MasterClient, 600);
+            photonView.RPC("RPCHit", RpcTarget.MasterClient, damage);
         }
         //photonView.RPC("HitReaction", RpcTarget.All);
     }

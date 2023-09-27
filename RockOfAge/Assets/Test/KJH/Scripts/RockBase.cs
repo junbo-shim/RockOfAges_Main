@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class RockBase : MonoBehaviour, IHitObjectHandler
+public class RockBase : MonoBehaviourPun, IHitObjectHandler
 {
     //돌 하위 오브젝트들
     [SerializeField]
@@ -175,7 +175,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         rockStatus = new RockStatus(rockStatus);
 
         rockHeightHalf = rockObject.gameObject.GetHeight(.1f)*.5f;
-        rockRigidbody.mass = rockStatus.Weight;
+        rockRigidbody.mass = rockStatus.Weight *0.2f;
         currHp = rockStatus.Health;
         //{ 0920 홍한범
         debuffJumpForce = 1f;
@@ -187,7 +187,6 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         CreateTrail();
         if (UIManager.uiManager != null)
         {
-
             UIManager.uiManager.PrintFillAmountRockHp(currHp, rockStatus.Health);
         }
     }
@@ -207,7 +206,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //이동
     protected virtual void Move(Vector2 input)
     {
-        float accel = rockStatus.Acceleration * obstacleMultiple;
+        float accel = rockStatus.Acceleration * obstacleMultiple*0.5f;
         float maxSpeed = rockStatus.Speed * obstacleMultiple;
 
         //카메라를 기준으로 좌표 변경

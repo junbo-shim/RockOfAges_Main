@@ -537,7 +537,13 @@ public class BuildManager : MonoBehaviour
         int buildLimit = default;
         ResourceManager.Instance.GetUnitGoldAndBuildLimitFromID(buildTarget.status.Id, out gold, out buildLimit);
         GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(buildTarget.status.Id);
-        int buildCount = unitButton.GetComponent<CreateButton>().buildCount;
+
+        int buildCount = 0;
+        if (unitButton != null) 
+        {
+            buildCount = unitButton.GetComponent<CreateButton>().buildCount;
+        
+        }
 
 
         return (buildCount+size <= buildLimit);

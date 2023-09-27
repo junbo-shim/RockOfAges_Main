@@ -428,16 +428,17 @@ public class CycleManager : MonoBehaviour
     public void AddLayer(string team_)
     {
         #region mainCameras
-        GameObject[] playerCameras = new GameObject[7];
+        GameObject[] playerCameras = new GameObject[9];
         playerCameras[0] = Global_PSC.FindTopLevelGameObject("PlayerCamera");
         playerCameras[1] = Global_PSC.FindTopLevelGameObject("TopViewCamera");
         playerCameras[2] = Global_PSC.FindTopLevelGameObject("ClickedTopViewCamera");
         playerCameras[3] = Global_PSC.FindTopLevelGameObject("RockCamera");
         playerCameras[4] = Global_PSC.FindTopLevelGameObject("SelectCamera");
         // 4,5,6 추가됨
-        playerCameras[4] = Global_PSC.FindTopLevelGameObject("GameEndCameraTeam1"); // team1 성문
-        playerCameras[5] = Global_PSC.FindTopLevelGameObject("GameEndCameraTeam2"); // tema2 성문
-        playerCameras[6] = Global_PSC.FindTopLevelGameObject("GameEndResultCamera"); // 게임 엔드 카메라
+        playerCameras[5] = Global_PSC.FindTopLevelGameObject("GameEndCameraTeam1"); // team1 성문
+        playerCameras[6] = Global_PSC.FindTopLevelGameObject("GameEndCameraTeam2"); // tema2 성문
+        playerCameras[7] = Global_PSC.FindTopLevelGameObject("GameEndResultCamera"); // 게임 엔드 카메라
+        playerCameras[8] = Global_PSC.FindTopLevelGameObject("SelectFocus"); // 기물 선택 시 나오는 헬리캠
         #endregion
 
         #region subCameras

@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 4336201032664709502}
   - component: {fileID: 5285433418220187151}
   - component: {fileID: 1602026246766617426}
+  - component: {fileID: 1969077655074938279}
   m_Layer: 12
   m_Name: RockObject
   m_TagString: Untagged
@@ -380,6 +381,22 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 3.8473477
   m_Center: {x: -0.08957237, y: -0.02983272, z: -0.011404753}
+--- !u!114 &1969077655074938279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131632688050607279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &215905121476742094
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,6 +547,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6220202217490690869}
   - component: {fileID: 9051590272613616270}
+  - component: {fileID: 262021309384784074}
   m_Layer: 0
   m_Name: 2
   m_TagString: Untagged
@@ -575,7 +593,31 @@ MonoBehaviour:
   fallText: {fileID: 6101488386560964476}
   trail: {fileID: 743103346689614724, guid: 84546c159d51e96458f1d23a538363e7, type: 3}
   forms: []
+  photonView: {fileID: 0}
   isGround: 0
   isDestroy: 0
   isDebuffed: 0
   debuffJumpForce: 0
+--- !u!114 &262021309384784074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9087953338579681119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 1969077655074938279}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

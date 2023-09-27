@@ -24,8 +24,8 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     protected override void Awake()
     {
         // ! Photon
-        team1StartPoint = new Vector3(107f, 40f, 107f);
-        team2StartPoint = new Vector3(-107f, 40f, -107f);
+        team1StartPoint = new Vector3(-107f, 40f, -107f);
+        team2StartPoint = new Vector3(107f, 40f, 107f); 
 
         dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
         playerTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[dataContainerView.ViewID.ToString()].ToString();
@@ -155,6 +155,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
 
         GameObject userRockObject =
                PhotonNetwork.Instantiate(gameObject.name, Vector3.zero, Quaternion.identity);
+        userRockObject.transform.localScale = Vector3.one * 0.1f;
         userRockObject.SetChildPosition(team1StartPoint, "RockObject");
 
         Debug.Log(playerTeamNumber);

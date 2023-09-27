@@ -5,11 +5,11 @@ using UnityEngine.UI;
 
 public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler, IPointerClickHandler
 {
-    #region º¯¼ö
-    // ÀĞ¾î¿Ã ½ºÅ©¸³ÅÍºí Á¤º¸
+    #region ë³€ìˆ˜
+    // ì½ì–´ì˜¬ ìŠ¤í¬ë¦½í„°ë¸” ì •ë³´
     public RockStatus rockStatus;
     #region RockScriptable
-    /// UnitScriptable º¯¼ö¸í
+    /// UnitScriptable ë³€ìˆ˜ëª…
     /// id = Id
     /// name = StoneName
     /// hp = Health
@@ -38,21 +38,21 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     [HideInInspector]
     public string explain;
     #endregion RockScriptable
-    // ½ºÅİ Á¤º¸ Ãâ·Â
+    // ìŠ¤í…Ÿ ì •ë³´ ì¶œë ¥
     public GameObject statUI;
     // 
     public GameObject holderButton;
-    // ¼±ÅÃ ÀÌ¹ÌÁö
+    // ì„ íƒ ì´ë¯¸ì§€
     private GameObject _selectImage;
-    // Á¦°Å ÀÌ¹ÌÁö
+    // ì œê±° ì´ë¯¸ì§€
     private GameObject _removeImage;
-    // ÀÚ±â ÀÚ½ÅÀÇ ÀÌ¹ÌÁö
+    // ìê¸° ìì‹ ì˜ ì´ë¯¸ì§€
     private Image _image;
-    // Å¬¸¯ »ö Á¶Àı
+    // í´ë¦­ ìƒ‰ ì¡°ì ˆ
     private Color _orignialColor;
     private Color _clickedColor;
     // Info Max
-    #region Info fillamount ÃÖ´ë°ª
+    #region Info fillamount ìµœëŒ€ê°’
     private float _maxHp = 3000f;
     private float _maxSpeed = 30f;
     private float _maxAcc = 30f;
@@ -60,10 +60,10 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     private float _maxWeight = 200f;
     #endregion
 
-    // Å¬¸¯µÈ »óÅÂ¸é ¼³¸í¾È³ª¿À°Ô ÇÏ´Â bool
+    // í´ë¦­ëœ ìƒíƒœë©´ ì„¤ëª…ì•ˆë‚˜ì˜¤ê²Œ í•˜ëŠ” bool
     [HideInInspector]
     public bool _isChecked { get; private set;}
-    // holderButton »ı¼º x,yÁÂÇ¥
+    // holderButton ìƒì„± x,yì¢Œí‘œ
     [HideInInspector]
     public float xPos;
     [HideInInspector]
@@ -76,7 +76,7 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     }
     public void OnPointerClick(PointerEventData eventData)
     {
-        // ¿ŞÂÊ¸¶¿ì½º Å¬¸¯½Ã
+        // ì™¼ìª½ë§ˆìš°ìŠ¤ í´ë¦­ì‹œ
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             PackOnPointerClick();
@@ -131,7 +131,7 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
                 _selectImage.SetActive(true);
             }
         }
-        UIManager.uiManager.PrintRockCard(id, name, explain, time);
+        UIManager.uiManager.PrintRockCard(id, stoneName, explain, time);
         if (_isChecked == false)
         {
             if (ItemManager.itemManager.CheckUserListCapacity(2) == true)
@@ -147,7 +147,7 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     //{ PackOnPointerClick()
     public void PackOnPointerClick()
     {
-        // À¯Àú°¡ °¡Áö°í ÀÖÁö ¾Ê´Ù¸é
+        // ìœ ì €ê°€ ê°€ì§€ê³  ìˆì§€ ì•Šë‹¤ë©´
         if (ItemManager.itemManager.CheckItemList(id) == false)
         {
             if (ItemManager.itemManager.CheckUserListCapacity(2) == true)
@@ -160,7 +160,7 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
             }
         }
         else
-        // °¡Áö°í ÀÖ´Ù¸é
+        // ê°€ì§€ê³  ìˆë‹¤ë©´
         {
             // dark -> orignial
             _image.color = _orignialColor;
@@ -175,7 +175,7 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     #region Functions
 
     //{ GetInforFromScriptObj()
-    // scriptable Á¤º¸
+    // scriptable ì •ë³´
     private void GetInfoFromScriptObj()
     {
         if (rockStatus != null)
@@ -194,7 +194,7 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     //} GetInforFromScriptObj()
 
     //{ InstantiateStatImg()
-    // Info ÀÌ¹ÌÁö »ı¼º
+    // Info ì´ë¯¸ì§€ ìƒì„±
     public void InstantiateStatImg(float hp_, float speed_, float acc_, float dmg_, float weight_)
     {
         GameObject newStatUI = Instantiate(statUI, transform);
@@ -202,12 +202,12 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
         RectTransform rectTransform = newStatUI.GetComponent<RectTransform>();
         rectTransform.anchoredPosition = new Vector2(20, -70);
 
-        // ÇÏÀ§ ÅØ½ºÆ®
+        // í•˜ìœ„ í…ìŠ¤íŠ¸
         TextMeshProUGUI[] textElements = newStatUI.GetComponentsInChildren<TextMeshProUGUI>();
-        // ÇÏÀ§ ÀÌ¹ÌÁö
+        // í•˜ìœ„ ì´ë¯¸ì§€
         Image[] imageElements = newStatUI.GetComponentsInChildren<Image>();
 
-        // text Ãâ·Â
+        // text ì¶œë ¥
         foreach (TextMeshProUGUI texts in textElements)
         {
             if (texts.name == "HpStatTxt")
@@ -232,7 +232,7 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
             }
         }
 
-        // fillamount Ãâ·Â
+        // fillamount ì¶œë ¥
         foreach (Image images in imageElements)
         {
             if (images.name == "HpStatFront")
@@ -260,7 +260,7 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     //} InstantiateStatImg()
 
     //{ DestroyStatImg()
-    // Info ÀÌ¹ÌÁö Á¦°Å
+    // Info ì´ë¯¸ì§€ ì œê±°
     public void DestroyStatImg()
     {
         Transform statUIInstanceTransform = transform.Find("StatImg");
@@ -273,7 +273,7 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     //} DestroyStatImg()
 
     //{ InstantiatePreviewHolder()
-    // Holder ¹Ì¸®º¸±â - °ËÀº»ö ÀÎ½ºÅÏ½ºÈ­
+    // Holder ë¯¸ë¦¬ë³´ê¸° - ê²€ì€ìƒ‰ ì¸ìŠ¤í„´ìŠ¤í™”
     public void InstantiatePreviewHolder()
     {
         Transform parentTransform = transform.parent;
@@ -288,7 +288,7 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     //} InstantiatePreviewHolder()
 
     //{ DestroyPreviewHolder()
-    // Holder ¹Ì¸®º¸±â Destroy
+    // Holder ë¯¸ë¦¬ë³´ê¸° Destroy
     public void DestroyPreviewHolder()
     {
         GameObject rockHolder = GameObject.Find("RockHolderPreview");
@@ -300,8 +300,8 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     //} DestroyPreviewHolder()
     
     //{ InstantiateHolder()
-    // Holder »ı¼º
-    // Á¦°Å ·ÎÁ÷Àº ItemManager°¡ °ü¸®ÇÔ
+    // Holder ìƒì„±
+    // ì œê±° ë¡œì§ì€ ItemManagerê°€ ê´€ë¦¬í•¨
     public void InstantiateRockHolder(int id_)
     { 
         Transform parentTransform = transform.parent;
@@ -318,10 +318,10 @@ public class RockButton : MonoBehaviour, IPointerExitHandler, IPointerEnterHandl
     //} InstantiateHolder()
 
     //{ BackToOriginalColor()
-    // Holder¸¦ Å¬¸¯½Ã ¿ø·¡´ë·Î »öÀ» µÇµ¹¸®´Â ÇÔ¼ö
+    // Holderë¥¼ í´ë¦­ì‹œ ì›ë˜ëŒ€ë¡œ ìƒ‰ì„ ë˜ëŒë¦¬ëŠ” í•¨ìˆ˜
     public void BackToOriginalColor(int id_)
     {
-        // À¯Àú°¡ ¾ÆÀÌÅÛÀ» °¡Áö°í ÀÖÁö ¾Ê´Ù¸é
+        // ìœ ì €ê°€ ì•„ì´í…œì„ ê°€ì§€ê³  ìˆì§€ ì•Šë‹¤ë©´
         if (ItemManager.itemManager.CheckItemList(id_) == false)
         {
             _image.color = _orignialColor;

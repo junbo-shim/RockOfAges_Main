@@ -6,12 +6,13 @@ using System.Text.RegularExpressions;
 // endingUI
 public partial class UIManager : MonoBehaviour
 {
-
     #region 변수
+    [Header("UI")]
     public GameObject attackUI;
 
     #region 플레이어 이름
     // playerName 1~4
+    [Header("PLAYERNAME")]
     public TextMeshProUGUI player1NameTxt;
     public TextMeshProUGUI player2NameTxt;
     public TextMeshProUGUI player3NameTxt;
@@ -20,6 +21,7 @@ public partial class UIManager : MonoBehaviour
 
     #region 플레이어 점수
     // playerScore 1~4
+    [Header("PLAYERSCORE")]
     public TextMeshProUGUI player1ScoreTxt;
     public TextMeshProUGUI player2ScoreTxt;
     public TextMeshProUGUI player3ScoreTxt;
@@ -28,6 +30,7 @@ public partial class UIManager : MonoBehaviour
 
     #region 플레이어 초상화 이미지
     // playerIcon 1~4
+    [Header("PLAYERICON")]
     public Image player1Icon;
     public Image player2Icon;
     public Image player3Icon;
@@ -36,6 +39,7 @@ public partial class UIManager : MonoBehaviour
 
     #region 플레이어 위치표시
     // playerImg(내꺼라는 표시)
+    [Header("PLAYERINDICATOR")]
     public Image player1userImg;
     public Image player2userImg;
     public Image player3userImg;
@@ -43,6 +47,7 @@ public partial class UIManager : MonoBehaviour
     #endregion
 
     // 승자 - 왕관, 패자 - 체스
+    [Header("WIN,LOSE IMAGE")]
     public Image crownImg;
     public Image chessImg;
 

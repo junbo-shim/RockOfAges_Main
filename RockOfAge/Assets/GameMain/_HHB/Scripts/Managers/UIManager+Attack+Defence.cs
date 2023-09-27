@@ -6,9 +6,11 @@ using UnityEngine.UI;
 
 public partial class UIManager : MonoBehaviour
 {
+    [Header("ROCK HP")]
     public Image hpImg;
 
     // 돌깎는 애니메이션
+    [Header("ROCK CREATOR")]
     public GameObject creators;
     public GameObject myRock;
     public Image startRock;

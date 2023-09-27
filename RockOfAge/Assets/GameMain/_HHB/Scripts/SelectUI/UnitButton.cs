@@ -90,7 +90,7 @@ public class UnitButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
                 _selectImage.SetActive(true);
             }
         }
-        UIManager.uiManager.PrintObstacleCard(id, name, explain, price);
+        UIManager.uiManager.PrintObstacleCard(id, obsName, explain, price);
         if (_isChecked == false)
         {
             if (ItemManager.itemManager.CheckUserListCapacity(1) == true)
@@ -164,7 +164,7 @@ public class UnitButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         UIManager.uiManager.MatchHolderIDSprite(image, id);
         image.color = _clickedColor;
         RectTransform rectTransform = newHolderButton.GetComponent<RectTransform>();
-        rectTransform.anchoredPosition = new Vector2(xPos - (float)(84 * ItemManager.itemManager.unitCount), yPos);
+        rectTransform.anchoredPosition = new Vector2(xPos - (float)(82 * ItemManager.itemManager.unitCount), yPos);
     }
     //} InstantiatePreviewHolder()
 
@@ -191,7 +191,7 @@ public class UnitButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         Image image = newHolderButton.GetComponent<Image>();
         UIManager.uiManager.MatchHolderIDSprite(image, id_);
         RectTransform rectTransform = newHolderButton.GetComponent<RectTransform>();
-        rectTransform.anchoredPosition = new Vector2(xPos - (float)(84 * ItemManager.itemManager.unitCount), yPos);
+        rectTransform.anchoredPosition = new Vector2(xPos - (float)(82 * ItemManager.itemManager.unitCount), yPos);
         UnitHolderButton myHolderButton = FindObjectOfType<UnitHolderButton>();
         myHolderButton.id = id_;
         ItemManager.itemManager.unitCount++;

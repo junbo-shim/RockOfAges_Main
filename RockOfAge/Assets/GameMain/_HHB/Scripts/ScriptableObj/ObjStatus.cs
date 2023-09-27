@@ -12,7 +12,7 @@ public class ObstacleStatus : ScriptableObject
 
     public ObstacleStatus(ObstacleStatus obstacle) 
     {
-        this.id = obstacle.Id;
+        this.id = obstacle.Id;  
         this.obstacleName = obstacle.ObstacleName;
         this.price = obstacle.Price;
         this.health = obstacle.Health ;

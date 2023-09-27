@@ -5,19 +5,30 @@ using Photon.Pun;
 
 public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
 {
+    [SerializeField]
+    //스프링이 튀어오를때 각도가 변하는 bone의 위치
     private GameObject colliderParts = default;
+    [SerializeField]
     private bool isAttacked = false;
+
+    public AudioSource audioSource;
 
     //init
     private void Awake()
     {
+        Init();
+    }
+
+    protected override void Init()
+    {
         base.Init();
+        audioSource = GetComponent<AudioSource>();
+        colliderParts = transform.GetChild(0).GetChild(1).GetChild(1).gameObject;
+        obstacleCollider = colliderParts.GetComponent<Collider>();
     }
 
     private void Start()
     {
-        //스프링이 튀어오를때 각도가 변하는 bone의 위치
-        colliderParts = transform.GetChild(0).GetChild(1).GetChild(1).gameObject;
         //초기 animation 상태
         ActiveIdle();
     }
@@ -53,6 +64,7 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
             //공격중 상태가 아니라면 공격애니메이션 작동(스프링 튀어오르기)
             if (!isAttacked && obstacleAnimator.GetBool("Idle"))
             {
+                audioSource.Play();
                 ActiveAttack();
             }
 
@@ -117,7 +129,7 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
 
     public void HitReaction()
     {
-        throw new System.NotImplementedException();
+        //throw new System.NotImplementedException();
     }
 
     protected override void Dead()

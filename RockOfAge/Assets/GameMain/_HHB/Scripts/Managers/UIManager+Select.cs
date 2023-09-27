@@ -5,10 +5,14 @@ using UnityEngine.UI;
 // Defence UI
 public partial class UIManager : MonoBehaviour
 {
+    [Header("UI")]
     public GameObject rockSelectUI;
+    [Header("BUTTON PREFAB")]
     public GameObject rockselect;
     public GameObject unitSelect;
+    [Header("UI")]
     public GameObject defenceUI;
+    [Header("SPRITE MATCH")]
     public Sprite[] selectRockSprite;
     public Sprite[] selectUnitSprite;
 

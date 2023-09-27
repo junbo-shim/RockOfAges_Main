@@ -185,7 +185,11 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         trails = new Queue<RockTrail>();
 
         CreateTrail();
-        UIManager.uiManager.PrintFillAmountRockHp(currHp, rockStatus.Health);
+        if (UIManager.uiManager != null)
+        {
+
+            UIManager.uiManager.PrintFillAmountRockHp(currHp, rockStatus.Health);
+        }
     }
 
     //혹시 모를 오버로딩
@@ -405,12 +409,16 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             time += Time.deltaTime;
         }
 
-        isFall = true;
-        StartCoroutine(ComebackCheckPointRoutine());
+        if (!isFall)
+        {
+            isFall = true;
+            StartCoroutine(ComebackCheckPointRoutine());
+
+        }
     }
 
 
-    IEnumerator ComebackCheckPointRoutine()
+    protected IEnumerator ComebackCheckPointRoutine()
     {
         //카메라 정지
         //떨어지면서 메아리 추가
@@ -499,9 +507,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         }
         if (collision.gameObject.layer == LayerMask.NameToLayer("Castle"))
         {
-            isDestroy = true;
-            Invoke("EndAttack", 2f);
-            CycleManager.cycleManager.ChangeCycleAttackToSelect();    
+            StartCoroutine(EndAttackRoutine());    
         }
     }
 
@@ -632,11 +638,20 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     protected virtual void Die()
     {
-        isDestroy = true;
-        CycleManager.cycleManager.ChangeCycleAttackToSelect();
         rayfireRigid.Demolish();
-        Invoke("EndAttack", 2f);
+        //rayfireRigid.Activate();
+        StartCoroutine(EndAttackRoutine());
+        //Destroy(gameObject);
     }
+
+    IEnumerator EndAttackRoutine()
+    {
+        isDestroy = true;
+        Destroy(gameObject, 3f);
+        yield return new WaitForSeconds(2f);
+        CycleManager.cycleManager.ChangeCycleAttackToSelect();
+    }
+
 
     protected Vector2 GetInput()
     {

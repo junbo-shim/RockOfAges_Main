@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Test/Psc/Scenes/PscTestScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Test/HHB/0921.unity
+    guid: eac4adfc44ba7c6489ecb1a4f2e1201a
   m_configObjects: {}

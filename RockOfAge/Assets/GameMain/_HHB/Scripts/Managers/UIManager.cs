@@ -16,7 +16,7 @@ public partial class UIManager : MonoBehaviour
     public static UIManager uiManager;
 
     #region 변수
-    // Card
+    [Header("CARD")]
     public Sprite[] rockSprites;
     public Sprite[] obstructionSprites;
     public Image cardImage;
@@ -26,11 +26,14 @@ public partial class UIManager : MonoBehaviour
     public TextMeshProUGUI cardInfoTxt;
     public TextMeshProUGUI cardGoldTxt;
     // Holder
+    [Header("ROCK HOLDER")]
     public Sprite[] rockHolderSprites;
     // Selection To Defence
+    [Header("PLAYERS SELECT READY")]
     public TextMeshProUGUI readyTxt;
     public Image readyImg;
     // selectionUI
+    [Header("UI")]
     public GameObject userSelectUI;
     // endingUI
     public GameObject endingUI;
@@ -241,7 +244,7 @@ public partial class UIManager : MonoBehaviour
             int index = id_ - 1;
             image_.sprite = rockHolderSprites[index];
         }
-        if (id_ >= 11)
+        if (id_ > 10)
         {
             int index = id_ - 11;
             image_.sprite = obstructionSprites[index];

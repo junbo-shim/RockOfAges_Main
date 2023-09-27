@@ -69,8 +69,15 @@ public class ObstacleBase : MonoBehaviour
         //마테리얼 교체
         originMaterial = obstacleRenderer.material;
         obstacleRenderer.material = BuildManager.instance.white;
-        (obstacleCollider as MeshCollider).convex = true;
-        obstacleCollider.isTrigger = true;
+
+        if (obstacleCollider != null)
+        {
+            if(obstacleCollider is MeshCollider)
+            {
+                (obstacleCollider as MeshCollider).convex = true;
+            }
+            obstacleCollider.isTrigger = true;
+        }
 
         StartCoroutine(BuildRoutine(time));
     }
@@ -90,8 +97,15 @@ public class ObstacleBase : MonoBehaviour
 
         isBuildComplete = true;
         obstacleRenderer.material = originMaterial;
-        obstacleCollider.isTrigger = false;
-        (obstacleCollider as MeshCollider).convex = false;
+
+        if (obstacleCollider != null)
+        {
+            obstacleCollider.isTrigger = false;
+            if (obstacleCollider is MeshCollider)
+            {
+                (obstacleCollider as MeshCollider).convex = false;
+            }
+        }
         MakePeople();
     }
 

@@ -1,16 +1,29 @@
 using PlayFab.ClientModels;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public partial class UIManager : MonoBehaviour
 {
+    [Header("ROCK HP")]
     public Image hpImg;
 
     // 돌깎는 애니메이션
+    [Header("ROCK CREATOR")]
     public GameObject creators;
     public GameObject myRock;
     public Image startRock;
+    public GameObject rockReadyInfo;
+
+    public void SwitchRockReadyInfo()
+    {
+        if (rockReadyInfo.gameObject.activeSelf)
+        {
+            rockReadyInfo.gameObject.SetActive(false);
+        }
+        else { rockReadyInfo.gameObject.SetActive(true); }
+    }
 
     public void PrintFillAmountRockHp(float currentHp, float maxHp)
     {
@@ -38,7 +51,7 @@ public partial class UIManager : MonoBehaviour
     IEnumerator MoveCreators(float creatTime)
     {
         RectTransform rectTransform = creators.GetComponent<RectTransform>();
-        Vector2 startPos = rectTransform.anchoredPosition;
+        //Vector2 startPos = rectTransform.anchoredPosition;
         if (creators.transform.localScale != Vector3.one)
         { 
             creators.transform.localScale = Vector3.one;
@@ -76,17 +89,19 @@ public partial class UIManager : MonoBehaviour
         creators.transform.localScale = Vector3.zero;
     }
 
-    IEnumerator PoolingRockFragments(float creatTime)
+    public IEnumerator PoolingRockFragments(float creatTime)
     {
         float myTime = 0f;
-
+        float spawnTime = 0.3f;
         while (myTime < creatTime)
-        {
+        { 
             GameObject rock = RockObjectPooling.objectPooling.GetRock();
-            yield return new WaitForSeconds(0.1f);
+            FragmentControl fragmentControl = rock.GetComponent<FragmentControl>();
+            fragmentControl.PackFragmentMovement();
+            yield return new WaitForSeconds(spawnTime);
             RockObjectPooling.objectPooling.ReturnRockWithTimer(rock);
-            myTime += Time.deltaTime;
-            yield return null;
+            myTime += spawnTime;
         }
+        SwitchRockReadyInfo();
     }
 }

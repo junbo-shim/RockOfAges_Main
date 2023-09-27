@@ -56,6 +56,13 @@ public class DefaultRock : RockBase
         {
             Jump(DEFAULT_JUMP_FORCE);
         }
+
+
+        if (Input.GetKeyUp(KeyCode.R))
+        {
+            isFall = true;
+            StartCoroutine(ComebackCheckPointRoutine());
+        }
     }
 
 

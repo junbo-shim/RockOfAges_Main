@@ -10,7 +10,7 @@ public class RockObjectPooling : MonoBehaviour
     private GameObject[] rockObj;
 
 
-    Queue<GameObject> rocksQueue = new Queue<GameObject>();
+    public Queue<GameObject> rocksQueue = new Queue<GameObject>();
 
     private void Awake()
     {
@@ -20,7 +20,7 @@ public class RockObjectPooling : MonoBehaviour
 
     private void Initialize()
     {
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 4; j++)
             {
@@ -77,21 +77,9 @@ public class RockObjectPooling : MonoBehaviour
 
     IEnumerator ReturnTime(GameObject obj)
     {
-        yield return new WaitForSeconds(0.2f);
-        obj.gameObject.SetActive(false);
-        SetTransformPooling(obj);
+        yield return new WaitForSeconds(0.4f);
         rocksQueue.Enqueue(obj);
-    }
-
-    public bool LimitRockCount()
-    {
-        GameObject mother = Global_PSC.FindTopLevelGameObject("DefenceUI");
-        Transform container = mother.transform.GetChild(0).GetChild(2);
-        int fragmentCount = container.childCount;
-        if (fragmentCount > 20)
-        {
-            return false;
-        }
-        else { return true; }
+        SetTransformPooling(obj);
+        obj.gameObject.SetActive(false);
     }
 }

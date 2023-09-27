@@ -182,7 +182,8 @@ public partial class UIManager : MonoBehaviour
         // 방해물일때
         if (id_ > 10)
         {
-            cardNameTxt.text = name_;
+            Debug.Log(name_);
+            cardNameTxt.text = name_.ToString();
             cardInfoTxt.text = explain_;
             cardGoldTxt.text = gold_.ToString();
             cardClockImage.gameObject.SetActive(false);
@@ -241,7 +242,7 @@ public partial class UIManager : MonoBehaviour
             int index = id_ - 1;
             image_.sprite = rockHolderSprites[index];
         }
-        if (id_ >= 11)
+        if (id_ > 10)
         {
             int index = id_ - 11;
             image_.sprite = obstructionSprites[index];

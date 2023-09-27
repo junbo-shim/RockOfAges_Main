@@ -571,7 +571,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rockObject: {fileID: 7795925384113100711}
   checkPoint: {fileID: 5777343965023677469}
-  rockStatus: {fileID: 11400000, guid: 7ba169556656322419d4ac5f4677b281, type: 2}
+  rockStatus: {fileID: 11400000, guid: 564b3a0347503764cb850c326cd47fb7, type: 2}
   fallText: {fileID: 6101488386560964476}
   trail: {fileID: 743103346689614724, guid: 84546c159d51e96458f1d23a538363e7, type: 3}
   forms:

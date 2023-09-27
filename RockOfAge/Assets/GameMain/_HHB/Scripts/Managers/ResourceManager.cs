@@ -19,7 +19,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     // 리소스에서 인잇
     public void PackAwake()
     {
-        for (int i = 1; i < 5; i++)
+        for (int i = 1; i < 4; i++)
         {
             GameObject rockPrefab = Resources.Load<GameObject>("Rocks/" + i);
             if (rockPrefab != null)
@@ -28,7 +28,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
             }
             else { Debug.Log("Failed To Load Rock" + i);}
         }
-        for (int i = 11; i < 13; i++)
+        for (int i = 11; i < 19; i++)
         {
             GameObject unitPrefab = Resources.Load<GameObject>("Units/" + i);
             if (unitPrefab != null)

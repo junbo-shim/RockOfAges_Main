@@ -46,7 +46,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 131632688050607279}
-  m_Mesh: {fileID: 8733353601492638029, guid: 28a38b6612c1f3b49a088f554aeda306, type: 3}
+  m_Mesh: {fileID: 98237133552829817, guid: b158812640b8bd54eaeef97502423de3, type: 3}
 --- !u!23 &3915294463928106192
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -67,7 +67,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0c16f374933921945b3a506bea445f44, type: 2}
+  - {fileID: -4003944693640238851, guid: 884dc3c3696e45c4a804913b91198f5c, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -571,13 +571,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rockObject: {fileID: 7795925384113100711}
   checkPoint: {fileID: 5777343965023677469}
-  rockStatus: {fileID: 11400000, guid: 7ba169556656322419d4ac5f4677b281, type: 2}
+  rockStatus: {fileID: 11400000, guid: 3470c02e552250a4dab7f344b9193439, type: 2}
   fallText: {fileID: 6101488386560964476}
   trail: {fileID: 743103346689614724, guid: 84546c159d51e96458f1d23a538363e7, type: 3}
-  forms:
-  - {fileID: 5034156383509657509, guid: cceeee2b612816b42b2eafd334d6cf08, type: 3}
-  - {fileID: 8960423920533652962, guid: 002c2ed74672f3d4481ef3fa0ae3e719, type: 3}
-  - {fileID: 3252987489987925297, guid: 8de01bb5614727741a607d0205964e03, type: 3}
+  forms: []
   isGround: 0
   isDestroy: 0
   isDebuffed: 0

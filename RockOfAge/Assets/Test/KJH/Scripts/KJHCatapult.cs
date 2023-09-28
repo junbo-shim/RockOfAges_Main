@@ -1,8 +1,8 @@
 
 using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
+// ! Photon
+using Photon.Pun;
 
 public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
 {
@@ -132,13 +132,15 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
     IEnumerator DestroyRock(GameObject rock)
     {
         yield return new WaitForSeconds(1f);
-        Destroy(rock);
+        // ! Photon
+        PhotonNetwork.Destroy(rock);
     }
     protected override void Dead() 
     {
         audioSource.clip = DeadSound;
         audioSource.Play();
-        Destroy(gameObject);
+        // ! Photon
+        PhotonNetwork.Destroy(gameObject);
     }
 
     public void Hit(int damage)

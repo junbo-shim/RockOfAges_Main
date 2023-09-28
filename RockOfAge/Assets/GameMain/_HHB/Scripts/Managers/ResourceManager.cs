@@ -165,35 +165,26 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         //userRockObject.transform.localScale = Vector3.one * 0.1f;
         //userRockObject.SetChildPosition(team1StartPoint, "RockObject");
 
-        Debug.Log(playerTeamNumber);
-        Debug.Log(playerTeamNumber.Split('_')[0]);
-
-        string playerNum = playerTeamNumber.Split('_')[0];
+        string teamNum = playerTeamNumber.Split('_')[1];
 
         // ! Photon
         FindMyViewID();
-        if (playerNum == "Player1" || playerNum == "Player2")
+        if (teamNum == "Team1")
         {
             if (userRockObject.GetComponent<PhotonView>().IsMine == true)
             {
                 CameraManager.Instance.SetRockCamera(userRockObject, team1StartPoint);
                 userRockObject.GetComponent<RockBase>().teamNumber = 1;
-
             }
         }
-        else if (playerNum == "Player3" || playerNum == "Player4")
+        else if (teamNum == "Team2")
         { 
             if (userRockObject.GetComponent<PhotonView>().IsMine == true)
             {
                 CameraManager.Instance.SetRockCamera(userRockObject, team2StartPoint);
                 userRockObject.GetComponent<RockBase>().teamNumber = 2;
-
             }
         }
-
-        // ! Photon
-        //CycleManager.cycleManager.CheckTeamAndSaveQueue(dataContainerView.ViewID.ToString(), userRockObject);
-
         // 팀 1인지 2인지 구별하는 if가 필요합니다
         // 팀2꺼 startPoint 없습니다. 밑은 1번팀꺼입니다
         #region Legacy

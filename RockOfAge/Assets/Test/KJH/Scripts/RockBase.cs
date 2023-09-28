@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class RockBase : MonoBehaviourPun, IHitObjectHandler
+public class RockBase : MonoBehaviour, IHitObjectHandler
 {
     //돌 하위 오브젝트들
     [SerializeField]
@@ -71,6 +71,9 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
     protected const float DEFAULT_SLOPE_MULTIPLE = 1.5f;
     protected const float DEFAULT_OBSTACLE_MULTIPLE = 1f;
 
+    // ! Photon
+    public PhotonView dataContainerView;
+
 
     private void OnDrawGizmos()
     {
@@ -110,38 +113,13 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
     }
     //} 0920 홍한범
 
-    // ! Photon
-    private int CheckRockID(string rockViewID) 
-    {
-        int result = ReturnRockFirstNumber(rockViewID);
-        int team1 = 1;
-        int team2 = 2;
-
-        // Warning : Player 1, Player 2 일 경우
-        if (result == 1 || result == 2) 
-        {
-            return team1;
-        }
-        // Warning : Player 3, Player 4 일 경우
-        else
-        {
-            return team2;
-        }
-    }
-
-    private int ReturnRockFirstNumber(string rockViewID)
-    {
-        char firstNumber = rockViewID.ToCharArray()[0];
-        return firstNumber;
-    }
-
     public virtual void Init()
     {
         // ! PSC Editted
         photonView = GetComponent<PhotonView>();
-        CheckRockID(photonView.ViewID.ToString());
+        dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
 
-         
+
         if (photonView.IsMine)
         {
             //추후 시네머신 카메라로 바꿀것
@@ -193,6 +171,15 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
 
         transform.localScale = Vector3.one * 0.1f;
         gameObject.SetChildPosition(startPos, "RockObject");
+
+        // ! Photon
+        if (photonView.IsMine == false)
+        {
+            Debug.Log("들어왔니?");
+            CycleManager.cycleManager.CheckTeamAndSaveQueue(dataContainerView.ViewID.ToString(), gameObject);
+            Debug.Log(dataContainerView.ViewID.ToString());
+            Debug.Log(photonView.ViewID.ToString());
+        }
     }
 
     //혹시 모를 오버로딩
@@ -518,7 +505,10 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
     private void EndAttack()
     {
         // ! Photon - Alert
-        //CycleManager.cycleManager.CheckTeamAndDequeue(photonView.ViewID.ToString(), gameObject);
+        if (photonView.IsMine == false) 
+        {
+            CycleManager.cycleManager.CheckTeamAndDequeue(photonView.ViewID.ToString(), gameObject);
+        }
         PhotonNetwork.Destroy(gameObject);
     }
 

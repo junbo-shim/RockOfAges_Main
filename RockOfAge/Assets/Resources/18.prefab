@@ -265,7 +265,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: b5599870fdfd9a940963f3d9e3cd5353, type: 2}
   buildPositionY: 0
-  kjhObjectPrefab: {fileID: 0}
+  peopleObject: {fileID: 2044133147384927099, guid: 8a36354b176d55b4c91e3978e6f53301, type: 3}
   dragObstacle: 1
   mainObject: {fileID: 7676064579565162013}
   subObject: {fileID: 124588465074315047, guid: 2c40319f2d9c63240974c1edb6259c85, type: 3}

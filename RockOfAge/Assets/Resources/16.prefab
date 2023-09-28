@@ -1207,7 +1207,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 3999ab52d98be32449ffa7168f490af8, type: 2}
   buildPositionY: 0
-  kjhObjectPrefab: {fileID: 0}
+  peopleObject: {fileID: 2044133147384927099, guid: 8a36354b176d55b4c91e3978e6f53301, type: 3}
   dragObstacle: 0
 --- !u!65 &5908379624747514014
 BoxCollider:
@@ -1293,6 +1293,10 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 3240612968607298054}
+  - {fileID: 1387465606868419465}
+  - {fileID: 5364656618489045092}
+  - {fileID: 7998462830524744563}
+  - {fileID: 4647779524798193006}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0

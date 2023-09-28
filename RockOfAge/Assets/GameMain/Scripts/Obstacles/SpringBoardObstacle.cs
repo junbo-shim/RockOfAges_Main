@@ -33,12 +33,6 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
         ActiveIdle();
     }
 
-    //화면상에 보여질때 처음에는 흰색으로 시작.
-    private void OnEnable()
-    {
-        StartBuild(BUILD_TIME);
-    }
-
     //충돌처리
     private void OnCollisionEnter(Collision collision)
     {

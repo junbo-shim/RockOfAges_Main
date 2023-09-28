@@ -111,7 +111,7 @@ public class ObstacleBase : MonoBehaviour
     }
 
     //bool isTest = true;
-    //맵에 Build
+    //맵에 Buildw
     public virtual ObstacleBase Build(Vector3 position, Quaternion rotate, int currIndex, int count)
     {
         //오브젝트 생성

@@ -6,6 +6,22 @@ using UnityEngine;
 public class CameraManager : GlobalSingleton<CameraManager>
 {
     public static Queue<GameObject> enemyCameraQueue = new Queue<GameObject>(2);
+    public static Vector3 myCameraPosition;
+
+    public void UpdateMyCameraCenterPoint()
+    {
+        if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
+        {
+            GameObject topViewCamera = Global_PSC.FindTopLevelGameObject("TopViewCamera");
+            if (topViewCamera.activeSelf == true)
+            {
+                GameObject clickedTopViewCamera = Global_PSC.FindTopLevelGameObject("ClickedTopViewCamera");
+                myCameraPosition = clickedTopViewCamera.transform.position;
+            }
+            else { myCameraPosition = topViewCamera.transform.position; }
+
+        }
+    }
 
     public void SetRockCamera(GameObject userRock, Vector3 startPoint)
     {
@@ -155,5 +171,22 @@ public class CameraManager : GlobalSingleton<CameraManager>
         GameObject rockCamera = Global_PSC.FindTopLevelGameObject("RockCamera");
         rockCamera.SetActive(false);
         topViewCamera.SetActive(true);
+    }
+
+    public void MoveTurnOnCameraPosition(Vector2 position)
+    { 
+        if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
+        {
+            GameObject topViewCamera = Global_PSC.FindTopLevelGameObject("TopViewCamera");
+            if (topViewCamera.activeSelf == false)
+            {
+                GameObject topViewClickedCamera = Global_PSC.FindTopLevelGameObject("ClickedTopViewCamera");
+                topViewClickedCamera.transform.position = new Vector3(position.x, topViewClickedCamera.transform.position.y, position.y);
+            }
+            else 
+            {
+                topViewCamera.transform.position = new Vector3(position.x, topViewCamera.transform.position.y, position.y);
+            }
+        }
     }
 }

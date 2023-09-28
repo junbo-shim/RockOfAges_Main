@@ -116,7 +116,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: d97e9dcfd74472a40a25b21b33858e56, type: 2}
   buildPositionY: 0
-  kjhObjectPrefab: {fileID: 0}
+  peopleObject: {fileID: 0}
+  peopleCount: 5
   dragObstacle: 0
   Rock:
     serializedVersion: 2

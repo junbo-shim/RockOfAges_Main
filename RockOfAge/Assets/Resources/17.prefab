@@ -125,7 +125,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 6afaea86de5613f46861b75687e2c720, type: 2}
   buildPositionY: 0
-  kjhObjectPrefab: {fileID: 0}
+  peopleObject: {fileID: 0}
+  peopleCount: 5
   dragObstacle: 0
   _collider: {fileID: 1098865085619968854}
   isSticked: 0
@@ -345,7 +346,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 6afaea86de5613f46861b75687e2c720, type: 2}
   buildPositionY: 0
-  kjhObjectPrefab: {fileID: 0}
+  peopleObject: {fileID: 0}
+  peopleCount: 5
   dragObstacle: 0
   _collider: {fileID: 2108518307024812066}
   isSticked: 0
@@ -493,7 +495,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 3c00eda3d35130d46b1a50fd374d5dae, type: 2}
   buildPositionY: 0
-  kjhObjectPrefab: {fileID: 0}
+  peopleObject: {fileID: 2044133147384927099, guid: 8a36354b176d55b4c91e3978e6f53301, type: 3}
+  peopleCount: 5
   dragObstacle: 0
 --- !u!114 &6846665213325107984
 MonoBehaviour:
@@ -730,7 +733,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 6afaea86de5613f46861b75687e2c720, type: 2}
   buildPositionY: 0
-  kjhObjectPrefab: {fileID: 0}
+  peopleObject: {fileID: 0}
+  peopleCount: 5
   dragObstacle: 0
   _collider: {fileID: 8370453735511008013}
   isSticked: 0
@@ -950,7 +954,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 6afaea86de5613f46861b75687e2c720, type: 2}
   buildPositionY: 0
-  kjhObjectPrefab: {fileID: 0}
+  peopleObject: {fileID: 0}
+  peopleCount: 5
   dragObstacle: 0
   _collider: {fileID: 2739118945663715628}
   isSticked: 0
@@ -1170,7 +1175,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 6afaea86de5613f46861b75687e2c720, type: 2}
   buildPositionY: 0
-  kjhObjectPrefab: {fileID: 0}
+  peopleObject: {fileID: 0}
+  peopleCount: 5
   dragObstacle: 0
   _collider: {fileID: 2605859844605489482}
   isSticked: 0

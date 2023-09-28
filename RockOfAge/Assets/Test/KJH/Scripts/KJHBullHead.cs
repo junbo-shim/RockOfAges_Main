@@ -26,13 +26,12 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
 
 
 
-    void Start()
+    protected override void Init()
     {
-        Init();
+        base.Init();
         originalPosition = transform.position; // 시작 시 원래 위치 저장
 
         animator = GetComponent<Animator>(); // Animator 컴포넌트 가져오기
-
 
         audioSource = GetComponent<AudioSource>();
     }

@@ -336,7 +336,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 4a7989056b910f141a7f2371601d413b, type: 2}
   buildPositionY: 0
-  kjhObjectPrefab: {fileID: 0}
+  peopleObject: {fileID: 0}
+  peopleCount: 5
   dragObstacle: 0
   audioSource: {fileID: 1094574167072063427}
   attackSound: {fileID: 8300000, guid: c976150b2d03fbe4ba33a0085fdfb15f, type: 3}

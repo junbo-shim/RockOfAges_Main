@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KJHObject : MonoBehaviour
+public class PeopleObject : MonoBehaviour
 {
     [SerializeField]
     private List<Sprite> character; // Character 스프라이트들을 저장할 리스트

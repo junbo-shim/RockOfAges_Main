@@ -18,13 +18,9 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
     private Quaternion catMotherOrigianlRotation;
     private float attackSoundDelay = 0.3f; // 재생 딜레이 설정 (예: 5초)
 
-    private void Awake()
-    {
-        Init();
-    }
-
     protected override void Init()
     {
+        base.Init();
         cat = transform.GetChild(0);
         catMother = transform;
         status = new ObstacleStatus(status);

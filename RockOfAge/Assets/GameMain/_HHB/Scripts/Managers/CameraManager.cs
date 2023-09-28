@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CameraManager : GlobalSingleton<CameraManager>
 {
-    public static Queue<GameObject> enemyCameraQueue = new Queue<GameObject>(2);
+    public Queue<GameObject> enemyCameraQueue = new Queue<GameObject>(2);
 
     public void SetRockCamera(GameObject userRock, Vector3 startPoint)
     {

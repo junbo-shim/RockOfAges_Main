@@ -207,29 +207,36 @@ public class CycleManager : MonoBehaviour
     }
 
     // ! Photon
+    public string DropLastThreeChar(string inputString) 
+    {
+        char[] stringToChar = inputString.ToCharArray();
+        char[] resultArray = new char[stringToChar.Length - 3];
+        
+        for (int i = 0; i < stringToChar.Length - 3; i++) 
+        {
+            resultArray[i] = stringToChar[i];
+        }
+        //string result = new string(resultArray);
+        string result = string.Join("", resultArray);
+
+        return result;
+    }
+
+    // ! Photon
     public void CheckTeamAndSaveQueue(string myViewID, GameObject createdRock) 
     {
         string myTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[myViewID].ToString().Split('_')[1];
 
-        string temp = createdRock.GetComponent<PhotonView>().ViewID.ToString();
-        string rockNumber = temp.Split()[0];
+        string rockViewID = createdRock.GetComponent<PhotonView>().ViewID.ToString();
+        string rockOwnerViewID = DropLastThreeChar(rockViewID) + "001";
 
-        if (myTeamNumber == "Team1") 
-        {
-            if (rockNumber == "3" || rockNumber == "4") 
-            {
-                CameraManager.enemyCameraQueue.Enqueue(createdRock);
-            }
-        }
-        else if (myTeamNumber == "Team2") 
-        {
-            if (rockNumber == "1" || rockNumber == "2") 
-            {
-                CameraManager.enemyCameraQueue.Enqueue(createdRock);
-            }
-        }
+        string rockTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[rockOwnerViewID].ToString().Split('_')[1];
 
-        CameraManager.Instance.SetEnemyCamera(createdRock);
+        if (myTeamNumber != rockTeamNumber)
+        {
+            CameraManager.Instance.SetEnemyCamera(createdRock);
+            CameraManager.Instance.enemyCameraQueue.Enqueue(createdRock);
+        }
     }
 
     // ! Photon
@@ -237,22 +244,14 @@ public class CycleManager : MonoBehaviour
     {
         string myTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[myViewID].ToString().Split('_')[1];
 
-        string temp = deadRock.GetComponent<PhotonView>().ViewID.ToString();
-        string rockNumber = temp.Split()[0];
+        string rockViewID = deadRock.GetComponent<PhotonView>().ViewID.ToString();
+        string rockOwnerViewID = DropLastThreeChar(rockViewID) + "001";
 
-        if (myTeamNumber == "Team1")
+        string rockTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[rockOwnerViewID].ToString().Split('_')[1];
+
+        if (myTeamNumber != rockTeamNumber)
         {
-            if (rockNumber == "3" || rockNumber == "4")
-            {
-                CameraManager.enemyCameraQueue.Dequeue();
-            }
-        }
-        else if (myTeamNumber == "Team2")
-        {
-            if (rockNumber == "1" || rockNumber == "2")
-            {
-                CameraManager.enemyCameraQueue.Dequeue();
-            }
+            CameraManager.Instance.enemyCameraQueue.Dequeue();
         }
     }
 
@@ -466,8 +465,6 @@ public class CycleManager : MonoBehaviour
         {
             if (team_ == "Team1")
             {
-                Debug.Log(enemyCamera.name);
-                Debug.Log(enemyCamera.gameObject.layer.ToString());
                 enemyCamera.gameObject.layer = LayerMask.NameToLayer("Team2");
             }
             else

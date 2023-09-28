@@ -1,4 +1,5 @@
 using Cinemachine;
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -174,19 +175,23 @@ public class CameraManager : GlobalSingleton<CameraManager>
     }
 
     public void MoveTurnOnCameraPosition(Vector2 position)
-    { 
+    {
+        float lerpSpeed = 2f;
         if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
         {
             GameObject topViewCamera = Global_PSC.FindTopLevelGameObject("TopViewCamera");
             if (topViewCamera.activeSelf == false)
             {
                 GameObject topViewClickedCamera = Global_PSC.FindTopLevelGameObject("ClickedTopViewCamera");
-                topViewClickedCamera.transform.position = new Vector3(position.x, topViewClickedCamera.transform.position.y, position.y);
+                Vector3 targetPosition = new Vector3(position.x, topViewClickedCamera.transform.position.y, position.y);
+                topViewClickedCamera.transform.position = Vector3.Lerp(topViewClickedCamera.transform.position, targetPosition, Time.deltaTime * lerpSpeed);
             }
-            else 
+            else
             {
-                topViewCamera.transform.position = new Vector3(position.x, topViewCamera.transform.position.y, position.y);
+                Vector3 targetPosition = new Vector3(position.x, topViewCamera.transform.position.y, position.y);
+                topViewCamera.transform.position = Vector3.Lerp(topViewCamera.transform.position, targetPosition, Time.deltaTime * lerpSpeed);
             }
         }
     }
+
 }

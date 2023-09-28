@@ -147,18 +147,6 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         }
         else
         {
-            //if (ReturnRockFirstNumber(photonView.ViewID.ToString()))
-            //{
-
-            //}
-            //if (CheckRockID(photonView.ViewID.ToString()) == 1)
-            //{
-            //    CameraManager.enemyCameraQueue.Enqueue(gameObject);
-            //}
-            //else if (CheckRockID(photonView.ViewID.ToString()) == 2)
-            //{
-            //    CameraManager.enemyCameraQueue.Enqueue(gameObject);
-            //}
             //카메라 큐 추가할 공간
         }
 

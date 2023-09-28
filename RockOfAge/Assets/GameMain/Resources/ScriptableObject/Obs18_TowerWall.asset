@@ -17,6 +17,6 @@ MonoBehaviour:
   price: 150
   health: 5
   size: {x: 1, y: 1}
-  buildLimit: 100
+  buildLimit: 50
   tempString: "\uAE30\uBCF8\uC801\uC778 \uBC29\uC5B4 \uC720\uB2DB\uC785\uB2C8\uB2E4.
     \uB4DC\uB798\uADF8\uD558\uC5EC \uBCBD\uC744 \uAC74\uC124\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4"

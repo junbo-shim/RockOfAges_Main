@@ -188,7 +188,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         }
 
         // ! Photon
-        //CycleManager.cycleManager.CheckTeamAndSaveQueue(dataContainerView.ViewID.ToString(), userRockObject);
+        CycleManager.cycleManager.CheckTeamAndSaveQueue(dataContainerView.ViewID.ToString(), userRockObject);
 
         // 팀 1인지 2인지 구별하는 if가 필요합니다
         // 팀2꺼 startPoint 없습니다. 밑은 1번팀꺼입니다

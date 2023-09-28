@@ -45,7 +45,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2143055285618463647}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25f412210db466f46a7d59e9e26a59b3, type: 3}
+  m_Script: {fileID: 11500000, guid: b9faa241cf2c7344cbe78ecec7042684, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   character:
@@ -65,14 +65,14 @@ MonoBehaviour:
   - {fileID: 241086023, guid: 4eb8eb4851a9d3f419a10fa74ba63ed7, type: 3}
   - {fileID: 1738707977, guid: 4eb8eb4851a9d3f419a10fa74ba63ed7, type: 3}
   - {fileID: -706244891, guid: 4eb8eb4851a9d3f419a10fa74ba63ed7, type: 3}
-  rotationSpeed: 360
+  rotationSpeed: 10
   flyAwaySpeed: 5
   characterSounds:
   - {fileID: 8300000, guid: 056adbcc2366a2e419a9e1d6a02f6e82, type: 3}
   - {fileID: 8300000, guid: 057fa00decce3f84bb2ef3b110e4e8dc, type: 3}
   - {fileID: 8300000, guid: d3788dc7ced047f4f949d5bd396c8a68, type: 3}
   - {fileID: 8300000, guid: 890a052f95fc7484493970fffbe97ea6, type: 3}
-  boxCollider: {fileID: 0}
+  boxCollider: {fileID: 6957560892520324773}
 --- !u!212 &2420958015692717367
 SpriteRenderer:
   m_ObjectHideFlags: 0

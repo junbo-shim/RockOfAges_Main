@@ -13,10 +13,6 @@ public class Explosive : HoldObstacleBase
 
     private bool exploded = false;
 
-    private void Start()
-    {
-        Init();
-    }
     void PlayExplosionSound()
     {
         if (explosion != null)

@@ -8,14 +8,10 @@ public class WOPObstacle : HoldObstacleBase
     // 공
     private new Transform transform;
 
-    private void Awake()
-    {
-        Init();
-    }
-
     //초기화
     protected override void Init()
     {
+        base.Init();
         status = new ObstacleStatus(status);
         obstacleRigidBody = GetComponent<Rigidbody>();
         obstacleRigidBody.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;

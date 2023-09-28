@@ -24,7 +24,9 @@ public class ObstacleBase : MonoBehaviour
     protected GameObject target;
 
     //사람
-    public KJHObject kjhObjectPrefab;
+    public PeopleObject peopleObject;
+    public int peopleCount = 5;
+
     //현재체력
     protected float currHealth;
 
@@ -37,29 +39,39 @@ public class ObstacleBase : MonoBehaviour
     public static readonly float BUILD_TIME = 5f;
 
 
+    private void Awake()
+    {
+        Init();
+    }
+
     private void OnEnable()
     {
-
-        MakePeople();
+        //화면상에 보여질때 처음에는 흰색으로 시작.
+        StartBuild(BUILD_TIME);
     }
 
     void MakePeople()
     {
 
-        if (kjhObjectPrefab == null)
+        if (peopleObject == null)
         {
             return;
         }
-        int numberOfPeople = Random.Range(3, 10);
+
+        int numberOfPeople = Random.Range(3, peopleCount);
         Vector3 targetPosition = transform.position;
         for (int i = 0; i < numberOfPeople; i++)
         {
             //랜덤한 위치에 벡터 생성
-            Vector3 randomOffset = new Vector3(Random.Range(-1.5f, 1.5f), 1f, Random.Range(-1.5f, 1.5f));
+            Vector3 randomOffset = Random.insideUnitSphere;
+            randomOffset.y = 1f;
+            randomOffset.x *= Random.Range(1f, 2f);
+            randomOffset.z *= Random.Range(1f, 2f);
+
 
             //랜덤한 위치에 사람 생성
             Vector3 peoplePosition = targetPosition + randomOffset;
-            KJHObject PeopleInstance = Instantiate(kjhObjectPrefab, peoplePosition, Quaternion.identity);
+            PeopleObject PeopleInstance = Instantiate(peopleObject, peoplePosition, Quaternion.identity);
         }
     }
 

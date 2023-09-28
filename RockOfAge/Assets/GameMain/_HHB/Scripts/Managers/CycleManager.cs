@@ -228,6 +228,8 @@ public class CycleManager : MonoBehaviour
                 CameraManager.enemyCameraQueue.Enqueue(createdRock);
             }
         }
+
+        CameraManager.Instance.SetEnemyCamera(createdRock);
     }
 
     // ! Photon

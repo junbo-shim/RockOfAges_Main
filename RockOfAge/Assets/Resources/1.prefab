@@ -601,6 +601,7 @@ MonoBehaviour:
   isDestroy: 0
   isDebuffed: 0
   debuffJumpForce: 0
+  teamNumber: 0
 --- !u!114 &5920277473243561252
 MonoBehaviour:
   m_ObjectHideFlags: 0

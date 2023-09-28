@@ -51,6 +51,8 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
     public float debuffJumpForce;
     //} 0920 홍한범
 
+    public int teamNumber= -1;
+
     RaycastHit slopeHit;
     Coroutine fallCheckCoroutine = null;
     protected Queue<RockTrail> trails;
@@ -177,6 +179,20 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         {
             UIManager.uiManager.PrintFillAmountRockHp(currHp, rockStatus.Health);
         }
+
+        // PSC Editted
+        Vector3 startPos = Vector3.zero;
+        if(teamNumber == 1)
+        {
+            startPos = ResourceManager.Instance.team1StartPoint;
+        }
+        else if(teamNumber == 2)
+        {
+            startPos = ResourceManager.Instance.team2StartPoint;
+        }
+
+        transform.localScale = Vector3.one * 0.1f;
+        gameObject.SetChildPosition(startPos, "RockObject");
     }
 
     //혹시 모를 오버로딩

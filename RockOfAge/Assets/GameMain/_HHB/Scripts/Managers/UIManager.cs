@@ -48,6 +48,7 @@ public partial class UIManager : MonoBehaviour
         SwitchUIManager("attackUI");
         SwitchUIManager("defenceUI");
         SwitchUIManager("endingUI");
+        GetDirection();
     }
 
     #region Functions

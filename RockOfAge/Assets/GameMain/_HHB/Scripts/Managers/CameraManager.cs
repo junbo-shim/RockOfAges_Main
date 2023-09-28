@@ -1,4 +1,5 @@
 using Cinemachine;
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,22 @@ using UnityEngine;
 public class CameraManager : GlobalSingleton<CameraManager>
 {
     public static Queue<GameObject> enemyCameraQueue = new Queue<GameObject>(2);
+    public static Vector3 myCameraPosition;
+
+    public void UpdateMyCameraCenterPoint()
+    {
+        if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
+        {
+            GameObject topViewCamera = Global_PSC.FindTopLevelGameObject("TopViewCamera");
+            if (topViewCamera.activeSelf == true)
+            {
+                GameObject clickedTopViewCamera = Global_PSC.FindTopLevelGameObject("ClickedTopViewCamera");
+                myCameraPosition = clickedTopViewCamera.transform.position;
+            }
+            else { myCameraPosition = topViewCamera.transform.position; }
+
+        }
+    }
 
     public void SetRockCamera(GameObject userRock, Vector3 startPoint)
     {
@@ -156,4 +173,25 @@ public class CameraManager : GlobalSingleton<CameraManager>
         rockCamera.SetActive(false);
         topViewCamera.SetActive(true);
     }
+
+    public void MoveTurnOnCameraPosition(Vector2 position)
+    {
+        float lerpSpeed = 2f;
+        if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
+        {
+            GameObject topViewCamera = Global_PSC.FindTopLevelGameObject("TopViewCamera");
+            if (topViewCamera.activeSelf == false)
+            {
+                GameObject topViewClickedCamera = Global_PSC.FindTopLevelGameObject("ClickedTopViewCamera");
+                Vector3 targetPosition = new Vector3(position.x, topViewClickedCamera.transform.position.y, position.y);
+                topViewClickedCamera.transform.position = Vector3.Lerp(topViewClickedCamera.transform.position, targetPosition, Time.deltaTime * lerpSpeed);
+            }
+            else
+            {
+                Vector3 targetPosition = new Vector3(position.x, topViewCamera.transform.position.y, position.y);
+                topViewCamera.transform.position = Vector3.Lerp(topViewCamera.transform.position, targetPosition, Time.deltaTime * lerpSpeed);
+            }
+        }
+    }
+
 }

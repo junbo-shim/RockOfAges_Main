@@ -137,6 +137,12 @@ public static class Global_PSC
             FindAllTargetsRecursive(childTransform, targetName, results);
         }
     }
+    public static Vector2 ConvertVec3ToScreenVec2(Vector3 vec3)
+    {
+        Vector2 vec2 = new Vector2(vec3.x, vec3.z);
+        return vec2;
+    }
+
     #endregion
 }
 

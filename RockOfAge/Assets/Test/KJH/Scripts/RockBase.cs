@@ -248,10 +248,10 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
             rockRigidbody.velocity = groundValocity.normalized * maxSpeed + Vector3.up * rockRigidbody.velocity.y;
         }
         //경사
-        else if(isSlope && rockRigidbody.velocity.magnitude>maxSpeed)
+       /* else if(isSlope && rockRigidbody.velocity.magnitude>maxSpeed)
         {
             rockRigidbody.velocity = rockRigidbody.velocity.normalized * maxSpeed;
-        }
+        }*/
 
         //Debug.Log(rockRigidbody.velocity.magnitude);
     }
@@ -690,7 +690,9 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         float speedRate = rockRigidbody.velocity.magnitude / rockStatus.Speed;
 
         resultDamage += maxDamage * .5f * healthRate;
+        Debug.Log("체력비례 " + maxDamage * .5f * healthRate);
         resultDamage += maxDamage * .5f * speedRate;
+        Debug.Log("속도비례 " + maxDamage * .5f * speedRate);
 
         if (resultDamage < DAMAGE_LIMIT_MIN)
         {

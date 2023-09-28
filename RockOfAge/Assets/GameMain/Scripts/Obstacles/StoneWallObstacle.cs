@@ -53,11 +53,16 @@ public class StoneWall : HoldObstacleBase, IHitObjectHandler
         {
             obstacle = PhotonNetwork.Instantiate("StoneWallSub", position, rotate).GetComponent<ObstacleBase>();
         }
-        //obstacle.transform.localScale = Vector3.one * .1f;
+        obstacle.transform.localScale = obstacle.transform.localScale;
+        {
+            //버튼 데이터 변경
+            GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(status.Id);
+            unitButton.GetComponent<CreateButton>().buildCount += 1;
+            UIManager.uiManager.RePrintUnitCount(status.Id);
+        }
         return obstacle;
 
     }
-
     void ChangePhase()
     {
         if (status.Health / transform.childCount > currHealth)

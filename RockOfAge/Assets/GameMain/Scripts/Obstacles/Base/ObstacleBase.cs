@@ -39,6 +39,10 @@ public class ObstacleBase : MonoBehaviour
     public static readonly float BUILD_TIME = 5f;
 
 
+    private void Awake()
+    {
+        Init();
+    }
 
     private void OnEnable()
     {

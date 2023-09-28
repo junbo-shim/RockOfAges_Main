@@ -13,16 +13,13 @@ public class CowObstacle : HoldObstacleBase
     private bool delayBool;
 
     public AudioSource audioSource;
-    private void Awake()
-    {
-        Init();
-    }
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
     }
     protected override void Init()
     {
+        base.Init();
         cow = GetComponent<Transform>();
         status = new ObstacleStatus(status);
         obstacleMeshFilter = GetComponent<MeshFilter>();

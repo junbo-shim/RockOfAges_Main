@@ -25,9 +25,9 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
     private bool hasThrownRock = false; // 돌을 이미 발사했는지 여부를 나타내는 변수
     private Vector3 currentRockPosition;
 
-    void Start()
+    protected override void Init()
     {
-        Init();
+        base.Init();
         animator = GetComponent<Animator>();
         // 투석기의 초기 로테이션을 저장합니다.
         initialRotation = transform.rotation;

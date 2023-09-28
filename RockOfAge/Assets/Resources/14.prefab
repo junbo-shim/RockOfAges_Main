@@ -191,7 +191,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 128672e57ed55114fb2918a1530609d4, type: 2}
   buildPositionY: 0.01
-  kjhObjectPrefab: {fileID: 0}
+  peopleObject: {fileID: 0}
+  peopleCount: 5
   dragObstacle: 0
   colliderParts: {fileID: 0}
   isAttacked: 0

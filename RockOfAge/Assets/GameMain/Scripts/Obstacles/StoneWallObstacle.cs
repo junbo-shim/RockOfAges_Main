@@ -22,10 +22,6 @@ public class StoneWall : HoldObstacleBase, IHitObjectHandler
     }
 
 
-    private void OnEnable()
-    {
-        StartBuild(BUILD_TIME);
-    }
 
     protected override void Init()
     {

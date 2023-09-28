@@ -1208,6 +1208,7 @@ MonoBehaviour:
   status: {fileID: 11400000, guid: 3999ab52d98be32449ffa7168f490af8, type: 2}
   buildPositionY: 0
   peopleObject: {fileID: 2044133147384927099, guid: 8a36354b176d55b4c91e3978e6f53301, type: 3}
+  peopleCount: 5
   dragObstacle: 0
 --- !u!65 &5908379624747514014
 BoxCollider:

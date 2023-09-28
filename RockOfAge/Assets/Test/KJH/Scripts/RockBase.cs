@@ -501,17 +501,6 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         }
     }
 
-    // ! Photon
-    private void EndAttack()
-    {
-        // ! Photon - Alert
-        if (photonView.IsMine == false) 
-        {
-            CycleManager.cycleManager.CheckTeamAndDequeue(photonView.ViewID.ToString(), gameObject);
-        }
-        PhotonNetwork.Destroy(gameObject);
-    }
-
     public IEnumerator CameraShakeRoutine(float time, float AmplitudeGain, float FrequencyGain)
     {
         mainCamera.ShakeFreeLookCamera(AmplitudeGain, FrequencyGain);
@@ -640,9 +629,22 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     IEnumerator EndAttackRoutine()
     {
         isDestroy = true;
-        Destroy(gameObject, 3f);
         yield return new WaitForSeconds(2f);
+
+        // ! Photon
+        if (photonView.IsMine == false)
+        {
+            CycleManager.cycleManager.CheckTeamAndDequeue(photonView.ViewID.ToString(), gameObject);
+            if (CameraManager.Instance.enemyCameraQueue != null) 
+            {
+                GameObject restRock = CameraManager.Instance.enemyCameraQueue.Peek();
+                CameraManager.Instance.SetEnemyCamera(restRock);
+            }
+        }
+
         CycleManager.cycleManager.ChangeCycleAttackToSelect();
+        yield return new WaitForSeconds(1f);
+        PhotonNetwork.Destroy(gameObject);
     }
 
 

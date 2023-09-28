@@ -33,7 +33,7 @@ public class WOPObstacle : HoldObstacleBase
 
     private void TurnAroundObstacle()
     {
-        transform.rotation *= Quaternion.Euler(0f, 0.2f, 0f);
+        transform.rotation *= Quaternion.Euler(0f, 2f, 0f);
     }
 
     private void OnCollisionEnter(Collision collision)

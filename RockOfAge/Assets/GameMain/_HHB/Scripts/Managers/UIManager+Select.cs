@@ -79,11 +79,6 @@ public partial class UIManager : MonoBehaviour
         GameObject motherObj = GameObject.Find("DefenceUI");
         ItemManager.itemManager.unitSelected.Sort();
 
-        foreach(var item in ItemManager.itemManager.unitSelected)
-        { 
-            Debug.Log(item);    
-        }
-
         foreach (int n in ItemManager.itemManager.unitSelected)
         {
             GameObject unitImg = Instantiate(unitSelect, motherObj.transform.Find("DefenceHolder").Find("UnitButton").Find("UnitView").Find("Viewport").Find("Content"));

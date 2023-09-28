@@ -17,7 +17,7 @@ public class WOPchildObstacle : MonoBehaviour, IHitObjectHandler
     private void OnCollisionEnter(Collision collision)
     {
         Rigidbody target = collision.gameObject.GetComponent<Rigidbody>();
-        float obsForce = 2000f;
+        float obsForce = 200f;
         if (collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
             Vector3 targetNonVector = -new Vector3(target.transform.position.x, 0f, target.transform.position.z).normalized;

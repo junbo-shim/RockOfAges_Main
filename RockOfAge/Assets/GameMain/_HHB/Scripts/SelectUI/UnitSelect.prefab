@@ -377,6 +377,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
+  buildCount: 0
+  buildLimit: 0
   unitImg: {fileID: 2143245208089664506}
   _selectedImg: {fileID: 1151797748695456048}
 --- !u!1 &6817219907865756372

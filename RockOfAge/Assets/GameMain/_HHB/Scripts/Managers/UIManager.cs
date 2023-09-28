@@ -140,7 +140,7 @@ public partial class UIManager : MonoBehaviour
         {
             endingUI.transform.localScale = Vector3.one * minScale;
         }
-        else if (scale == Vector3.one * minScale)
+        else /*if (scale == Vector3.one * minScale)*/
         {
             endingUI.transform.localScale = Vector3.one;
         }

@@ -1,5 +1,4 @@
 using Cinemachine;
-using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -175,23 +174,47 @@ public class CameraManager : GlobalSingleton<CameraManager>
     }
 
     public void MoveTurnOnCameraPosition(Vector2 position)
-    {
-        float lerpSpeed = 2f;
+    { 
         if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
         {
+            Vector3 target = default;
+            Vector3 original = default;
             GameObject topViewCamera = Global_PSC.FindTopLevelGameObject("TopViewCamera");
             if (topViewCamera.activeSelf == false)
             {
                 GameObject topViewClickedCamera = Global_PSC.FindTopLevelGameObject("ClickedTopViewCamera");
-                Vector3 targetPosition = new Vector3(position.x, topViewClickedCamera.transform.position.y, position.y);
-                topViewClickedCamera.transform.position = Vector3.Lerp(topViewClickedCamera.transform.position, targetPosition, Time.deltaTime * lerpSpeed);
+                original = topViewClickedCamera.transform.position;
+                target = new Vector3(position.x, topViewClickedCamera.transform.position.y, position.y);
+                StartCoroutine(MoveCameraPosition(topViewClickedCamera, original, target));
             }
-            else
+            else 
             {
-                Vector3 targetPosition = new Vector3(position.x, topViewCamera.transform.position.y, position.y);
-                topViewCamera.transform.position = Vector3.Lerp(topViewCamera.transform.position, targetPosition, Time.deltaTime * lerpSpeed);
+                original = topViewCamera.transform.position;
+                target = new Vector3(position.x, topViewCamera.transform.position.y, position.y);
+                StartCoroutine(MoveCameraPosition(topViewCamera, original, target));
             }
         }
+    }
+
+    IEnumerator MoveCameraPosition(GameObject camera, Vector3 original, Vector3 target)
+    {
+        float time = 0f;
+        float moveTime = 0.5f;
+        while (time < moveTime)
+        {
+            time += Time.deltaTime;
+            camera.transform.position = Vector3.Lerp(original, target , time/moveTime);
+            yield return null;
+        }
+
+        camera.transform.position = target;
+    }
+
+    public void SetGameEndCamera(Transform transform)
+    {
+        GameObject gameEndCameraObj = Global_PSC.FindTopLevelGameObject("GameEndResultCamera");
+        CinemachineVirtualCamera endCamera = gameEndCameraObj.GetComponent<CinemachineVirtualCamera>();
+        endCamera.m_LookAt = transform;
     }
 
 }

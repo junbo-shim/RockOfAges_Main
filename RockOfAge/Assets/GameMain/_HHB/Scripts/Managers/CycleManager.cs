@@ -234,7 +234,7 @@ public class CycleManager : MonoBehaviour
 
         if (myTeamNumber != rockTeamNumber)
         {
-            if (CameraManager.Instance.enemyCameraQueue == null) 
+            if (CameraManager.Instance.enemyCameraQueue.Count == 0) 
             {
                 CameraManager.Instance.SetEnemyCamera(createdRock);
             }

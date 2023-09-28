@@ -175,10 +175,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         // ! Photon
         if (photonView.IsMine == false)
         {
-            Debug.Log("들어왔니?");
             CycleManager.cycleManager.CheckTeamAndSaveQueue(dataContainerView.ViewID.ToString(), gameObject);
-            Debug.Log(dataContainerView.ViewID.ToString());
-            Debug.Log(photonView.ViewID.ToString());
         }
     }
 
@@ -634,10 +631,14 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         // ! Photon
         if (photonView.IsMine == false)
         {
-            CycleManager.cycleManager.CheckTeamAndDequeue(photonView.ViewID.ToString(), gameObject);
-            if (CameraManager.Instance.enemyCameraQueue != null) 
+            GameObject restRock = CameraManager.Instance.enemyCameraQueue.Peek();
+            if (restRock == null) 
             {
-                GameObject restRock = CameraManager.Instance.enemyCameraQueue.Peek();
+                CycleManager.cycleManager.CheckTeamAndDequeue(photonView.ViewID.ToString(), restRock);
+            }
+
+            if (CameraManager.Instance.enemyCameraQueue.Count != 0) 
+            {
                 CameraManager.Instance.SetEnemyCamera(restRock);
             }
         }

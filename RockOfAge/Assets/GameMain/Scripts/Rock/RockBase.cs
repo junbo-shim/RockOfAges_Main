@@ -506,11 +506,12 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         if (collision.gameObject.layer == LayerMask.NameToLayer("Castle"))
         {
             // ! Photon
+            // 안전장치 if 문
             if (dataContainerView.IsMine == true)
             {
-                Debug.Log("들어옴1");
-                // ! 게임 오브젝트를 보내지 말것
-                photonView.RPC("RPCTest", RpcTarget.Others);
+                // enemyCameraQueue 를 확인하고 Dequeue 하는 메서드를 다른 ViewID 에게 발사
+                photonView.RPC("CheckTeamAndDequeue", RpcTarget.Others, 
+                    dataContainerView.ViewID.ToString(), photonView.ViewID.ToString());
             }
 
             StartCoroutine(EndAttackRoutine());    
@@ -637,10 +638,12 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
     protected virtual void Die()
     {
         // ! Photon
+        // 안전장치 if 문
         if (dataContainerView.IsMine == true)
         {
-            Debug.Log("들어옴2");
-            photonView.RPC("RPCTest", RpcTarget.Others);
+            // enemyCameraQueue 를 확인하고 Dequeue 하는 메서드를 다른 ViewID 에게 발사
+            photonView.RPC("CheckTeamAndDequeue", RpcTarget.Others, 
+                dataContainerView.ViewID.ToString(), photonView.ViewID.ToString());
         }
 
         rayfireRigid.Demolish();
@@ -658,84 +661,49 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         PhotonNetwork.Destroy(gameObject);
     }
 
-
+    // ! Photon
+    // CycleManager 의 CheckTeamAndSaveQueue 메서드와 세트 (매개변수로 송신자 ViewID 와 송신자의 돌 ViewID 를 전달)
     [PunRPC]
-    public void RPCTest(string senderViewID) 
+    public void CheckTeamAndDequeue(string senderViewID, string senderRockViewID) 
     {
+        // RPC 를 보낸 View ID 에서 Team 번호만 추출한다.
         string senderTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[senderViewID].ToString().Split('_')[1];
-        string myTeamNumber = dataContainerView.ViewID.ToString().Split('_')[1];
+        // RPC 를 수신한 View ID 에서 Team 번호만 추출한다.
+        string myTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[dataContainerView.ViewID.ToString()].ToString().Split('_')[1];
 
+        // 만약 송신자와 수신자가 같은 Team 이라면 아무것도 하지 않는다.
         if (senderTeamNumber == myTeamNumber) 
         {
-            Debug.Log("You are Fucked");
+            /*Do Nothing*/
         }
-        else if () 
+        // 만약 송신자와 수신자가 다른 Team 이라면
+        else if (senderTeamNumber != myTeamNumber) 
         {
-        
-        }
-    }
-
-
-    // ! Photon
-    [PunRPC]
-    public void CheckRockTeam(string senderViewID, string dyingRockViewID) 
-    {
-        string senderTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[senderViewID].ToString().Split('_')[1];
-
-        string rockOwnerViewID = CycleManager.cycleManager.DropLastThreeChar(dyingRockViewID) + "001";
-
-        string rockTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[rockOwnerViewID].ToString().Split('_')[1];
-
-        Debug.Log(senderTeamNumber);
-        Debug.Log(dyingRockViewID);
-        Debug.Log(rockTeamNumber);
-
-        if (senderTeamNumber == rockTeamNumber) 
-        {
-            Debug.Log("TrueTrue");
-
-        }
-        else if (senderTeamNumber != rockTeamNumber)
-        {
-            Debug.Log("FalseFalse");
-
-            if (CameraManager.Instance.enemyCameraQueue.Peek() == rockObject.gameObject)
+            // Dequeue 는 Queue 의 크기가 0 이 아닐 때만 작동하게 한다
+            if (CameraManager.Instance.enemyCameraQueue.Count != 0) 
             {
-                Debug.Log("1111111111111");
-                DequeueAndChangeCam();
-            }
-        }
-    }
+                // Queue 에 접근하여 첫번째 돌을 지역변수에 저장한다
+                GameObject firstRockInQueue = CameraManager.Instance.enemyCameraQueue.Peek();
 
-    // ! Photon
-    private void DequeueAndChangeCam() 
-    {
-        Debug.Log("2222222");
-        CameraManager.Instance.enemyCameraQueue.Dequeue();
-        Debug.Log("3333333");
-        if (CameraManager.Instance.enemyCameraQueue.Count != 0) 
-        {
-            Debug.Log("4444444");
-            if (CameraManager.Instance.enemyCameraQueue.Peek() != null)
-            {
-                Debug.Log("5555555");
-                CameraManager.Instance.SetEnemyCamera(CameraManager.Instance.enemyCameraQueue.Peek());
-                Debug.Log("66666666");
+                // Queue 의 첫번째 돌의 View ID 와 RPC 를 보낸 돌의 View ID 를 비교한다
+                // 만약 지금 죽은 돌이 Queue 에서 첫번째가 아니라면 
+                if (firstRockInQueue.GetComponent<PhotonView>().ViewID.ToString() 
+                    != senderRockViewID) 
+                {
+                    // Dequeue 만 한다
+                    CameraManager.Instance.enemyCameraQueue.Dequeue();
+                }
+                // 만약 지금 죽은 돌이 Queue 에서 첫번째라면
+                else if (firstRockInQueue.GetComponent<PhotonView>().ViewID.ToString()
+                    == senderRockViewID)
+                {
+                    // Dequeue 하고 그 다음 돌에 카메라를 놓는다
+                    CameraManager.Instance.enemyCameraQueue.Dequeue();
+                    CameraManager.Instance.SetEnemyCamera(CameraManager.Instance.enemyCameraQueue.Peek());
+                }
+                //Debug.Log(CameraManager.Instance.enemyCameraQueue.Count);
+                //Debug.Log(CameraManager.Instance.enemyCameraQueue.Peek().GetComponent<PhotonView>().ViewID.ToString());            
             }
-            else 
-            {
-                Debug.Log("77777777");
-                // 카메라 큐에 아무 것도 없으면 UI 비활성화 필요
-                CameraManager.Instance.enemyCameraQueue.Dequeue();
-                //UIManager.uiManager.RotateMirror();
-                Debug.Log(CameraManager.Instance.enemyCameraQueue.Peek());
-                Debug.Log("888888888");
-            }
-        }
-        else 
-        {
-            Debug.Log("999999999");
-            //UIManager.uiManager.RotateMirror();
         }
     }
 

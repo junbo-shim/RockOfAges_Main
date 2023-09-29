@@ -207,41 +207,53 @@ public class CycleManager : MonoBehaviour
     }
 
     // ! Photon
+    // PhotonViewID 의 앞자리만 판단하기 위해서 뒤 3자리를 버리게 하는 메서드
     public string DropLastThreeChar(string inputString) 
     {
+        // 매개변수로 받아온 string 을 char 배열로 변환한다
         char[] stringToChar = inputString.ToCharArray();
+        // char 배열에서 뒷 3 자리를 빼기 위해 새로운 char 배열의 크기를 -3 한다
         char[] resultArray = new char[stringToChar.Length - 3];
         
+        // -3 한 배열의 크기만큼 반복문을 실행한다
         for (int i = 0; i < stringToChar.Length - 3; i++) 
         {
+            // 새로운 배열에다가 받아온 string -> char[] 값을 대입한다 (짧아진 길이만큼 뒷 부분은 날아간다)
             resultArray[i] = stringToChar[i];
         }
-        //string result = new string(resultArray);
+        
+        // result 에 결과값을 담고 return 한다
         string result = string.Join("", resultArray);
 
         return result;
     }
 
     // ! Photon
+    // RockBase 의 CheckTeamAndDequeue 메서드와 세트 (매개변수로 나의 ViewID 와 생성된 돌 ViewID 를 전달)
     public void CheckTeamAndSaveQueue(string myViewID, GameObject createdRock) 
     {
+        // myViewID 에서 Team 번호만 추출한다
         string myTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[myViewID].ToString().Split('_')[1];
-
+        // 생성된 돌의 ViewID 를 string 으로 변환하고
         string rockViewID = createdRock.GetComponent<PhotonView>().ViewID.ToString();
+        // 뒷 3자리를 버린 후 001 을 더하여 생성자의 ViewID 를 만든다
         string rockOwnerViewID = DropLastThreeChar(rockViewID) + "001";
-
+        // 생성자의 ViewID 에서 Team 번호만 추출한다
         string rockTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[rockOwnerViewID].ToString().Split('_')[1];
 
-        Debug.Log(myTeamNumber);
-        Debug.Log(rockTeamNumber);
+        // 만약 돌의 생성자가 내 팀이 아니라면
         if (myTeamNumber != rockTeamNumber)
         {
+            // enemyCameraQueue 의 크기가 0 일때만 바로 카메라로 생성된 돌을 따라간다
             if (CameraManager.Instance.enemyCameraQueue.Count == 0) 
             {
                 CameraManager.Instance.SetEnemyCamera(createdRock);
             }
+            // 생성된 돌을 enemyCameraQueue 에 추가한다
             CameraManager.Instance.enemyCameraQueue.Enqueue(createdRock);
         }
+        //Debug.Log(createdRock.GetComponent<PhotonView>().ViewID.ToString());
+        //Debug.Log(CameraManager.Instance.enemyCameraQueue.Count);
     }
 
 
@@ -308,7 +320,7 @@ public class CycleManager : MonoBehaviour
     public void SetCameraLayerMask(string player_)
     {
         // ! Photon
-        string team = layerPlayerTeamName.Split('_')[1];
+        string team = player_.Split('_')[1];
         #region Legacy
         //int teamNum = (int)((int.Parse(player_.Split("Player")[1]) + 1) * 0.5f);
 

@@ -140,7 +140,7 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
         audioSource.clip = DeadSound;
         audioSource.Play();
         // ! Photon
-        PhotonNetwork.Destroy(gameObject);
+        base.Dead();
     }
 
     public void Hit(int damage)

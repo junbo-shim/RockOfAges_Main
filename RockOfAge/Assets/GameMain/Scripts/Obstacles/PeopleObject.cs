@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class PeopleObject : MonoBehaviour
 {
@@ -136,9 +137,20 @@ public class PeopleObject : MonoBehaviour
             rb.isKinematic = true;
             StopAllCoroutines();
             transform.rotation = Quaternion.Euler(90, 0, Random.Range(0, 180));
-            Destroy(gameObject, 2f);
+            //Destroy(gameObject, 2f);
+
+            // ! Photon
+            Invoke("InvokeDeadForPhoton", 2f);
         }
     }
+
+    // ! Photon
+    // Invoke 쓰기 위해서 PhotonNetwork.Destroy 를 wrapping 함
+    private void InvokeDeadForPhoton() 
+    {
+        PhotonNetwork.Destroy(gameObject);
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (!isUnable && collision.gameObject.layer == LayerMask.NameToLayer("Terrains"))

@@ -64,7 +64,8 @@ public class CowObstacle : HoldObstacleBase
     {
         cow.SetParent(null);
         yield return new WaitForSeconds(1f);
-        PhotonNetwork.Destroy(gameObject);
+        // ! Photon - Alert : 건설 갯수 감소시킬 때 어떻게 해야하는지 물어볼 것
+        base.Dead();
     }
 
     IEnumerator DelayBool()

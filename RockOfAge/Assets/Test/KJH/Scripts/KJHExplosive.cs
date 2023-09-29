@@ -53,7 +53,8 @@ public class Explosive : HoldObstacleBase
     }
     protected override void Dead()
     {
-        Destroy(gameObject);
+        // ! Photon
+        base.Dead();
     }
 }
 

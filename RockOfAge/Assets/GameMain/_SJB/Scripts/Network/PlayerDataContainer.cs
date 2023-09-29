@@ -27,8 +27,6 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     public string Player3Num;
     public string Player4Num;
 
-    
-
 
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) 
@@ -61,6 +59,14 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
             SavePlayerNames();
             SaveViewID();
             SaveNumberAndTeam();
+            
+            // UIManager Awake 보다 늦게 돌아서 여기서 아예 메서드 사용
+            PlayerDataContainer tempContainer = gameObject.GetComponent<PlayerDataContainer>();
+            NetworkManager.Instance.myDataContainer = tempContainer;
+            UIManager.uiManager.InitDataContainer();
+            // UI 플레이어 이름 출력
+            UIManager.uiManager.PrintPlayerText(tempContainer.Player1Name, tempContainer.Player2Name, 
+                tempContainer.Player3Name, tempContainer.Player4Name);
         }
     }
     #endregion

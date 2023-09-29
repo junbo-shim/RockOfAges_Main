@@ -209,8 +209,11 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     private void Disappear()
     {
         // 게임 오브젝트를 비활성화하거나 파괴
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
         // 또는 Destroy(gameObject);
+
+        // ! Photon
+        base.Dead();
     }
     public void Hit(int damage)
     {

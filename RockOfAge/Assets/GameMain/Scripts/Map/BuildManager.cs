@@ -492,7 +492,6 @@ public class BuildManager : MonoBehaviour
 
         if (isLeftClick)
         {
-
             return GetBuildEnable(dragBuildPosition, buildTarget.status.Size) && GetItemLimitState(dragBuildPosition.Count);
         }
         else

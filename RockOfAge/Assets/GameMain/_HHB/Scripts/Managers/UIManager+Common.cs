@@ -9,6 +9,7 @@ public partial class UIManager: MonoBehaviour
     [Header("UI")]
     public GameObject commonUI;
     // ! Photon
+    private PlayerDataContainer dataContainer;
     public GameObject mirrorUI;
     // M키 누른시간과 bool 변수
     private bool _mButtonPressed = false;
@@ -33,6 +34,14 @@ public partial class UIManager: MonoBehaviour
     [Header("PLAYER GOLD TEXT")]
     public TextMeshProUGUI playerGold;
     #endregion
+
+    // ! Photon
+    // NetworkManager 에서 myDataContainer 를 dataContainer 로 불러오는 메서드
+    public void InitDataContainer() 
+    {
+        dataContainer = NetworkManager.Instance.myDataContainer;
+    }
+
 
     #region Functions
     //{ GetRotationKey()

@@ -128,6 +128,7 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
 
     protected override void Dead()
     {
-        PhotonNetwork.Destroy(gameObject);
+        // ! Photon
+        base.Dead();
     }
 }

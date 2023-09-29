@@ -90,6 +90,7 @@ public class StoneWall : HoldObstacleBase, IHitObjectHandler
 
     protected override void Dead()
     {
-        Destroy(gameObject);
+        // ! Photon - Alert : 건설 갯수 감소시킬 때 어떻게 해야하는지 물어볼 것
+        base.Dead();
     }
 }

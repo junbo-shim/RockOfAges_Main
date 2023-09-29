@@ -18769,7 +18769,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 975900039}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.06844034, y: 0.91106004, z: -0.16853328, w: -0.36997592}
+  m_LocalRotation: {x: -0.06844033, y: 0.91106004, z: -0.1685333, w: -0.36997586}
   m_LocalPosition: {x: 124.66126, y: 68.49498, z: 128.17615}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -34213,18 +34213,18 @@ MonoBehaviour:
   player4Img: {fileID: 5130247859334431827}
   playerGold: {fileID: 5058288998281427439}
   attackUI: {fileID: 959344543}
-  player1NameTxt: {fileID: 0}
-  player2NameTxt: {fileID: 0}
-  player3NameTxt: {fileID: 0}
-  player4NameTxt: {fileID: 0}
-  player1ScoreTxt: {fileID: 0}
-  player2ScoreTxt: {fileID: 0}
-  player3ScoreTxt: {fileID: 0}
-  player4ScoreTxt: {fileID: 0}
-  player1Icon: {fileID: 0}
-  player2Icon: {fileID: 0}
-  player3Icon: {fileID: 0}
-  player4Icon: {fileID: 0}
+  player1NameTxt: {fileID: 437006213}
+  player2NameTxt: {fileID: 920638596}
+  player3NameTxt: {fileID: 1295801929}
+  player4NameTxt: {fileID: 1988672340}
+  player1ScoreTxt: {fileID: 545568428}
+  player2ScoreTxt: {fileID: 1409891024}
+  player3ScoreTxt: {fileID: 1036586833}
+  player4ScoreTxt: {fileID: 893042627}
+  player1Icon: {fileID: 1130276879}
+  player2Icon: {fileID: 1255022488}
+  player3Icon: {fileID: 1140078623}
+  player4Icon: {fileID: 647681012}
   player1userImg: {fileID: 0}
   player2userImg: {fileID: 0}
   player3userImg: {fileID: 0}

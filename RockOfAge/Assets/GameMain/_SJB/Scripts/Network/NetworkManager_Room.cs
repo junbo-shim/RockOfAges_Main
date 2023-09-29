@@ -53,12 +53,12 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     {
         base.OnLeftRoom();
 
-        if (roomSetting != null) 
+        if (roomSetting != null)
         {
             roomSetting.Clear();
         }
 
-        if (myDataContainer != null) 
+        if (myDataContainer != null)
         {
             PhotonNetwork.Destroy(myDataContainer.GetComponent<PhotonView>());
         }

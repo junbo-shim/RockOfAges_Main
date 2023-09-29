@@ -34,7 +34,6 @@ public class Gate : MonoBehaviourPun, IHitObjectHandler, IPunObservable
         }
         else
         {
-            Debug.Log(gateHP);
             gateHP = (float)stream.ReceiveNext();
         }
         PrintHP();

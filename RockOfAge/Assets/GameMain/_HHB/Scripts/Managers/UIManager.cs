@@ -35,6 +35,7 @@ public partial class UIManager : MonoBehaviour
     // selectionUI
     [Header("UI")]
     public GameObject userSelectUI;
+    public GameObject escUI;
     // endingUI
     public GameObject endingUI;
     #endregion
@@ -48,6 +49,7 @@ public partial class UIManager : MonoBehaviour
         SwitchUIManager("attackUI");
         SwitchUIManager("defenceUI");
         SwitchUIManager("endingUI");
+        SwitchUIManager("escUI");
         GetDirection();
     }
 
@@ -73,6 +75,9 @@ public partial class UIManager : MonoBehaviour
                 break;
             case "endingUI":
                 SwitchEndingUI();
+                break;
+            case "escUI":
+                SwitchESCUI();
                 break;
         }
     }
@@ -140,9 +145,23 @@ public partial class UIManager : MonoBehaviour
         {
             endingUI.transform.localScale = Vector3.one * minScale;
         }
-        else /*if (scale == Vector3.one * minScale)*/
+        else if (scale == Vector3.one * minScale)
         {
             endingUI.transform.localScale = Vector3.one;
+        }
+    }
+
+    public void SwitchESCUI()
+    {
+        Vector3 scale = escUI.transform.localScale;
+        float minScale = 0.001f;
+        if (scale == Vector3.one)
+        {
+            escUI.transform.localScale = Vector3.one * minScale;
+        }
+        else if (scale == Vector3.one * minScale)
+        {
+            escUI.transform.localScale = Vector3.one;
         }
     }
 

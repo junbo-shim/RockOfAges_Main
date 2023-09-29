@@ -133,7 +133,7 @@ public partial class UIManager : MonoBehaviour
         //float disX = default;
         if (isBetweenLeftUpRightUp)
         {
-            Debug.Log("isBetweenLeftUpRightUp");
+            //Debug.Log("isBetweenLeftUpRightUp");
             // nomVec가 leftUp과 rightUp 사이에 있음
             newPosition.x = 1000f;
             newPosition.y = 150f;
@@ -141,7 +141,7 @@ public partial class UIManager : MonoBehaviour
         }
         else if (isBetweenLeftUpLeftDown)
         {
-            Debug.Log("isBetweenLeftUpLeftDown");
+            //Debug.Log("isBetweenLeftUpLeftDown");
             // nomVec가 leftUp과 leftDown 사이에 있음
             newPosition.x = 1750f;
             newPosition.y = 400f;
@@ -149,7 +149,7 @@ public partial class UIManager : MonoBehaviour
         }
         else if (isBetweenRightUpRightDown)
         {
-            Debug.Log("isBetweenRightUpRightDown");
+            //Debug.Log("isBetweenRightUpRightDown");
             // nomVec가 rightUp과 rightDown 사이에 있음
             newPosition.x = 150f;
             newPosition.y = 500f;

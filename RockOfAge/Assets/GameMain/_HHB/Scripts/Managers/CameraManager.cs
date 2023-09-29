@@ -7,7 +7,7 @@ public class CameraManager : GlobalSingleton<CameraManager>
 {
     public static Queue<GameObject> enemyCameraQueue = new Queue<GameObject>(2);
     public static Vector3 myCameraPosition;
-
+    public static bool isControlled = false;
     public void UpdateMyCameraCenterPoint()
     {
         if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)

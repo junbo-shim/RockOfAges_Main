@@ -68,6 +68,7 @@ MonoBehaviour:
   - RPCTest
   - Check
   - CheckTeamAndDequeue
+  - SaveReturnGold
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -18,6 +18,7 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     public Transform SignupPopup { get; private set; }
 
     public string playerNickName;
+    public string playerScore;
 
 
     protected override void Awake()

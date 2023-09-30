@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 using TMPro;
+using Photon.Pun.Demo.PunBasics;
 
 public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
 {
@@ -12,21 +13,32 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     //public string roomName;
 
     public int otherPlayerReady;
-    public string Player1Name;
-    public string Player2Name;
-    public string Player3Name;
-    public string Player4Name;
+    public string Player1Name { get; private set; }
+    public string Player2Name { get; private set; }
+    public string Player3Name { get; private set; }
+    public string Player4Name { get; private set; }
 
-    public string Player1ViewID;
-    public string Player2ViewID;
-    public string Player3ViewID;
-    public string Player4ViewID;
+    public string Player1ViewID { get; private set; }
+    public string Player2ViewID { get; private set; }
+    public string Player3ViewID { get; private set; }
+    public string Player4ViewID { get; private set; }
 
-    public string Player1Num;
-    public string Player2Num;
-    public string Player3Num;
-    public string Player4Num;
+    public string Player1Num { get; private set; }
+    public string Player2Num { get; private set; }
+    public string Player3Num { get; private set; }
+    public string Player4Num { get; private set; }
 
+
+    public float MyGold { get; private set; } = 1000f;
+    public float player1Gold;
+    public float player2Gold;
+    public float player3Gold;
+    public float player4Gold;
+
+    public int Player1Score { get; private set; }
+    public int Player2Score { get; private set; }
+    public int Player3Score { get; private set; }
+    public int Player4Score { get; private set; }
 
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) 
@@ -59,7 +71,8 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
             SavePlayerNames();
             SaveViewID();
             SaveNumberAndTeam();
-            
+            SavePlayerGold();
+
             // UIManager Awake 보다 늦게 돌아서 여기서 아예 메서드 사용
             PlayerDataContainer tempContainer = gameObject.GetComponent<PlayerDataContainer>();
             NetworkManager.Instance.myDataContainer = tempContainer;
@@ -67,10 +80,12 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
             // UI 플레이어 이름 출력
             UIManager.uiManager.PrintPlayerText(tempContainer.Player1Name, tempContainer.Player2Name, 
                 tempContainer.Player3Name, tempContainer.Player4Name);
+            UIManager.uiManager.PrintMyGold(tempContainer.MyGold);
         }
     }
     #endregion
 
+    // 플레이어들의 닉네임 저장하는 메서드 (Key : PlayerSeatNumber / Value : PlayerName)
     public void SavePlayerNames() 
     {
         Player1Name = PhotonNetwork.CurrentRoom.CustomProperties["Player1"].ToString();
@@ -78,7 +93,7 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         Player3Name = PhotonNetwork.CurrentRoom.CustomProperties["Player3"].ToString();
         Player4Name = PhotonNetwork.CurrentRoom.CustomProperties["Player4"].ToString();
     }
-
+    // 플레이어들의 ViewID 를 저장하는 메서드 (Key : PlayerName / Value : PlayerViewID)
     public void SaveViewID() 
     {
         Player1ViewID = PhotonNetwork.CurrentRoom.CustomProperties[Player1Name].ToString();
@@ -86,7 +101,7 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         Player3ViewID = PhotonNetwork.CurrentRoom.CustomProperties[Player3Name].ToString();
         Player4ViewID = PhotonNetwork.CurrentRoom.CustomProperties[Player4Name].ToString();
     }
-
+    // 플레이어들의 개인번호와 팀 번호를 저장하는 메서드 (Key : PlayerViewID / Value : PlayerNumber_PlayerTeamNumber)
     public void SaveNumberAndTeam() 
     {
         Player1Num = PhotonNetwork.CurrentRoom.CustomProperties[Player1ViewID].ToString();
@@ -94,8 +109,25 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         Player3Num = PhotonNetwork.CurrentRoom.CustomProperties[Player3ViewID].ToString();
         Player4Num = PhotonNetwork.CurrentRoom.CustomProperties[Player4ViewID].ToString();
     }
+    // 플레이어들의 MyGold 변수를 master 계산을 위해 각각 번호로 분배하는 메서드
+    public void SavePlayerGold() 
+    {
+        if (PhotonNetwork.IsMasterClient == true) 
+        {
+            player1Gold = MyGold;
+            player2Gold = MyGold;
+            player3Gold = MyGold;
+            player4Gold = MyGold;
+        }
+    }
+    // 플레이어들의 개인 점수를 PlayFab DB 에서 불러오는 메서드
+    public void SavePlayerScore() 
+    {
+        
+    }
 
-    public void ResetPlayerTeamAndNumber(int player1ViewID, int player2ViewID, int player3ViewID, int player4ViewID)
+
+    public void ResetAllData(int player1ViewID, int player2ViewID, int player3ViewID, int player4ViewID)
     {
         // 플레이어 자리 위치 저장 값 초기화
         for (int i = 0; i < NetworkManager.Instance.playerSeats.Length; i++) 
@@ -108,6 +140,10 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         // 플레이어 정보 초기화
 
         // 플레이어 팀 정보 초기화
+
+        // 골드 초기화
+
+        // 점수 초기화
     }
     
     #region player (boolIdx + 1) 자리 가겠다는 요청을 master client 에게 RPC 로 전달하는 메서드
@@ -413,5 +449,190 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     //        }
     //    }
     //}
+    #endregion
+
+    #region master 가 플레이어 아이디 변경하는 메서드
+    //[PunRPC]
+    //public void ChangeID(int photonViewID, int seatIdx, int beforeSeatIdx) 
+    //{
+    //    Button button1 = ButtonManager.Instance.player1Button;
+    //    Button button2 = ButtonManager.Instance.player2Button;
+    //    Button button3 = ButtonManager.Instance.player3Button;
+    //    Button button4 = ButtonManager.Instance.player4Button;
+
+    //    if (seatIdx == 0) 
+    //    {
+    //        if (beforeSeatIdx == -1) 
+    //        {
+    //            button1.gameObject.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text = 
+    //                photonViewID.ToString();            
+    //        }
+    //        else if (beforeSeatIdx != -1) 
+    //        {
+
+    //            button1.gameObject.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text =
+    //                photonViewID.ToString();
+    //        }
+    //    }
+    //    else if (seatIdx == 1) 
+    //    {
+    //        if (beforeSeatIdx == -1)
+    //        {
+    //            button2.gameObject.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text =
+    //                photonViewID.ToString();
+    //        }
+    //        else if (beforeSeatIdx != -1)
+    //        {
+    //            button2.gameObject.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text =
+    //                photonViewID.ToString();
+    //        }
+    //    }
+    //    else if (seatIdx == 2)
+    //    {
+    //        if (beforeSeatIdx == -1)
+    //        {
+    //            button3.gameObject.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text =
+    //                photonViewID.ToString();
+    //        }
+    //        else if (beforeSeatIdx != -1)
+    //        {
+    //            button3.gameObject.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text =
+    //                photonViewID.ToString();
+    //        }
+    //    }
+    //    else if (seatIdx == 3)
+    //    {
+    //        if (beforeSeatIdx == -1)
+    //        {
+    //            button4.gameObject.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text =
+    //                photonViewID.ToString();
+    //        }
+    //        else if (beforeSeatIdx != -1)
+    //        {
+    //            button4.gameObject.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text =
+    //                photonViewID.ToString();
+    //        }
+    //    }
+    //}
+    #endregion
+
+    #region master 가 플레이어가 레디를 눌렀을 시 체크를 변경하는 메서드
+    //[PunRPC]
+    //public void ChangeCheck(int photonViewID, bool readyValue) 
+    //{
+    //    Button button1 = ButtonManager.Instance.player1Button;
+    //    Button button2 = ButtonManager.Instance.player2Button;
+    //    Button button3 = ButtonManager.Instance.player3Button;
+    //    Button button4 = ButtonManager.Instance.player4Button;
+
+    //    if (button1.gameObject.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text == photonViewID.ToString()) 
+    //    {
+    //        if (readyValue == true)
+    //        {
+    //            button1.gameObject.transform.Find("Check").GetComponent<Image>().color = Color.white;
+    //        }
+    //        else if (readyValue == false)
+    //        {
+    //            button1.gameObject.transform.Find("Check").GetComponent<Image>().color = Color.clear;
+    //        }
+    //    }
+    //    else if (button2.gameObject.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text == photonViewID.ToString()) 
+    //    {
+    //        if (readyValue == true)
+    //        {
+    //            button2.gameObject.transform.Find("Check").GetComponent<Image>().color = Color.white;
+    //        }
+    //        else if (readyValue == false)
+    //        {
+    //            button2.gameObject.transform.Find("Check").GetComponent<Image>().color = Color.clear;
+    //        }
+    //    }
+    //    else if (button3.gameObject.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text == photonViewID.ToString())
+    //    {
+    //        if (readyValue == true)
+    //        {
+    //            button3.gameObject.transform.Find("Check").GetComponent<Image>().color = Color.white;
+    //        }
+    //        else if (readyValue == false)
+    //        {
+    //            button3.gameObject.transform.Find("Check").GetComponent<Image>().color = Color.clear;
+    //        }
+    //    }
+    //    else if (button4.gameObject.transform.Find("Text (TMP)").GetComponent<TMP_Text>().text == photonViewID.ToString())
+    //    {
+    //        if (readyValue == true)
+    //        {
+    //            button4.gameObject.transform.Find("Check").GetComponent<Image>().color = Color.white;
+    //        }
+    //        else if (readyValue == false)
+    //        {
+    //            button4.gameObject.transform.Find("Check").GetComponent<Image>().color = Color.clear;
+    //        }
+    //    }
+    //}
+    #endregion
+
+    #region Gold 사용하는 메서드
+    public void UseGold(string senderViewID, float haveGold, float price) 
+    {
+        float gold = default;
+        float resultGold = default;
+
+        // gold 변수에 viewID 에 맞는 player'N'Gold 변수를 꺼내서 담는다
+        gold = CheckAndReturnPlayerGold(senderViewID, haveGold);
+        // 골드 감산
+        gold -= price;
+        // resultGold 변수에 viewID 에 맞추어 다시 player'N'Gold 변수를 꺼내서 저장한다
+        resultGold = CheckAndReturnPlayerGold(senderViewID, gold);
+
+        // senderViewID 가 계산을 담당하는 photonViewID 즉, master 와 같을 경우 자기 UI 변경
+        if (senderViewID == photonView.ViewID.ToString()) 
+        {
+            UIManager.uiManager.PrintMyGold(resultGold);
+        }
+
+        // 계산을 마친 결과값을 master 가 sender 에게 다시 보내는 RPC
+        photonView.RPC("SaveReturnGold", RpcTarget.Others, senderViewID, resultGold);
+    }
+    #endregion
+
+    #region Gold 사용과 저장을 위해 master 에서 PhotonViewID 를 통해 확인하는 메서드 (return : 해당 ViewID 의 Gold 변수)
+    public float CheckAndReturnPlayerGold(string viewID, float gold)
+    {
+        string value = PhotonNetwork.CurrentRoom.CustomProperties[viewID].ToString();
+        string playerValue = value.Split('_')[0];
+        int playerNum = int.Parse(playerValue.Split()[6]);
+
+        switch (playerNum)
+        {
+            case 1:
+                player1Gold = gold;
+                return player1Gold;
+            case 2:
+                player2Gold = gold;
+                return player2Gold;
+            case 3:
+                player3Gold = gold;
+                return player3Gold;
+            case 4:
+                player4Gold = gold;
+                return player4Gold;
+            default:
+                return -1;
+        }
+    }
+    #endregion
+
+    #region master 에서 다른 client 들에게 계산결과를 보내 MyGold 에 변화량을 저장하는 RPC
+    [PunRPC]
+    public void SaveReturnGold(string viewID, float result)
+    {
+        if (viewID == photonView.ViewID.ToString()) 
+        {
+            MyGold = result;
+        }
+
+        UIManager.uiManager.PrintMyGold(MyGold);
+    }
     #endregion
 }

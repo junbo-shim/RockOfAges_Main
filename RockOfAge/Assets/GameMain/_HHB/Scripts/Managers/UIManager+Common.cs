@@ -112,9 +112,10 @@ public partial class UIManager: MonoBehaviour
 
     //! 서버
     //{ PrintMyGold()
-    public void PrintMyGold()
+    public void PrintMyGold(float playerGold_)
     {
-        //playerGold.text = 
+        int intGold = (int)playerGold_;
+        playerGold.text = intGold.ToString();
     }
     //} PrintMyGold()
     #endregion

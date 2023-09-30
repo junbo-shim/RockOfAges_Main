@@ -1,12 +1,14 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.Splines;
 
-public class BuildManager : MonoBehaviour
+public class BuildManager : MonoBehaviourPun
 {
     public static BuildManager instance;
     public ObstacleBase buildTarget = null;
@@ -53,6 +55,9 @@ public class BuildManager : MonoBehaviour
     const int ONCE_ROTATE_EULER_ANGLE = 90;
     public static readonly Vector3Int OUT_VECTOR = new Vector3Int(-90000, 0, 0);
 
+    // ! Photon : PlayerDataContainer 및 PhotonView 캐싱용 변수
+    PlayerDataContainer dataContainer;
+    PhotonView dataContainerView;
 
     private void Awake()
     {
@@ -532,19 +537,48 @@ public class BuildManager : MonoBehaviour
             return false;
         }
         // gold & limit
-        float gold = default;
+        float price = default;
         int buildLimit = default;
-        ResourceManager.Instance.GetUnitGoldAndBuildLimitFromID(buildTarget.status.Id, out gold, out buildLimit);
+        ResourceManager.Instance.GetUnitGoldAndBuildLimitFromID(buildTarget.status.Id, out price, out buildLimit);
         GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(buildTarget.status.Id);
 
+        #region Legacy
+        // ! Photon : playerDataContainer 에 data 가 저장되는 순간이 game scene 으로 넘어갈때인데,
+        // UIManager 나 BuildManager 는 이미 scene 에 존재하므로 스크립트에서 캐싱해두기 번거롭다
+        // 따라서 메모리 관리측면에서 마이너스이지만 지역변수로 건설 순간마다 불러오기를 실행하는 방향으로 작성했다
+        #endregion
+
+        // ! Photon : 이 지점에서 PlayerDataContainer 와 PhotonView 캐싱
+        dataContainer = NetworkManager.Instance.myDataContainer;
+        dataContainerView = dataContainer.GetComponent<PhotonView>();
+        // ! Photon : 만약 소지 골드가 장애물 요구 비용보다 같거나 크면 (설치가능)
+        if (dataContainer.MyGold >= price) 
+        {
+            // ! Photon : 만약 master 라면
+            if (PhotonNetwork.IsMasterClient == true) 
+            {
+                // 직접 playerGold 에서 감산
+                dataContainer.UseGold(dataContainerView.ViewID.ToString(), dataContainer.MyGold, price);
+            }
+            // ! Photon : 아니라면
+            else 
+            {
+                // master 에게 RPC 를 발사
+                dataContainerView.RPC("UseGold", RpcTarget.MasterClient,
+                    dataContainerView.ViewID.ToString(), dataContainer.MyGold, price);
+            }
+        }
+        
         int buildCount = 0;
         if (unitButton != null) 
         {
             buildCount = unitButton.GetComponent<CreateButton>().buildCount;
         
         }
-        return (buildCount+size <= buildLimit);
+        // ! Photon : gold 조건 추가
+        return (buildCount+size <= buildLimit && price <= dataContainer.MyGold);
     }
+
 
     //현재 grid위치의 주변 위치의 terrain의 상태를 전부 비교
     bool GetBuildEnable(List<Vector3Int> grids, Vector2Int buildSize)
@@ -589,7 +623,6 @@ public class BuildManager : MonoBehaviour
          
         return buildState.Get(size);
     }
-
 }
 
 

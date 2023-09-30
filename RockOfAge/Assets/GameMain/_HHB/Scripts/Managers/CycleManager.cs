@@ -42,7 +42,7 @@ public class CycleManager : MonoBehaviour
     // ! Photon
     public PlayerDataContainer dataContainer;
     public PhotonView dataContainerView;
-    public string layerPlayerTeamName;
+    public string playerTeamNumber;
     #endregion
 
 
@@ -62,7 +62,7 @@ public class CycleManager : MonoBehaviour
         dataContainer = NetworkManager.Instance.myDataContainer;
         dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
         FindMyViewID();
-        SetCameraLayerMask(layerPlayerTeamName);
+        SetCameraLayerMask(playerTeamNumber);
     }
 
     private void Update()
@@ -82,14 +82,14 @@ public class CycleManager : MonoBehaviour
         }
     }
 
-    // ! Photon
+    // ! Photon : 플레이어의 ViewID(Key) 를 통해 PlayerNum_TeamNum(Value) 를 읽어오기 위한 메서드
     private void FindMyViewID()
     {
         foreach (var mydata in PhotonNetwork.CurrentRoom.CustomProperties)
         {
             if (mydata.Key.ToString() == dataContainer.GetComponent<PhotonView>().ViewID.ToString())
             {
-                layerPlayerTeamName = mydata.Value.ToString();
+                playerTeamNumber = mydata.Value.ToString();
             }
         }
     }
@@ -345,7 +345,7 @@ public class CycleManager : MonoBehaviour
         int team1 = Global_PSC.FindLayerToName("Team1");
         int team2 = Global_PSC.FindLayerToName("Team2");
 
-        // ! Photon
+        // ! Photon : culling mask 변수화
         int maskDefault = Global_PSC.FindLayerToName("Default");
         int maskTransparentFX = Global_PSC.FindLayerToName("TransparentFX");
         int maskIgnoreRaycast = Global_PSC.FindLayerToName("Ignore Raycast");
@@ -359,7 +359,7 @@ public class CycleManager : MonoBehaviour
         int maskCastle = Global_PSC.FindLayerToName("Castle");
         int maskRock = Global_PSC.FindLayerToName("Rock");
 
-        // ! Photon
+        // ! Photon : Team 에 따른 culling mask 추가
         if (team_ == "Team1")
         {
             playerCam.cullingMask |= team1;
@@ -392,7 +392,7 @@ public class CycleManager : MonoBehaviour
             enemyCam.cullingMask |= maskCastle;
             enemyCam.cullingMask |= maskRock;
         }
-        // ! Photon
+        // ! Photon : Team 에 따른 culling mask 추가
         else if (team_ == "Team2")
         {
             playerCam.cullingMask |= team2;

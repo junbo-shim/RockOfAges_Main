@@ -205,7 +205,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     }
 
 
-    // ! Photon
+    // ! Photon : 플레이어의 ViewID(Key) 를 통해 PlayerNum_TeamNum(Value) 를 읽어오기 위한 메서드
     private void FindMyViewID()
     {
         foreach (var mydata in PhotonNetwork.CurrentRoom.CustomProperties)

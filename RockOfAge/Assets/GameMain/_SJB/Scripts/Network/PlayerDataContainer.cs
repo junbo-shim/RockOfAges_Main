@@ -4,15 +4,12 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 using TMPro;
 using Photon.Pun.Demo.PunBasics;
+using System.Xml.Linq;
 
 public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
 {
-    //public string playerID;
-    //public string playerName;
-
-    //public string roomName;
-
     public int otherPlayerReady;
+    public string MyName { get; private set; }
     public string Player1Name { get; private set; }
     public string Player2Name { get; private set; }
     public string Player3Name { get; private set; }
@@ -28,13 +25,13 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     public string Player3Num { get; private set; }
     public string Player4Num { get; private set; }
 
-
     public float MyGold { get; private set; } = 1000f;
-    public float player1Gold;
-    public float player2Gold;
-    public float player3Gold;
-    public float player4Gold;
+    public float Player1Gold { get; private set; }
+    public float Player2Gold { get; private set; }
+    public float Player3Gold { get; private set; }
+    public float Player4Gold { get; private set; }
 
+    public int MyScore { get; private set; }
     public int Player1Score { get; private set; }
     public int Player2Score { get; private set; }
     public int Player3Score { get; private set; }
@@ -49,6 +46,8 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
+        MyName = NetworkManager.Instance.playerNickName;
+        MyScore = NetworkManager.Instance.playerScore;
 
         otherPlayerReady = default;
     }
@@ -114,10 +113,10 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     {
         if (PhotonNetwork.IsMasterClient == true) 
         {
-            player1Gold = MyGold;
-            player2Gold = MyGold;
-            player3Gold = MyGold;
-            player4Gold = MyGold;
+            Player1Gold = MyGold;
+            Player2Gold = MyGold;
+            Player3Gold = MyGold;
+            Player4Gold = MyGold;
         }
     }
     // 플레이어들의 개인 점수를 PlayFab DB 에서 불러오는 메서드
@@ -606,17 +605,17 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         switch (playerNum)
         {
             case 1:
-                player1Gold = gold;
-                return player1Gold;
+                Player1Gold = gold;
+                return Player1Gold;
             case 2:
-                player2Gold = gold;
-                return player2Gold;
+                Player2Gold = gold;
+                return Player2Gold;
             case 3:
-                player3Gold = gold;
-                return player3Gold;
+                Player3Gold = gold;
+                return Player3Gold;
             case 4:
-                player4Gold = gold;
-                return player4Gold;
+                Player4Gold = gold;
+                return Player4Gold;
             default:
                 return -1;
         }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 #region Enum StoneTimer 
 // 공생성속도 빠름,보통,느림
@@ -38,6 +39,8 @@ public partial class UIManager : MonoBehaviour
     public GameObject escUI;
     // endingUI
     public GameObject endingUI;
+    // escUI 작동시 다른 UI 체크
+    private List<GameObject> nowOnUI = new List<GameObject>();
     #endregion
 
     private void Awake()
@@ -50,6 +53,7 @@ public partial class UIManager : MonoBehaviour
         SwitchUIManager("defenceUI");
         SwitchUIManager("endingUI");
         SwitchUIManager("escUI");
+        InitnowOnUIList();
         GetDirection();
     }
 
@@ -295,4 +299,55 @@ public partial class UIManager : MonoBehaviour
     }
     //} ShutDownUserSelectUI()
     #endregion
+
+    public void InitnowOnUIList()
+    {
+        nowOnUI.Add(rockSelectUI);
+        nowOnUI.Add(commonUI);
+        nowOnUI.Add(attackUI);
+        nowOnUI.Add(defenceUI);
+    }
+
+    public void SwitchUIForESCUI()
+    {
+        // 참이면
+        if (CycleManager.cycleManager._isESCed == true)
+        {
+            List<GameObject> uiToRemove = new List<GameObject>();
+
+            foreach (GameObject ui in nowOnUI)
+            {
+                // 켜져있지 않은 UI는 제거 대상에 추가
+                if (ui.gameObject.transform.localScale != Vector3.one)
+                {
+                    uiToRemove.Add(ui);
+                }
+            }
+
+            // 제거 대상 UI 삭제
+            foreach (GameObject ui in uiToRemove)
+            {
+                nowOnUI.Remove(ui);
+            }
+
+            // 스케일 0.001로 설정
+            foreach (GameObject ui in nowOnUI)
+            {
+                ui.gameObject.transform.localScale = Vector3.one * 0.001f;
+            }
+        }
+        // 만약 esc가 풀린다면
+        else if (CycleManager.cycleManager._isESCed == false)
+        {
+            // UI 복귀
+            foreach (GameObject ui in nowOnUI)
+            {
+                ui.gameObject.transform.localScale = Vector3.one;
+            }
+
+            // 리스트 초기화
+            nowOnUI.Clear();
+            InitnowOnUIList();
+        }
+    }
 }

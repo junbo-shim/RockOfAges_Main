@@ -82,11 +82,13 @@ public class CycleManager : MonoBehaviour
 
     public void UpdateESCCycle()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (userState != (int)UserState.ENDING && userState != (int)UserState.UNITSELECT && Input.GetKeyDown(KeyCode.Escape))
         {
             _isESCed = !_isESCed;
             CameraManager.isControlled = !CameraManager.isControlled;
+            UIManager.uiManager.SwitchUIForESCUI();
             UIManager.uiManager.SwitchUIManager("escUI");
+            CameraManager.Instance.SetCameraBlurEffect();
         }
     }
 
@@ -163,6 +165,8 @@ public class CycleManager : MonoBehaviour
             rockState = (int)RockState.ROCKSELECT;
             UIManager.uiManager.ChangeAttackToSelect();
             CameraManager.Instance.TurnOnTopViewCamera();
+            CameraManager.Instance.OffCameraMotionBlur();
+
         }
         else { Debug.Log("GAME LOGIC ERROR"); }
     }

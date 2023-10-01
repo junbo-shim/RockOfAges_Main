@@ -35,18 +35,24 @@ public class RockCameraController : MonoBehaviour
             return;
         }
 
-       /* if (Input.GetAxisRaw("Mouse X") != 0 || Input.GetAxisRaw("Mouse Y") != 0)
+        /* if (Input.GetAxisRaw("Mouse X") != 0 || Input.GetAxisRaw("Mouse Y") != 0)
+         {
+             delayTime = PLAYER_INPUT_WAIT;
+             if (delay == null)
+             {
+                 offset = new Vector3(0, 2, -3);
+                 target = cineFreeLook.LookAt;
+                 cineFreeLook.LookAt = null;
+                 cineFreeLook.Follow = null;
+                 delay = StartCoroutine(FollowDelayRoutine());
+             }
+         }*/
+        //{ 0930 홍한범 조건 추가
+        if (CycleManager.cycleManager._isESCed == true)
         {
-            delayTime = PLAYER_INPUT_WAIT;
-            if (delay == null)
-            {
-                offset = new Vector3(0, 2, -3);
-                target = cineFreeLook.LookAt;
-                cineFreeLook.LookAt = null;
-                cineFreeLook.Follow = null;
-                delay = StartCoroutine(FollowDelayRoutine());
-            }
-        }*/
+            return;
+        }
+        //} 0930 홍한범 조건 추가
 
         float mouseX = Input.GetAxis("Mouse X");
         float mouseSensitive = 5f;

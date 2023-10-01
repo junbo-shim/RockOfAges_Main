@@ -1,13 +1,103 @@
 using Cinemachine;
-using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 public class CameraManager : GlobalSingleton<CameraManager>
 {
     public static Queue<GameObject> enemyCameraQueue = new Queue<GameObject>(2);
     public static Vector3 myCameraPosition;
+    public static bool isControlled = false;
+    // PostProcess
+    private PostProcessVolume postProcessVolume;
+    private DepthOfField depthOfField;
+    private MotionBlur motionBlur;
+    private bool isBlur = false;
+
+    protected override void Awake()
+    {
+        GameObject postProcessObj = Global_PSC.FindTopLevelGameObject("Post-process Volume");
+        postProcessVolume = postProcessObj.GetComponent<PostProcessVolume>();
+    }
+
+    public void SetCameraMotionBlur(GameObject rock)
+    {
+        postProcessVolume.profile.TryGetSettings(out motionBlur);
+        if (rock != null)
+        { 
+            motionBlur.active = true;
+            Rigidbody rockRigidBody = rock.GetComponentInChildren<Rigidbody>();
+            if (rockRigidBody != null)
+            {
+                //Debug.Log("들어감");
+                int vel = (int)rockRigidBody.velocity.magnitude;
+                if (vel > 20)
+                {
+                    //Debug.Log("속도 20이상");
+                    motionBlur.shutterAngle.value = 320f;
+                }
+                else 
+                {
+                    float normalizedVel = Mathf.Clamp01(vel / 20f);
+                    float mappedValue = Mathf.Lerp(200f, 300f, normalizedVel);
+                    motionBlur.shutterAngle.value = mappedValue;
+                    //Debug.Log("shutterAngle : " + mappedValue);
+                }
+            }
+        }
+        else { motionBlur.shutterAngle.overrideState = false; /*Debug.Log("나감");*/ }
+    }
+
+    public void OffCameraMotionBlur()
+    {
+        GameObject postProcessObj = Global_PSC.FindTopLevelGameObject("Post-process Volume");
+        postProcessVolume = postProcessObj.GetComponent<PostProcessVolume>();
+        postProcessVolume.profile.TryGetSettings(out motionBlur);
+        motionBlur.shutterAngle.overrideState = false;
+    }
+
+    public void SetCameraBlurEffect()
+    {
+        postProcessVolume.profile.TryGetSettings(out depthOfField);
+        isBlur = !isBlur;
+        if (isBlur == true)
+        {
+
+            StartCoroutine(LerpFocalLength(1f, 150f, 0.3f));
+            StartCoroutine(LerpAperture(16f, 0.1f, 0.3f));
+        }
+        else 
+        {
+            StartCoroutine(LerpFocalLength(150f, 1f, 0.3f));
+            StartCoroutine(LerpAperture(0.1f, 16f, 0.3f));
+        }
+    }
+
+    private IEnumerator LerpFocalLength(float startAperture, float endAperture, float duration)
+    {
+        float startTime = Time.time;
+        while (Time.time - startTime < duration)
+        {
+            float t = (Time.time - startTime) / duration;
+            depthOfField.focalLength.value = Mathf.Lerp(startAperture, endAperture, t);
+            yield return null;
+        }
+
+        depthOfField.focalLength.value = endAperture;
+    }
+    private IEnumerator LerpAperture(float startAperture, float endAperture, float duration)
+    {
+        float startTime = Time.time;
+        while (Time.time - startTime < duration)
+        {
+            float t = (Time.time - startTime) / duration;
+            depthOfField.aperture.value = Mathf.Lerp(startAperture, endAperture, t);
+            yield return null;
+        }
+
+        depthOfField.aperture.value = endAperture;
+    }
 
     public void UpdateMyCameraCenterPoint()
     {
@@ -175,23 +265,47 @@ public class CameraManager : GlobalSingleton<CameraManager>
     }
 
     public void MoveTurnOnCameraPosition(Vector2 position)
-    {
-        float lerpSpeed = 2f;
+    { 
         if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
         {
+            Vector3 target = default;
+            Vector3 original = default;
             GameObject topViewCamera = Global_PSC.FindTopLevelGameObject("TopViewCamera");
             if (topViewCamera.activeSelf == false)
             {
                 GameObject topViewClickedCamera = Global_PSC.FindTopLevelGameObject("ClickedTopViewCamera");
-                Vector3 targetPosition = new Vector3(position.x, topViewClickedCamera.transform.position.y, position.y);
-                topViewClickedCamera.transform.position = Vector3.Lerp(topViewClickedCamera.transform.position, targetPosition, Time.deltaTime * lerpSpeed);
+                original = topViewClickedCamera.transform.position;
+                target = new Vector3(position.x, topViewClickedCamera.transform.position.y, position.y);
+                StartCoroutine(MoveCameraPosition(topViewClickedCamera, original, target));
             }
-            else
+            else 
             {
-                Vector3 targetPosition = new Vector3(position.x, topViewCamera.transform.position.y, position.y);
-                topViewCamera.transform.position = Vector3.Lerp(topViewCamera.transform.position, targetPosition, Time.deltaTime * lerpSpeed);
+                original = topViewCamera.transform.position;
+                target = new Vector3(position.x, topViewCamera.transform.position.y, position.y);
+                StartCoroutine(MoveCameraPosition(topViewCamera, original, target));
             }
         }
+    }
+
+    IEnumerator MoveCameraPosition(GameObject camera, Vector3 original, Vector3 target)
+    {
+        float time = 0f;
+        float moveTime = 0.5f;
+        while (time < moveTime)
+        {
+            time += Time.deltaTime;
+            camera.transform.position = Vector3.Lerp(original, target , time/moveTime);
+            yield return null;
+        }
+
+        camera.transform.position = target;
+    }
+
+    public void SetGameEndCamera(Transform transform)
+    {
+        GameObject gameEndCameraObj = Global_PSC.FindTopLevelGameObject("GameEndResultCamera");
+        CinemachineVirtualCamera endCamera = gameEndCameraObj.GetComponent<CinemachineVirtualCamera>();
+        endCamera.m_LookAt = transform;
     }
 
 }

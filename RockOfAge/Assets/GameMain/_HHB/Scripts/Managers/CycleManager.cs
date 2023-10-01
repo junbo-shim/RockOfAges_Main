@@ -36,6 +36,7 @@ public class CycleManager : MonoBehaviour
     private bool _isEntered = false;
     #endregion
 
+
     public void Awake()
     {
         //if (!_isEntered)

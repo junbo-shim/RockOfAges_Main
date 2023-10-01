@@ -42,8 +42,9 @@ public class CameraMouse : MonoBehaviour
             MoveCameraFromKeyBoard();
             RotateCameraTransition();    
             MoveCameraFromMouse();
-            //ControlEdgeToMoveCamera();
+            
         }
+        CameraManager.Instance.UpdateMyCameraCenterPoint();
         ChangeCameraToRock();
     }
 

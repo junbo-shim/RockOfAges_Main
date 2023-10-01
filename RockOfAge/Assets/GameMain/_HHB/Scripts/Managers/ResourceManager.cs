@@ -10,9 +10,19 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     // 유닛 리소스
     public Dictionary<int, GameObject> unitResources = new Dictionary<int, GameObject>();
 
+    public static Vector3 team1StartPos { get; private set;}
+    public static Vector3 team2StartPos { get; private set; }
+    public static Vector3 team1EndPos { get; private set; }
+    public static Vector3 team2EndPos { get; private set; }
+
     protected override void Awake()
     {
         PackAwake();
+        
+        team1StartPos = Global_PSC.FindTopLevelGameObject("Team2").transform.GetChild(3).position + Vector3.up * 5;
+        team2StartPos = Global_PSC.FindTopLevelGameObject("Team1").transform.GetChild(3).position + Vector3.up * 5;
+        team1EndPos = Global_PSC.FindTopLevelGameObject("Team2").transform.GetChild(1).position;
+        team2EndPos = Global_PSC.FindTopLevelGameObject("Team1").transform.GetChild(1).position;
     }
 
     //{ AwakePack()
@@ -162,6 +172,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         List<GameObject> objs = new List<GameObject>();
         objs = Global_PSC.FindAllTargets("DefenceUI", "unitSelect");
         GameObject targetObj = default;
+
 
         foreach (var obj in objs)
         {

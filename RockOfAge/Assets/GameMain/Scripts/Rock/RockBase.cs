@@ -798,6 +798,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         {
             PlayForceSound(collisionAudio);
         }
+
         else
         {
             PlaySound(collisionAudio);

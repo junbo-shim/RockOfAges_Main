@@ -24,6 +24,7 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
         audioSource = GetComponent<AudioSource>();
         colliderParts = transform.GetChild(0).GetChild(1).GetChild(1).gameObject;
         obstacleCollider = colliderParts.GetComponent<Collider>();
+        obstacleCollider.isTrigger = true;
     }
 
     private void Start()
@@ -83,6 +84,7 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
         isAttacked = true;
         obstacleAnimator.SetBool("Idle", false);
         obstacleAnimator.SetTrigger("Active");
+        obstacleCollider.isTrigger = false;
     }
 
     protected override void DeactiveAttack()
@@ -110,8 +112,7 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
             Delete();
         }
 
-        Debug.Log("장애물 히트");
-        if (!isAttacked)
+        if (isAttacked || obstacleAnimator.GetBool("Idle"))
         {
             return;
         }

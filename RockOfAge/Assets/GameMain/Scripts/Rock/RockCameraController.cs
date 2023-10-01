@@ -48,7 +48,8 @@ public class RockCameraController : MonoBehaviour
              }
          }*/
         //{ 0930 홍한범 조건 추가
-        if (CycleManager.cycleManager._isESCed == true)
+
+        if (CycleManager.cycleManager != null && CycleManager.cycleManager._isESCed == true)
         {
             return;
         }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DefaultRock : RockBase
 {
@@ -28,7 +29,11 @@ public class DefaultRock : RockBase
 
     private void Update()
     {
-        CameraManager.Instance.SetCameraMotionBlur(gameObject);
+        if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("PscTestScene"))
+        {
+            CameraManager.Instance.SetCameraMotionBlur(gameObject);
+        }
+
         if (isFall || isDestroy)
         {
             return;
@@ -40,7 +45,7 @@ public class DefaultRock : RockBase
         CheckFall();
 
         //{ 0930 홍한범 조건 추가
-        if (CycleManager.cycleManager._isESCed == false)
+        if (CycleManager.cycleManager==null || CycleManager.cycleManager._isESCed == false)
         { 
             GetInput();
             if (Input.GetKeyDown(KeyCode.Space) && isGround)

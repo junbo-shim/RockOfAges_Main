@@ -148,7 +148,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5573865}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.054706212, y: -0.7458368, z: 0.061727297, w: 0.6610027}
+  m_LocalRotation: {x: 0.054706216, y: -0.74583673, z: 0.06172729, w: 0.6610027}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -533,8 +533,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
   m_PivotOffset: {x: 0, y: 0, z: 0}
-  m_AmplitudeGain: 17.2051
-  m_FrequencyGain: 3
+  m_AmplitudeGain: 0
+  m_FrequencyGain: 0
   mNoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!43 &67024536
 Mesh:
@@ -1424,8 +1424,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
   m_PivotOffset: {x: 0, y: 0, z: 0}
-  m_AmplitudeGain: 17.2051
-  m_FrequencyGain: 3
+  m_AmplitudeGain: 0
+  m_FrequencyGain: 0
   mNoiseOffsets: {x: -917.07275, y: -583.64087, z: 57.7377}
 --- !u!1 &166084640
 GameObject:
@@ -9237,7 +9237,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 816314837}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.054706212, y: -0.7458368, z: 0.061727297, w: 0.6610027}
+  m_LocalRotation: {x: 0.054706216, y: -0.74583673, z: 0.06172729, w: 0.6610027}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -10496,7 +10496,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.054706212, y: -0.7458368, z: 0.061727297, w: 0.6610027}
+  m_LocalRotation: {x: 0.054706216, y: -0.74583673, z: 0.06172729, w: 0.6610027}
   m_LocalPosition: {x: 107.37195, y: 32.40958, z: 107.21912}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -11268,6 +11268,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dashPower: 150
+  useContinue: 0
   useParent: 0
   forward: {x: 0, y: 1, z: 0}
   beforeVelocityZero: 0
@@ -17455,6 +17456,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dashPower: 200
+  useContinue: 0
   useParent: 1
   forward: {x: 0, y: 0, z: 0}
   beforeVelocityZero: 0
@@ -18261,8 +18263,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
   m_PivotOffset: {x: 0, y: 0, z: 0}
-  m_AmplitudeGain: 17.2051
-  m_FrequencyGain: 3
+  m_AmplitudeGain: 0
+  m_FrequencyGain: 0
   mNoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!114 &1874354215
 MonoBehaviour:

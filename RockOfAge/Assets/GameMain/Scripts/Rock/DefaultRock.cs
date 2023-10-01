@@ -43,6 +43,7 @@ public class DefaultRock : RockBase
         CheckGround();
         ChangeDrag();
         CheckFall();
+        PlayMoveSound();
 
         //{ 0930 홍한범 조건 추가
         if (CycleManager.cycleManager==null || CycleManager.cycleManager._isESCed == false)

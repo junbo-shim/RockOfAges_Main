@@ -633,26 +633,22 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     protected virtual void PlayMoveSound()
     {
-        if (isGround)
+        float magnitude = new Vector3(rockRigidbody.velocity.x, 0, rockRigidbody.velocity.z).magnitude;
+        Debug.Log(magnitude);
+        if (isGround && magnitude > 0.1f)
         {
-            float magnitude = new Vector3(rockRigidbody.velocity.x, 0, rockRigidbody.velocity.z).magnitude;
-            Debug.Log(magnitude);
-            if (magnitude>0.1f)
+            if (!rockAudio.isPlaying)
             {
-                if (!rockAudio.isPlaying)
-                {
-                    rockAudio.clip = rollAudio;
-                    rockAudio.Play();
-                }
+                rockAudio.clip = rollAudio;
+                rockAudio.Play();
             }
-            else
+        }
+        else
+        {
+            if (rockAudio.clip == rollAudio)
             {
-                if (rockAudio.clip == rollAudio)
-                {
-                    rockAudio.Stop();
-                }
+                rockAudio.Stop();
             }
-
         }
     }
     protected virtual void PlayJumpSound(bool isForce)
@@ -689,6 +685,11 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     }
     protected virtual void PlayDestroySound(bool isForce)
     {
+        if (isFall&&!isDestroy)
+        {
+            return;
+        }
+
         if (isForce)
         {
             PlayForceSound(destroyAudio);

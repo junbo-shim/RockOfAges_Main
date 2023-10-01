@@ -75,21 +75,21 @@ public class CycleManager : MonoBehaviour
             UpdateCommonUICycle(); // m 눌렀을 때 효과 
             UpdateDefenceCycle();// c 눌렀을 때 효과        
         }
-        UpdateESCCycle(); //esc 눌렀을 때 효과
+        if (userState != (int)UserState.ENDING && userState != (int)UserState.UNITSELECT && Input.GetKeyDown(KeyCode.Escape))
+        {
+            UpdateESCCycle(); //esc 눌렀을 때 효과
+        }
     }
     //} GameCycle()
     #endregion
 
     public void UpdateESCCycle()
     {
-        if (userState != (int)UserState.ENDING && userState != (int)UserState.UNITSELECT && Input.GetKeyDown(KeyCode.Escape))
-        {
-            _isESCed = !_isESCed;
-            CameraManager.isControlled = !CameraManager.isControlled;
-            UIManager.uiManager.SwitchUIForESCUI();
-            UIManager.uiManager.SwitchUIManager("escUI");
-            CameraManager.Instance.SetCameraBlurEffect();
-        }
+        _isESCed = !_isESCed;
+        CameraManager.isControlled = !CameraManager.isControlled;
+        UIManager.uiManager.SwitchUIForESCUI();
+        UIManager.uiManager.SwitchUIManager("escUI");
+        CameraManager.Instance.SetCameraBlurEffect();
     }
 
 

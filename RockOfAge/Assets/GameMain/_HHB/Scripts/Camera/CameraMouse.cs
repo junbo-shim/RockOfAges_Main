@@ -1,6 +1,7 @@
 using UnityEngine;
 using Cinemachine;
 using Photon.Pun;
+using System.Collections;
 
 public class CameraMouse : MonoBehaviour
 {
@@ -38,6 +39,8 @@ public class CameraMouse : MonoBehaviour
         dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
     }
 
+
+
     private void Start()
     {
         // ! Photon
@@ -52,15 +55,20 @@ public class CameraMouse : MonoBehaviour
         // ! Photon
         if (dataContainerView.IsMine == true) 
         {
-            if (CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
-            { 
+            if (!CameraManager.isControlled && CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
+            {
                 MoveCameraFromKeyBoard();
-                RotateCameraTransition();    
+                RotateCameraTransition();
                 MoveCameraFromMouse();
+                ScrollMouse();
+                ClampCameras();
+            }
+            CameraManager.Instance.UpdateMyCameraCenterPoint();
+            if (!CameraManager.isControlled)
+            {
+                ChangeCameraToRock();
             }
         }
-        CameraManager.Instance.UpdateMyCameraCenterPoint();
-        ChangeCameraToRock();
     }
 
     //{ MoveCameraFromInput()
@@ -71,8 +79,8 @@ public class CameraMouse : MonoBehaviour
 
         if (transposer != null)
         {
-            moveDir = new Vector3(xInput ,0f, zInput).normalized;
-            if(moveDir != Vector3.zero)
+            moveDir = new Vector3(xInput, 0f, zInput).normalized;
+            if (moveDir != Vector3.zero)
             {
                 Vector3 moveDistance = moveDir * cameraSpeed * Time.deltaTime;
 
@@ -164,12 +172,10 @@ public class CameraMouse : MonoBehaviour
         if (cameraPosition.x < maxX && cameraPosition.x > minX &&
             cameraPosition.z < maxZ && cameraPosition.z > minZ)
         {
-            return true; 
+            return true;
         }
         else
         {
-            //Vector3 clampedPosition = new Vector3(Mathf.Clamp(cameraPosition.x, minX, maxX),cameraPosition.y,Mathf.Clamp(cameraPosition.z, minZ, maxZ));
-            //nowOnCamera.transform.position = clampedPosition;
             ControlEdgeToMoveCamera();
             return false;
         }
@@ -208,4 +214,171 @@ public class CameraMouse : MonoBehaviour
             nextOnCamera.transform.position = new Vector3(nowX, nextY, nowZ);
         }
     }
+
+    public void ScrollMouse()
+    {
+        float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+        float scrollSpeed = 30f;
+        float targetY = default;
+        float velocity = 0f;
+        if (scrollInput == 0f)
+        {
+            return;
+        }
+        if (scrollInput != 0f)
+        {
+            targetY = nowOnCamera.transform.position.y - scrollInput * scrollSpeed;
+        }
+        float newY = Mathf.SmoothDamp(nowOnCamera.transform.position.y, targetY, ref velocity, smoothTime);
+        Vector3 cameraPosition = nowOnCamera.transform.position;
+        cameraPosition.y = newY;
+        nowOnCamera.transform.position = cameraPosition;
+        FollowNowOnCamera();
+    }
+
+    public void ClampCameras()
+    {
+        if (nowOnCamera.name == "TopViewCamera")
+        {
+            OnCheckTerrains();
+            if (nowOnCamera.transform.position.y > 150f)
+            {
+                nowOnCamera.transform.position = new Vector3(nowOnCamera.transform.position.x, 150f, nowOnCamera.transform.position.z);
+            }
+            else if (nowOnCamera.transform.position.y < 10f)
+            {
+                nowOnCamera.transform.position = new Vector3(nowOnCamera.transform.position.x, 30f, nowOnCamera.transform.position.z);
+            }
+
+            #region LEGACY
+            //nowOnCamera.transform.position = new Vector3(nowOnCamera.transform.position.x, 20f, nowOnCamera.transform.position.z);
+            //Vector3 cameraCenter = nowOnCamera.transform.position;
+            //Vector3 dirCamera = nowOnCamera.transform.forward;
+            //Ray ray = new Ray(cameraCenter, dirCamera);
+            //RaycastHit hit;
+            //if (Physics.Raycast(ray, out hit))
+            //{
+            //    GameObject hitObj = hit.collider.gameObject;
+            //    int hitLayer = hitObj.layer;
+            //    if (hitLayer == LayerMask.NameToLayer("Terrains"))
+            //    {
+            //        float newCameraY = hitObj.transform.position.y + 20f;
+            //        nowOnCamera.transform.position = new Vector3(nowOnCamera.transform.position.x, newCameraY, nowOnCamera.transform.position.z);
+            //    }
+            //}
+            #endregion 
+
+        }
+        else if (nowOnCamera.name == "ClickedTopViewCamera")
+        {
+            OnCheckTerrains();
+            if (nowOnCamera.transform.position.y > 80f)
+            {
+                nowOnCamera.transform.position = new Vector3(nowOnCamera.transform.position.x, 80f, nowOnCamera.transform.position.z);
+            }
+            if (nowOnCamera.transform.position.y < 10f)
+            {
+                nowOnCamera.transform.position = new Vector3(nowOnCamera.transform.position.x, 30f, nowOnCamera.transform.position.z);
+            }
+        }
+    }
+
+
+    public void OnCheckTerrains()
+    {
+        Vector3 cameraCenter = nowOnCamera.transform.position;
+        Vector3 dirCamera = nowOnCamera.transform.forward;
+        Ray ray = new Ray(cameraCenter, dirCamera);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            GameObject hitObj = hit.collider.gameObject;
+            int hitLayer = hitObj.layer;
+            if (hitLayer == LayerMask.NameToLayer("Terrains"))
+            {
+                float dis = Mathf.Abs(hitObj.transform.position.y - nowOnCamera.transform.position.y);
+                if (dis < 10f)
+                {
+                    float newCameraY = hitObj.transform.position.y + 15f;
+                    nowOnCamera.transform.position = new Vector3(nowOnCamera.transform.position.x, newCameraY, nowOnCamera.transform.position.z);
+                }
+            }
+        }
+    }
+
+    #region LEGACY
+    //private bool isTerrain = false;
+    //private bool isChanged = true;
+
+    //public void OnCheckTerrains()
+    //{
+    //    Vector3 cameraCenter = nowOnCamera.transform.position;
+    //    Vector3 dirCamera = nowOnCamera.transform.forward;
+    //    Ray ray = new Ray(cameraCenter, dirCamera);
+    //    RaycastHit hit;
+
+    //    if (Physics.Raycast(ray, out hit))
+    //    {
+    //        GameObject hitObj = hit.collider.gameObject;
+    //        int hitLayer = hitObj.layer;
+    //        if (hitLayer == LayerMask.NameToLayer("Terrains") && !isTerrain)
+    //        {
+    //            isTerrain = true;
+    //            isChanged = true;
+    //            MoveYCamera();
+    //        }
+    //        else if (hitLayer != LayerMask.NameToLayer("Terrains") && isTerrain)
+    //        {
+    //            isTerrain = false;
+    //            isChanged = true;
+    //            MoveYCamera();
+    //        }
+    //    }
+    //}
+
+    //public void MoveYCamera()
+    //{
+    //    float targetY = default;
+    //    float originalX = nowOnCamera.transform.position.x;
+    //    float originalZ = nowOnCamera.transform.position.z;
+    //    if (isTerrain)
+    //    {
+    //        targetY = nowOnCamera.transform.position.y + 15f;
+    //    }
+    //    else
+    //    {
+    //        targetY = nowOnCamera.transform.position.y - 15f;
+    //    }
+    //    //float newY = Mathf.Lerp(nowOnCamera.transform.position.y, targetY, smoothSpeed * Time.deltaTime);
+    //    //nowOnCamera.transform.position = new Vector3(originalX, newY, originalZ);
+    //    isChanged = true;
+    //    StartCoroutine(LerpCameraPosition(targetY, originalX, originalZ));
+
+    //}
+
+    //IEnumerator LerpCameraPosition(float targetY, float originalX, float originalZ)
+    //{
+    //    float time = 0f;
+    //    float targetTime = 2f;
+
+    //    while (time < targetTime)
+    //    {
+    //        float newY = Mathf.Lerp(nowOnCamera.transform.position.y, targetY, time / targetTime);
+    //        nowOnCamera.transform.position = new Vector3(originalX, newY, originalZ);
+    //        time += Time.deltaTime;
+    //        yield return null;
+    //    }
+    //}
+
+    //private void OnCollisionStay(Collision collision)
+    //{
+    //    if (collision.gameObject.layer == LayerMask.NameToLayer("Terrains"))
+    //    {
+    //        float originalX = nowOnCamera.transform.position.x;
+    //        float originalZ = nowOnCamera.transform.position.z;
+    //        float targetY = nowOnCamera.transform.position.y + 15f;
+    //        nowOnCamera.transform.position = new Vector3(originalX, targetY, originalZ);
+    //    }
+    //}
+    #endregion
 }

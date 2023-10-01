@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DefaultRock : RockBase
 {
@@ -38,30 +39,40 @@ public class DefaultRock : RockBase
         if (!photonView.IsMine)
         {
             return;
-        }
 
-        if (isFall || isDestroy)
-        {
-            return;
-        }
+            if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("PscTestScene"))
+            {
+                CameraManager.Instance.SetCameraMotionBlur(gameObject);
+            }
 
-        GetInput();
-        ChangeRockState();
-        CheckGround();
-        ChangeDrag();
-        CheckFall();
+            if (isFall || isDestroy)
+            {
+                return;
+            }
+
+            ChangeRockState();
+            CheckGround();
+            ChangeDrag();
+            CheckFall();
+            PlayMoveSound();
+
+            //{ 0930 홍한범 조건 추가
+            if (CycleManager.cycleManager==null || CycleManager.cycleManager._isESCed == false)
+            { 
+                GetInput();
+                if (Input.GetKeyDown(KeyCode.Space) && isGround)
+                {
+                    Jump(DEFAULT_JUMP_FORCE);
+                }
 
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGround)
-        {
-            Jump(DEFAULT_JUMP_FORCE);
-        }
-
-
-        if (Input.GetKeyUp(KeyCode.R))
-        {
-            isFall = true;
-            StartCoroutine(ComebackCheckPointRoutine());
+                if (Input.GetKeyUp(KeyCode.R))
+                {
+                    isFall = true;
+                    StartCoroutine(ComebackCheckPointRoutine());
+                }        
+            }
+            //} 0930 홍한범 조건 추가
         }
     }
 

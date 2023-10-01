@@ -57,6 +57,18 @@ public class CameraManager : GlobalSingleton<CameraManager>
         motionBlur.shutterAngle.overrideState = false;
     }
 
+    //public void DebugCameraBlur()
+    //{ 
+    //    postProcessVolume.profile.TryGetSettings(out depthOfField);
+
+    //    depthOfField.focalLength.value = 1f;
+    //    depthOfField.focalLength.value = 150f;
+
+    //    depthOfField.aperture.value = 0.1f;
+    //    depthOfField.aperture.value = 16f;
+
+    //}
+
     public void SetCameraBlurEffect()
     {
         postProcessVolume.profile.TryGetSettings(out depthOfField);

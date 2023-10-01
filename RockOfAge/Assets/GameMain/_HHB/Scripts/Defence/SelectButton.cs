@@ -35,6 +35,7 @@ public class SelectButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         ItemManager.itemManager.userRockChoosed[0] = id;
         UIManager.uiManager.SwitchUIManager("defenceUI");
         CycleManager.cycleManager.userState = (int)UserState.DEFENCE;
+        SoundManager.soundManager.BGMCycle();
         UIManager.uiManager.SwitchUIManager("rockSelectUI");
         StartCoroutine(CycleManager.cycleManager.WaitForRock());
     }

@@ -10,7 +10,7 @@ public partial class UIManager : MonoBehaviour
     public Image hpImg;
 
     // 돌깎는 애니메이션
-    [Header("ROCK CREATOR")]
+    [Header("ROCK CREATOR ANIMATION")]
     public GameObject creators;
     public GameObject myRock;
     public Image startRock;

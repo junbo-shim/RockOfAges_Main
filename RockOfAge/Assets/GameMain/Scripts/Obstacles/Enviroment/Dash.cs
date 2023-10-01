@@ -8,6 +8,8 @@ public class Dash : MonoBehaviour
     [SerializeField]
     float dashPower = default;
     [SerializeField]
+    bool useContinue = false;
+    [SerializeField]
     bool useParent = false;
     [SerializeField]
     Vector3 forward = default;
@@ -38,6 +40,28 @@ public class Dash : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Rock"))
+        {
+            Rigidbody rigidbody = other.GetComponent<Rigidbody>();
+            if (beforeVelocityZero)
+            {
+                rigidbody.velocity = Vector3.zero;
+            }
+            if (pushShaking)
+            {
+                RockBase rockOrigin = other.GetComponentInParent<RockBase>();
+                StartCoroutine(rockOrigin.CameraShakeRoutine(SHAKE_TIME, shakePower, 3));
+            }
+            rigidbody.AddForce(transform.forward * dashPower, forceMode);
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (!useContinue)
+        {
+            return;
+        }
+
         if (other.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
             Rigidbody rigidbody = other.GetComponent<Rigidbody>();

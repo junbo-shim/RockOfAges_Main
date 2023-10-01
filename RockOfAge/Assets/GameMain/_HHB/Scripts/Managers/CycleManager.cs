@@ -1,5 +1,6 @@
 using Cinemachine;
 using Photon.Pun;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -35,8 +36,8 @@ public class CycleManager : MonoBehaviour
     public float team2Hp = 600f;
     ////! 서버 player gold
     //public int gold = 1000;
-    // enter check bool 나중에 좋은 방법으로 바꾸기
     private bool _isEntered = false;
+    public bool _isESCed = default;
 
 
     // ! Photon
@@ -57,6 +58,7 @@ public class CycleManager : MonoBehaviour
         userState = (int)UserState.UNITSELECT;
         rockState = (int)RockState.ROCKSELECT;
         resultState = (int)Result.NOTDEFINED;
+        _isESCed = false;
 
         // ! Photon
         dataContainer = NetworkManager.Instance.myDataContainer;
@@ -101,12 +103,29 @@ public class CycleManager : MonoBehaviour
     {
         // 업데이트
         UpdateSelectionCycle(); // 유닛 선택창
-        // start 구독 이벤트에서 
-        UpdateCommonUICycle(); // m 눌렀을 때 효과 
-        UpdateDefenceCycle();// c 눌렀을 때 효과
+        if (!_isESCed)
+        { 
+            UpdateCommonUICycle(); // m 눌렀을 때 효과 
+            UpdateDefenceCycle();// c 눌렀을 때 효과        
+        }
+        if (userState != (int)UserState.ENDING && userState != (int)UserState.UNITSELECT && Input.GetKeyDown(KeyCode.Escape))
+        {
+            UpdateESCCycle(); //esc 눌렀을 때 효과
+        }
     }
     //} GameCycle()
     #endregion
+
+    public void UpdateESCCycle()
+    {
+        _isESCed = !_isESCed;
+        CameraManager.isControlled = !CameraManager.isControlled;
+        UIManager.uiManager.SwitchUIForESCUI();
+        UIManager.uiManager.SwitchUIManager("escUI");
+        CameraManager.Instance.SetCameraBlurEffect();
+    }
+
+
 
 
     #region SelectCycle
@@ -183,6 +202,8 @@ public class CycleManager : MonoBehaviour
             rockState = (int)RockState.ROCKSELECT;
             UIManager.uiManager.ChangeAttackToSelect();
             CameraManager.Instance.TurnOnTopViewCamera();
+            CameraManager.Instance.OffCameraMotionBlur();
+
         }
         else { Debug.Log("GAME LOGIC ERROR"); }
     }

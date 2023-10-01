@@ -596,7 +596,6 @@ MonoBehaviour:
   - {fileID: 5034156383509657509, guid: cceeee2b612816b42b2eafd334d6cf08, type: 3}
   - {fileID: 8960423920533652962, guid: 002c2ed74672f3d4481ef3fa0ae3e719, type: 3}
   - {fileID: 3252987489987925297, guid: 8de01bb5614727741a607d0205964e03, type: 3}
-  photonView: {fileID: 0}
   isGround: 0
   isDestroy: 0
   isDebuffed: 0

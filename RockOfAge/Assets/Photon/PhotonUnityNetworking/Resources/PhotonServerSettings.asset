@@ -64,6 +64,10 @@ MonoBehaviour:
   - UpdateGateHP
   - RPCHit
   - HitReaction
+  - CheckRockTeam
+  - RPCTest
+  - Check
+  - CheckTeamAndDequeue
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

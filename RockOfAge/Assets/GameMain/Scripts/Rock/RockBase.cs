@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class RockBase : MonoBehaviour, IHitObjectHandler
+public class RockBase : MonoBehaviourPun, IHitObjectHandler
 {
     //돌 하위 오브젝트들
     [SerializeField]
@@ -33,7 +33,6 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected MeshRenderer rockRenderer;
     protected MeshFilter rockMesh;
     protected MeshCollider rockCollider;
-    public PhotonView photonView;
     //public PhotonView PhotonView { get; private set; }
     
     protected float currHp;
@@ -83,8 +82,22 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             Gizmos.DrawSphere(rockObject.position - Vector3.up * rockObject.gameObject.GetHeight(.05f), .05f);
         }
     } //사랑해요 성철이형 -재현-
-    //GOOD
+      //GOOD
 
+    #region if thing goes wrong unlock this
+    // ! Photon
+    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) 
+    //{
+    //    if (stream.IsWriting)
+    //    {
+    //        stream.SendNext(currHp);
+    //    }
+    //    else
+    //    {
+    //        currHp = (float)stream.ReceiveNext();
+    //    }
+    //}
+    #endregion
 
     //{ 0920 홍한범
     // 속도에 대한 저항값, 질량에 대한 저항값을 적용할 수 있음
@@ -116,9 +129,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     public virtual void Init()
     {
         // ! PSC Editted
-        photonView = GetComponent<PhotonView>();
         dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
-
 
         if (photonView.IsMine)
         {
@@ -176,6 +187,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         if (photonView.IsMine == false)
         {
             CycleManager.cycleManager.CheckTeamAndSaveQueue(dataContainerView.ViewID.ToString(), gameObject);
+            //UIManager.uiManager.RotateMirror();
         }
     }
 
@@ -459,7 +471,6 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             }
         }
 
-        Debug.Log(hitObject);
         foreach (ContactPoint contact in collision.contacts)
         {
             //Debug.Log(contact.thisCollider.transform.parent.gameObject + "/"+ gameObject);
@@ -494,6 +505,15 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         }
         if (collision.gameObject.layer == LayerMask.NameToLayer("Castle"))
         {
+            // ! Photon
+            // 안전장치 if 문
+            if (dataContainerView.IsMine == true)
+            {
+                // enemyCameraQueue 를 확인하고 Dequeue 하는 메서드를 다른 ViewID 에게 발사
+                photonView.RPC("CheckTeamAndDequeue", RpcTarget.Others, 
+                    dataContainerView.ViewID.ToString(), photonView.ViewID.ToString());
+            }
+
             StartCoroutine(EndAttackRoutine());    
         }
     }
@@ -617,6 +637,15 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     protected virtual void Die()
     {
+        // ! Photon
+        // 안전장치 if 문
+        if (dataContainerView.IsMine == true)
+        {
+            // enemyCameraQueue 를 확인하고 Dequeue 하는 메서드를 다른 ViewID 에게 발사
+            photonView.RPC("CheckTeamAndDequeue", RpcTarget.Others, 
+                dataContainerView.ViewID.ToString(), photonView.ViewID.ToString());
+        }
+
         rayfireRigid.Demolish();
         //rayfireRigid.Activate();
         StartCoroutine(EndAttackRoutine());
@@ -627,27 +656,56 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     {
         isDestroy = true;
         yield return new WaitForSeconds(2f);
-
-        // ! Photon
-        if (photonView.IsMine == false)
-        {
-            GameObject restRock = CameraManager.Instance.enemyCameraQueue.Peek();
-            if (restRock == null) 
-            {
-                CycleManager.cycleManager.CheckTeamAndDequeue(photonView.ViewID.ToString(), restRock);
-            }
-
-            if (CameraManager.Instance.enemyCameraQueue.Count != 0) 
-            {
-                CameraManager.Instance.SetEnemyCamera(restRock);
-            }
-        }
-
         CycleManager.cycleManager.ChangeCycleAttackToSelect();
         yield return new WaitForSeconds(1f);
         PhotonNetwork.Destroy(gameObject);
     }
 
+    // ! Photon
+    // CycleManager 의 CheckTeamAndSaveQueue 메서드와 세트 (매개변수로 송신자 ViewID 와 송신자의 돌 ViewID 를 전달)
+    [PunRPC]
+    public void CheckTeamAndDequeue(string senderViewID, string senderRockViewID) 
+    {
+        // RPC 를 보낸 View ID 에서 Team 번호만 추출한다.
+        string senderTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[senderViewID].ToString().Split('_')[1];
+        // RPC 를 수신한 View ID 에서 Team 번호만 추출한다.
+        string myTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[dataContainerView.ViewID.ToString()].ToString().Split('_')[1];
+
+        // 만약 송신자와 수신자가 같은 Team 이라면 아무것도 하지 않는다.
+        if (senderTeamNumber == myTeamNumber) 
+        {
+            /*Do Nothing*/
+        }
+        // 만약 송신자와 수신자가 다른 Team 이라면
+        else if (senderTeamNumber != myTeamNumber) 
+        {
+            // Dequeue 는 Queue 의 크기가 0 이 아닐 때만 작동하게 한다
+            if (CameraManager.Instance.enemyCameraQueue.Count != 0) 
+            {
+                // Queue 에 접근하여 첫번째 돌을 지역변수에 저장한다
+                GameObject firstRockInQueue = CameraManager.Instance.enemyCameraQueue.Peek();
+
+                // Queue 의 첫번째 돌의 View ID 와 RPC 를 보낸 돌의 View ID 를 비교한다
+                // 만약 지금 죽은 돌이 Queue 에서 첫번째가 아니라면 
+                if (firstRockInQueue.GetComponent<PhotonView>().ViewID.ToString() 
+                    != senderRockViewID) 
+                {
+                    // Dequeue 만 한다
+                    CameraManager.Instance.enemyCameraQueue.Dequeue();
+                }
+                // 만약 지금 죽은 돌이 Queue 에서 첫번째라면
+                else if (firstRockInQueue.GetComponent<PhotonView>().ViewID.ToString()
+                    == senderRockViewID)
+                {
+                    // Dequeue 하고 그 다음 돌에 카메라를 놓는다
+                    CameraManager.Instance.enemyCameraQueue.Dequeue();
+                    CameraManager.Instance.SetEnemyCamera(CameraManager.Instance.enemyCameraQueue.Peek());
+                }
+                //Debug.Log(CameraManager.Instance.enemyCameraQueue.Count);
+                //Debug.Log(CameraManager.Instance.enemyCameraQueue.Peek().GetComponent<PhotonView>().ViewID.ToString());            
+            }
+        }
+    }
 
     protected Vector2 GetInput()
     {

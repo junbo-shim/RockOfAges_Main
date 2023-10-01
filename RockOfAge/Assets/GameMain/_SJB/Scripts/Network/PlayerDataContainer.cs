@@ -284,6 +284,7 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     {   
         // 로드할 씬의 이름 작성
         PhotonNetwork.LoadLevel("0921");
+        PhotonNetwork.CurrentRoom.IsOpen = false;
     }
     #endregion
 

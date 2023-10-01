@@ -5,7 +5,6 @@ using UnityEngine;
 public class KJHHeavenBull : MonoBehaviour
 {
     /* 천국의 황소
-    감지범위설정
     감지범위에 들어오면 돌을 바라본다
     돌을 공격*/
 
@@ -27,6 +26,11 @@ public class KJHHeavenBull : MonoBehaviour
 
             }
         }
+    }
+
+    public void LookAt()
+    {
+
     }
 
     private void OnDrawGizmos()

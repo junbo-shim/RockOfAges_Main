@@ -39,7 +39,10 @@ public class WOPObstacle : HoldObstacleBase
             }
             renderer.materials = subMaterial;
 
-            if (obstacleCollider != null)
+           
+
+        }
+         if (obstacleCollider != null)
             {
                 if (obstacleCollider is MeshCollider)
                 {
@@ -47,9 +50,6 @@ public class WOPObstacle : HoldObstacleBase
                 }
                 obstacleCollider.isTrigger = true;
             }
-
-        }
-        
 
         StartCoroutine(BuildRoutine(time));
     }

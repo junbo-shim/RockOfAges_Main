@@ -755,7 +755,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
     protected virtual void PlayMoveSound()
     {
         float magnitude = new Vector3(rockRigidbody.velocity.x, 0, rockRigidbody.velocity.z).magnitude;
-        Debug.Log(magnitude);
+
         if (isGround && magnitude > 0.1f)
         {
             if (!rockAudio.isPlaying)

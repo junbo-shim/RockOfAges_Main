@@ -138,7 +138,7 @@ public class BuildManager : MonoBehaviour
                         //빌드 시작
                         Vector3 position;
                         Quaternion rotation;
-                        GetViewerPosition(dragBuildPosition[i], Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0), out position, out rotation);
+                        GetViewerPosition(dragBuildPosition[i], Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE-90, 0), out position, out rotation);
 
                         if (buildTarget.dragObstacle && i!=0 && i!= dragBuildPosition.Count-1)
                         {

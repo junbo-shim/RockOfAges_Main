@@ -38,22 +38,27 @@ public class CowSingleObstacle : MoveObstacleBase
         transform.parent = obstacleParent;
     }
 
+    [PunRPC]
+    public void SetActive()
+    {
+        isSticked = true;
+        delayBool = true;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        if (audioSource != null)
+        if (!isSticked && collision.gameObject.layer == LayerMask.NameToLayer("Rock") && collision.collider.name=="RockObject")
         {
-            audioSource.Play();
-        }
-
-        Transform rock = collision.transform;
-        if (!isSticked && collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
-        {
+            Transform rock = collision.transform;
+            if (audioSource != null)
+            {
+                audioSource.Play();
+            }
             Physics.IgnoreCollision(collision.collider, obstacleCollider);
             transform.localPosition -= (transform.position - rock.position) * .4f;
             cow.SetParent(rock);
             Destroy(obstacleRigidBody);
-            isSticked = true;
-            delayBool = true;
+            photonView.RPC("SetActive", RpcTarget.All);
         }
     }
 
@@ -78,6 +83,7 @@ public class CowSingleObstacle : MoveObstacleBase
     IEnumerator DestroyCow()
     {
         cow.parent = null;
+        gameObject.AddComponent<Rigidbody>();
         yield return new WaitForSeconds(1f);
         PhotonNetwork.Destroy(gameObject);
     }

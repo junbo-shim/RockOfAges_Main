@@ -54,7 +54,7 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
                 Vector3 directionToTarget = (targetPosition - catapultPosition).normalized;
                 Quaternion targetRotation = Quaternion.LookRotation(directionToTarget, Vector3.up);
 
-                animator.SetTrigger("Attack");
+                //animator.SetTrigger("Attack");
 
                 // 투석기의 초기 로테이션을 기준으로 회전
                 targetRotation *= initialRotation;

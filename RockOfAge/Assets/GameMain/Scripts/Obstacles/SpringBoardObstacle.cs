@@ -20,7 +20,7 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
     protected override void Init()
     {
         base.Init();
-        colliderParts = transform.GetChild(0).GetChild(1).GetChild(1).gameObject;
+        colliderParts = transform.GetChild(1).GetChild(1).GetChild(1).gameObject;
         obstacleCollider = colliderParts.GetComponent<Collider>();
         obstacleCollider.isTrigger = true;
     }

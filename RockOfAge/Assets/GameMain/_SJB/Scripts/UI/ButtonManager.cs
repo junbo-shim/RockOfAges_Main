@@ -14,7 +14,6 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
 
     private Transform lobbyPanel;
     private Transform createRoomPopup;
-    private Transform joinLockedRoomPopup;
     private Transform waitPopup;
 
     private Transform roomPanel;
@@ -40,9 +39,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     public GameObject roomPrefab;
     private Button createRoomButton;
     private Button JoinRandomButton;
-
     private Button createConfirmButton;
-    private Button commitPWButton;
     #endregion
 
     #region RoomPanel 버튼들
@@ -87,7 +84,6 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         signupPopup = NetworkManager.Instance.SignupPopup;
 
         createRoomPopup = NetworkManager.Instance.CreateRoomPopup;
-        joinLockedRoomPopup = NetworkManager.Instance.JoinLockedRoomPopup;
         waitPopup = NetworkManager.Instance.WaitPopup;
     }
     #endregion
@@ -118,7 +114,6 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         JoinRandomButton = lobbyPanel.Find("Panel_Room").Find("Button_JoinRandomRoom").GetComponent<Button>();
 
         createConfirmButton = createRoomPopup.Find("Button_Create").GetComponent<Button>();
-        commitPWButton = joinLockedRoomPopup.Find("Button_Join").GetComponent<Button>();
     }
     #endregion
 
@@ -203,7 +198,6 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         lobbyPanel.localScale = Vector3.zero;
 
         createRoomPopup.localScale = Vector3.zero;
-        joinLockedRoomPopup.localScale = Vector3.zero;
         waitPopup.localScale = Vector3.zero;
 
         roomPanel.localScale = Vector3.zero;
@@ -371,18 +365,13 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
             roomNameInput.text = default;
             roomPWInput.text = default;
         }
-        else if (joinLockedRoomPopup.localScale == Vector3.one) 
-        {
-            joinLockedRoomPopup.localScale = Vector3.zero;
-
-            TMP_InputField roomPWInput = createRoomPopup.Find("InputField_RoomPW").GetComponent<TMP_InputField>();
-            roomPWInput.text = default;
-        }
         else if (roomPanel.localScale == Vector3.one) 
         {
             roomPanel.localScale = Vector3.zero;
+            // 방을 나간다
             PhotonNetwork.LeaveRoom();
-            PhotonNetwork.JoinLobby();
+            // 로비에 다시 참여한다
+            //PhotonNetwork.JoinLobby();
         }
     }
     #endregion
@@ -403,11 +392,6 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         else if (createRoomPopup.localScale == Vector3.one) 
         {
             closeButton = createRoomPopup.Find("Button_Close").GetComponent<Button>();
-            closeButton.onClick.AddListener(PressClose);
-        }
-        else if (joinLockedRoomPopup.localScale == Vector3.one) 
-        {
-            closeButton = joinLockedRoomPopup.Find("Button_Close").GetComponent<Button>();
             closeButton.onClick.AddListener(PressClose);
         }
         else if (roomPanel.localScale == Vector3.one) 
@@ -432,26 +416,26 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     public void PressConfirmCreateButton() 
     {
         TMP_InputField roomNameInput = createRoomPopup.Find("InputField_RoomName").GetComponent<TMP_InputField>();
-        //TMP_InputField roomPWInput = createRoomPopup.Find("InputField_RoomPW").GetComponent<TMP_InputField>();
 
         // 포톤 내의 방 생성
         RoomOptions roomOptions = new RoomOptions { MaxPlayers = 4 };
         PhotonNetwork.CreateRoom(roomNameInput.text, roomOptions, null, null);
 
+
         PressClose();
         PauseLobbyButtons();
-        Invoke("ResetLobbyButtons", 3f);
-        Invoke("OpenRoomPanel", 3f);
+        Invoke("ResetLobbyButtons", 2f);
+        Invoke("OpenRoomPanel", 2f);
     }
     #endregion
 
     #region 랜덤 참여 버튼
     public void PressJoinRandomButton()
     {
-        PhotonNetwork.JoinRandomRoom();
+        PhotonNetwork.JoinRandomOrCreateRoom();
         PauseLobbyButtons();
-        Invoke("ResetLobbyButtons", 3f);
-        Invoke("OpenRoomPanel", 3f);
+        Invoke("ResetLobbyButtons", 2f);
+        Invoke("OpenRoomPanel", 2f);
     }
     #endregion
 

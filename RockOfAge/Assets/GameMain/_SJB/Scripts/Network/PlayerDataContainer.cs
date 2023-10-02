@@ -9,8 +9,6 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     //public string playerID;
     //public string playerName;
 
-    //public string roomName;
-
     public int otherPlayerReady;
     public string Player1Name;
     public string Player2Name;

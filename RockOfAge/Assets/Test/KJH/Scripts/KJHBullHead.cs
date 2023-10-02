@@ -117,6 +117,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
             // 돌진 애니메이션 종료
             animator.SetBool("isCharging", false);
 
+            
             Invoke("Wait", 1f);
         }
     }

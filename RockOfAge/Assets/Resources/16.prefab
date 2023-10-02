@@ -255,6 +255,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96bd39103db85564d89f7491876092a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  status: {fileID: 11400000, guid: 3f65b39b273daf140b074d722b15f76a, type: 2}
+  buildPositionY: 0
+  peopleObject: {fileID: 0}
+  peopleCount: 5
+  dragObstacle: 0
 --- !u!54 &1041423736046665580
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -481,6 +486,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96bd39103db85564d89f7491876092a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  status: {fileID: 11400000, guid: 3f65b39b273daf140b074d722b15f76a, type: 2}
+  buildPositionY: 0
+  peopleObject: {fileID: 0}
+  peopleCount: 5
+  dragObstacle: 0
 --- !u!54 &565610580465695812
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1111,6 +1121,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96bd39103db85564d89f7491876092a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  status: {fileID: 11400000, guid: 3f65b39b273daf140b074d722b15f76a, type: 2}
+  buildPositionY: 0
+  peopleObject: {fileID: 0}
+  peopleCount: 5
+  dragObstacle: 0
 --- !u!54 &2186608257169216341
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1310,6 +1325,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 980304681892520170}
+  - component: {fileID: 7064043885646993751}
   m_Layer: 8
   m_Name: WOP_top
   m_TagString: Untagged
@@ -1334,6 +1350,23 @@ Transform:
   - {fileID: 4643340734717433490}
   m_Father: {fileID: 5031571751096152781}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7064043885646993751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7042311140318299691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5205e562b5278d49a1341d47884aa71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  status: {fileID: 11400000, guid: e10bc0644a0e1714ba370800a4b66ac5, type: 2}
+  buildPositionY: 0
+  peopleObject: {fileID: 0}
+  peopleCount: 5
+  dragObstacle: 0
 --- !u!1 &7641028680810763372
 GameObject:
   m_ObjectHideFlags: 0
@@ -1652,6 +1685,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96bd39103db85564d89f7491876092a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  status: {fileID: 11400000, guid: 3f65b39b273daf140b074d722b15f76a, type: 2}
+  buildPositionY: 0
+  peopleObject: {fileID: 0}
+  peopleCount: 5
+  dragObstacle: 0
 --- !u!54 &5106911803546059311
 Rigidbody:
   m_ObjectHideFlags: 0

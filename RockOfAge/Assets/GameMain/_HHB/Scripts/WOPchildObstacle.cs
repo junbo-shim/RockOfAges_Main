@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WOPchildObstacle : MonoBehaviour, IHitObjectHandler
+public class WOPchildObstacle : HoldObstacleBase, IHitObjectHandler
 {
-    private Rigidbody target;
+   // private Rigidbody target;
     private Transform child;
     private float hp;
 
-    private void Awake()
+    protected override void Init()
     {
+        base.Init();
         hp = 50f;
         child = GetComponent<Transform>();
     }

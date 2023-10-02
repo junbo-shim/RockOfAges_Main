@@ -20,7 +20,7 @@ public class ObstacleBase : MonoBehaviour
     protected Animator obstacleAnimator;
     protected Renderer obstacleRenderer;
     protected Collider obstacleCollider;
-    protected Material originMaterial;
+    protected Material[] originMaterial;
     //타겟
     protected GameObject target;
 
@@ -80,8 +80,11 @@ public class ObstacleBase : MonoBehaviour
     protected void StartBuild(float time)
     {
         //마테리얼 교체
-        originMaterial = obstacleRenderer.material;
-        obstacleRenderer.material = BuildManager.instance.white;
+        originMaterial = obstacleRenderer.materials;
+        for(int i = 0; i < obstacleRenderer.materials.Length; i++)
+        {
+            obstacleRenderer.materials[i]= BuildManager.instance.white;
+        }
 
         if (obstacleCollider != null)
         {
@@ -109,7 +112,7 @@ public class ObstacleBase : MonoBehaviour
             yield break;
 
         isBuildComplete = true;
-        obstacleRenderer.material = originMaterial;
+        obstacleRenderer.materials = originMaterial;
 
         if (obstacleCollider != null)
         {
@@ -152,7 +155,7 @@ public class ObstacleBase : MonoBehaviour
     //초기화
     protected virtual void Init()
     {
-        status = new ObstacleStatus(status);// Instantiate(status);
+        status =  Instantiate(status, transform);
         obstacleMeshFilter = GetComponent<MeshFilter>();
         obstacleRigidBody = GetComponent<Rigidbody>();
         obstacleAnimator = GetComponent<Animator>();

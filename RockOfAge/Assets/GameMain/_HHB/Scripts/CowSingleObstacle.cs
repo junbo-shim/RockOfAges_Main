@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class CowObstacle : HoldObstacleBase
+public class CowSingleObstacle : HoldObstacleBase
 {
     [SerializeField]
-    private Collider _collider;
+    private Collider[] _colliders;
     private Transform cow;
     public bool isSticked;
     public int groundCount;
@@ -25,6 +25,18 @@ public class CowObstacle : HoldObstacleBase
         obstacleMeshFilter = GetComponent<MeshFilter>();
         obstacleRenderer = GetComponent<Renderer>();
         obstacleRigidBody = GetComponent<Rigidbody>();
+        _colliders = GetComponents<Collider>();
+        foreach(var collider in _colliders)
+        {
+            if (collider.isTrigger)
+            {
+
+            }
+            else
+            {
+                obstacleCollider = collider;
+            }
+        }
         currHealth = status.Health;
         isSticked = false;
         delayBool = false;
@@ -36,33 +48,40 @@ public class CowObstacle : HoldObstacleBase
         {
             audioSource.Play();
         }
+
         Transform rock = collision.transform;
         if (!isSticked && collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
-            Physics.IgnoreCollision(collision.collider, _collider);
+            Physics.IgnoreCollision(collision.collider, obstacleCollider);
             transform.localPosition -= (transform.position - rock.position) * .3f;
             cow.SetParent(rock);
-            isSticked = true;
             Destroy(obstacleRigidBody);
+            isSticked = true;
             delayBool = true;
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (delayBool && isSticked && other.gameObject.layer == LayerMask.NameToLayer("Terrains"))
+        if (isBuildComplete)
         {
-            StartCoroutine(DelayBool());
-            if (groundCount == 2)
+            if (delayBool && isSticked && other.gameObject.layer == LayerMask.NameToLayer("Terrains"))
             {
-                StartCoroutine(DestroyCow());
+                if (groundCount <= 1)
+                {
+                    StartCoroutine(DelayBool());
+                }
+                else
+                {
+                    StartCoroutine(DestroyCow());
+                }
             }
         }
     }
 
     IEnumerator DestroyCow()
     {
-        cow.SetParent(null);
+        cow.parent = null;
         yield return new WaitForSeconds(1f);
         PhotonNetwork.Destroy(gameObject);
     }

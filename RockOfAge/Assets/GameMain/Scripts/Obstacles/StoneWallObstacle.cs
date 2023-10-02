@@ -90,6 +90,14 @@ public class StoneWall : HoldObstacleBase, IHitObjectHandler
 
     protected override void Dead()
     {
-        Destroy(gameObject);
+        if (obstacleCollider != null)
+        {
+            if (obstacleCollider is MeshCollider)
+            {
+                (obstacleCollider as MeshCollider).convex = true;
+            }
+            obstacleCollider.isTrigger = true;
+        }
+        base.Dead();
     }
 }

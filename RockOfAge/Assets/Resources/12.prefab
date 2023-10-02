@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5760559205692546044}
   - component: {fileID: 7880164455000369814}
   - component: {fileID: 8373788161576977584}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: 12
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31,7 +31,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 613988120500460403}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -1.7376136, y: 1.67, z: 1.7633748}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
@@ -40,7 +40,7 @@ Transform:
   - {fileID: 9209255561949312245}
   - {fileID: 1103414610380350989}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!95 &3388118037994644279
 Animator:
   serializedVersion: 5
@@ -136,7 +136,6 @@ MonoBehaviour:
   throwPoint: {fileID: 1103414610380350989}
   rockPrefab: {fileID: 7788854359641586706, guid: eac375eb169135d4faff999d25faba4d, type: 3}
   animator: {fileID: 3388118037994644279}
-  audioSource: {fileID: 5760559205692546044}
   rotateSound: {fileID: 8300000, guid: 520882d63df6a5c479059ed7f5acd2a5, type: 3}
   throwingSound: {fileID: 8300000, guid: 4d7a40af6be9a2e4eaab20dc2429bc88, type: 3}
   relodingSound: {fileID: 8300000, guid: 8026f70d7bd14a94e9c833c9c5960940, type: 3}
@@ -285,7 +284,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 128572000656198184}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: wheel_bone_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -316,7 +315,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9209255561949312245}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ref
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -348,7 +347,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4073307575550405391}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: spoon_tip_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -379,7 +378,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8284462639138883963}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: wheel_bone_03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -410,7 +409,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 357620975002726685}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: wheel_bone_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -441,7 +440,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1103414610380350989}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -472,7 +471,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8497483276506543182}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: roller_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -503,7 +502,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6898809481811667914}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: rope_bone03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -534,7 +533,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1989020127896422206}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: spoon_main_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -568,7 +567,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5351570536738292910}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: wheel_bone_04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -599,7 +598,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8507887405334152951}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: rope_bone04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -631,7 +630,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3076356602130178646}
   - component: {fileID: 5204230200173873248}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: catapult
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -728,7 +727,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7495961233759379503}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: main_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -768,7 +767,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1131772741569944624}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: basket_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -799,7 +798,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6622029473480683342}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: rope_bone02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -830,7 +829,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8605516758786847652}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: rope_bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}

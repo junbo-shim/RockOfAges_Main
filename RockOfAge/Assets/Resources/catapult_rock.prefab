@@ -68,6 +68,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: catapult_rock
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0e264356649d1c04c9724ff939572e20, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -77,7 +81,7 @@ PrefabInstance:
       addedObject: {fileID: 5939893776860650342}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0e264356649d1c04c9724ff939572e20, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2554546076697793764}
+      addedObject: {fileID: 2355399456399010992}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0e264356649d1c04c9724ff939572e20, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6284699342900790943}
@@ -98,7 +102,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7788854359641586706}
   serializedVersion: 4
-  m_Mass: 5
+  m_Mass: 2
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -117,8 +121,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 32
   m_CollisionDetection: 0
---- !u!65 &2554546076697793764
-BoxCollider:
+--- !u!135 &2355399456399010992
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -136,8 +140,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2, y: 2, z: 2}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.8788868
+  m_Center: {x: -0.09035435, y: 0.023527741, z: 0.03021434}
 --- !u!114 &6284699342900790943
 MonoBehaviour:
   m_ObjectHideFlags: 0

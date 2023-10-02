@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CatObstacle : MoveObstacleBase, IHitObjectHandler
 {
-    public AudioSource audioSource;
     public AudioClip attackSound;
 
     private float attackRange = 8f;
@@ -24,7 +23,7 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
         cat = transform.GetChild(0);
         catMother = transform;
         status = new ObstacleStatus(status);
-        obstacleRigidBody = transform.GetChild(0).GetComponent<Rigidbody>();
+        //obstacleRigidBody = transform.GetChild(0).GetComponent<Rigidbody>();
         obstacleAnimator = transform.GetChild(0).GetComponent<Animator>();
         obstacleRenderer = transform.GetChild(0).GetComponentInChildren<SkinnedMeshRenderer>();
         currHealth = status.Health;

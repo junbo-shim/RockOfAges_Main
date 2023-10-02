@@ -11,8 +11,6 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
     [SerializeField]
     private bool isAttacked = false;
 
-    public AudioSource audioSource;
-
     //init
     private void Awake()
     {
@@ -22,7 +20,6 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
     protected override void Init()
     {
         base.Init();
-        audioSource = GetComponent<AudioSource>();
         colliderParts = transform.GetChild(0).GetChild(1).GetChild(1).gameObject;
         obstacleCollider = colliderParts.GetComponent<Collider>();
         obstacleCollider.isTrigger = true;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class CowSingleObstacle : HoldObstacleBase
+public class CowSingleObstacle : MoveObstacleBase
 {
     [SerializeField]
     private Collider[] _colliders;
@@ -12,11 +12,6 @@ public class CowSingleObstacle : HoldObstacleBase
     public int groundCount;
     private bool delayBool;
 
-    public AudioSource audioSource;
-    private void Start()
-    {
-        audioSource = GetComponent<AudioSource>();
-    }
     protected override void Init()
     {
         base.Init();
@@ -54,7 +49,7 @@ public class CowSingleObstacle : HoldObstacleBase
         if (!isSticked && collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
             Physics.IgnoreCollision(collision.collider, obstacleCollider);
-            transform.localPosition -= (transform.position - rock.position) * .3f;
+            transform.localPosition -= (transform.position - rock.position) * .4f;
             cow.SetParent(rock);
             Destroy(obstacleRigidBody);
             isSticked = true;
@@ -91,7 +86,7 @@ public class CowSingleObstacle : HoldObstacleBase
     {
         groundCount++;
         delayBool = false;
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
         delayBool = true;
     }
 }

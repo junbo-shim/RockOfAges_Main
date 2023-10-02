@@ -44,7 +44,7 @@ public class StickyCowObstacle : ObstacleBase
 
         foreach (var respownPosition in cowPosition)
         {
-            GameObject cow = PhotonNetwork.Instantiate(singleCow.name, obstacle.transform.position + respownPosition.position, respownPosition.rotation);
+            GameObject cow = PhotonNetwork.Instantiate(singleCow.name, obstacle.transform.position + respownPosition.position, rotate);
 
             cow.transform.localScale = singleCow.transform.localScale; 
             cowList.Add(cow);

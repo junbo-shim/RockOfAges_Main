@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
 
-public class ObstacleBase : MonoBehaviour
+public class ObstacleBase : MonoBehaviourPun
 {
     //obstacle의 베이스
 
@@ -22,6 +22,7 @@ public class ObstacleBase : MonoBehaviour
     protected Animator obstacleAnimator;
     protected Renderer obstacleRenderer;
     protected Collider obstacleCollider;
+    protected AudioSource audioSource;
     protected Material[] originMaterial;
     //타겟
     protected GameObject target;
@@ -95,6 +96,7 @@ public class ObstacleBase : MonoBehaviour
         }
         obstacleRenderer.materials = subMaterial;
 
+        obstacleRigidBody.useGravity = false;
         if (obstacleCollider != null)
         {
             if(obstacleCollider is MeshCollider)
@@ -131,6 +133,7 @@ public class ObstacleBase : MonoBehaviour
                 (obstacleCollider as MeshCollider).convex = false;
             }
         }
+        obstacleRigidBody.useGravity = true;
         MakePeople();
     }
 
@@ -170,6 +173,7 @@ public class ObstacleBase : MonoBehaviour
         obstacleAnimator = GetComponent<Animator>();
         obstacleRenderer = GetComponentInChildren<Renderer>();
         obstacleCollider = GetComponentInChildren<MeshCollider>();
+        audioSource = GetComponent<AudioSource>();
         currHealth = status.Health;
     }
     public virtual void Delete()

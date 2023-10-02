@@ -7,7 +7,6 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     public LayerMask rockLayer;           // 바위 레이어
     public float chargeSpeed = 5f;        // 돌진 속도
     public float returnSpeed = 3f;        // 원래 위치로 돌아가는 속도
-    public AudioSource audioSource;
     public AudioClip attackSound;
     public AudioClip idleSound;
     public AudioClip dieSound;
@@ -33,7 +32,6 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
 
         animator = GetComponent<Animator>(); // Animator 컴포넌트 가져오기
 
-        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()

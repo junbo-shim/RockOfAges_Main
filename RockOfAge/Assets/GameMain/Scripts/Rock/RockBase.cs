@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms;
+using UnityEngine.UIElements;
 
 public class RockBase : MonoBehaviourPun, IHitObjectHandler
 {
@@ -150,8 +151,6 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         }
 
         rockObject = transform.Find("RockObject");
-        checkPoint = transform.Find("CheckPoint");
-        checkPoint.position = rockObject.position;
 
         rockRigidbody = rockObject.GetComponent<Rigidbody>();
         rockMesh = rockObject.GetComponent<MeshFilter>();
@@ -193,6 +192,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
 
         transform.localScale = Vector3.one * 0.1f;
         gameObject.SetChildPosition(startPos, "RockObject");
+        SetCheckPoint(startPos);
 
         // ! Photon
         if (photonView.IsMine == false)
@@ -610,6 +610,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
 
     public void SetCheckPoint(Vector3 position)
     {
+        checkPoint = transform.Find("CheckPoint");
         checkPoint.position = position;
     }
 

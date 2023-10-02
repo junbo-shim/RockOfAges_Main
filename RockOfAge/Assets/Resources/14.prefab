@@ -189,6 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6047cd8f93e11e046a0b8674d535ff07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacleParent: {fileID: 0}
   status: {fileID: 11400000, guid: 128672e57ed55114fb2918a1530609d4, type: 2}
   buildPositionY: 0.01
   peopleObject: {fileID: 0}
@@ -196,7 +197,6 @@ MonoBehaviour:
   dragObstacle: 0
   colliderParts: {fileID: 0}
   isAttacked: 0
-  audioSource: {fileID: 6317443903538463280}
 --- !u!54 &585502071471851952
 Rigidbody:
   m_ObjectHideFlags: 0

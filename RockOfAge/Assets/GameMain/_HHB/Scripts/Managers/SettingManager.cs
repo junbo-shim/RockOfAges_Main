@@ -10,6 +10,11 @@ public enum UserScreen
     FULLSCREEN = 0, WINDOWMODE = 1/*, Screen16To10 = 2, Screen16To9 = 3*/
 }
 
+//public enum PlayTime
+//{
+//    BATTLEFIELD5 = 83, FIGHT2 = 43, FIGHT = 77, HAVOC = 107, STRATEGY6 = 89, VALIANT = 173, EPICBATTLE_DELITY = 117
+//}
+
 public class SettingManager : MonoBehaviour
 {
     public static SettingManager settingManager;
@@ -29,6 +34,10 @@ public class SettingManager : MonoBehaviour
     // 해상도
     [Header("RESOLUTION")]
     public TMP_Dropdown dropDown;
+    private int setWidth;
+    private int setHeight;
+    private int userResoultionValue;
+    private bool isWindowed;
     #endregion
 
     #region SOUND
@@ -63,18 +72,18 @@ public class SettingManager : MonoBehaviour
     // 0번 마스터, 1번 bgm, 2번 vfx
     // 이전 사운드 볼륨 캐싱
     public float[] previewSoundFloat;
-    #endregion
+
+
     #endregion
 
     #region LEGACY
     //public List<GameObject> uis = new List<GameObject>();
     //public List<Transform> uiHolders = new List<Transform>();
+    #endregion 
+
     #endregion
 
-    private int setWidth;
-    private int setHeight;
-    private int userResoultionValue;
-    private bool isWindowed;
+
 
     private void Awake()
     {
@@ -103,14 +112,10 @@ public class SettingManager : MonoBehaviour
 
         vfxSlider.onValueChanged.AddListener(delegate { VFXAudioSlider(); });
         vfxButton.onClick.AddListener(() => VFXAudioButton());
+
+        musicLeftButton.onClick.AddListener(()=>OnLeftMusicButton());
+        musicRightButton.onClick.AddListener(()=>OnRightMusicButton());
     }
-
-
-    private void Update()
-    {
-        SwitchFullAndWindowMode();
-    }
-
 
     #region RESOLUTION
     public void SwitchFullAndWindowMode()
@@ -283,6 +288,7 @@ public class SettingManager : MonoBehaviour
 
     #region SOUND
 
+    #region MASTER
     public void MasterAudioSlider()
     { 
         float sound = masterSlider.value;
@@ -309,6 +315,8 @@ public class SettingManager : MonoBehaviour
             masterMixer.SetFloat("Master", -80f);
             masterSlider.gameObject.SetActive(false);
             muteMasterSlider.SetActive(true);
+            VFXAudioButton();
+            BGMAudioButton();
         }
         else 
         {
@@ -317,10 +325,14 @@ public class SettingManager : MonoBehaviour
             masterButton.image.sprite = soundAbled;
             masterMixer.SetFloat("Master", Mathf.Log10(previewSoundFloat[0])*20);
             masterSlider.value = previewSoundFloat[0];
+            VFXAudioButton();
+            BGMAudioButton();
         }
         masterMuted = !masterMuted;
     }
+    #endregion
 
+    #region VFX
     public void VFXAudioSlider()
     {
         float sound = vfxSlider.value;
@@ -357,7 +369,9 @@ public class SettingManager : MonoBehaviour
         }
         vfxMuted = !vfxMuted;
     }
+    #endregion
 
+    #region BGM
     public void BGMAudioSlider()
     {
         float sound = bgmSlider.value;
@@ -394,6 +408,37 @@ public class SettingManager : MonoBehaviour
         }
         bgmMuted = !bgmMuted;
     }
+    #endregion
+
+    #region CUSTOM
+
+
+    public void OnRightMusicButton()
+    {
+        int index = SoundManager.soundManager.currentBGMIndex;
+        SoundManager.soundManager.StopMusic();
+        if (index < (int)BGMSound.LENGHT)
+        {
+            SoundManager.soundManager.currentBGMIndex++;
+        }
+        else { SoundManager.soundManager.currentBGMIndex = 0; }
+        SoundManager.soundManager.PlayBGMMusic((BGMSound)SoundManager.soundManager.currentBGMIndex);
+    }
+
+    public void OnLeftMusicButton()
+    {
+        int index = SoundManager.soundManager.currentBGMIndex;
+        if (index-- == -1)
+        {
+            SoundManager.soundManager.currentBGMIndex = (int)BGMSound.EPICBATTLE;
+        }
+        SoundManager.soundManager.StopMusic();
+        SoundManager.soundManager.currentBGMIndex--;
+        SoundManager.soundManager.PlayBGMMusic((BGMSound)SoundManager.soundManager.currentBGMIndex);
+    }
+
+
+    #endregion
 
     #endregion
 

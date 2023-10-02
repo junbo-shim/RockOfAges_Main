@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -360,8 +360,18 @@ namespace RayFire
             {
                 Vector3 baseVelocity = scr.physics.velocity * scr.physics.dm;
                 for (int i = 0; i < scr.fragments.Count; i++)
+                {
                     if (IsNull(scr.fragments[i].physics.rigidBody) == false)
+                    {
                         scr.fragments[i].physics.rigidBody.velocity = baseVelocity;
+
+                        //전용 스크립트 달아줘서(addcomponent) bool, layer함수, oncollision
+                        //부딫치면 bool변경후 layer변경
+                        // gameObject가 rock이랑 부딪히면 layer environment로 바꾸기
+                        // 예외 사항(environment말고 모든 물체가 예외사항)
+                        EnvironmentEvent envir = scr.fragments[i].gameObject.AddComponent<EnvironmentEvent>();
+                    }
+                }
             }
         }
         

@@ -18,7 +18,10 @@ public class CameraManager : GlobalSingleton<CameraManager>
     protected override void Awake()
     {
         GameObject postProcessObj = Global_PSC.FindTopLevelGameObject("Post-process Volume");
-        postProcessVolume = postProcessObj.GetComponent<PostProcessVolume>();
+        if (postProcessObj != null)
+        {
+            postProcessVolume = postProcessObj.GetComponent<PostProcessVolume>();
+        }
     }
 
     public void SetCameraMotionBlur(GameObject rock)

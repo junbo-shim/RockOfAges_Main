@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
-public class KJHHeavenBull : MonoBehaviour
+public class KJHHeavenBull : MoveObstacleBase, IHitObjectHandler
 {
     /*감지범위내에 있는지 확인
      감지범위 안에 있다면 3초후 공격
@@ -19,20 +20,30 @@ public class KJHHeavenBull : MonoBehaviour
     public GameObject mudPrefab;
 
     public float mudDuration = 1f;
+    public AudioSource audioSource;
+    public AudioClip attackSound;
+    public AudioClip attackCharge;
+    public AudioClip idleSound;
+    public AudioClip idleSound2;
+
     // 가장 가까운 돌의 위치
     private Transform nearRock;
     // 공격 목표물 위치
     private Vector3 targetPosition;
     // 공격 여부 확인
-    private bool isAttack = false;
     private bool isAttacking = false;
+    private bool isInsideRange = false;
     private GameObject mudObject;
     private Animator animator;
 
 
     private void Start()
     {
+        Init();
+
         animator = GetComponent<Animator>();
+
+        audioSource = GetComponent<AudioSource>();
     }
     private void FixedUpdate()
     {
@@ -41,21 +52,42 @@ public class KJHHeavenBull : MonoBehaviour
     private void Update()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, detectionRadius, Rock);
-        if (colliders.Length > 0)
+        bool detectedRock = colliders.Length > 0;
+
+        if (detectedRock && !isInsideRange && !isAttacking)
         {
+            // 범위 안에 들어왔을 때 소리 활성화
+            audioSource.enabled = true;
+            isInsideRange = true;
+
             // 감지 범위 내에 돌이 있을 때 애니메이션을 실행
             animator.SetTrigger("Attack");
+
+            StartCoroutine(WaitAni());
+        }
+        else if (!detectedRock && isInsideRange)
+        {
+            // 범위를 벗어났을 때 소리 비활성화
+            audioSource.enabled = false;
+            isInsideRange = false;
         }
 
-        // Attack 애니메이션이 재생 중일 때 공격 실행
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-        {
-            if (!isAttacking)
-            {
-                isAttacking = true;
-                StartCoroutine(AttackAfterAnimation());
-            }
-        }
+        //if (colliders.Length > 0 && !isAttacking)
+        //{
+        //    // 감지 범위 내에 돌이 있을 때 애니메이션을 실행
+        //    animator.SetTrigger("Attack");
+            
+        //    StartCoroutine(WaitAni());
+        //}
+    }
+
+    private IEnumerator WaitAni()
+    {
+        isAttacking = true;
+
+        yield return new WaitForSeconds(5f);
+
+        isAttacking = false;
     }
     public void DetectRock()
     {
@@ -82,10 +114,9 @@ public class KJHHeavenBull : MonoBehaviour
                 }
             }
         }
-
-        if (!isRockDetected)
+        if(!isRockDetected)
         {
-            isAttack = false;
+            isAttacking=false;
         }
     }
 
@@ -100,47 +131,48 @@ public class KJHHeavenBull : MonoBehaviour
             // 현재 객체를 계산된 방향으로 회전시킴
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             // 부드럽게 회전하기위해 보간 사용
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 0.7f);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime);
         }
     }
-    private IEnumerator AttackAfterAnimation()
-    {
-        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
 
-        // Attack 애니메이션이 끝나면 공격 실행
+    
+    public void AttackRocks()
+    {
+        audioSource.clip = attackSound;
+        audioSource.Play();
+
         Collider[] colliders = Physics.OverlapSphere(transform.position, detectionRadius, Rock);
-        if (colliders.Length > 0)
+        foreach (Collider collider in colliders)
         {
-            AttackRock();
-        }
+            if (collider.gameObject.layer == LayerMask.NameToLayer("Rock"))
+            {
+                RockBase rock = collider.GetComponentInParent<RockBase>();
 
-        // 공격이 끝났으므로 다음 애니메이션을 기다리기 위해 isAttacking을 false로 설정
-        isAttacking = false;
-    }
-    public void AttackRock()
-    {
-        Debug.Log("공격했나?");
-        // 머드가 똑바로 생성이 안되서 강제 회전
-        Vector3 mudDirection = new Vector3(0, 1f, 0);
-        // 땅에 붙이기위해 y값 수정
-        Vector3 mudPosition = new Vector3(targetPosition.x, targetPosition.y - 0.3f, targetPosition.z);
-        Quaternion mudRotation = Quaternion.LookRotation(mudDirection);
-        mudObject = Instantiate(mudPrefab, mudPosition, mudRotation);
+                if (rock != null && rock.isGround)
+                {
+                    Vector3 mudDirection = new Vector3(0, 1f, 0);
+                    Vector3 mudPosition = new Vector3(collider.transform.position.x, collider.transform.position.y - 0.3f, collider.transform.position.z);
+                    Quaternion mudRotation = Quaternion.LookRotation(mudDirection);
+                    GameObject mudObject = Instantiate(mudPrefab, mudPosition, mudRotation);
 
-        Rigidbody mudRb = mudObject.GetComponent<Rigidbody>();
-        if (mudRb != null)
-        {
-            mudRb.isKinematic = true;
-        }
-        // 1초 뒤에 머드 프리팹 삭제
-        StartCoroutine(DestroyMudObject(mudObject, mudDuration));
+                    Rigidbody mudRb = mudObject.GetComponent<Rigidbody>();
+                    if (mudRb != null)
+                    {
+                        mudRb.isKinematic = true;
+                    }
 
-        Rigidbody rockRb = nearRock.GetComponent<Rigidbody>();
-        if (rockRb != null)
-        {
-            rockRb.isKinematic = true;
+                    StartCoroutine(DestroyMudObject(mudObject, mudDuration));
+
+                    Rigidbody rockRb = collider.GetComponent<Rigidbody>();
+                    if (rockRb != null)
+                    {
+                        rockRb.isKinematic = true;
+                    }
+                }
+            }
         }
     }
+
     IEnumerator DestroyMudObject(GameObject mudObject, float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -154,11 +186,64 @@ public class KJHHeavenBull : MonoBehaviour
         }
     }
 
+    public void AttackChargeSound()
+    {
+        audioSource.clip = attackCharge;
+        audioSource.Play();
+    }
+    public void IdleOne()
+    {
+        if(!isAttacking)
+        {
+        audioSource.clip = idleSound;
+        audioSource.Play();
+
+        }
+    }
+    public void IdleTwo()
+    {
+        if (isAttacking)
+        {
+        audioSource.clip = idleSound2;
+        audioSource.Play(); 
+            
+        }
+    }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
 
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
+    }
+    protected override void Dead()
+    {
+        // Die 애니메이션 재생
+        animator.SetTrigger("Die");
+        GetComponent<Rigidbody>().isKinematic = true; // 물리 시뮬레이션 비활성화
+        GetComponent<Collider>().enabled = false; // 콜라이더 비활성화 (옵션)
+
+        // 1.0초 후에 사라지는 로직을 실행
+        Invoke("Disappear", 1.0f);
+    }
+    private void Disappear()
+    {
+        // 게임 오브젝트를 비활성화하거나 파괴
+        Destroy(gameObject);
+        // 또는 Destroy(gameObject);
+    }
+    public void Hit(int damage)
+    {
+        Debug.Log("맞았는가");
+        currHealth -= damage;
+        if (currHealth <= 0)
+        {
+            Dead();
+        }
+    }
+
+    public void HitReaction()
+    {
+        throw new System.NotImplementedException();
     }
 }

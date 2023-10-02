@@ -9,7 +9,6 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     public float returnSpeed = 3f;        // 원래 위치로 돌아가는 속도
     public AudioSource audioSource;
     public AudioClip attackSound;
-    public AudioClip idleSound;
     public AudioClip dieSound;
 
     private Vector3 originalPosition;      // 원래 위치
@@ -42,14 +41,6 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
 
         if (!isCharging && !isReturning && !isStaring)
         {
-            if (!audioSource.isPlaying && Time.time > idleSoundDelay)
-            {
-                audioSource.clip = idleSound;
-                audioSource.Play();
-
-                // 딜레이를 다시 설정하여 다음 재생을 예약
-                idleSoundDelay = Time.time + 2.0f; 
-            }
             // 감지 범위 내에서 바위 감지
             Collider[] detectedRocks = Physics.OverlapSphere(transform.position, detectionRadius, rockLayer);
 
@@ -61,7 +52,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
 
                 if (angle <= detectionAngle * 0.5f)
                 {
-                    Debug.Log("바위 감지: " + rock.name);
+                    //Debug.Log("바위 감지: " + rock.name);
                     lastDetectedRockPosition = rock.transform.position;
                     isStaring = true;
                     stareTimer = Time.time;
@@ -205,7 +196,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         currHealth -= damage;
         if (currHealth <= 0)
         {
-            //Dead();
+            Dead();
         }
     }
 

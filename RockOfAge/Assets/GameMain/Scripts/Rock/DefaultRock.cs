@@ -29,7 +29,7 @@ public class DefaultRock : RockBase
 
     private void Update()
     {
-        if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("PscTestScene"))
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("0921"))
         {
             CameraManager.Instance.SetCameraMotionBlur(gameObject);
         }

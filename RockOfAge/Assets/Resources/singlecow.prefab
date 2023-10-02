@@ -11,11 +11,13 @@ GameObject:
   - component: {fileID: 4039464181744709302}
   - component: {fileID: 6900187823784460572}
   - component: {fileID: 1734827562991812304}
-  - component: {fileID: 5909383540050795704}
   - component: {fileID: 4041632132478005934}
   - component: {fileID: 1273766622402886703}
+  - component: {fileID: -7413635465863791377}
   - component: {fileID: 77247411047518226}
   - component: {fileID: -6001499405872130134}
+  - component: {fileID: -1081478768129361914}
+  - component: {fileID: -3741274853190078238}
   m_Layer: 0
   m_Name: singlecow
   m_TagString: Untagged
@@ -32,8 +34,8 @@ Transform:
   m_GameObject: {fileID: 3513824136189895981}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 102.72, y: 30.844, z: 107.82}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -88,28 +90,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5909383540050795704
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3513824136189895981}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 773102409757858436, guid: 82d085b15f3b454419a3c6c4a885367a, type: 3}
 --- !u!114 &4041632132478005934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,11 +102,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cbff2e9707a74e4694ca7a99d32a0de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacleParent: {fileID: 0}
   status: {fileID: 11400000, guid: 6afaea86de5613f46861b75687e2c720, type: 2}
   buildPositionY: 0
-  kjhObjectPrefab: {fileID: 0}
+  peopleObject: {fileID: 0}
+  peopleCount: 5
   dragObstacle: 0
-  _collider: {fileID: 0}
+  _colliders: []
   isSticked: 0
   groundCount: 0
   audioSource: {fileID: 0}
@@ -157,6 +139,29 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!136 &-7413635465863791377
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3513824136189895981}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.91650945
+  m_Height: 3.1980438
+  m_Direction: 1
+  m_Center: {x: -0.0000001490116, y: -8.4703295e-22, z: -0.00000005960466}
 --- !u!136 &77247411047518226
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -276,3 +281,42 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-1081478768129361914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3513824136189895981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: -3741274853190078238}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &-3741274853190078238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3513824136189895981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 1
+  m_UseLocal: 1

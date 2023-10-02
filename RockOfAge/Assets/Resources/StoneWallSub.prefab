@@ -155,9 +155,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93d8b264b4cb39c4487e4c03273d00f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  status: {fileID: 11400000, guid: 9bbe1ccc9a495ca41b8c956cb491ce54, type: 2}
+  status: {fileID: 11400000, guid: b5599870fdfd9a940963f3d9e3cd5353, type: 2}
   buildPositionY: 0
-  peopleObject: {fileID: 0}
+  peopleObject: {fileID: 2044133147384927099, guid: 8a36354b176d55b4c91e3978e6f53301, type: 3}
   peopleCount: 5
   dragObstacle: 0
   mainObject: {fileID: 0}
@@ -240,7 +240,6 @@ GameObject:
   - component: {fileID: 190176536620967769}
   - component: {fileID: 6706137483748425400}
   - component: {fileID: 6510495603907611580}
-  - component: {fileID: 7656172584128117512}
   m_Layer: 8
   m_Name: Towerbigwall_base
   m_TagString: Untagged
@@ -313,25 +312,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7656172584128117512
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5386128100050980872}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -2248369553078442847, guid: 401741a84ad13fd4da4554c88e481ea5, type: 3}

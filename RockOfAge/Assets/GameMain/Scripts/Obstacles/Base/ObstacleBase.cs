@@ -8,6 +8,8 @@ public class ObstacleBase : MonoBehaviour
 {
     //obstacle의 베이스
 
+    public Transform obstacleParent;
+
     //스테이터스
     public ObstacleStatus status;
 
@@ -20,7 +22,7 @@ public class ObstacleBase : MonoBehaviour
     protected Animator obstacleAnimator;
     protected Renderer obstacleRenderer;
     protected Collider obstacleCollider;
-    protected Material originMaterial;
+    protected Material[] originMaterial;
     //타겟
     protected GameObject target;
 
@@ -51,7 +53,7 @@ public class ObstacleBase : MonoBehaviour
         StartBuild(BUILD_TIME);
     }
 
-    void MakePeople()
+    protected void MakePeople()
     {
 
         if (peopleObject == null)
@@ -77,11 +79,21 @@ public class ObstacleBase : MonoBehaviour
     }
 
     //제일 하단 스크립트에서 해당 함수를 불러온다(ONENABLE)
-    protected void StartBuild(float time)
+    protected virtual void StartBuild(float time)
     {
+        if (obstacleRenderer == null)
+        {
+            return;
+        }
+
         //마테리얼 교체
-        originMaterial = obstacleRenderer.material;
-        obstacleRenderer.material = BuildManager.instance.white;
+        originMaterial = obstacleRenderer.materials;
+        Material[] subMaterial = new Material[originMaterial.Length];
+        for(int i = 0; i < subMaterial.Length; i++)
+        {
+            subMaterial[i]= BuildManager.instance.white;
+        }
+        obstacleRenderer.materials = subMaterial;
 
         if (obstacleCollider != null)
         {
@@ -96,7 +108,7 @@ public class ObstacleBase : MonoBehaviour
     }
 
     //일정 시간동안 대기하는 COROUTINE
-    protected IEnumerator BuildRoutine(float buildTime)
+    protected virtual IEnumerator BuildRoutine(float buildTime)
     {
         float currTime = 0;
         while (currTime < buildTime)
@@ -109,7 +121,7 @@ public class ObstacleBase : MonoBehaviour
             yield break;
 
         isBuildComplete = true;
-        obstacleRenderer.material = originMaterial;
+        obstacleRenderer.materials = originMaterial;
 
         if (obstacleCollider != null)
         {
@@ -152,7 +164,7 @@ public class ObstacleBase : MonoBehaviour
     //초기화
     protected virtual void Init()
     {
-        status = new ObstacleStatus(status);// Instantiate(status);
+        status =  Instantiate(status, transform);
         obstacleMeshFilter = GetComponent<MeshFilter>();
         obstacleRigidBody = GetComponent<Rigidbody>();
         obstacleAnimator = GetComponent<Animator>();

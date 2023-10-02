@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class WOPchildObstacle : MonoBehaviour, IHitObjectHandler
 {
-    private Rigidbody target;
+   // private Rigidbody target;
     private Transform child;
     private float hp;
 
-    private void Awake()
+    protected void Awake()
     {
         hp = 50f;
         child = GetComponent<Transform>();
+
     }
 
     private void OnCollisionEnter(Collision collision)

@@ -15,22 +15,23 @@ public class FragmentControl : MonoBehaviour
     int randomRoot;
     Vector2 startPosition;
     Vector2 targetPosition;
+    public float randomX;
+    public float randomY;
 
     public void PackFragmentMovement()
     {
         fragmentRect = GetComponent<RectTransform>();
-        float targetPositionX = UnityEngine.Random.Range(-574f, -432f);
-        float tartgetPositionY = -480f;
+        //float targetPositionX = UnityEngine.Random.Range(-574f, -432f);
+        
+        //targetPosition = new Vector2 (targetPositionX, tartgetPositionY);   
 
-        targetPosition = new Vector2 (targetPositionX, tartgetPositionY);   
-
-        float randomX = UnityEngine.Random.Range(-100f, 100f);
+        //float randomX = UnityEngine.Random.Range(-100f, 100f);
         startPosition = new Vector2(startX + randomX, startY);
         DefineTargetPosition();
     }
 
     private void DefineTargetPosition()
-    {    
+    {
         randomRoot = UnityEngine.Random.Range((int)Position.LEFT, (int)Position.LENGTH);
         switch (randomRoot) 
         {
@@ -48,24 +49,33 @@ public class FragmentControl : MonoBehaviour
 
     private void MoveLeft(RectTransform fragment)
     {
-        float randomX = UnityEngine.Random.Range(-220f, -200f);
-        float randomY = UnityEngine.Random.Range(-10f, 10f);
+        randomX = UnityEngine.Random.Range(-50f, 0f);
+        randomY = UnityEngine.Random.Range(-10f, 10f);
         Vector2 controlPoint = new Vector2(startPosition.x + randomX, startPosition.y + randomY);
 
+        float targetPositionX = UnityEngine.Random.Range(-570f, -500f);
+        float targetPositionY = -480f;
+        Vector2 targetPosition = new Vector2(targetPositionX, targetPositionY);
         StartCoroutine(MoveRectWithBezier(targetPosition, fragment, controlPoint));
     }
 
     private void MoveRight(RectTransform fragment) 
     {
-        float randomX = UnityEngine.Random.Range(200f, 220f);
-        float randomY = UnityEngine.Random.Range(-10f, 10f);
+        randomX = UnityEngine.Random.Range(0f, 50f);
+        randomY = UnityEngine.Random.Range(-10f, 10f);
         Vector2 controlPoint = new Vector2(startPosition.x + randomX, startPosition.y + randomY);
 
+        float targetPositionX = UnityEngine.Random.Range(-520f, -430f);
+        float targetPositionY = -480f;
+        Vector2 targetPosition = new Vector2(targetPositionX, targetPositionY);
         StartCoroutine(MoveRectWithBezier(targetPosition, fragment, controlPoint));
     }
 
     private void MoveMid(RectTransform fragment)
     {
+        float targetPositionX = UnityEngine.Random.Range(-480f, -520f);
+        float targetPositionY = -480f;
+        Vector2 targetPosition = new Vector2(targetPositionX, targetPositionY);
         Vector2 controlPoint = (startPosition + targetPosition) * 0.5f;
         StartCoroutine(MoveRectWithBezier(targetPosition, fragment, controlPoint));
     }

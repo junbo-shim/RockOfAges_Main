@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms;
 
 public class RockBase : MonoBehaviour, IHitObjectHandler
 {
@@ -33,7 +34,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected MeshRenderer rockRenderer;
     protected MeshFilter rockMesh;
     protected MeshCollider rockCollider;
-    
+
     protected float currHp;
     protected float rockHeightHalf;
     protected float obstacleMultiple = 1;
@@ -54,6 +55,14 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected Queue<RockTrail> trails;
 
     protected RayfireRigid rayfireRigid;
+
+    protected AudioSource rockAudio;
+
+    public AudioClip destroyAudio;
+    public AudioClip collisionAudio;
+    public AudioClip fallAudio;
+    public AudioClip jumpAudio;
+    public AudioClip rollAudio;
 
     protected int currLayer;
 
@@ -118,9 +127,10 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         rockMesh = rockObject.GetComponent<MeshFilter>();
         rockCollider = rockObject.GetComponent<MeshCollider>();
         rockRenderer = rockObject.GetComponent<MeshRenderer>();
+        rockAudio = rockObject.GetComponent<AudioSource>();
         fallText = GetComponentInChildren<FallText>();
 
-        rockStatus = new RockStatus(rockStatus);
+        rockStatus = Instantiate(rockStatus, rockObject);
 
         rockHeightHalf = rockObject.gameObject.GetHeight(.1f)*.5f;
         rockRigidbody.mass = rockStatus.Weight;
@@ -128,6 +138,8 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         //{ 0920 홍한범
         debuffJumpForce = 1f;
         //} 0920 홍한범
+
+
 
         rayfireRigid = rockObject.GetComponent<RayfireRigid>();
         trails = new Queue<RockTrail>();
@@ -204,6 +216,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     //점프
     protected virtual void Jump(float power)
     {
+        PlayJumpSound(true);
         rockRigidbody.velocity += Vector3.up * (power*debuffJumpForce);
         CreateTrail();
     }
@@ -250,7 +263,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         {
 
             StartCoroutine(CameraShakeRoutine(.1f, 3, 3));
-
+            PlayCollisionSound(true);
         }
         isGround = result;
 
@@ -416,6 +429,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         }
 
         Debug.Log(hitObject);
+        PlayCollisionSound(true);
         foreach (ContactPoint contact in collision.contacts)
         {
             //Debug.Log(contact.thisCollider.transform.parent.gameObject + "/"+ gameObject);
@@ -485,8 +499,9 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
     protected virtual void Fall()
     {
         if(CycleManager.cycleManager == null || CycleManager.cycleManager.userState == (int)UserState.ATTACK)
-        { 
+        {
             Hit(300);
+            PlayFallSound(true);
             CinemachineVirtualCameraBase camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCameraBase;
             camera.Follow = null;   
             fallText.StartFallText();     
@@ -553,6 +568,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
             return;
         }
 
+        PlayDestroySound(true);
         float changeRate = rockStatus.Health / forms.Count;
         int formIndex = (int)(currHp / changeRate);
         rockMesh.sharedMesh = forms[formIndex].mesh;
@@ -573,6 +589,7 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
 
     protected virtual void Die()
     {
+        PlayDestroySound(true);
         rayfireRigid.Demolish();
         //rayfireRigid.Activate();
         StartCoroutine(EndAttackRoutine());
@@ -594,6 +611,108 @@ public class RockBase : MonoBehaviour, IHitObjectHandler
         float verticalInput = Input.GetAxis("Vertical");
         playerInput = new Vector2(horizontalInput, verticalInput);
         return playerInput;
+    }
+
+
+    protected virtual void PlaySound(AudioClip clip)
+    {
+        if (!rockAudio.isPlaying)
+        {
+            rockAudio.clip = clip;
+            rockAudio.Play();
+        }
+
+    }
+    protected virtual void PlayForceSound(AudioClip clip)
+    {
+        rockAudio.Stop();
+        rockAudio.clip = clip;
+        rockAudio.Play();
+
+    }
+
+    protected virtual void PlayMoveSound()
+    {
+        float magnitude = new Vector3(rockRigidbody.velocity.x, 0, rockRigidbody.velocity.z).magnitude;
+        Debug.Log(magnitude);
+        if (isGround && magnitude > 0.1f)
+        {
+            if (!rockAudio.isPlaying)
+            {
+                rockAudio.clip = rollAudio;
+                rockAudio.Play();
+            }
+        }
+        else
+        {
+            if (rockAudio.clip == rollAudio)
+            {
+                rockAudio.Stop();
+            }
+        }
+    }
+    protected virtual void PlayJumpSound(bool isForce)
+    {
+        if (isFall)
+        {
+            return;
+        }
+
+        if (isForce)
+        {
+            PlayForceSound(jumpAudio);
+        }
+        else
+        {
+            PlaySound(jumpAudio);
+        }
+    }
+    protected virtual void PlayCollisionSound(bool isForce)
+    {
+        if (isFall)
+        {
+            return;
+        }
+
+        if (isForce)
+        {
+            PlayForceSound(collisionAudio);
+        }
+        else
+        {
+            PlaySound(collisionAudio);
+        }
+    }
+    protected virtual void PlayDestroySound(bool isForce)
+    {
+        if (isFall&&!isDestroy)
+        {
+            return;
+        }
+
+        if (isForce)
+        {
+            PlayForceSound(destroyAudio);
+        }
+        else
+        {
+            PlaySound(destroyAudio);
+        }
+    }
+    protected virtual void PlayFallSound(bool isForce)
+    {
+        if (isDestroy)
+        {
+            return;
+        }
+        if (isForce)
+        {
+            PlayForceSound(fallAudio);
+        }
+        else
+        {
+            PlaySound(fallAudio);
+        }
     }
 
     public float NowSpeed()

@@ -40,6 +40,7 @@ public class CowSingleObstacle : HoldObstacleBase
         currHealth = status.Health;
         isSticked = false;
         delayBool = false;
+        transform.parent = obstacleParent;
     }
 
     private void OnCollisionEnter(Collision collision)

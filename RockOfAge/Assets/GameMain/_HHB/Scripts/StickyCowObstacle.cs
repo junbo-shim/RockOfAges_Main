@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Unity.VisualScripting;
 
-public class StickyCowObstacle : HoldObstacleBase
+public class StickyCowObstacle : ObstacleBase
 {
     [SerializeField]
     Transform[] cowPosition;
@@ -13,7 +13,10 @@ public class StickyCowObstacle : HoldObstacleBase
     GameObject singleCow;
     List<GameObject> cowList;
 
-    public AudioSource audioSource;
+    private void Start()
+    {
+        transform.GetChild(0).localScale = Vector3.zero;
+    }
 
     protected override void Init()
     {
@@ -22,12 +25,11 @@ public class StickyCowObstacle : HoldObstacleBase
         obstacleMeshFilter = GetComponent<MeshFilter>();
         obstacleRenderer = GetComponent<Renderer>();
         obstacleRigidBody = GetComponent<Rigidbody>();
-        audioSource = GetComponent<AudioSource>();
-        cowList = new List<GameObject>();
     }
 
     public override ObstacleBase Build(Vector3 position, Quaternion rotate, int currIndex, int count)
     {
+        cowList = new List<GameObject>();
         ObstacleBase obstacle;
         obstacle = PhotonNetwork.Instantiate(gameObject.name, position, rotate).GetComponent<ObstacleBase>();
        
@@ -48,9 +50,11 @@ public class StickyCowObstacle : HoldObstacleBase
             cowList.Add(cow);
         }
 
-        foreach (var cow in cowList)
+        for(int i = 0; i < cowList.Count; i++)
         {
-            cow.transform.parent = transform;
+            cowList[i].GetComponent<CowSingleObstacle>().obstacleParent = obstacle.transform;
+            cowList[i].transform.parent = obstacle.transform;
+
         }
 
         return obstacle;

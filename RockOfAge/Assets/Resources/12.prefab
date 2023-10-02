@@ -122,6 +122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7252fd726c9afb84ca40513d4eeab90c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacleParent: {fileID: 0}
   status: {fileID: 11400000, guid: 60440b1ddc1a74445bcba5dc5884618d, type: 2}
   buildPositionY: 0
   peopleObject: {fileID: 2044133147384927099, guid: 8a36354b176d55b4c91e3978e6f53301, type: 3}

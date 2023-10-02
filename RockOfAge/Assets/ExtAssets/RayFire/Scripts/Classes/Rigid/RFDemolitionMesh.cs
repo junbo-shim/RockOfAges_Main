@@ -762,7 +762,7 @@ namespace RayFire
             // No children
             if (scr.transForm.childCount == 0)
                 return;
-            
+
             // Iterate children TODO precache in awake and use now. Set init type to by method at awake.
             Transform child;
             int childCount = scr.transForm.childCount;

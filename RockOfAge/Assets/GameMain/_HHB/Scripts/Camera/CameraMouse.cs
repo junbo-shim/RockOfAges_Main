@@ -27,7 +27,7 @@ public class CameraMouse : MonoBehaviour
     // ref velocity
     private Vector3 velocity = Vector3.zero;
     // 마우스 이동 엣지간격
-    private float edgeSize = 50f;
+    private float edgeSize = 10f;
 
 
 

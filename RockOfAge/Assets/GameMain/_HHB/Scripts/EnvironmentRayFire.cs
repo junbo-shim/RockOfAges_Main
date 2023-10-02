@@ -28,7 +28,7 @@ public class EnvironmentRayFire : MonoBehaviour
             // Physics/material/type
             // material의 속성에는 영향을 주지만, 시뮬레이션 자체에는 영향을 크게 주지않는듯함.
             // reference가 가지는 demolition 방식이 더 주요한 인자
-            meshGo.GetComponent<RayfireRigid>().physics.mt = MaterialType.Glass;
+            meshGo.GetComponent<RayfireRigid>().physics.mt = MaterialType.Brick;
 
             // DemolitionType/referenceDemolition
             meshGo.GetComponent<RayfireRigid>().demolitionType = DemolitionType.ReferenceDemolition;
@@ -49,6 +49,23 @@ public class EnvironmentRayFire : MonoBehaviour
             // fading/type
             meshGo.GetComponent<RayfireRigid>().fading.fadeType = FadeType.FallDown;
             meshGo.GetComponent<RayfireRigid>().fading.fadeTime = 1f;
+
+            // MeshDemolition/Properties/meshInput
+            meshGo.GetComponent<RayfireRigid>().meshDemolition.inp = RFDemolitionMesh.MeshInputType.AtInitialization;
+
+            // MeshDemolition/Advanced
+            // removeCollinear
+            //meshGo.GetComponent<RayfireRigid>().meshDemolition.prp.rem = true;
+            //// colliderType
+            //meshGo.GetComponent<RayfireRigid>().meshDemolition.prp.col = RFColliderType.Sphere;
+            //// sizeFilter
+            //meshGo.GetComponent<RayfireRigid>().meshDemolition.prp.szF = 7f;
+            // runtimeCaching
+            meshGo.GetComponent<RayfireRigid>().meshDemolition.ch.tp = CachingType.ByFragmentsPerFrame;
+            meshGo.GetComponent<RayfireRigid>().meshDemolition.ch.frm = 1;
+            meshGo.GetComponent<RayfireRigid>().meshDemolition.ch.frg = 3;
+
+
             // Main/Initialzation
             meshGo.GetComponent<RayfireRigid>().Initialize();
 
@@ -77,6 +94,7 @@ public class EnvironmentRayFire : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
+            this.gameObject.layer = LayerMask.NameToLayer("Environment");
             DemolishMeshRenderers();
         }
     }

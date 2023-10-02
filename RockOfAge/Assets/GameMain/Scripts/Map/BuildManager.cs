@@ -198,7 +198,8 @@ public class BuildManager : MonoBehaviour
     //terrain 비교시 tag로 team, 기본 건설 불가 타일등을 비교하는 부분 추가해야할거같음
     public void InitTerrainData()
     {
-        int checkLayer = Global_PSC.FindLayerToName("Terrains") + Global_PSC.FindLayerToName("Walls") + Global_PSC.FindLayerToName("Obstacles");
+        int checkLayer = Global_PSC.FindLayerToName("Terrains") + Global_PSC.FindLayerToName("Walls") 
+            + Global_PSC.FindLayerToName("Obstacles") + Global_PSC.FindLayerToName("Environment") + Global_PSC.FindLayerToName("ETC");
         //모든 좌표를 검사한다.
         buildState.SetAll(false);
         for (int z = -MAP_SIZE_Z / 2; z < MAP_SIZE_Z / 2; z++)
@@ -220,11 +221,25 @@ public class BuildManager : MonoBehaviour
                         continue;
                     }
 
+                    //건설 불가 타일 검사(파괴 후 환경)
+                    if (raycastHit.collider.gameObject.layer == LayerMask.NameToLayer("Environment"))
+                    {
+                        continue;
+                    }
+
+                    //건설 불가 타일 검사(파괴 전 환경)
+                    if (raycastHit.collider.gameObject.layer == LayerMask.NameToLayer("ETC"))
+                    {   
+                        continue;
+                    }
+
                     //건설 불가 타일 검사(특정 타일)
                     if (raycastHit.collider.CompareTag("Block"))
                     {
                         continue;
                     }
+
+
                     //건설 불가 타일 검사 통과시 
                     buildState.Set((z + MAP_SIZE_Z / 2) * MAP_SIZE_Z + (x + MAP_SIZE_X / 2), true);
 

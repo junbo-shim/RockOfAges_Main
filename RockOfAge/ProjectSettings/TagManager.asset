@@ -21,7 +21,7 @@ TagManager:
   - 
   - Water
   - UI
-  - Stones
+  - ETC
   - Terrains
   - Obstacles
   - Walls
@@ -32,7 +32,7 @@ TagManager:
   - Team2
   - CheckPoint
   - PostProcess
-  - 
+  - Environment
   - 
   - 
   - 

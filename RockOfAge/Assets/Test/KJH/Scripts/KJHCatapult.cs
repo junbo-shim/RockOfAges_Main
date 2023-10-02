@@ -138,7 +138,16 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
     {
         audioSource.clip = DeadSound;
         audioSource.Play();
+
+        // 1.0초 후에 사라지는 로직을 실행
+        Invoke("Disappear", 1.0f);
+    }
+    private void Disappear()
+    {
+        // 게임 오브젝트를 비활성화하거나 파괴
         Destroy(gameObject);
+
+        // 또는 Destroy(gameObject);
     }
 
     public void Hit(int damage)

@@ -68,9 +68,13 @@ public class ObstacleBase : MonoBehaviour
     //제일 하단 스크립트에서 해당 함수를 불러온다(ONENABLE)
     protected void StartBuild(float time)
     {
+        if (BuildManager.instance == null)
+        {
+            return;
+        }
         //마테리얼 교체
         originMaterial = obstacleRenderer.material;
-        obstacleRenderer.material = BuildManager.instance.white;
+        obstacleRenderer.material = BuildManager.instance.white;    
 
         if (obstacleCollider != null)
         {

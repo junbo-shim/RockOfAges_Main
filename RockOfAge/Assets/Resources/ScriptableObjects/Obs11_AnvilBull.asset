@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 11
   obstacleName: "\uBAA8\uB8E8 \uD669\uC18C"
   price: 200
-  health: 0
+  health: 100
   size: {x: 2, y: 2}
   buildLimit: 20
   tempString: "\uC801\uC758 \uBC14\uC704\uB97C \uAC15\uB825\uD55C \uB4E4\uC774\uBC1B\uAE30

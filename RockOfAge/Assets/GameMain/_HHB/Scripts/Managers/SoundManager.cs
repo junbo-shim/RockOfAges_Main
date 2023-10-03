@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -21,10 +22,14 @@ public class SoundManager : MonoBehaviour
     public int currentBGMIndex = 0;
     public TextMeshProUGUI musicName;
 
+    public Queue<GameObject> soundQueue = new Queue<GameObject>();
+    public GameObject soundBox;
+
     public void Awake()
     {
         audioSource = GetComponent<AudioSource>();  
         soundManager = this;
+        IniInitializeSoundManager();
     }
 
     public void Update()
@@ -36,6 +41,79 @@ public class SoundManager : MonoBehaviour
 
     }
 
+    #region SOUNDPOOLING
+    private void IniInitializeSoundManager()
+    { 
+        for (int i = 0; i < 20; i++)
+        {
+            soundQueue.Enqueue(CreatSoundPooling());
+        }
+    }
+
+    private GameObject CreatSoundPooling()
+    {
+        var soundObj = Instantiate(soundBox);
+        soundObj.name = "SoundBox";
+        SetInitTransform(soundObj);
+        soundObj.SetActive(false);
+        return soundObj;      
+    }
+
+    public void SetInitTransform(GameObject soundObj)
+    {
+        GameObject mother = Global_PSC.FindTopLevelGameObject("PoolingSoundObjectQueue");
+        soundObj.transform.SetParent(mother.transform);
+    }
+
+    private void SetObjectTransfrom(GameObject needSoundObj, GameObject soundBox)
+    {
+        //float scaleX = needSoundObj.transform.localScale.x;
+        //float scaleY = needSoundObj.transform.localScale.y;
+        //float scaleZ = needSoundObj.transform.localScale.z;
+
+        //soundBox.transform.localScale = new Vector3(scaleX, scaleY, scaleZ);
+
+        soundBox.transform.position = needSoundObj.transform.position;
+    }
+
+    // 사운드 매니저는 풀링만 해주고 audioClip을 가질 수 있는 껍데기를 만들고
+    // 새로운 스크립트를 만들어서 거기서 audioClip과 실행, 리턴을 만들고 (Prefab)
+    // 부서지는 게임오브젝트랑 별개로 놀아야함.
+    // awake에서 clip을 캐싱하고 자기 자신 init
+    // 사운드가 disable 상태
+    // onable로
+    // clip을 environment가 들고 있고
+
+
+    public void GetSoundPooling(GameObject needSoundObj, AudioClip audioClip)
+    {
+        if (soundQueue.Count > 0)
+        {
+            var soundBox = soundQueue.Dequeue();
+ 
+            SetObjectTransfrom(needSoundObj, soundBox);
+            AudioSource audioSource = soundBox.GetComponent<AudioSource>();
+            audioSource.clip = audioClip;
+            soundBox.gameObject.SetActive(true);
+
+        }
+        else 
+        { 
+            var newSoundBox = CreatSoundPooling();
+            SetObjectTransfrom(needSoundObj, newSoundBox);
+            AudioSource audioSource = newSoundBox.GetComponent<AudioSource>();
+            audioSource.clip = audioClip;
+            newSoundBox.gameObject.SetActive(true);
+        }
+    }
+
+
+
+
+    #endregion
+
+
+    #region BGM
     public void BGMCycle()
     {
         if (CycleManager.cycleManager.userState == (int)UserState.UNITSELECT)
@@ -116,6 +194,7 @@ public class SoundManager : MonoBehaviour
     {
         audioSource.Stop();
     }
+    #endregion 
 
     //public void PauseMusic()
     //{

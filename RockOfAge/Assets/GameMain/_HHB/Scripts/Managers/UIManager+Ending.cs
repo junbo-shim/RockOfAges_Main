@@ -46,9 +46,14 @@ public partial class UIManager : MonoBehaviour
     #endregion
 
     // 승자 - 왕관, 패자 - 체스
-    [Header("WIN,LOSE IMAGE")]
+    [Header("WIN, LOSE IMAGE")]
     public Image crownImg;
     public Image chessImg;
+
+    [Header("WIN, LOSE FLAG COLOR")]
+    public Material winGreen;
+    public Material loseRed;
+    public GameObject[] benchs;
 
 
     #endregion
@@ -169,6 +174,30 @@ public partial class UIManager : MonoBehaviour
         else if (result == lose)
         { 
             chessImg.transform.localScale = scale;
+        }
+    }
+
+    public void ChangeFlagMaterialColor()
+    {
+        int result = CycleManager.cycleManager.resultState;
+        int win = (int)Result.WIN;
+        int lose = (int)Result.LOSE;
+
+        if (result == win)
+        {
+            foreach (GameObject bench in benchs)
+            { 
+                MeshRenderer meshRenderer = bench.GetComponent<MeshRenderer>();
+                meshRenderer.materials[1] = winGreen;
+            }
+        }
+        else if (result == lose)
+        {
+            foreach (GameObject bench in benchs)
+            {
+                MeshRenderer meshRenderer = bench.GetComponent<MeshRenderer>();
+                meshRenderer.materials[1] = loseRed;
+            }
         }
     }
 

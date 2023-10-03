@@ -10,18 +10,18 @@ public class EndingSwitch : MonoBehaviourPun
         if (!isEnd && other.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
             int rockViewID = other.gameObject.GetComponentInParent<PhotonView>().ViewID;
-            string rockOwnerID = CycleManager.cycleManager.DropLastThreeChar(rockViewID.ToString());
-
+            string rockOwnerID = CycleManager.cycleManager.DropLastThreeChar(rockViewID.ToString()) + "001";
+            Debug.LogError(rockOwnerID);
             PlayerDataContainer rockOwnerContainer = 
                 NetworkManager.Instance.dataContainers.Find(x => x.PlayerViewID == rockOwnerID);
-
+            Debug.LogError(rockOwnerContainer);
             string winnerTeam = rockOwnerContainer.PlayerTeamNum.Split('_')[1];
 
             Debug.Log("들어감");
             Transform mother = transform.root;
             //if (mother.gameObject.name == winnerTeam)
             //{
-            rockOwnerContainer.GetComponent<PhotonView>().RPC("LoadEndUI", RpcTarget.All, winnerTeam);
+            photonView.RPC("LoadEndUI", RpcTarget.All, winnerTeam);
             //}
             //else
             //{
@@ -58,5 +58,6 @@ public class EndingSwitch : MonoBehaviourPun
             Debug.Log("Team2");
             CycleManager.cycleManager.DefineLoser();
         }
+        UIManager.uiManager.PrintVicOrLose(myTeam, winnerTeam);
     }
 }

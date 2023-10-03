@@ -152,8 +152,8 @@ Transform:
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8504184186024078599}
   - {fileID: 703412066069073195}
+  - {fileID: 8504184186024078599}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &7251473984675216191
@@ -189,14 +189,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6047cd8f93e11e046a0b8674d535ff07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacleParent: {fileID: 0}
   status: {fileID: 11400000, guid: 128672e57ed55114fb2918a1530609d4, type: 2}
   buildPositionY: 0.01
   peopleObject: {fileID: 0}
   peopleCount: 5
   dragObstacle: 0
-  colliderParts: {fileID: 0}
+  colliderParts: {fileID: 1437448489764677097}
   isAttacked: 0
-  audioSource: {fileID: 6317443903538463280}
 --- !u!54 &585502071471851952
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -385,7 +385,7 @@ Transform:
   m_GameObject: {fileID: 4796681211339706242}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -473,7 +473,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5048126974658205060}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.5, y: -0.5, z: -0.5, w: 0.5}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
   m_ConstrainProportionsScale: 0
@@ -481,7 +481,7 @@ Transform:
   - {fileID: 7239610572952622952}
   - {fileID: 9104021505543231591}
   m_Father: {fileID: 2346741134074868881}
-  m_LocalEulerAnglesHint: {x: -90, y: -90, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &8803609119234614509
 GameObject:
   m_ObjectHideFlags: 0

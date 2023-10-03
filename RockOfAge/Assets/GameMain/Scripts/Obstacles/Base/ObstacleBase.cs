@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
 
-public class ObstacleBase : MonoBehaviour
+public class ObstacleBase : MonoBehaviourPun
 {
     //obstacle의 베이스
 
@@ -22,6 +22,7 @@ public class ObstacleBase : MonoBehaviour
     protected Animator obstacleAnimator;
     protected Renderer obstacleRenderer;
     protected Collider obstacleCollider;
+    protected AudioSource audioSource;
     protected Material[] originMaterial;
     //타겟
     protected GameObject target;
@@ -41,6 +42,9 @@ public class ObstacleBase : MonoBehaviour
 
     public static readonly float BUILD_TIME = 5f;
 
+    private Material material = null;
+    private int _Width = 0;
+    private int _Cutoff = 0;
 
     private void Awake()
     {
@@ -94,7 +98,9 @@ public class ObstacleBase : MonoBehaviour
             subMaterial[i]= BuildManager.instance.white;
         }
         obstacleRenderer.materials = subMaterial;
+        material = obstacleRenderer.material;
 
+        obstacleRigidBody.useGravity = false;
         if (obstacleCollider != null)
         {
             if(obstacleCollider is MeshCollider)
@@ -102,6 +108,15 @@ public class ObstacleBase : MonoBehaviour
                 (obstacleCollider as MeshCollider).convex = true;
             }
             obstacleCollider.isTrigger = true;
+        }
+
+        _Width = Shader.PropertyToID("_Width");
+        _Cutoff = Shader.PropertyToID("_CutOff");
+
+        if (material != null)
+        {
+            material.SetFloat(_Cutoff, 0);
+            material.SetFloat(_Width, 0);
         }
 
         StartCoroutine(BuildRoutine(time));
@@ -115,8 +130,12 @@ public class ObstacleBase : MonoBehaviour
         {
             yield return Time.deltaTime;
             currTime += Time.deltaTime;
+            material.SetFloat(_Cutoff, currTime / buildTime * 0.5f);
+            material.SetFloat(_Width, currTime / buildTime * 0.5f);
         }
 
+        material.SetFloat(_Cutoff, 1);
+        material.SetFloat(_Width, 1);
         if (gameObject == null)
             yield break;
 
@@ -131,6 +150,7 @@ public class ObstacleBase : MonoBehaviour
                 (obstacleCollider as MeshCollider).convex = false;
             }
         }
+        obstacleRigidBody.useGravity = true;
         MakePeople();
     }
 
@@ -170,6 +190,7 @@ public class ObstacleBase : MonoBehaviour
         obstacleAnimator = GetComponent<Animator>();
         obstacleRenderer = GetComponentInChildren<Renderer>();
         obstacleCollider = GetComponentInChildren<MeshCollider>();
+        audioSource = GetComponent<AudioSource>();
         currHealth = status.Health;
     }
     public virtual void Delete()

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8113579290904348089}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: main
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6816045814944821539}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ref
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,14 +55,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2939745370257007453}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.5, y: -0.5, z: -0.5, w: 0.5}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8113579290904348089}
   m_Father: {fileID: 2912232346938726340}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &4087249474172341747
 GameObject:
   m_ObjectHideFlags: 0
@@ -78,7 +78,7 @@ GameObject:
   - component: {fileID: 4462787916715008349}
   - component: {fileID: 2071378962857913747}
   - component: {fileID: 6932959201451661619}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: 13
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114,6 +114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d54bcd09132ee24085f44a50537d945, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacleParent: {fileID: 0}
   status: {fileID: 11400000, guid: d97e9dcfd74472a40a25b21b33858e56, type: 2}
   buildPositionY: 0
   peopleObject: {fileID: 0}
@@ -319,7 +320,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9070548796141566010}
   - component: {fileID: 5148925730097785071}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: explosives
   m_TagString: Untagged
   m_Icon: {fileID: 0}

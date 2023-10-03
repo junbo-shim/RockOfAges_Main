@@ -5,9 +5,8 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     public float detectionRadius = 5f;     // 바위 감지 범위
     public float detectionAngle = 90f;     // 바위 감지 각도
     public LayerMask rockLayer;           // 바위 레이어
-    public float chargeSpeed = 5f;        // 돌진 속도
-    public float returnSpeed = 3f;        // 원래 위치로 돌아가는 속도
-    public AudioSource audioSource;
+    public float chargeSpeed = 3f;        // 돌진 속도
+    public float returnSpeed = 1f;        // 원래 위치로 돌아가는 속도
     public AudioClip attackSound;
     public AudioClip idleSound;
     public AudioClip dieSound;
@@ -33,7 +32,6 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
 
         animator = GetComponent<Animator>(); // Animator 컴포넌트 가져오기
 
-        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -107,9 +105,9 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         direction.y = 0; // Y 축 이동 금지
 
         // 돌진 중인 모루 황소를 이동 및 회전
-        transform.position += direction * chargeSpeed * Time.deltaTime;
+        obstacleRigidBody.velocity = direction * chargeSpeed;
         Quaternion targetRotation = Quaternion.LookRotation(direction);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * chargeSpeed);
+        //transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * chargeSpeed);
 
         // 도착 여부 확인
         if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(lastDetectedRockPosition.x, 0, lastDetectedRockPosition.z)) < 0.1f)
@@ -126,7 +124,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         direction.y = 0; // Y 축 이동 금지
 
         // 원래 위치로 복귀
-        transform.position += direction * returnSpeed * Time.deltaTime;
+        obstacleRigidBody.velocity = direction * returnSpeed;
         animator.SetBool("isReturning", true);
 
         // 복귀 완료 여부 확인
@@ -217,7 +215,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         currHealth -= damage;
         if (currHealth <= 0)
         {
-            //Dead();
+            Dead();
         }
     }
 

@@ -13,7 +13,6 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
     public Transform throwPoint; // 돌을 던질 위치
     public GameObject rockPrefab; // 던질 돌의 프리팹
     public Animator animator; // 애니메이터 컴포넌트에 대한 참조
-    public AudioSource audioSource;
     public AudioClip rotateSound;
     public AudioClip throwingSound;
     public AudioClip relodingSound;
@@ -30,8 +29,7 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
         base.Init();
         animator = GetComponent<Animator>();
         // 투석기의 초기 로테이션을 저장합니다.
-        initialRotation = transform.rotation;
-        audioSource = GetComponent<AudioSource>();
+        initialRotation = Quaternion.Euler(Vector3.zero);
     }
 
     void Update()
@@ -47,12 +45,16 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
             {
                 // 감지한 객체의 위치를 전역 변수로 변경
                 targetPosition = collider.transform.position;
+                if (collider.GetComponentInParent<RockBase>()==null)
+                {
+                    continue;
+                }
 
                 // 투석기를 감지한 객체(Rock)를 향하도록 회전시키기
                 Vector3 directionToTarget = (targetPosition - catapultPosition).normalized;
                 Quaternion targetRotation = Quaternion.LookRotation(directionToTarget, Vector3.up);
 
-                animator.SetTrigger("Attack");
+                //animator.SetTrigger("Attack");
 
                 // 투석기의 초기 로테이션을 기준으로 회전
                 targetRotation *= initialRotation;
@@ -73,7 +75,11 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
                 float angleThreshold = 10f; // 각도 임계값을 설정합니다. 필요한 경우 이 값을 조절할 수 있습니다.
                 if (angleToRock <= angleThreshold)
                 {
-                    animator.SetBool("Attack", true);
+                    if (collider.GetComponentInParent<RockBase>().photonView.IsMine)
+                    {
+                        photonView.RPC("PlayAttackAnimation", RpcTarget.All);
+                        break;
+                    }
                 }
                 else
                 {
@@ -103,6 +109,17 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
         // 원형 감지 범위를 그립니다.
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
+
+    [PunRPC]
+    public void PlayAttackAnimation()
+    {
+        if (!animator.GetBool("Attack"))
+        {
+            animator.SetBool("Attack", true);
+        }
+    }
+
+
     void ThrowRock()
     {
         if (rockPrefab != null && throwPoint != null && canThrowRock)
@@ -133,7 +150,7 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
     {
         yield return new WaitForSeconds(1f);
         // ! Photon
-        PhotonNetwork.Destroy(rock);
+        Destroy(rock);
     }
     protected override void Dead() 
     {

@@ -41,10 +41,16 @@ public class StickyCowObstacle : ObstacleBase
             UIManager.uiManager.RePrintUnitCount(status.Id);
         }
 
+        cowPosition = new Transform[obstacle.transform.childCount];
+        for(int i = 0; i < cowPosition.Length; i++)
+        {
+            cowPosition[i] = obstacle.transform.GetChild(i);
+        }
+
 
         foreach (var respownPosition in cowPosition)
         {
-            GameObject cow = PhotonNetwork.Instantiate(singleCow.name, obstacle.transform.position + respownPosition.position, respownPosition.rotation);
+            GameObject cow = PhotonNetwork.Instantiate(singleCow.name, respownPosition.position, respownPosition.rotation);
 
             cow.transform.localScale = singleCow.transform.localScale; 
             cowList.Add(cow);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class CowSingleObstacle : HoldObstacleBase
+public class CowSingleObstacle : MoveObstacleBase
 {
     [SerializeField]
     private Collider[] _colliders;
@@ -12,11 +12,6 @@ public class CowSingleObstacle : HoldObstacleBase
     public int groundCount;
     private bool delayBool;
 
-    public AudioSource audioSource;
-    private void Start()
-    {
-        audioSource = GetComponent<AudioSource>();
-    }
     protected override void Init()
     {
         base.Init();
@@ -43,22 +38,27 @@ public class CowSingleObstacle : HoldObstacleBase
         transform.parent = obstacleParent;
     }
 
+    [PunRPC]
+    public void SetActive()
+    {
+        isSticked = true;
+        delayBool = true;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        if (audioSource != null)
+        if (!isSticked && collision.gameObject.layer == LayerMask.NameToLayer("Rock") && collision.collider.name=="RockObject")
         {
-            audioSource.Play();
-        }
-
-        Transform rock = collision.transform;
-        if (!isSticked && collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
-        {
+            Transform rock = collision.transform;
+            if (audioSource != null)
+            {
+                audioSource.Play();
+            }
             Physics.IgnoreCollision(collision.collider, obstacleCollider);
-            transform.localPosition -= (transform.position - rock.position) * .3f;
+            transform.localPosition -= (transform.position - rock.position) * .4f;
             cow.SetParent(rock);
             Destroy(obstacleRigidBody);
-            isSticked = true;
-            delayBool = true;
+            photonView.RPC("SetActive", RpcTarget.All);
         }
     }
 
@@ -83,6 +83,7 @@ public class CowSingleObstacle : HoldObstacleBase
     IEnumerator DestroyCow()
     {
         cow.parent = null;
+        gameObject.AddComponent<Rigidbody>();
         yield return new WaitForSeconds(1f);
         PhotonNetwork.Destroy(gameObject);
     }
@@ -91,7 +92,7 @@ public class CowSingleObstacle : HoldObstacleBase
     {
         groundCount++;
         delayBool = false;
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
         delayBool = true;
     }
 }

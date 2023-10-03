@@ -132,7 +132,7 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     public void RestartGoldCoroutine() 
     {
         // 현재 골드가 1000f 에 도달하여 Coroutine 이 멈춘 경우
-        if (playerGold >= 1000f)
+        if (playerGold >= 1500f)
         {
             // 골드 획득 coroutine 재시작
             StartCoroutine("GetGold");
@@ -142,10 +142,13 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
 
     IEnumerator GetGold() 
     {
-        while (playerGold < 1000f) 
+        while (true) 
         {
             yield return goldAddTime;
-            playerGold += 10f;
+            if(playerGold < 1500f)
+            {
+                playerGold += 20f;
+            }
         }
     }
 

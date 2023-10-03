@@ -1,6 +1,8 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
+using UnityEngine.SceneManagement;
 
 // endingUI
 public partial class UIManager : MonoBehaviour
@@ -63,6 +65,10 @@ public partial class UIManager : MonoBehaviour
     private Transform resultHolder;
     private Transform resultImageHolder;
 
+    private Transform player1;
+    private Transform player2;
+    private Transform player3;
+    private Transform player4;
     #endregion
 
     #region Functions
@@ -73,6 +79,7 @@ public partial class UIManager : MonoBehaviour
         gameEndUI = GameObject.Find("GameEndUI").transform;
         buttonHolder = gameEndUI.Find("ButtonHolder");
         lobbyButton = buttonHolder.Find("LobbyButton").GetComponent<Button>();
+
         exitButton = buttonHolder.Find("ExitButton").GetComponent<Button>();
 
         resultHolder = gameEndUI.Find("ResultHolder");
@@ -104,7 +111,7 @@ public partial class UIManager : MonoBehaviour
     //{
     //    int playerNumber;
     //    ConvertStringToInt(player, out playerNumber);
-    //    switch (playerNumber) 
+    //    switch (playerNumber)
     //    {
     //        case 1:
     //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
@@ -232,8 +239,13 @@ public partial class UIManager : MonoBehaviour
     //----------------- 준보형 이거 형이 뜯어가세요
     // 버튼이니깐 OnClick으로 하시면 될 꺼 같습니다
     public void BackToLobby()
-    { 
-        // 로비로 돌아가는 기능
+    {
+        // 만약 잘 안먹히면 주석 풀고 사용
+        //PhotonNetwork.Disconnect();
+        SceneManager.LoadScene(NetworkManager.Instance.PhotonScene);
+        //PhotonNetwork.ConnectUsingSettings();
+        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.JoinLobby();
     }
 
     public void QutGame()

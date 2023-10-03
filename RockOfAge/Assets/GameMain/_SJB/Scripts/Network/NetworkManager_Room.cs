@@ -53,16 +53,7 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     // 방을 떠나면 호출되는 callback 메서드
     public override void OnLeftRoom()
     {
-        if (dataContainers.Count > 0) 
-        {
-            dataContainers.Clear();
-        }
 
-        // myDataContainer 오브젝트가 남아있다면 삭제한다
-        if (myDataContainer != null)
-        {
-            PhotonNetwork.Destroy(myDataContainer);
-        }
     }
 
 

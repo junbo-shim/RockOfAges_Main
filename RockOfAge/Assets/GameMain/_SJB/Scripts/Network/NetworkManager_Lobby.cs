@@ -55,6 +55,18 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
 
         // 플레이어의 이름 표시
         playerLobbyName.text = playerNickName;
+
+
+        if (dataContainers.Count > 0)
+        {
+            dataContainers.Clear();
+        }
+
+        // myDataContainer 오브젝트가 남아있다면 삭제한다
+        if (myDataContainer != null)
+        {
+            PhotonNetwork.Destroy(myDataContainer);
+        }
     }
 
 

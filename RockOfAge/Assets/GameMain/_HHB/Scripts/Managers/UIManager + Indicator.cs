@@ -78,7 +78,7 @@ public partial class UIManager : MonoBehaviour
 
             if (userTeam == "Team1")
             {
-                endPos = Global_PSC.ConvertVec3ToScreenVec2(ResourceManager.team1StartPos);
+                startPos = Global_PSC.ConvertVec3ToScreenVec2(ResourceManager.team1StartPos);
                 endPos = Global_PSC.ConvertVec3ToScreenVec2(ResourceManager.team1EndPos);
             }
 

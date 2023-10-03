@@ -1,7 +1,7 @@
 using Photon.Pun;
 using UnityEngine;
 
-public class EndingSwitch : MonoBehaviour
+public class EndingSwitch : MonoBehaviourPun
 {
     private bool isEnd = false;
 
@@ -9,7 +9,7 @@ public class EndingSwitch : MonoBehaviour
     {
         if (!isEnd && other.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
-            int rockViewID = other.gameObject.GetComponent<PhotonView>().ViewID;
+            int rockViewID = other.gameObject.GetComponentInParent<PhotonView>().ViewID;
             string rockOwnerID = CycleManager.cycleManager.DropLastThreeChar(rockViewID.ToString());
 
             PlayerDataContainer rockOwnerContainer = 
@@ -17,7 +17,7 @@ public class EndingSwitch : MonoBehaviour
 
             string winnerTeam = rockOwnerContainer.PlayerTeamNum.Split('_')[1];
 
-
+            Debug.Log("들어감");
             Transform mother = transform.root;
             //if (mother.gameObject.name == winnerTeam)
             //{
@@ -35,6 +35,28 @@ public class EndingSwitch : MonoBehaviour
             other.gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
             other.gameObject.transform.position = new Vector3(2111.84f, -9.45f, 75.42f);
             CameraManager.Instance.SetGameEndCamera(other.gameObject.transform);
+        }
+    }
+
+    [PunRPC]
+    public void LoadEndUI(string winnerTeam)
+    {
+        string myTeam =
+            NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerTeamNum.Split('_')[1];
+
+
+        Debug.Log("myTeam : " + myTeam);
+        Debug.Log("winnerTeam : "+winnerTeam);
+
+        if (myTeam == winnerTeam)
+        {
+            Debug.Log("Team1");
+            CycleManager.cycleManager.DefineWinner();
+        }
+        else
+        {
+            Debug.Log("Team2");
+            CycleManager.cycleManager.DefineLoser();
         }
     }
 }

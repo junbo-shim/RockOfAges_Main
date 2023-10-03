@@ -1,12 +1,14 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.Splines;
 
-public class BuildManager : MonoBehaviour
+public class BuildManager : MonoBehaviourPun/*, IPunObservable*/
 {
     public static BuildManager instance;
     public ObstacleBase buildTarget = null;
@@ -52,6 +54,23 @@ public class BuildManager : MonoBehaviour
 
     const int ONCE_ROTATE_EULER_ANGLE = 90;
     public static readonly Vector3Int OUT_VECTOR = new Vector3Int(-90000, 0, 0);
+
+
+/*
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+
+        if (stream.IsReading) 
+        {
+            stream.SendNext(buildState);
+        }
+        else  
+        {
+            buildState = (BitArray)stream.ReceiveNext();
+
+        }
+    }*/
+
 
 
     private void Awake()
@@ -253,7 +272,7 @@ public class BuildManager : MonoBehaviour
     }
 
     //size만큼의 건설 가능 데이터를 변경함
-    void SetBitArrays(Vector3 grid, Vector2Int buildSize)
+    public void SetBitArrays(Vector3 grid, Vector2Int buildSize)
     {
 
         //짝수 크기와 홀수 크기마다 맵핑되는 그리드 영역이 달라지기 때문에 적당한 계산 값을 도출해냈음
@@ -275,7 +294,7 @@ public class BuildManager : MonoBehaviour
                     return;
                 }
                 //건설 가능 데이터 변경
-                buildState.Set(size, false);
+                photonView.RPC("SetBitArrayInRpc", RpcTarget.All, size);
 
                 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Test 코드
                 //gameobject에 접근
@@ -287,6 +306,12 @@ public class BuildManager : MonoBehaviour
             }
         }
 
+    }
+
+    [PunRPC]
+    public void SetBitArrayInRpc(int size)
+    {
+        buildState.Set(size, false);
     }
 
 

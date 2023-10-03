@@ -59,9 +59,11 @@ public class StickyCowObstacle : ObstacleBase
         for(int i = 0; i < cowList.Count; i++)
         {
             cowList[i].GetComponent<CowSingleObstacle>().obstacleParent = obstacle.transform;
-            cowList[i].transform.parent = obstacle.transform;
+            //cowList[i].transform.parent = obstacle.transform;
 
         }
+
+        Invoke("DestroyPhotonViewObject", 1f);
 
         return obstacle;
     }

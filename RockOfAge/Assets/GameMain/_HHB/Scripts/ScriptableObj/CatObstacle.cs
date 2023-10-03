@@ -112,6 +112,12 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
     public void Hit(int damage)
     {
         HitReaction();
+
+        currHealth -= damage;
+        if (currHealth <= 0)
+        {
+            Invoke("DestroyPhotonViewObject", 1f);
+        }
         /*Do Nothing*/
     }
     public void HitReaction()

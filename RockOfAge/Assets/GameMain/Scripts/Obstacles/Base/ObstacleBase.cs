@@ -270,4 +270,28 @@ public class ObstacleBase : MonoBehaviourPun
     protected virtual void ActiveAttack() { }
     protected virtual void DeactiveAttack() { }
 
+    [PunRPC]
+    public void PlayAnimationTrigger(string valueName)
+    {
+        obstacleAnimator.SetTrigger(valueName);
+    }
+
+    [PunRPC]
+    public void RemoveInMaster()
+    {
+        // 게임 오브젝트를 비활성화하거나 파괴
+        //gameObject.SetActive(false);
+        // 또는 Destroy(gameObject);
+
+        if (photonView.IsMine)
+        {
+            PhotonNetwork.Destroy(gameObject);
+        }
+    }
+
+    public void DestroyPhotonViewObject()
+    {
+        photonView.RPC("RemoveInMaster", RpcTarget.All);
+    }
+
 }

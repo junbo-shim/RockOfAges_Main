@@ -227,7 +227,11 @@ public class ObstacleBase : MonoBehaviourPun
         //스케일 변경
         obstacle.transform.localScale = obstacle.transform.localScale;
 
-        
+        NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().playerGold -= obstacle.status.Price;
+        NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().RestartGoldCoroutine();
+
+
+
         if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("PscTestScene"))
         { 
             //버튼 데이터 변경
@@ -263,7 +267,16 @@ public class ObstacleBase : MonoBehaviourPun
     protected virtual void SearchTarget() { }
 
     //죽음
-    protected virtual void Dead() { }
+    protected virtual void Dead() 
+    {
+        // ! Photon
+        // PhotonNetwork.Destroy 들어가기 전에 각 개체의 건설 갯수를 감소시킨다
+        GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(status.Id);
+        unitButton.GetComponent<CreateButton>().buildCount -= 1;
+        UIManager.uiManager.RePrintUnitCount(status.Id);
+        // PhotonNetwork.Destroy 로 모든 클라이언트에서 파괴한다
+        //PhotonNetwork.Destroy(gameObject);
+    }
 
 
     //공격 활성화

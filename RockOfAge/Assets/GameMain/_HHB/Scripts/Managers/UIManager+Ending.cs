@@ -55,16 +55,41 @@ public partial class UIManager : MonoBehaviour
     public Material loseRed;
     public GameObject[] benchs;
 
+    // ! Photon 
+    private Transform gameEndUI;
+    private Transform buttonHolder;
+    private Button lobbyButton;
+    private Button exitButton;
+    private Transform resultHolder;
+    private Transform resultImageHolder;
 
     #endregion
 
     #region Functions
 
+    // ! Photon : 엔딩 UI 요소 할당 메서드
+    public void GetEndUI() 
+    {
+        gameEndUI = GameObject.Find("GameEndUI").transform;
+        buttonHolder = gameEndUI.Find("ButtonHolder");
+        lobbyButton = buttonHolder.Find("LobbyButton").GetComponent<Button>();
+        exitButton = buttonHolder.Find("ExitButton").GetComponent<Button>();
+
+        resultHolder = gameEndUI.Find("ResultHolder");
+
+        resultImageHolder = gameEndUI.Find("ResultImageHolder");
+    }
+
+
     public void PrintResult()
     { 
-    
-    
+        
+        
     }
+
+
+
+
     //// string을 넣으면 뒤에 숫자만 받아오는 함수
     //public int ConvertStringToInt(string player, out int playerNumber)
     //{

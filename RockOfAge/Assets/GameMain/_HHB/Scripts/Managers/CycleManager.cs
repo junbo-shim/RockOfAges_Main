@@ -250,10 +250,10 @@ public class CycleManager : MonoBehaviour
     }
 
     // ! Photon
-    // RockBase 의 CheckTeamAndDequeue 메서드와 세트 (매개변수로 나의 ViewID 와 생성된 돌 ViewID 를 전달)
-    public void CheckTeamAndSaveQueue(string myViewID, GameObject createdRock) 
+    // RockBase 의 CheckTeamAndDequeue 메서드와 세트 (매개변수로 생성된 돌 ViewID 를 전달)
+    public void CheckTeamAndSaveQueue(GameObject createdRock) 
     {
-        // myViewID 에서 Team 번호만 추출한다
+        // Team 번호만 추출한다
         string myTeamNumber = myDataContainer.GetComponent<PlayerDataContainer>().PlayerTeamNum.Split('_')[1];
 
         // 생성된 돌의 ViewID 를 string 으로 변환하고
@@ -262,6 +262,7 @@ public class CycleManager : MonoBehaviour
         // 뒷 3자리를 버린 후 001 을 더하여 생성자의 ViewID 를 만든다
         string rockOwnerViewID = DropLastThreeChar(rockViewID) + "001";
 
+        //createdRock.GetComponent<PhotonView>().Owner.UserId
         PlayerDataContainer creatorContainer = NetworkManager.Instance.dataContainers.Find(x => x.PlayerViewID == rockOwnerViewID);
 
         // 생성자의 ViewID 에서 Team 번호만 추출한다

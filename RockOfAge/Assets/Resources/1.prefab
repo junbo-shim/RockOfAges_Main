@@ -676,6 +676,7 @@ MonoBehaviour:
   offset: {x: 0, y: 0, z: 0}
   rockObject: {fileID: 5881836963681715703}
   tmpText: {fileID: 1390342594161200721}
+  _rockName: 
   isMineEnable: 1
   isEnable: 1
   color: {r: 1, g: 1, b: 1, a: 1}

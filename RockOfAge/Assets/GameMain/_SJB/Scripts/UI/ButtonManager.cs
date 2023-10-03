@@ -122,10 +122,10 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     {
         startReadyButton = roomPanel.Find("Button_RoomStartReady").GetComponent<Button>();
 
-        player1Button = roomPanel.Find("PlayerButtons").Find("Player1").GetComponent<Button>();
-        player2Button = roomPanel.Find("PlayerButtons").Find("Player2").GetComponent<Button>();
-        player3Button = roomPanel.Find("PlayerButtons").Find("Player3").GetComponent<Button>();
-        player4Button = roomPanel.Find("PlayerButtons").Find("Player4").GetComponent<Button>();
+        player1Button = roomPanel.Find("PlayerButtons").Find("Button_Player1Team1").GetComponent<Button>();
+        player2Button = roomPanel.Find("PlayerButtons").Find("Button_Player2Team1").GetComponent<Button>();
+        player3Button = roomPanel.Find("PlayerButtons").Find("Button_Player3Team2").GetComponent<Button>();
+        player4Button = roomPanel.Find("PlayerButtons").Find("Button_Player4Team2").GetComponent<Button>();
     }
     #endregion
 
@@ -181,11 +181,6 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
 
         createConfirmButton.onClick.AddListener(PressConfirmCreateButton);
         startReadyButton.onClick.AddListener(PressStartReadyButton);
-
-        player1Button.onClick.AddListener(PressPlayer1);
-        player2Button.onClick.AddListener(PressPlayer2);
-        player3Button.onClick.AddListener(PressPlayer3);
-        player4Button.onClick.AddListener(PressPlayer4);
     }
     #endregion
 
@@ -417,10 +412,14 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     {
         TMP_InputField roomNameInput = createRoomPopup.Find("InputField_RoomName").GetComponent<TMP_InputField>();
 
+        if (roomNameInput.text == null)
+        {
+            roomNameInput.text = NetworkManager.Instance.playerNickName;
+        }
+
         // 포톤 내의 방 생성
         RoomOptions roomOptions = new RoomOptions { MaxPlayers = 4 };
         PhotonNetwork.CreateRoom(roomNameInput.text, roomOptions, null, null);
-
 
         PressClose();
         PauseLobbyButtons();

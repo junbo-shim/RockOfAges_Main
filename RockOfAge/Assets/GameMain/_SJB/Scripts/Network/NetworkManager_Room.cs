@@ -35,14 +35,6 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
 
     #region 룸-Photon
 
-    // 방을 생성하면 호출되는 callback 메서드
-    public override void OnCreatedRoom()
-    {
-        // master 가 처음 방을 생성했을 때 버튼 오브젝트를 네트워크로 생성하는 custom 메서드
-        MakeTeamButtons();
-    }
-
-
     // 방에 참여하면 호출되는 callback 메서드
     public override void OnJoinedRoom()
     {
@@ -71,14 +63,6 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     }
 
 
-    // 방에 사람이 나가면 호출되는 메서드
-    public override void OnPlayerLeftRoom(Player otherPlayer)
-    {
-        // 방의 이름을 표시하는 custom 메서드
-        ShowRoomName();
-    }
-
-
     // 방을 떠나면 호출되는 callback 메서드
     public override void OnLeftRoom()
     {
@@ -95,20 +79,38 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     }
 
 
-    // master 가 처음 방을 생성했을 때 버튼 오브젝트를 네트워크로 생성하는 custom 메서드
-    public void MakeTeamButtons() 
+    // 방에 사람이 나가면 호출되는 callback 메서드
+    public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        // Vector3 를 지역변수로 잠깐 생성, 각각 버튼별 위치를 지정
-        Vector3 Player1Team1 = new Vector3();
-        Vector3 Player2Team1 = new Vector3();
-        Vector3 Player3Team2 = new Vector3();
-        Vector3 Player4Team2 = new Vector3();
+        // 방의 이름을 표시하는 custom 메서드
+        ShowRoomName();
+        // 버튼에 저장된 정보 초기화 메서드
+        ResetAllData();
+    }
 
-        // Vector3 에 맞게 각각 버튼을 PhotonNetwork.Instantiate 해준다 - 모든 방 참여자가 공유
-        //PhotonNetwork.Instantiate(Team1ButtonPrefab, Player1Team1, Quaternion.identity, );
-        //PhotonNetwork.Instantiate(Team1ButtonPrefab, Player2Team1, Quaternion.identity, );
-        //PhotonNetwork.Instantiate(Team2ButtonPrefab, Player3Team2, Quaternion.identity, );
-        //PhotonNetwork.Instantiate(Team2ButtonPrefab, Player4Team2, Quaternion.identity, );
+
+    // 나말고 플레이어가 방을 떠났을 경우 버튼에서 받아온 모든 데이터 (Identifier 등)를 모두 초기화하는 custom 메서드
+    public void ResetAllData() 
+    {
+        ButtonManager.Instance.player1Button.interactable = true;
+        ButtonManager.Instance.player1Button.GetComponent<TeamButton>().playerIdentifier = -1;
+        ButtonManager.Instance.player1Button.GetComponent<TeamButton>().playerName.text = null;
+        ButtonManager.Instance.player1Button.GetComponent<TeamButton>().readyCheck.enabled = false;
+
+        ButtonManager.Instance.player2Button.interactable = true;
+        ButtonManager.Instance.player2Button.GetComponent<TeamButton>().playerIdentifier = -1;
+        ButtonManager.Instance.player2Button.GetComponent<TeamButton>().playerName.text = null;
+        ButtonManager.Instance.player2Button.GetComponent<TeamButton>().readyCheck.enabled = false;
+
+        ButtonManager.Instance.player3Button.interactable = true;
+        ButtonManager.Instance.player3Button.GetComponent<TeamButton>().playerIdentifier = -1;
+        ButtonManager.Instance.player3Button.GetComponent<TeamButton>().playerName.text = null;
+        ButtonManager.Instance.player3Button.GetComponent<TeamButton>().readyCheck.enabled = false;
+
+        ButtonManager.Instance.player4Button.interactable = true;
+        ButtonManager.Instance.player4Button.GetComponent<TeamButton>().playerIdentifier = -1;
+        ButtonManager.Instance.player4Button.GetComponent<TeamButton>().playerName.text = null;
+        ButtonManager.Instance.player4Button.GetComponent<TeamButton>().readyCheck.enabled = false;
     }
 
 
@@ -120,7 +122,6 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         // 현재 방 이름을 표시
         roomName.text = masterName + "의 방 : " + PhotonNetwork.CurrentRoom.Name;
     }
-
     #endregion
 
     //Room =================================================================================================

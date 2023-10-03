@@ -37,6 +37,7 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         playerSeats = new bool[4] { false, false, false, false };
     }
 
+
     #region 서버연결-Photon
     private void ConnectToServer() 
     {

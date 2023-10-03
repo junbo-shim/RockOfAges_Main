@@ -45,6 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7138967e58969d40a98e2ec3b59bc97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player1Button: {fileID: 0}
+  player2Button: {fileID: 0}
+  player3Button: {fileID: 0}
+  player4Button: {fileID: 0}
   otherPlayerReady: 0
   Player1Name: 
   Player2Name: 

@@ -68,6 +68,18 @@ MonoBehaviour:
   - RPCTest
   - Check
   - CheckTeamAndDequeue
+  - SendMyViewId
+  - MakeIsClickedFalse
+  - MakeIsClickedTrue
+  - MakeOtherButtonFalse
+  - MakeOtherButtonFalseRemote
+  - MakeOtherButtonTrue
+  - MakeOtherButtonTrueRemote
+  - CheckPlayerIdentifierNone
+  - CheckIdentifierNone
+  - CheckIdentifierSomething
+  - TurnButtonFalse
+  - TurnButtonTrue
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

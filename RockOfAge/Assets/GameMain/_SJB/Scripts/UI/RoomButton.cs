@@ -10,10 +10,12 @@ public class RoomButton : MonoBehaviourPun
 
     // 버튼에 표기할 cachedRoom 의 이름
     public TMP_Text displayName;
+
     // 버튼에 표기할 현재 플레이어 수 / 최대 플레이어 수
     public TMP_Text displayPlayers;
 
-    // 이 클래스가 컴포넌트로 Add 될 때 호출
+
+    // 이 클래스가 컴포넌트로 Add 될 때 호출(활성화)
     void OnEnable()
     {
         // 이 버튼이 생성될 때 하위에 있는 TMP_Text 요소를 가져온다
@@ -24,7 +26,8 @@ public class RoomButton : MonoBehaviourPun
         gameObject.GetComponent<Button>().onClick.AddListener(PressRoomButton);
     }
 
-    void Update()
+
+    private void FixedUpdate()
     {
         // 이름 값을 받아온다
         displayName.text = thisRoomInfo.Name;
@@ -33,7 +36,8 @@ public class RoomButton : MonoBehaviourPun
         displayPlayers.text = thisRoomInfo.PlayerCount.ToString() + "/" + thisRoomInfo.MaxPlayers.ToString();
     }
 
-    // 버튼을 눌렀을 시 호출되는 메서드
+
+    // 버튼을 눌렀을 시 호출되는 custom 메서드
     public void PressRoomButton() 
     {
         // 이 버튼이 저장 중인 RoomInfo 의 이름으로 특정 방에 참여한다
@@ -44,7 +48,8 @@ public class RoomButton : MonoBehaviourPun
         Invoke("LoadRoomPopup", 2f);
     }
 
-    // Invoke 를 사용하기 위해서 ButtonManager 하위 메서드를 래핑한 메서드
+
+    // Invoke 를 사용하기 위해서 ButtonManager 하위 메서드를 래핑한 custom 메서드
     private void LoadRoomPopup() 
     {
         ButtonManager.Instance.ResetLobbyButtons();

@@ -43,15 +43,19 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     // 로비에 들어오면 호출되는 callback 메서드
     public override void OnJoinedLobby()
     {
+        // Title UI 를 작게 만들고 Lobby UI 를 띄운다
         TitlePanel.localScale = Vector3.zero;
         LobbyPanel.localScale = Vector3.one;
         Debug.Log("Join Success");
 
+        // 로비에 들어올 때마다 기존 방 목록 UI 를 지워주고 새로 리스트를 캐싱하고 다시 UI 를 생성한다
         DeleteRoomDisplay(RoomListContent);
         cachedRoomDictionary.Clear();
         UpdateRoomDisplay();
 
+        // 플레이어의 이름 표시
         playerLobbyName.text = playerNickName;
+        // 로비 인원 출력
         playerLobbyNumbers.text = PhotonNetwork.CountOfPlayersOnMaster.ToString() + "/20";
     }
 
@@ -59,11 +63,16 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     // 로비를 떠날시 호출되는 callback 메서드 (방을 생성하거나, 방에 참여 시)
     public override void OnLeftLobby()
     {
+        // 로비를 떠날 때마다 기존 방 목록 UI 를 지워주고 새로 리스트를 캐싱하고 다시 UI 를 생성한다
         DeleteRoomDisplay(RoomListContent);
         cachedRoomDictionary.Clear();
-        UpdateRoomDisplay();
+        //UpdateRoomDisplay();
+
+        // 로비 인원 출력
+        playerLobbyNumbers.text = PhotonNetwork.CountOfPlayersOnMaster.ToString() + "/20";
     }
     #endregion
+
 
     #region 로비-RoomList
 
@@ -73,7 +82,7 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         // 방 UI 를 삭제하는 custom 메서드
         DeleteRoomDisplay(RoomListContent);
 
-        //
+        // cachedRoomDictionary 을 업데이트 해주는 custom 메서드
         UpdateCachedRoomDictionary(roomList);
 
         // 방 UI 를 새로 출력하는 custom 메서드

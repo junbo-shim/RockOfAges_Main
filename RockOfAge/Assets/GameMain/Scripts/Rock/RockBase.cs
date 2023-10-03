@@ -538,8 +538,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
             if (dataContainerView.IsMine == true)
             {
                 // enemyCameraQueue 를 확인하고 Dequeue 하는 메서드를 다른 ViewID 에게 발사
-                photonView.RPC("CheckTeamAndDequeue", RpcTarget.Others, 
-                    dataContainerView.ViewID.ToString(), photonView.ViewID.ToString());
+                photonView.RPC("CheckTeamAndDequeue", RpcTarget.Others, photonView.ViewID.ToString());
             }
 
             StartCoroutine(EndAttackRoutine(collision.gameObject.GetComponentInParent<Gate>().gateHP>0));    

@@ -75,7 +75,7 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
     {
         isAttacked = true;
         obstacleAnimator.SetBool("Idle", false);
-        obstacleAnimator.SetTrigger("Active");
+        photonView.RPC("PlayAnimationTrigger", RpcTarget.All, "Active");
         obstacleCollider.isTrigger = false;
     }
 

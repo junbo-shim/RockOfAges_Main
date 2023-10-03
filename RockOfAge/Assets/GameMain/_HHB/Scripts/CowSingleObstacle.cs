@@ -46,7 +46,6 @@ public class CowSingleObstacle : MoveObstacleBase
         }
         isSticked = true;
         delayBool = true;
-        Destroy(obstacleRigidBody);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -59,10 +58,12 @@ public class CowSingleObstacle : MoveObstacleBase
         if (!isSticked && collision.gameObject.layer == LayerMask.NameToLayer("Rock") && collision.collider.name=="RockObject")
         {
             Transform rock = collision.transform;
+            photonView.TransferOwnership(rock.GetComponentInParent<PhotonView>().Owner);
+            Destroy(obstacleRigidBody);
+            photonView.RPC("SetActive", RpcTarget.All);
             Physics.IgnoreCollision(collision.collider, obstacleCollider);
             transform.localPosition -= (transform.position - rock.position) * .4f;
             cow.SetParent(rock);
-            photonView.RPC("SetActive", RpcTarget.All);
         }
     }
 

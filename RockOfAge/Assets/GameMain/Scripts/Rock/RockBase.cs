@@ -56,6 +56,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
     RaycastHit slopeHit;
     Coroutine fallCheckCoroutine = null;
     protected Queue<RockTrail> trails;
+    protected RockName rockName;
 
     protected RayfireRigid rayfireRigid;
 
@@ -152,6 +153,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         }
 
         rockObject = transform.Find("RockObject");
+        rockName = transform.Find("NameText").GetComponent<RockName>();
 
         rockRigidbody = rockObject.GetComponent<Rigidbody>();
         rockMesh = rockObject.GetComponent<MeshFilter>();
@@ -175,6 +177,8 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         trails = new Queue<RockTrail>();
 
         CreateTrail();
+
+
         if (UIManager.uiManager != null)
         {
             UIManager.uiManager.PrintFillAmountRockHp(currHp, rockStatus.Health);
@@ -872,8 +876,13 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
 
         resultDamage += maxDamage * .5f * healthRate;
         Debug.Log("체력비례 " + maxDamage * .5f * healthRate);
-        resultDamage += maxDamage * .5f * speedRate;
-        Debug.Log("속도비례 " + maxDamage * .5f * speedRate);
+        float speedDamage = maxDamage * .5f * speedRate * 10f;
+        if(speedDamage> maxDamage * .5f)
+        {
+            speedDamage = maxDamage * .5f;
+        }
+        resultDamage += speedDamage;
+        Debug.Log("속도비례 " + speedDamage);
 
         if (resultDamage < DAMAGE_LIMIT_MIN)
         {

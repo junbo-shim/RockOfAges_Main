@@ -542,7 +542,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
                     dataContainerView.ViewID.ToString(), photonView.ViewID.ToString());
             }
 
-            StartCoroutine(EndAttackRoutine());    
+            StartCoroutine(EndAttackRoutine(collision.gameObject.GetComponentInParent<Gate>().gateHP>0));    
         }
     }
 
@@ -681,17 +681,21 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         PlayDestroySound(true);
         DemolishMeshRenderers();
         //rayfireRigid.Activate();
-        StartCoroutine(EndAttackRoutine());
+        StartCoroutine(EndAttackRoutine(true));
         //Destroy(gameObject);
     }
 
-    IEnumerator EndAttackRoutine()
+    IEnumerator EndAttackRoutine(bool destroy)
     {
         isDestroy = true;
         yield return new WaitForSeconds(2f);
         CycleManager.cycleManager.ChangeCycleAttackToSelect();
         yield return new WaitForSeconds(1f);
-        PhotonNetwork.Destroy(gameObject);
+        if (destroy)
+        {
+
+            PhotonNetwork.Destroy(gameObject);
+        }
     }
 
     // ! Photon

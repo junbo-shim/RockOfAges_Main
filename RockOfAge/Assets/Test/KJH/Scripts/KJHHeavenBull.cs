@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,21 +34,21 @@ public class KJHHeavenBull : MoveObstacleBase, IHitObjectHandler
     private bool isAttacking = false;
     private bool isInsideRange = false;
     private GameObject mudObject;
-    private Animator animator;
 
-
-    private void Start()
+    protected override void Init()
     {
-        Init();
-
-        animator = GetComponent<Animator>();
+        base.Init();
+        obstacleAnimator = GetComponent<Animator>();
 
         audioSource = GetComponent<AudioSource>();
     }
+
+
     private void FixedUpdate()
     {
         DetectRock();
     }
+
     private void Update()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, detectionRadius, Rock);
@@ -60,8 +61,8 @@ public class KJHHeavenBull : MoveObstacleBase, IHitObjectHandler
             isInsideRange = true;
 
             // 감지 범위 내에 돌이 있을 때 애니메이션을 실행
-            animator.SetTrigger("Attack");
-
+//            obstacleAnimator.SetTrigger("Attack");
+            photonView.RPC("PlayAnimationTrigger",RpcTarget.All, "Attack");
             StartCoroutine(WaitAni());
         }
         else if (!detectedRock && isInsideRange)
@@ -134,7 +135,6 @@ public class KJHHeavenBull : MoveObstacleBase, IHitObjectHandler
         }
     }
 
-    
     public void AttackRocks()
     {
         audioSource.clip = attackSound;
@@ -218,18 +218,12 @@ public class KJHHeavenBull : MoveObstacleBase, IHitObjectHandler
     protected override void Dead()
     {
         // Die 애니메이션 재생
-        animator.SetTrigger("Die");
+        photonView.RPC("PlayAnimationTrigger", RpcTarget.All, "Die");
         GetComponent<Rigidbody>().isKinematic = true; // 물리 시뮬레이션 비활성화
         GetComponent<Collider>().enabled = false; // 콜라이더 비활성화 (옵션)
 
         // 1.0초 후에 사라지는 로직을 실행
-        Invoke("Disappear", 1.0f);
-    }
-    private void Disappear()
-    {
-        // 게임 오브젝트를 비활성화하거나 파괴
-        Destroy(gameObject);
-        // 또는 Destroy(gameObject);
+        Invoke("DestroyPhotonViewObject", 1f);
     }
     public void Hit(int damage)
     {

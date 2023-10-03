@@ -70,6 +70,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
 
     protected int currLayer;
 
+    public List<CatObstacle> catObstacles = new List<CatObstacle>();
 
     protected const float DAMAGE_LIMIT_MIN = 50f;
     protected const float SLOPE_LIMIT_MAX = 60f;
@@ -443,6 +444,10 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         //떨어지면서 메아리 추가
 
         Fall();
+        foreach(var tmp in catObstacles)
+        {
+            tmp.Delete();
+        }
         yield return new WaitForSeconds(2f);
 
         fallText.ClearText();
@@ -577,7 +582,9 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
             PlayFallSound(true);
             CinemachineVirtualCameraBase camera = mainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCameraBase;
             camera.Follow = null;   
-            fallText.StartFallText();     
+            fallText.StartFallText();    
+            
+
         }
     }
     protected virtual void BackCheckPoint()

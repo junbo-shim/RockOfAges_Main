@@ -376,13 +376,17 @@ public class CycleManager : MonoBehaviour
         int maskIgnoreRaycast = Global_PSC.FindLayerToName("Ignore Raycast");
         int maskWater = Global_PSC.FindLayerToName("Water");
         int maskUI = Global_PSC.FindLayerToName("UI");
-        int maskStones = Global_PSC.FindLayerToName("Stones");
+        int maskETC = Global_PSC.FindLayerToName("ETC");
         int maskTerrains = Global_PSC.FindLayerToName("Terrains");
         int maskObstacles = Global_PSC.FindLayerToName("Obstacles");
         int maskWalls = Global_PSC.FindLayerToName("Walls");
         int maskOutLand = Global_PSC.FindLayerToName("OutLand");
         int maskCastle = Global_PSC.FindLayerToName("Castle");
         int maskRock = Global_PSC.FindLayerToName("Rock");
+        int maskCheckPoint = Global_PSC.FindLayerToName("CheckPoint");
+        int maskPostProcess = Global_PSC.FindLayerToName("PostProcess");
+        int maskEnvironment = Global_PSC.FindLayerToName("Environment");
+
 
         // ! Photon
         if (team_ == "Team1")
@@ -394,13 +398,17 @@ public class CycleManager : MonoBehaviour
             playerCam.cullingMask |= maskIgnoreRaycast;
             playerCam.cullingMask |= maskWater;
             playerCam.cullingMask |= maskUI;
-            playerCam.cullingMask |= maskStones;
+            playerCam.cullingMask |= maskETC;
             playerCam.cullingMask |= maskTerrains;
             playerCam.cullingMask |= maskObstacles;
             playerCam.cullingMask |= maskWalls;
             playerCam.cullingMask |= maskOutLand;
             playerCam.cullingMask |= maskCastle;
             playerCam.cullingMask |= maskRock;
+            playerCam.cullingMask |= maskCheckPoint;
+            playerCam.cullingMask |= maskPostProcess;
+            playerCam.cullingMask |= maskEnvironment;
+
 
             enemyCam.cullingMask |= team2;
 
@@ -409,13 +417,16 @@ public class CycleManager : MonoBehaviour
             enemyCam.cullingMask |= maskIgnoreRaycast;
             enemyCam.cullingMask |= maskWater;
             enemyCam.cullingMask |= maskUI;
-            enemyCam.cullingMask |= maskStones;
+            enemyCam.cullingMask |= maskETC;
             enemyCam.cullingMask |= maskTerrains;
             enemyCam.cullingMask |= maskObstacles;
             enemyCam.cullingMask |= maskWalls;
             enemyCam.cullingMask |= maskOutLand;
             enemyCam.cullingMask |= maskCastle;
             enemyCam.cullingMask |= maskRock;
+            enemyCam.cullingMask |= maskCheckPoint;
+            enemyCam.cullingMask |= maskPostProcess;
+            enemyCam.cullingMask |= maskEnvironment;
         }
         // ! Photon
         else if (team_ == "Team2")
@@ -427,13 +438,16 @@ public class CycleManager : MonoBehaviour
             playerCam.cullingMask |= maskIgnoreRaycast;
             playerCam.cullingMask |= maskWater;
             playerCam.cullingMask |= maskUI;
-            playerCam.cullingMask |= maskStones;
+            playerCam.cullingMask |= maskETC;
             playerCam.cullingMask |= maskTerrains;
             playerCam.cullingMask |= maskObstacles;
             playerCam.cullingMask |= maskWalls;
             playerCam.cullingMask |= maskOutLand;
             playerCam.cullingMask |= maskCastle;
             playerCam.cullingMask |= maskRock;
+            playerCam.cullingMask |= maskCheckPoint;
+            playerCam.cullingMask |= maskPostProcess;
+            playerCam.cullingMask |= maskEnvironment;
 
             enemyCam.cullingMask |= team1;
 
@@ -442,13 +456,16 @@ public class CycleManager : MonoBehaviour
             enemyCam.cullingMask |= maskIgnoreRaycast;
             enemyCam.cullingMask |= maskWater;
             enemyCam.cullingMask |= maskUI;
-            enemyCam.cullingMask |= maskStones;
+            enemyCam.cullingMask |= maskETC;
             enemyCam.cullingMask |= maskTerrains;
             enemyCam.cullingMask |= maskObstacles;
             enemyCam.cullingMask |= maskWalls;
             enemyCam.cullingMask |= maskOutLand;
             enemyCam.cullingMask |= maskCastle;
             enemyCam.cullingMask |= maskRock;
+            enemyCam.cullingMask |= maskCheckPoint;
+            enemyCam.cullingMask |= maskPostProcess;
+            enemyCam.cullingMask |= maskEnvironment;
         }
     }
 

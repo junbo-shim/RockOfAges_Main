@@ -5315,6 +5315,7 @@ GameObject:
   m_Component:
   - component: {fileID: 269747574}
   - component: {fileID: 269747575}
+  - component: {fileID: 269747576}
   m_Layer: 11
   m_Name: Castle_Door
   m_TagString: Team01
@@ -5360,6 +5361,29 @@ MonoBehaviour:
   - {fileID: 62991483}
   - {fileID: 1700107738}
   gateHP: 600
+--- !u!114 &269747576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 269747573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 269747575}
+  sceneViewId: 2
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &270748188
 GameObject:
   m_ObjectHideFlags: 0
@@ -25625,7 +25649,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 975900039}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.06844033, y: 0.91106004, z: -0.1685333, w: -0.36997586}
+  m_LocalRotation: {x: -0.06844033, y: 0.91106004, z: -0.16853331, w: -0.36997592}
   m_LocalPosition: {x: 124.66126, y: 68.49498, z: 128.17615}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -27580,6 +27604,7 @@ MonoBehaviour:
   nowOnCamera: {fileID: 1054561371}
   nextOnCamera: {fileID: 1821725043}
   rockCamera: {fileID: 1006063548}
+  dataContainerView: {fileID: 0}
 --- !u!114 &1054561371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32896,7 +32921,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 212983
+    m_Bits: 0
   m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -32916,7 +32941,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1319889820}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.06844033, y: 0.91106004, z: -0.1685333, w: -0.36997586}
+  m_LocalRotation: {x: -0.06844033, y: 0.91106004, z: -0.16853331, w: -0.36997592}
   m_LocalPosition: {x: 124.66126, y: 68.49498, z: 128.17615}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -35527,7 +35552,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 221175
+    m_Bits: 0
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 86986d9898751c9438105f15054a03ad, type: 2}
   m_TargetDisplay: 0
@@ -40151,7 +40176,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1657384860}
-  m_Layer: 13
+  m_Layer: 0
   m_Name: SelectFocus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43065,6 +43090,7 @@ MonoBehaviour:
   nowOnCamera: {fileID: 1821725043}
   nextOnCamera: {fileID: 1054561371}
   rockCamera: {fileID: 1006063548}
+  dataContainerView: {fileID: 0}
 --- !u!1 &1822683252
 GameObject:
   m_ObjectHideFlags: 0
@@ -48805,6 +48831,7 @@ MonoBehaviour:
   startRock: {fileID: 593520687}
   rockReadyInfo: {fileID: 496721879}
   commonUI: {fileID: 544989378}
+  mirrorUI: {fileID: 0}
   player1Txt: {fileID: 6806863271108445620}
   player2Txt: {fileID: 6251446997619437962}
   player3Txt: {fileID: 5841034457068738098}
@@ -48900,6 +48927,9 @@ MonoBehaviour:
   team1Hp: 600
   team2Hp: 600
   _isESCed: 0
+  dataContainer: {fileID: 0}
+  dataContainerView: {fileID: 0}
+  layerPlayerTeamName: 
 --- !u!114 &2077200391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65675,6 +65705,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2069284808596426701}
   - component: {fileID: 3533578068668805788}
+  - component: {fileID: 5934397221749591618}
   m_Layer: 11
   m_Name: Castle_Door
   m_TagString: Team01
@@ -65682,6 +65713,29 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &5934397221749591618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5934397221749591617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 3533578068668805788}
+  sceneViewId: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &5935011438846482592
 GameObject:
   m_ObjectHideFlags: 0

@@ -69,6 +69,9 @@ public partial class UIManager : MonoBehaviour
     private Transform player2;
     private Transform player3;
     private Transform player4;
+
+    public TextMeshProUGUI victory;
+
     #endregion
 
     #region Functions
@@ -116,6 +119,18 @@ public partial class UIManager : MonoBehaviour
         string result = System.Text.RegularExpressions.Regex.Replace(str, @"[^0-9]", "");
         playerNumber = int.Parse(result);
         return playerNumber;
+    }
+
+    public void PrintVicOrLose(string team, string winnerTeam)
+    {
+        if (team == winnerTeam)
+        {
+            victory.text = "Victory";
+        }
+        else 
+        {
+            victory.text = "Lose";
+        }
     }
 
     //// string을 넣으면 뒤에 숫자만 받아오는 함수

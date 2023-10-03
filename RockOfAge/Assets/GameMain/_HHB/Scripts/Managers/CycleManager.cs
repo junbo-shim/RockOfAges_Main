@@ -263,8 +263,7 @@ public class CycleManager : MonoBehaviour
         string rockOwnerViewID = DropLastThreeChar(rockViewID) + "001";
 
         //createdRock.GetComponent<PhotonView>().Owner.UserId
-        PlayerDataContainer creatorContainer = 
-            NetworkManager.Instance.dataContainers.Find(x => x.PlayerViewID == rockOwnerViewID);
+        PlayerDataContainer creatorContainer = NetworkManager.Instance.dataContainers.Find(x => x.PlayerViewID == rockOwnerViewID);
 
         // 생성자의 ViewID 에서 Team 번호만 추출한다
         string rockTeamNumber = creatorContainer.PlayerTeamNum.Split('_')[1];

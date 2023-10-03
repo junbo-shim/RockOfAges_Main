@@ -223,8 +223,8 @@ public partial class UIManager : MonoBehaviour
     // 공 생성 쿨타임을 빠름/느림/보통으로 모래시계 프린트를 위한 Enum 변환기
     public StoneTimer ConvertCoolTimeToEnum(float time_)
     {
-        float normalMaxTime = 65f;
-        float normalMinTime = 55f;
+        float normalMaxTime = 35f;
+        float normalMinTime = 30f;
 
         // 빠름
         if (time_ > normalMaxTime)

@@ -8,8 +8,8 @@ public partial class UIManager : MonoBehaviour
     [Header("INDICATORS")]
     public GameObject endIndicator;
     public GameObject startIndicator;
-    public GameObject enemyRock1Indicator;
-    public GameObject enemyRock2Indicator;
+    //public GameObject enemyRock1Indicator;
+    //public GameObject enemyRock2Indicator;
     private Vector2 leftUp;
     private Vector2 rightUp;
     private Vector2 leftDown;
@@ -54,36 +54,53 @@ public partial class UIManager : MonoBehaviour
 
             //-----------------------------Start, End 지점 Indicator-------------------------
             //if(team2)
-                //Vector3 startPos = Global_PSC.ConvertVec3ToScreenVec2(ResourceManager.team2StartPos);
-                //Vector3 endPos = Global_PSC.ConvertVec3ToScreenVec2(ResourceManager.team2EndPos);
-                //Vector3 midScreen = Global_PSC.ConvertVec3ToScreenVec2(CameraManager.myCameraPosition);
-                //List<GameObject> findEndIndicator = Global_PSC.FindAllTargets("DefenceUI", "EndIndicator");
-                //GameObject myEndIndicator = findEndIndicator[0];
-                //RootIndicator rootEndIndicator = myEndIndicator.GetComponent<RootIndicator>();
-                //rootEndIndicator.movePoint = endPos;
-                //List<GameObject> findStartIndicator = Global_PSC.FindAllTargets("DefenceUI", "StartIndicator");
-                //GameObject myStartIndicator = findStartIndicator[0];
-                //RootIndicator rootStartIndicator = myStartIndicator.GetComponent<RootIndicator>();
-                //rootStartIndicator.movePoint = startPos;
-                //GetDistanceAndSwitchIndicator(endIndicator, midScreen, endPos);
-                //GetDistanceAndSwitchIndicator(startIndicator, midScreen, startPos);
+            //Vector3 startPos = Global_PSC.ConvertVec3ToScreenVec2(ResourceManager.team2StartPos);
+            //Vector3 endPos = Global_PSC.ConvertVec3ToScreenVec2(ResourceManager.team2EndPos);
+            //Vector3 midScreen = Global_PSC.ConvertVec3ToScreenVec2(CameraManager.myCameraPosition);
+            //List<GameObject> findEndIndicator = Global_PSC.FindAllTargets("DefenceUI", "EndIndicator");
+            //GameObject myEndIndicator = findEndIndicator[0];
+            //RootIndicator rootEndIndicator = myEndIndicator.GetComponent<RootIndicator>();
+            //rootEndIndicator.movePoint = endPos;
+            //List<GameObject> findStartIndicator = Global_PSC.FindAllTargets("DefenceUI", "StartIndicator");
+            //GameObject myStartIndicator = findStartIndicator[0];
+            //RootIndicator rootStartIndicator = myStartIndicator.GetComponent<RootIndicator>();
+            //rootStartIndicator.movePoint = startPos;
+            //GetDistanceAndSwitchIndicator(endIndicator, midScreen, endPos);
+            //GetDistanceAndSwitchIndicator(startIndicator, midScreen, startPos);
 
-            //if(team1)
-            //{ 
-                Vector3 startPos = Global_PSC.ConvertVec3ToScreenVec2(ResourceManager.team1StartPos);
-                Vector3 endPos = Global_PSC.ConvertVec3ToScreenVec2(ResourceManager.team1EndPos);
-                Vector3 midScreen = Global_PSC.ConvertVec3ToScreenVec2(CameraManager.myCameraPosition);
-                List<GameObject> findEndIndicator = Global_PSC.FindAllTargets("DefenceUI", "EndIndicator");
-                GameObject myEndIndicator = findEndIndicator[0];
-                RootIndicator rootEndIndicator = myEndIndicator.GetComponent<RootIndicator>();
-                rootEndIndicator.movePoint = endPos;
-                List<GameObject> findStartIndicator = Global_PSC.FindAllTargets("DefenceUI", "StartIndicator");
-                GameObject myStartIndicator = findStartIndicator[0];
-                RootIndicator rootStartIndicator = myStartIndicator.GetComponent<RootIndicator>();
-                rootStartIndicator.movePoint = startPos;
-                GetDistanceAndSwitchIndicator(endIndicator, midScreen, endPos);
-                GetDistanceAndSwitchIndicator(startIndicator, midScreen, startPos);            
-            //}
+           
+            string userTeam = NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerTeamNum.Split('_')[1];
+
+            Debug.Log(userTeam);
+
+            Vector3 startPos = default;
+            Vector3 endPos = default;
+
+            if (userTeam == "Team1")
+            {
+                endPos = Global_PSC.ConvertVec3ToScreenVec2(ResourceManager.team1StartPos);
+                endPos = Global_PSC.ConvertVec3ToScreenVec2(ResourceManager.team1EndPos);
+            }
+
+            else if(userTeam == "Team2")
+            {
+                startPos = Global_PSC.ConvertVec3ToScreenVec2(ResourceManager.team2StartPos);
+                endPos = Global_PSC.ConvertVec3ToScreenVec2(ResourceManager.team2EndPos);
+
+            }
+
+
+            Vector3 midScreen = Global_PSC.ConvertVec3ToScreenVec2(CameraManager.myCameraPosition);
+            List<GameObject> findEndIndicator = Global_PSC.FindAllTargets("DefenceUI", "EndIndicator");
+            GameObject myEndIndicator = findEndIndicator[0];
+            RootIndicator rootEndIndicator = myEndIndicator.GetComponent<RootIndicator>();
+            rootEndIndicator.movePoint = endPos;
+            List<GameObject> findStartIndicator = Global_PSC.FindAllTargets("DefenceUI", "StartIndicator");
+            GameObject myStartIndicator = findStartIndicator[0];
+            RootIndicator rootStartIndicator = myStartIndicator.GetComponent<RootIndicator>();
+            rootStartIndicator.movePoint = startPos;
+            GetDistanceAndSwitchIndicator(endIndicator, midScreen, endPos);
+            GetDistanceAndSwitchIndicator(startIndicator, midScreen, startPos);
         }
     }
 

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6584856466988853926}
   - component: {fileID: 8698412635980074963}
   - component: {fileID: 728296452913936102}
+  - component: {fileID: 3889075399476109404}
   m_Layer: 8
   m_Name: Towerbigwall_Idle
   m_TagString: Untagged
@@ -103,9 +104,25 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -6162874750361523981, guid: 80664b672293ec54ea3e8813adaab4a2, type: 3}
+--- !u!114 &3889075399476109404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3173292839806538305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f51dee51e723cc419eac3cf2d9b09d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  refObj: {fileID: 919132149155446097, guid: 7083b5c54c89d7d4b95bff7712941fbb, type: 3}
+  audioClip: {fileID: 8300000, guid: be12789fb869157459a35482194df443, type: 3}
+  isKinematic: 0
+  isConvex: 0
 --- !u!1 &3981578438593215190
 GameObject:
   m_ObjectHideFlags: 0
@@ -339,6 +356,7 @@ GameObject:
   - component: {fileID: 190176536620967769}
   - component: {fileID: 6706137483748425400}
   - component: {fileID: 6510495603907611580}
+  - component: {fileID: 5053828860919482218}
   m_Layer: 8
   m_Name: Towerbigwall_base
   m_TagString: Untagged
@@ -411,3 +429,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5053828860919482218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5386128100050980872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f51dee51e723cc419eac3cf2d9b09d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  refObj: {fileID: 919132149155446097, guid: 3269539d2eaeb994788f6df9c1d3412b, type: 3}
+  audioClip: {fileID: 8300000, guid: 7377a8fcbdd42924cb661d68fdb617e5, type: 3}
+  isKinematic: 0
+  isConvex: 0

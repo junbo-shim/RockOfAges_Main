@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 3793538464307219227}
   - component: {fileID: 6812146872654200766}
   - component: {fileID: 1744379723395567827}
+  - component: {fileID: 4609408085077444229}
+  - component: {fileID: 7828645754673562438}
   m_Layer: 8
   m_Name: Tower_base2
   m_TagString: Untagged
@@ -104,9 +106,41 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 1379776437348112345, guid: e017c6314e2a9bc4fa06a3e0b21e4c4d, type: 3}
+--- !u!114 &4609408085077444229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2649433511975479780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f51dee51e723cc419eac3cf2d9b09d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  refObj: {fileID: 919132149155446097, guid: 1e8f5dadc75f197478301b7893c12469, type: 3}
+  audioClip: {fileID: 8300000, guid: be12789fb869157459a35482194df443, type: 3}
+  isKinematic: 0
+  isConvex: 0
+--- !u!114 &7828645754673562438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2649433511975479780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &3564412430697805421
 GameObject:
   m_ObjectHideFlags: 0
@@ -119,6 +153,8 @@ GameObject:
   - component: {fileID: 5968238966207655006}
   - component: {fileID: 9220121770283194712}
   - component: {fileID: 2163070140025117206}
+  - component: {fileID: 2708515033718249611}
+  - component: {fileID: 3473964684309160858}
   m_Layer: 8
   m_Name: Tower_idle
   m_TagString: Untagged
@@ -210,9 +246,41 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 7062544975409137455, guid: ba0ec16b067125d43908dcb1282b95e4, type: 3}
+--- !u!114 &2708515033718249611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3564412430697805421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f51dee51e723cc419eac3cf2d9b09d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  refObj: {fileID: 919132149155446097, guid: 606e3a5987c83574a84683e4a708968a, type: 3}
+  audioClip: {fileID: 8300000, guid: be12789fb869157459a35482194df443, type: 3}
+  isKinematic: 0
+  isConvex: 0
+--- !u!114 &3473964684309160858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3564412430697805421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &4795376160890888775
 GameObject:
   m_ObjectHideFlags: 0
@@ -272,7 +340,7 @@ MonoBehaviour:
   isBuildComplete: 0
   dragObstacle: 1
   mainObject: {fileID: 7676064579565162013}
-  subObject: {fileID: 124588465074315047, guid: 2c40319f2d9c63240974c1edb6259c85, type: 3}
+  subObject: {fileID: 124588465074315047, guid: 8bdf9889809419d4a94d662431b7dc30, type: 3}
   connectObject: {fileID: 5590133061641818543, guid: 5d008010f59527a44a4f713dd0052f5a, type: 3}
 --- !u!54 &902383486261621197
 Rigidbody:
@@ -321,6 +389,9 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 5225159068906842871}
+  - {fileID: 3473964684309160858}
+  - {fileID: 7828645754673562438}
+  - {fileID: 2568149846061519264}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -447,6 +518,8 @@ GameObject:
   - component: {fileID: 6625866246867433498}
   - component: {fileID: 5219234444118252684}
   - component: {fileID: 4963363305116205135}
+  - component: {fileID: 4920507206047297364}
+  - component: {fileID: 2568149846061519264}
   m_Layer: 8
   m_Name: Tower_base
   m_TagString: Untagged
@@ -520,3 +593,35 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4920507206047297364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6062734678127023780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f51dee51e723cc419eac3cf2d9b09d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  refObj: {fileID: 919132149155446097, guid: cd3ffc00d98c4af4c8578a8ee3f29b34, type: 3}
+  audioClip: {fileID: 8300000, guid: be12789fb869157459a35482194df443, type: 3}
+  isKinematic: 0
+  isConvex: 0
+--- !u!114 &2568149846061519264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6062734678127023780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1

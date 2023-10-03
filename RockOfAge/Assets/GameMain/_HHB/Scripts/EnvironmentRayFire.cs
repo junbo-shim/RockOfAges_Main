@@ -1,15 +1,17 @@
 using UnityEngine;
 using RayFire;
+using Photon.Pun;
 
 
 // 한번에 부서지는 게임오브젝트
-public class EnvironmentRayFire : MonoBehaviour
+public class EnvironmentRayFire : MonoBehaviourPun
 {
     private MeshRenderer[] meshRenderers;
 
     public GameObject refObj;
     public AudioClip audioClip;
     public bool isKinematic = false;
+    public bool isConvex = true;
     private void Awake()
     {
         meshRenderers = GetComponentsInChildren<MeshRenderer>();
@@ -82,18 +84,23 @@ public class EnvironmentRayFire : MonoBehaviour
             meshGo.GetComponent<RayfireRigid>().Initialize();
 
             Rigidbody rigidBody = gameObject.GetComponent<Rigidbody>();
-            rigidBody.isKinematic = isKinematic;
+            rigidBody.isKinematic = isKinematic; // 벤치
 
-            //MeshCollider meshCollider = gameObject.GetComponent<MeshCollider>();
-            //meshCollider.convex = false;
+
+            if (!isConvex)
+            {
+                rigidBody.isKinematic = true; // 벤치
+                MeshCollider meshCollider = gameObject.GetComponent<MeshCollider>();
+                meshCollider.convex = isConvex; // 빨간 문용              
+            }
 
 
         }
     }
 
     // meshRenderer들을 다 가져와서 부셔야함
-    // RPC
-    private void DemolishMeshRenderers()
+    [PunRPC]
+    public void DemolishMeshRenderers()
     {
         PlayDestroySound();
         for (int i = 0; i < meshRenderers.Length; i++)
@@ -111,15 +118,20 @@ public class EnvironmentRayFire : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
+        if (photonView.GetComponent<EnvironmentRayFire>()!=null && collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
             //this.gameObject.layer = LayerMask.NameToLayer("Environment");
-            DemolishMeshRenderers();
+            //DemolishMeshRenderers();
+            photonView.RPC("DemolishMeshRenderers", RpcTarget.All);
         }
     }
 
     public void PlayDestroySound()
     {
+        if (audioClip == null)
+        {
+            return;
+        }
         SoundManager.soundManager.GetSoundPooling(this.gameObject, audioClip);
     }
 }

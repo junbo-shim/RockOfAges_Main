@@ -259,7 +259,7 @@ public class ObstacleBase : MonoBehaviourPun
     }
     public virtual void Delete()
     {
-        PhotonNetwork.Destroy(gameObject);
+        photonView.RPC("RemoveInMaster", RpcTarget.All);
     }
 
     //타겟 서치

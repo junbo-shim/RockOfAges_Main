@@ -89,13 +89,34 @@ public partial class UIManager : MonoBehaviour
 
 
     public void PrintResult()
-    { 
-        
-        
+    {
+        PrintCrownOrChess();
+        ChangeFlagMaterialColor();
+        string player = NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerTeamNum.Split('_')[0];
+        int playerNumber;
+        ConvertStringToInt(player, out playerNumber);
+        PrintUserResult(playerNumber);
+    }
+
+
+    public void PrintUserResult(int playerNumber)
+    {
+        PrintPlayerName(playerNumber);
+        //PrintPlayerScore(playerNumber);
+        //PrintPlayerIcon(playerNumber);
+        PrintUserImg(playerNumber);
     }
 
 
 
+    // string을 넣으면 뒤에 숫자만 받아오는 함수
+    public int ConvertStringToInt(string player, out int playerNumber)
+    {
+        string str = player;
+        string result = System.Text.RegularExpressions.Regex.Replace(str, @"[^0-9]", "");
+        playerNumber = int.Parse(result);
+        return playerNumber;
+    }
 
     //// string을 넣으면 뒤에 숫자만 받아오는 함수
     //public int ConvertStringToInt(string player, out int playerNumber)
@@ -193,6 +214,83 @@ public partial class UIManager : MonoBehaviour
 
     //}
 
+    public void PrintPlayerName(int playerNumber)
+    {
+        switch (playerNumber)
+        {
+            case 1:
+                player1NameTxt.text = NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerName;
+                break;
+            case 2:
+                player2NameTxt.text = NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerName;
+                break;
+            case 3:
+                player3NameTxt.text = NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerName;
+                break;
+            case 4:
+                player4NameTxt.text = NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerName;
+                break;
+        }
+    }
+
+    public void PrintPlayerScore(int playerNumber)
+    {
+        switch (playerNumber)
+        {
+            case 1:
+                //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+                break;
+            case 2:
+                //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+                break;
+            case 3:
+                //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""]; 
+                break;
+            case 4:
+                //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+                break;
+        }
+    }
+
+    public void PrintPlayerIcon(int playerNumber)
+    {
+        switch (playerNumber)
+        {
+            case 1:
+                //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+                break;
+            case 2:
+                //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+                break;
+            case 3:
+                //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""]; 
+                break;
+            case 4:
+                //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+                break;
+        }
+
+    }
+
+    public void PrintUserImg(int playerNumber)
+    {
+        switch (playerNumber)
+        {
+            case 1:
+                player1userImg.gameObject.SetActive(true);
+                break;
+            case 2:
+                player2userImg.gameObject.SetActive(true);
+                break;
+            case 3:
+                player3userImg.gameObject.SetActive(true);
+                break;
+            case 4:
+                player4userImg.gameObject.SetActive(true);
+                break;
+        }
+    }
+
     public void PrintCrownOrChess()
     {
         int result = CycleManager.cycleManager.resultState;
@@ -236,8 +334,6 @@ public partial class UIManager : MonoBehaviour
 
     #endregion
 
-    //----------------- 준보형 이거 형이 뜯어가세요
-    // 버튼이니깐 OnClick으로 하시면 될 꺼 같습니다
     public void BackToLobby()
     {
         // 만약 잘 안먹히면 주석 풀고 사용

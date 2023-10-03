@@ -8,8 +8,8 @@ public partial class UIManager: MonoBehaviour
     #region 변수
     [Header("UI")]
     public GameObject commonUI;
-    // ! Photon
-    public GameObject mirrorUI;
+    //// ! Photon
+    //public GameObject mirrorUI;
     // M키 누른시간과 bool 변수
     private bool _mButtonPressed = false;
     private float _pressedTime = 0f;

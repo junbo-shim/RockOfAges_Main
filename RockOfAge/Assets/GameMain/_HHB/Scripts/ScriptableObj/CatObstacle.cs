@@ -22,7 +22,6 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
         base.Init();
         cat = transform.GetChild(0);
         catMother = transform;
-        status = new ObstacleStatus(status);
         //obstacleRigidBody = transform.GetChild(0).GetComponent<Rigidbody>();
         obstacleAnimator = transform.GetChild(0).GetComponent<Animator>();
         //obstacleRenderer = transform.GetChild(0).GetComponentInChildren<SkinnedMeshRenderer>();

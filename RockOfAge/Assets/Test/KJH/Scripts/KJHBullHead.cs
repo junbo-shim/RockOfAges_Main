@@ -34,6 +34,13 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         
     }
 
+    Vector3 GetProjectionVector(Vector3 vector)
+    {
+        
+        return Vector3.ProjectOnPlane(vector, GetPlaneNormal());
+
+    }
+
     Vector3 GetPlaneNormal()
     {
         Vector3 plane;
@@ -83,12 +90,13 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
                 }
             }
         }
+        //회전
         else if (isStaring)
         {
             // 바위를 바라보는 동안 회전
             Vector3 direction = (target.transform.position - transform.position).normalized;
             direction.y = 0; // Y 축 이동 금지
-            Quaternion targetRotation =  Quaternion.LookRotation(direction);
+            Quaternion targetRotation =  Quaternion.LookRotation(GetProjectionVector(direction));
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * chargeSpeed);
 
             // 2초가 지났는지 확인
@@ -99,10 +107,12 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
                 isCharging = true;
             }
         }
+        //돌진
         else if (isCharging)
         {
             ChargeToLastDetectedRock();
         }
+        //복귀
         else if (isReturning)
         {
             ReturnToOriginalPosition();
@@ -117,8 +127,8 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         direction.y = 0; // Y 축 이동 금지
 
         // 돌진 중인 모루 황소를 이동 및 회전
-        obstacleRigidBody.velocity = direction * chargeSpeed;
-        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        Quaternion targetRotation = Quaternion.LookRotation(GetProjectionVector(direction));
+        obstacleRigidBody.velocity = GetProjectionVector(direction).normalized * chargeSpeed;
 
         // 도착 여부 확인
         if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(lastDetectedRockPosition.x, 0, lastDetectedRockPosition.z)) < 0.1f)
@@ -135,7 +145,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         direction.y = 0; // Y 축 이동 금지
 
         // 원래 위치로 복귀
-        obstacleRigidBody.velocity = direction * returnSpeed;
+        obstacleRigidBody.velocity = GetProjectionVector(direction).normalized * returnSpeed;
         animator.SetBool("isReturning", true);
 
         // 복귀 완료 여부 확인

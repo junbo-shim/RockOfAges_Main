@@ -194,6 +194,7 @@ MonoBehaviour:
   buildPositionY: 0.01
   peopleObject: {fileID: 0}
   peopleCount: 5
+  isBuildComplete: 0
   dragObstacle: 0
   colliderParts: {fileID: 1437448489764677097}
   isAttacked: 0

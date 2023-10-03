@@ -16,7 +16,6 @@ public class CowSingleObstacle : MoveObstacleBase
     {
         base.Init();
         cow = GetComponent<Transform>();
-        status = new ObstacleStatus(status);
         obstacleMeshFilter = GetComponent<MeshFilter>();
         obstacleRenderers = GetComponentsInChildren<Renderer>();
         obstacleRigidBody = GetComponent<Rigidbody>();

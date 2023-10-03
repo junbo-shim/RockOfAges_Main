@@ -168,6 +168,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
 
         string teamNum = playerTeamNumber.Split('_')[1];
 
+        Debug.Log(teamNum+" 팀넘버");
         // ! Photon
         FindMyViewID();
         if (teamNum == "Team1")

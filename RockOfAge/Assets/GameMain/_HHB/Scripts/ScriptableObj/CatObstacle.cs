@@ -111,6 +111,11 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
 
     public void Hit(int damage)
     {
+        if (isAttacked)
+        {
+            return;
+        }
+
         HitReaction();
 
         currHealth -= damage;
@@ -176,10 +181,12 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
     public void SetDebuff(float velocityValue, float massValue, float jumpValue)
     {
         rockTransform.GetComponentInParent<RockBase>().SetObstacleMultiple(velocityValue, massValue, jumpValue);
+        rockTransform.GetComponentInParent<RockBase>().catObstacles.Add(this);
     }
 
     public void SetDebuffBack()
     {
         rockTransform.GetComponentInParent<RockBase>().ResetDebuff();
+        rockTransform.GetComponentInParent<RockBase>().catObstacles.Remove(this);
     }
 }

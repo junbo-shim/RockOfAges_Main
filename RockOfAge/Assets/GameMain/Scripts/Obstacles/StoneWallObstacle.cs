@@ -85,20 +85,22 @@ public class StoneWall : HoldObstacleBase, IHitObjectHandler
 
     public void HitReaction()
     {
+
+
         ChangePhase();
     }
 
     protected override void Dead()
     {
-        if (obstacleCollider != null)
-        {
-            if (obstacleCollider is MeshCollider)
-            {
-                (obstacleCollider as MeshCollider).convex = true;
-            }
-            obstacleCollider.isTrigger = true;
-        }
+        photonView.RPC("Demolish", RpcTarget.All);
+    }
 
-        Invoke("DestroyPhotonViewObject", 1f);
+    [PunRPC]
+    public void Demolish()
+    {
+        stateMesh[1].SetActive(false);
+        stateMesh[0].SetActive(true);
+        stateMesh[0].GetComponent<EnvironmentRayFire>().DemolishMeshRenderers();
+
     }
 }

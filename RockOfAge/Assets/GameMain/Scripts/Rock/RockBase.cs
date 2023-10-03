@@ -535,7 +535,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         {
             // ! Photon
             // 안전장치 if 문
-            if (dataContainerView.IsMine == true)
+            if (collision.gameObject.GetComponentInParent<Gate>().gateHP <= 0 && dataContainerView.IsMine == true)
             {
                 // enemyCameraQueue 를 확인하고 Dequeue 하는 메서드를 다른 ViewID 에게 발사
                 photonView.RPC("CheckTeamAndDequeue", RpcTarget.Others, photonView.ViewID.ToString());
@@ -686,15 +686,15 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
 
     IEnumerator EndAttackRoutine(bool destroy)
     {
+
+        if (!destroy)
+        { yield break; }
+
         isDestroy = true;
         yield return new WaitForSeconds(2f);
         CycleManager.cycleManager.ChangeCycleAttackToSelect();
         yield return new WaitForSeconds(1f);
-        if (destroy)
-        {
-
-            PhotonNetwork.Destroy(gameObject);
-        }
+        PhotonNetwork.Destroy(gameObject);
     }
 
     // ! Photon

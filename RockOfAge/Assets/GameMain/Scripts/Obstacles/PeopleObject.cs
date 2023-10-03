@@ -141,7 +141,7 @@ public class PeopleObject : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (!isUnable && collision.gameObject.layer == LayerMask.NameToLayer("Terrains"))
+        if (!isUnable && (collision.gameObject.layer == LayerMask.NameToLayer("Terrains")|| collision.gameObject.layer == LayerMask.NameToLayer("Default")))
         {
             boxCollider.isTrigger = true;
             isUnable = true;

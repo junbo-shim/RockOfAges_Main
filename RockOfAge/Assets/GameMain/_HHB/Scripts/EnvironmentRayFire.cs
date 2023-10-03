@@ -8,6 +8,8 @@ public class EnvironmentRayFire : MonoBehaviour
     private MeshRenderer[] meshRenderers;
 
     public GameObject refObj;
+    public AudioClip audioClip;
+    public bool isKinematic = false;
     private void Awake()
     {
         meshRenderers = GetComponentsInChildren<MeshRenderer>();
@@ -25,10 +27,19 @@ public class EnvironmentRayFire : MonoBehaviour
             // reference에서는 영향을 받지 않음
             //meshGo.GetComponent<RayfireRigid>().meshDemolition.am = meshDemolitionAmount;
 
+            // limitation/collision/by collision
+            meshGo.GetComponent<RayfireRigid>().limitations.col = false;
+
+            // Simulation/simulationType
+            meshGo.GetComponent<RayfireRigid>().simulationType = SimType.Sleeping;
+
+
             // Physics/material/type
             // material의 속성에는 영향을 주지만, 시뮬레이션 자체에는 영향을 크게 주지않는듯함.
             // reference가 가지는 demolition 방식이 더 주요한 인자
-            meshGo.GetComponent<RayfireRigid>().physics.mt = MaterialType.Brick;
+            meshGo.GetComponent<RayfireRigid>().physics.mt = MaterialType.Brick;            
+            
+
 
             // DemolitionType/referenceDemolition
             meshGo.GetComponent<RayfireRigid>().demolitionType = DemolitionType.ReferenceDemolition;
@@ -66,8 +77,15 @@ public class EnvironmentRayFire : MonoBehaviour
             meshGo.GetComponent<RayfireRigid>().meshDemolition.ch.frg = 3;
 
 
+
             // Main/Initialzation
             meshGo.GetComponent<RayfireRigid>().Initialize();
+
+            Rigidbody rigidBody = gameObject.GetComponent<Rigidbody>();
+            rigidBody.isKinematic = isKinematic;
+
+            //MeshCollider meshCollider = gameObject.GetComponent<MeshCollider>();
+            //meshCollider.convex = false;
 
 
         }
@@ -77,6 +95,7 @@ public class EnvironmentRayFire : MonoBehaviour
     // RPC
     private void DemolishMeshRenderers()
     {
+        PlayDestroySound();
         for (int i = 0; i < meshRenderers.Length; i++)
         {
             MeshRenderer meshRenderer = meshRenderers[i];
@@ -94,8 +113,13 @@ public class EnvironmentRayFire : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
-            this.gameObject.layer = LayerMask.NameToLayer("Environment");
+            //this.gameObject.layer = LayerMask.NameToLayer("Environment");
             DemolishMeshRenderers();
         }
+    }
+
+    public void PlayDestroySound()
+    {
+        SoundManager.soundManager.GetSoundPooling(this.gameObject, audioClip);
     }
 }

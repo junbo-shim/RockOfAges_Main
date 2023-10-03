@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum BGMSound
 { 
-   BATTLEFIELD5 = 0, FIGHT2 = 1, FIGHT = 2, HAVOC = 3, STRATEGY6 = 4, VALIANT = 5, EPICBATTLE = 6 , LENGHT = 7
+   BATTLEFIELD5 = 0, FIGHT2 = 1, FIGHT = 2, HAVOC = 3, STRATEGY6 = 4, VALIANT = 5, EPICBATTLE = 6
 }
 
 public class SoundManager : MonoBehaviour

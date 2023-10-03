@@ -20,7 +20,6 @@ public class KJHHeavenBull : MoveObstacleBase, IHitObjectHandler
     public GameObject mudPrefab;
 
     public float mudDuration = 1f;
-    public AudioSource audioSource;
     public AudioClip attackSound;
     public AudioClip attackCharge;
     public AudioClip idleSound;

@@ -199,7 +199,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 1423998194810433688}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -360,7 +361,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5881836963681715703}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 9383cb15a5942924c8870464b939a710, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

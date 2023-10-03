@@ -194,6 +194,7 @@ MonoBehaviour:
   buildPositionY: 0.01
   peopleObject: {fileID: 0}
   peopleCount: 5
+  isBuildComplete: 0
   dragObstacle: 0
   colliderParts: {fileID: 1437448489764677097}
   isAttacked: 0
@@ -233,7 +234,7 @@ AudioSource:
   m_GameObject: {fileID: 3174620012019050399}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7473686797664461170, guid: 0eafcd58104a8c9419d33ae176d0d748, type: 2}
   m_audioClip: {fileID: 8300000, guid: 747249831bcd9c443b1028ea99fb1ca2, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1

@@ -44,7 +44,7 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     // 리소스에서 인잇
     public void PackAwake()
     {
-        for (int i = 1; i < 4; i++)
+        for (int i = 1; i < 5; i++)
         {
             //GameObject rockPrefab = Resources.Load<GameObject>("Rocks/" + i);
             GameObject rockPrefab = Resources.Load<GameObject>(i.ToString());

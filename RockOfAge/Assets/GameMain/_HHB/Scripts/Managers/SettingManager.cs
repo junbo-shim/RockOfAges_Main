@@ -301,8 +301,8 @@ public class SettingManager : MonoBehaviour
         else 
         {
             masterMixer.SetFloat("Master", Mathf.Log10(sound) * 20);
-            previewSoundFloat[0] = sound;
             masterButton.image.sprite = soundAbled;
+            previewSoundFloat[0] = sound;
 
         }
     }
@@ -312,21 +312,30 @@ public class SettingManager : MonoBehaviour
         if (masterMuted == false)
         {
             masterButton.image.sprite = soundDisabled;
+            vfxButton.image.sprite = soundDisabled;
+            bgmButton.image.sprite = soundDisabled;
             masterMixer.SetFloat("Master", -80f);
             masterSlider.gameObject.SetActive(false);
+            vfxSlider.gameObject.SetActive(false);
+            bgmSlider.gameObject.SetActive(false);
             muteMasterSlider.SetActive(true);
-            VFXAudioButton();
-            BGMAudioButton();
+            muteVFXSlider.SetActive(true);
+            muteBGMSlider.SetActive(true);
+
         }
         else 
         {
-            muteMasterSlider.SetActive(false);
-            masterSlider.gameObject.SetActive(true);
             masterButton.image.sprite = soundAbled;
+            vfxButton.image.sprite = soundAbled;
+            bgmButton.image.sprite = soundAbled;
             masterMixer.SetFloat("Master", Mathf.Log10(previewSoundFloat[0])*20);
             masterSlider.value = previewSoundFloat[0];
-            VFXAudioButton();
-            BGMAudioButton();
+            masterSlider.gameObject.SetActive(true);
+            vfxSlider.gameObject.SetActive(true);
+            bgmSlider.gameObject.SetActive(true);
+            muteMasterSlider.SetActive(false);
+            muteVFXSlider.SetActive(false);
+            muteBGMSlider.SetActive(false);
         }
         masterMuted = !masterMuted;
     }
@@ -345,8 +354,9 @@ public class SettingManager : MonoBehaviour
         else
         {
             vfxMixer.SetFloat("VFX", Mathf.Log10(sound) * 20);
-            previewSoundFloat[1] = sound;
             vfxButton.image.sprite = soundAbled;
+            previewSoundFloat[1] = sound;
+
         }
     }
 
@@ -379,13 +389,13 @@ public class SettingManager : MonoBehaviour
         if (sound == -40f)
         {
             bgmMixer.SetFloat("BGM", -80f);
-            bgmButton.image.sprite = soundDisabled;
+            bgmButton.image.sprite = soundDisabled; 
         }
         else
         {
             bgmMixer.SetFloat("BGM", Mathf.Log10(sound) * 20);
-            previewSoundFloat[2] = sound;
             bgmButton.image.sprite = soundAbled;
+            previewSoundFloat[2] = sound;
         }
     }
 
@@ -416,24 +426,26 @@ public class SettingManager : MonoBehaviour
     public void OnRightMusicButton()
     {
         int index = SoundManager.soundManager.currentBGMIndex;
-        SoundManager.soundManager.StopMusic();
-        if (index < (int)BGMSound.LENGHT)
+        // 마지막에서 +면 0번으로
+        if (index == (int)BGMSound.EPICBATTLE)
         {
-            SoundManager.soundManager.currentBGMIndex++;
+            SoundManager.soundManager.currentBGMIndex = (int)BGMSound.BATTLEFIELD5;
         }
-        else { SoundManager.soundManager.currentBGMIndex = 0; }
+        else { SoundManager.soundManager.currentBGMIndex++; }
+        SoundManager.soundManager.StopMusic();
         SoundManager.soundManager.PlayBGMMusic((BGMSound)SoundManager.soundManager.currentBGMIndex);
     }
 
     public void OnLeftMusicButton()
     {
-        int index = SoundManager.soundManager.currentBGMIndex;
-        if (index-- == -1)
+        int index = SoundManager.soundManager.currentBGMIndex;       
+        // 첫번째에서 -면 6번으로 
+        if (index == (int)BGMSound.BATTLEFIELD5)
         {
             SoundManager.soundManager.currentBGMIndex = (int)BGMSound.EPICBATTLE;
         }
+        else { SoundManager.soundManager.currentBGMIndex--; }
         SoundManager.soundManager.StopMusic();
-        SoundManager.soundManager.currentBGMIndex--;
         SoundManager.soundManager.PlayBGMMusic((BGMSound)SoundManager.soundManager.currentBGMIndex);
     }
 

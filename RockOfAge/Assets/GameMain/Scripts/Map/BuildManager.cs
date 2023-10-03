@@ -557,11 +557,9 @@ public class BuildManager : MonoBehaviourPun/*, IPunObservable*/
     }
 
     //현재 건설된 아이템의 최대 건설 개수와 현재 건설 개수를 비교한다.
-    //true : 현재 건설 개수가 최대 건설보다 낮다
+    //true : 현재 건설 개수가 최대 건설보다 낮다 && 소지 골드가 설치비용보다 크거나 작다
     bool GetItemLimitState(int size)
     {
-
-
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("PscTestScene"))
         {
 
@@ -584,7 +582,8 @@ public class BuildManager : MonoBehaviourPun/*, IPunObservable*/
             buildCount = unitButton.GetComponent<CreateButton>().buildCount;
         
         }
-        return (buildCount+size <= buildLimit);
+        return (buildCount+size <= buildLimit &&
+            gold <= NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().playerGold);
     }
 
     //현재 grid위치의 주변 위치의 terrain의 상태를 전부 비교

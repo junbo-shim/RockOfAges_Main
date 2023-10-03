@@ -81,7 +81,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
 
     // ! Photon
     public PhotonView dataContainerView;
-
+    public GameObject myDataContainer;
 
     private void OnDrawGizmos()
     {
@@ -138,7 +138,8 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
     public virtual void Init()
     {
         // ! PSC Editted
-        dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
+        myDataContainer = NetworkManager.Instance.myDataContainer;
+        dataContainerView = myDataContainer.GetComponent<PhotonView>();
 
         if (photonView.IsMine)
         {
@@ -198,7 +199,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         // ! Photon
         if (photonView.IsMine == false)
         {
-            CycleManager.cycleManager.CheckTeamAndSaveQueue(dataContainerView.ViewID.ToString(), gameObject);
+            CycleManager.cycleManager.CheckTeamAndSaveQueue(gameObject);
             //UIManager.uiManager.RotateMirror();
         }
 
@@ -663,8 +664,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         if (dataContainerView.IsMine == true)
         {
             // enemyCameraQueue 를 확인하고 Dequeue 하는 메서드를 다른 ViewID 에게 발사
-            photonView.RPC("CheckTeamAndDequeue", RpcTarget.Others, 
-                dataContainerView.ViewID.ToString(), photonView.ViewID.ToString());
+            photonView.RPC("CheckTeamAndDequeue", RpcTarget.Others, photonView.ViewID.ToString());
         }
 
         PlayDestroySound(true);
@@ -686,12 +686,18 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
     // ! Photon
     // CycleManager 의 CheckTeamAndSaveQueue 메서드와 세트 (매개변수로 송신자 ViewID 와 송신자의 돌 ViewID 를 전달)
     [PunRPC]
-    public void CheckTeamAndDequeue(string senderViewID, string senderRockViewID) 
+    public void CheckTeamAndDequeue(string senderRockViewID)
     {
-        // RPC 를 보낸 View ID 에서 Team 번호만 추출한다.
-        string senderTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[senderViewID].ToString().Split('_')[1];
-        // RPC 를 수신한 View ID 에서 Team 번호만 추출한다.
-        string myTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[dataContainerView.ViewID.ToString()].ToString().Split('_')[1];
+
+        // senderRockViewID 에서 Rock 의 Owner 를 알아낸다
+        string senderViewID = CycleManager.cycleManager.DropLastThreeChar(senderRockViewID) + "001";
+        // NetworkManager 에 캐싱되어 있는 여러 PlayerDataContainer 중 senderViewID 와 일치하는 PlayerDataContainer 찾는다
+        PlayerDataContainer rockOwnerContainer = 
+            NetworkManager.Instance.dataContainers.Find(x => x.PlayerViewID == senderViewID);
+        // rockOwnerContainer 의 senderTeamNumber 에서 Team 번호만 추출한다
+        string senderTeamNumber = rockOwnerContainer.PlayerTeamNum.ToString().Split('_')[1];
+        // RPC 를 수신한 View ID 에서 Team 번호만 추출한다
+        string myTeamNumber = myDataContainer.GetComponent<PlayerDataContainer>().PlayerTeamNum.Split('_')[1];
 
         // 만약 송신자와 수신자가 같은 Team 이라면 아무것도 하지 않는다.
         if (senderTeamNumber == myTeamNumber) 

@@ -79,6 +79,8 @@ MonoBehaviour:
   - SetBitArrayInRpc
   - TurnButtonFalse
   - TurnButtonTrue
+  - Buy
+  - SetStartGold
   - DemolishMeshRenderers
   - Demolish
   DisableAutoOpenWizard: 1

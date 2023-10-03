@@ -18,6 +18,7 @@ public partial class UIManager : MonoBehaviour
     public void Update()
     {
         TurnOnConditions();
+        PrintMyGold(NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().playerGold);
     }
 
 

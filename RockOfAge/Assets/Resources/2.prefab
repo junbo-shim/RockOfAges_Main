@@ -871,6 +871,7 @@ MonoBehaviour:
   jumpAudio: {fileID: 8300000, guid: 667cf21b7edcd5a4ab7e196a740c75c7, type: 3}
   rollAudio: {fileID: 8300000, guid: 5f917e1e7eaf1934895e20bd62581fbd, type: 3}
   dataContainerView: {fileID: 0}
+  myDataContainer: {fileID: 0}
   refObj: {fileID: 919132149155446097, guid: 8b2d1dc40f4bf7c49822cdb48a253190, type: 3}
 --- !u!114 &262021309384784074
 MonoBehaviour:

@@ -3,7 +3,8 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 using TMPro;
-using Unity.VisualScripting;
+using System.Collections;
+
 
 public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
 {
@@ -14,6 +15,7 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     public string PlayerTeamNum;
 
     public float playerGold;
+    private WaitForSecondsRealtime goldAddTime;
     #endregion
 
 
@@ -25,6 +27,7 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
             stream.SendNext(PlayerViewID);
             stream.SendNext(ViewIDActorNum);
             stream.SendNext(PlayerTeamNum);
+            stream.SendNext(playerGold);
         }
         else
         {
@@ -32,6 +35,7 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
             PlayerViewID = (string)stream.ReceiveNext();
             ViewIDActorNum = (string)stream.ReceiveNext();
             PlayerTeamNum = (string)stream.ReceiveNext();
+            playerGold = (float)stream.ReceiveNext();
         }
     }
 
@@ -43,6 +47,8 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         PlayerViewID = photonView.ViewID.ToString();
         ViewIDActorNum = photonView.OwnerActorNr.ToString();
         gameObject.tag = "DataContainer";
+        playerGold = 800f;
+        goldAddTime = new WaitForSecondsRealtime(2f);
     }
 
 
@@ -69,13 +75,14 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
             {
                 NetworkManager.Instance.dataContainers.Add(tagItem.GetComponent<PlayerDataContainer>());
             }
+            // 게임 씬에 넘어가면 골드 획득 coroutine 시작
+            StartCoroutine("GetGold");
         }
     }
     #endregion
 
 
-    // 플레이어 데이터를 저장하는 RPC custom 메서드
-    [PunRPC]
+    // 플레이어 데이터를 저장하는 custom 메서드
     public void SavePlayerData() 
     {
         // 만약 photonView 가 달린 object 의 조작권이 나에게 있다면
@@ -120,12 +127,36 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         }
     }
 
+
+    // 현재 골드 체크해서 다시 coroutine 돌리는 메서드
+    public void RestartGoldCoroutine() 
+    {
+        // 현재 골드가 1000f 에 도달하여 Coroutine 이 멈춘 경우
+        if (playerGold >= 1000f)
+        {
+            // 골드 획득 coroutine 재시작
+            StartCoroutine("GetGold");
+        }
+    }
+
+
+    IEnumerator GetGold() 
+    {
+        while (playerGold < 1000f) 
+        {
+            yield return goldAddTime;
+            playerGold += 10f;
+        }
+    }
+
+
     #region master client 가 start button 을 눌렀을 때 loadlevel 하는 메서드
     [PunRPC]
     public void StartGame() 
     {
         // 데이터를 저장한다
-        photonView.RPC("SavePlayerData", RpcTarget.All);
+        //photonView.RPC("SavePlayerData", RpcTarget.All);
+        SavePlayerData();
 
         // 로드할 씬의 이름 작성
         PhotonNetwork.LoadLevel("0921");

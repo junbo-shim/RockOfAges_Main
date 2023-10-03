@@ -21,7 +21,7 @@ public class Gate : MonoBehaviourPun, IHitObjectHandler, IPunObservable
     //private float gateHP = GATE_MAX_HP;
     //{ 0924 홍한범
     // 게이트의 체력을 받아옴
-    private float gateHP = default;
+    public float gateHP = default;
     //} 0924 홍한범
    
 

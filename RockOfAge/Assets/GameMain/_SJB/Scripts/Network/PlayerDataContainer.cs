@@ -168,19 +168,5 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     }
     #endregion
 
-    [PunRPC]
-    public void LoadEndUI(string winnerTeam) 
-    {
-        string myTeam = 
-            NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerTeamNum.Split('_')[1];
 
-        if (myTeam == winnerTeam) 
-        {
-            CycleManager.cycleManager.DefineWinner();
-        }
-        else 
-        {
-            CycleManager.cycleManager.DefineLoser();
-        }
-    }
 }

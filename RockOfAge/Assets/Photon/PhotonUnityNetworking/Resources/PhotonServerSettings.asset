@@ -68,28 +68,17 @@ MonoBehaviour:
   - RPCTest
   - Check
   - CheckTeamAndDequeue
-
-  - ThrowRock
-  - PlayAttackAnimation
-  - SetActive
-  - PlayAnimationTrigger
-  - RemoveInMaster
-  - SetBitArrays
-  - SetBitArrayInRpc
-  - SendMyViewId
-  - MakeIsClickedFalse
-  - MakeIsClickedTrue
-  - MakeOtherButtonFalse
-  - MakeOtherButtonFalseRemote
-  - MakeOtherButtonTrue
-  - MakeOtherButtonTrueRemote
-  - CheckPlayerIdentifierNone
+  - 
   - CheckIdentifierNone
   - CheckIdentifierSomething
+  - PlayAnimationTrigger
+  - PlayAttackAnimation
+  - RemoveInMaster
+  - SavePlayerData
+  - SetActive
+  - SetBitArrayInRpc
   - TurnButtonFalse
   - TurnButtonTrue
-  - SavePlayerData
-
   DisableAutoOpenWizard: 1
-  ShowSettings: 1
-  DevRegionSetOnce: 1
+  ShowSettings: 0
+  DevRegionSetOnce: 0

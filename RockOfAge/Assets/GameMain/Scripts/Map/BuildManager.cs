@@ -583,7 +583,7 @@ public class BuildManager : MonoBehaviourPun/*, IPunObservable*/
         
         }
         return (buildCount+size <= buildLimit &&
-            gold <= NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().playerGold);
+            gold* size <= NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().playerGold);
     }
 
     //현재 grid위치의 주변 위치의 terrain의 상태를 전부 비교

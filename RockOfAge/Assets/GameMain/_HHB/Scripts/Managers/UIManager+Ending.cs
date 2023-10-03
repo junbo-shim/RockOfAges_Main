@@ -1,6 +1,8 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
+using UnityEngine.SceneManagement;
 
 // endingUI
 public partial class UIManager : MonoBehaviour
@@ -63,6 +65,10 @@ public partial class UIManager : MonoBehaviour
     private Transform resultHolder;
     private Transform resultImageHolder;
 
+    private Transform player1;
+    private Transform player2;
+    private Transform player3;
+    private Transform player4;
     #endregion
 
     #region Functions
@@ -73,6 +79,7 @@ public partial class UIManager : MonoBehaviour
         gameEndUI = GameObject.Find("GameEndUI").transform;
         buttonHolder = gameEndUI.Find("ButtonHolder");
         lobbyButton = buttonHolder.Find("LobbyButton").GetComponent<Button>();
+
         exitButton = buttonHolder.Find("ExitButton").GetComponent<Button>();
 
         resultHolder = gameEndUI.Find("ResultHolder");
@@ -111,6 +118,101 @@ public partial class UIManager : MonoBehaviour
         return playerNumber;
     }
 
+    //// string을 넣으면 뒤에 숫자만 받아오는 함수
+    //public int ConvertStringToInt(string player, out int playerNumber)
+    //{
+    //    string str = player;
+    //    string result = Regex.Replace(str, @"[^0-9]", "");
+    //    playerNumber = int.Parse(result);
+    //    return playerNumber;
+    //}
+
+
+    //public void PrintPlayerName(string player)
+    //{
+    //    int playerNumber;
+    //    ConvertStringToInt(player, out playerNumber);
+    //    switch (playerNumber)
+    //    {
+    //        case 1:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //        case 2:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //        case 3:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""]; 
+    //            break;
+    //        case 4:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //    }
+    //}
+
+    //public void PrintPlayerScore(string player)
+    //{
+    //    int playerNumber;
+    //    ConvertStringToInt(player, out playerNumber);
+    //    switch (playerNumber)
+    //    {
+    //        case 1:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //        case 2:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //        case 3:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""]; 
+    //            break;
+    //        case 4:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //    }
+    //}
+
+    //public void PrintPlayerIcon(string player)
+    //{
+    //    int playerNumber;
+    //    ConvertStringToInt(player, out playerNumber);
+    //    switch (playerNumber)
+    //    {
+    //        case 1:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //        case 2:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //        case 3:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""]; 
+    //            break;
+    //        case 4:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //    }
+
+    //}
+
+    //public void PrintUserImg(string player)
+    //{
+    //    int playerNumber;
+    //    ConvertStringToInt(player, out playerNumber);
+    //    switch (playerNumber)
+    //    {
+    //        case 1:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //        case 2:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //        case 3:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""]; 
+    //            break;
+    //        case 4:
+    //            //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
+    //            break;
+    //    }
+
+    //}
 
     public void PrintPlayerName(int playerNumber)
     {
@@ -233,8 +335,13 @@ public partial class UIManager : MonoBehaviour
     #endregion
 
     public void BackToLobby()
-    { 
-        // 로비로 돌아가는 기능
+    {
+        // 만약 잘 안먹히면 주석 풀고 사용
+        //PhotonNetwork.Disconnect();
+        SceneManager.LoadScene(NetworkManager.Instance.PhotonScene);
+        //PhotonNetwork.ConnectUsingSettings();
+        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.JoinLobby();
     }
 
     public void QutGame()

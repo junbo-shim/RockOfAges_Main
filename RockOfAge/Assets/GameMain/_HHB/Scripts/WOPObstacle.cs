@@ -1,27 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class WOPObstacle : HoldObstacleBase
 {
     // 공
     private new Transform transform;
 
-    private void Awake()
-    {
-        Init();
-    }
-
     //초기화
     protected override void Init()
     {
-        status = new ObstacleStatus(status);
+        base.Init();
         obstacleRigidBody = GetComponent<Rigidbody>();
         obstacleRigidBody.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         obstacleRigidBody.isKinematic = true;
         transform = GetComponent<Transform>();
         currHealth = status.Health;
     }
+
 
     private void Update()
     {
@@ -31,7 +28,7 @@ public class WOPObstacle : HoldObstacleBase
     //죽음
     protected override void Dead() 
     {
-        Destroy(this.gameObject);
+        PhotonNetwork.Destroy(this.gameObject);
     }
 
     private void TurnAroundObstacle()

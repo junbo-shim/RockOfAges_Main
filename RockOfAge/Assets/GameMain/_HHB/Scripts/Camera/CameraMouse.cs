@@ -1,5 +1,6 @@
 using UnityEngine;
 using Cinemachine;
+using Photon.Pun;
 using System.Collections;
 
 public class CameraMouse : MonoBehaviour
@@ -29,29 +30,44 @@ public class CameraMouse : MonoBehaviour
     // 마우스 이동 엣지간격
     private float edgeSize = 10f;
 
+    // ! Photon
+    public PhotonView dataContainerView;
+
+    // ! Photon
+    private void Awake()
+    {
+        dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
+    }
 
 
 
     private void Start()
     {
-        transposer = nowOnCamera.GetCinemachineComponent<CinemachineTransposer>();
+        // ! Photon
+        if (dataContainerView.IsMine == true) 
+        {
+            transposer = nowOnCamera.GetCinemachineComponent<CinemachineTransposer>();
+        }
     }
 
     private void Update()
     {
-
-        if (!CameraManager.isControlled && CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
+        // ! Photon
+        if (dataContainerView.IsMine == true) 
         {
-            MoveCameraFromKeyBoard();
-            RotateCameraTransition();
-            MoveCameraFromMouse();
-            ScrollMouse();
-            ClampCameras();
-        }
-        CameraManager.Instance.UpdateMyCameraCenterPoint();
-        if (!CameraManager.isControlled)
-        {
-            ChangeCameraToRock();
+            if (!CameraManager.isControlled && CycleManager.cycleManager.userState == (int)UserState.DEFENCE)
+            {
+                MoveCameraFromKeyBoard();
+                RotateCameraTransition();
+                MoveCameraFromMouse();
+                ScrollMouse();
+                ClampCameras();
+            }
+            CameraManager.Instance.UpdateMyCameraCenterPoint();
+            if (!CameraManager.isControlled)
+            {
+                ChangeCameraToRock();
+            }
         }
     }
 
@@ -92,11 +108,16 @@ public class CameraMouse : MonoBehaviour
     //{ ChangeCameraToRock()
     public void ChangeCameraToRock()
     {
-        if (CycleManager.cycleManager.userState == (int)UserState.ATTACK)
+        // ! Photon
+        //IsMine
+        if (dataContainerView.IsMine == true)
         {
-            rockCamera.gameObject.SetActive(true);
-            nowOnCamera.gameObject.SetActive(false);
-            nextOnCamera.gameObject.SetActive(false);
+            if (CycleManager.cycleManager.userState == (int)UserState.ATTACK)
+            {
+                rockCamera.gameObject.SetActive(true);
+                nowOnCamera.gameObject.SetActive(false);
+                nextOnCamera.gameObject.SetActive(false);
+            }
         }
     }
     //} ChangeCameraToRock()

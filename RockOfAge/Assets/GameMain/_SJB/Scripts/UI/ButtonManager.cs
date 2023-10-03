@@ -1,11 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
-using System.Collections.Generic;
-using System.Collections;
-using Unity.VisualScripting;
 
 public class ButtonManager : GlobalSingleton<ButtonManager>
 {
@@ -71,8 +69,11 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
 
     protected override void FixedUpdate()
     {
-        CheckCloseButton();
-        CheckMasterClient();
+        if (SceneManager.GetActiveScene().name == NetworkManager.Instance.PhotonScene) 
+        {
+            CheckCloseButton();
+            CheckMasterClient();
+        }
     }
 
     #region 모든 Panel 을 NetworkManager로부터 받아오는 메서드
@@ -231,6 +232,31 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     }
     #endregion
 
+    #region 로비 버튼들을 잠시 Disable 하는 메서드
+    public void PauseLobbyButtons()
+    {
+        lobbyOptionButton.interactable = false;
+        createRoomButton.interactable = false;
+        JoinRandomButton.interactable = false;
+    }
+    #endregion
+
+    #region 로비 버튼들을 다시 able 상태로 되돌리는 메서드
+    public void ResetLobbyButtons() 
+    {
+        lobbyOptionButton.interactable = true;
+        createRoomButton.interactable = true;
+        JoinRandomButton.interactable = true;
+    }
+    #endregion
+
+    #region Room Panel 켜는 메서드
+    public void OpenRoomPanel() 
+    {
+        roomPanel.localScale = Vector3.one;
+    }
+    #endregion
+
     #region PlayerDataContainer 가 생성된 후 찾아올 메서드
     public void FindDataContainer() 
     {
@@ -253,7 +279,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     {
         NetworkManager.Instance.StartQuick();
         PauseTitleButtons();
-        Invoke("ResetTitleButtons", 4f);
+        Invoke("ResetTitleButtons", 5f);
     }
     #endregion
 
@@ -286,7 +312,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     {
         NetworkManager.Instance.Login();
         PauseTitleButtons();
-        Invoke("ResetTitleButtons", 4f);
+        Invoke("ResetTitleButtons", 5f);        
         Invoke("PressClose", 2f);
     }
     #endregion
@@ -356,6 +382,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         {
             roomPanel.localScale = Vector3.zero;
             PhotonNetwork.LeaveRoom();
+            PhotonNetwork.JoinLobby();
         }
     }
     #endregion
@@ -412,7 +439,9 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         PhotonNetwork.CreateRoom(roomNameInput.text, roomOptions, null, null);
 
         PressClose();
-        roomPanel.localScale = Vector3.one;
+        PauseLobbyButtons();
+        Invoke("ResetLobbyButtons", 3f);
+        Invoke("OpenRoomPanel", 3f);
     }
     #endregion
 
@@ -420,7 +449,9 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     public void PressJoinRandomButton()
     {
         PhotonNetwork.JoinRandomRoom();
-        roomPanel.localScale = Vector3.one;
+        PauseLobbyButtons();
+        Invoke("ResetLobbyButtons", 3f);
+        Invoke("OpenRoomPanel", 3f);
     }
     #endregion
 
@@ -430,31 +461,44 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         if (PhotonNetwork.IsMasterClient == false)
         {
             FindDataContainer();
-            dataContainerView.RPC("SendPlayerPosition", RpcTarget.MasterClient, dataContainerView.ViewID, 0);
+            dataContainerView.RPC("SendPlayerPosition", RpcTarget.MasterClient, 
+                NetworkManager.Instance.playerNickName, dataContainerView.ViewID, 0);
         }
         else if (PhotonNetwork.IsMasterClient == true) 
         {
             if (NetworkManager.Instance.playerSeats[0] == false) 
             {
+                string masterNickName = NetworkManager.Instance.playerNickName;
                 string masterViewID = dataContainerView.ViewID.ToString();
 
+                //int beforeSeat = default;
+                Debug.Log(NetworkManager.Instance.playerNickName);
                 if (NetworkManager.Instance.roomSetting.ContainsKey(masterViewID)) 
                 {
                     string seatNumber = 
-                        NetworkManager.Instance.roomSetting[masterViewID].ToString();
+                        NetworkManager.Instance.roomSetting[masterNickName].ToString();
 
-                    int index = int.Parse(seatNumber.Split("player")[1]);
+                    int index = int.Parse(seatNumber.Split("Player")[1]);
+                    //
+                    //beforeSeat = index - 1;
+
                     NetworkManager.Instance.playerSeats[index - 1] = false;
-                    NetworkManager.Instance.roomSetting[masterViewID] = "player1";
-                    Debug.LogFormat("master = player1, player{0} 에서 이동함", index);
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player1_Team1";
+                    NetworkManager.Instance.roomSetting["Player1"] = masterNickName;
+                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
+                    Debug.LogFormat("master = Player1, Player{0} 에서 이동함", index);
                 }
                 else
                 {
-                    NetworkManager.Instance.roomSetting[masterViewID] = "player1";
-                    Debug.Log("master = player1");
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player1_Team1";
+                    NetworkManager.Instance.roomSetting["Player1"] = masterNickName;
+                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
+                    Debug.Log("master = Player1");
                 }
                 PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
                 NetworkManager.Instance.playerSeats[0] = true;
+                //
+                //dataContainerView.RPC("ChangeID", RpcTarget.All, dataContainerView.ViewID, 0, beforeSeat);
             }
             else if (NetworkManager.Instance.playerSeats[0] == true)
             {
@@ -468,31 +512,39 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         if (PhotonNetwork.IsMasterClient == false)
         {
             FindDataContainer();
-            dataContainerView.RPC("SendPlayerPosition", RpcTarget.MasterClient, dataContainerView.ViewID, 1);
+            dataContainerView.RPC("SendPlayerPosition", RpcTarget.MasterClient, 
+                NetworkManager.Instance.playerNickName, dataContainerView.ViewID, 1);
         }
         else if (PhotonNetwork.IsMasterClient == true) 
         {
             if (NetworkManager.Instance.playerSeats[1] == false)
             {
+                string masterNickName = NetworkManager.Instance.playerNickName;
                 string masterViewID = dataContainerView.ViewID.ToString();
 
+                Debug.Log(NetworkManager.Instance.playerNickName);
                 if (NetworkManager.Instance.roomSetting.ContainsKey(masterViewID))
                 {
                     string seatNumber =
-                        NetworkManager.Instance.roomSetting[masterViewID].ToString();
+                        NetworkManager.Instance.roomSetting[masterNickName].ToString();
 
-                    int index = int.Parse(seatNumber.Split("player")[1]);
+                    int index = int.Parse(seatNumber.Split("Player")[1]);
                     NetworkManager.Instance.playerSeats[index - 1] = false;
-                    NetworkManager.Instance.roomSetting[masterViewID] = "player2";
-                    Debug.LogFormat("master = player2, player{0} 에서 이동함", index);
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player2_Team1";
+                    NetworkManager.Instance.roomSetting["Player2"] = masterNickName;
+                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
+                    Debug.LogFormat("master = Player2, Player{0} 에서 이동함", index);
                 }
                 else
                 {
-                    NetworkManager.Instance.roomSetting[masterViewID] = "player2";
-                    Debug.Log("master = player2");
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player2_Team1";
+                    NetworkManager.Instance.roomSetting["Player2"] = masterNickName;
+                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
+                    Debug.Log("master = Player2");
                 }
                 PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
                 NetworkManager.Instance.playerSeats[1] = true;
+                //dataContainerView.RPC("ChangeID", RpcTarget.All, dataContainerView.ViewID, 1);
             }
             else if(NetworkManager.Instance.playerSeats[1] == true)
             {
@@ -506,31 +558,39 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         if (PhotonNetwork.IsMasterClient == false)
         {
             FindDataContainer();
-            dataContainerView.RPC("SendPlayerPosition", RpcTarget.MasterClient, dataContainerView.ViewID, 2);
+            dataContainerView.RPC("SendPlayerPosition", RpcTarget.MasterClient, 
+                NetworkManager.Instance.playerNickName, dataContainerView.ViewID, 2);
         }
         else if (PhotonNetwork.IsMasterClient == true) 
         {
             if (NetworkManager.Instance.playerSeats[2] == false)
             {
+                string masterNickName = NetworkManager.Instance.playerNickName;
                 string masterViewID = dataContainerView.ViewID.ToString();
 
+                Debug.Log(NetworkManager.Instance.playerNickName);
                 if (NetworkManager.Instance.roomSetting.ContainsKey(masterViewID))
                 {
                     string seatNumber =
-                        NetworkManager.Instance.roomSetting[masterViewID].ToString();
+                        NetworkManager.Instance.roomSetting[masterNickName].ToString();
 
-                    int index = int.Parse(seatNumber.Split("player")[1]);
+                    int index = int.Parse(seatNumber.Split("Player")[1]);
                     NetworkManager.Instance.playerSeats[index - 1] = false;
-                    NetworkManager.Instance.roomSetting[masterViewID] = "player3";
-                    Debug.LogFormat("master = player3, player{0} 에서 이동함", index);
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player3_Team2";
+                    NetworkManager.Instance.roomSetting["Player3"] = masterNickName;
+                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
+                    Debug.LogFormat("master = Player3, Player{0} 에서 이동함", index);
                 }
                 else
                 {
-                    NetworkManager.Instance.roomSetting[masterViewID] = "player3";
-                    Debug.Log("master = player3");
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player3_Team2";
+                    NetworkManager.Instance.roomSetting["Player3"] = masterNickName;
+                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
+                    Debug.Log("master = Player3");
                 }
                 PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
                 NetworkManager.Instance.playerSeats[2] = true;
+                //dataContainerView.RPC("ChangeID", RpcTarget.All, dataContainerView.ViewID, 2);
             }
             else if (NetworkManager.Instance.playerSeats[2] == true)
             {
@@ -544,31 +604,39 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         if (PhotonNetwork.IsMasterClient == false)
         {
             FindDataContainer();
-            dataContainerView.RPC("SendPlayerPosition", RpcTarget.MasterClient, dataContainerView.ViewID, 3);
+            dataContainerView.RPC("SendPlayerPosition", RpcTarget.MasterClient, 
+                NetworkManager.Instance.playerNickName, dataContainerView.ViewID, 3);
         }
         else if (PhotonNetwork.IsMasterClient == true) 
         {
             if (NetworkManager.Instance.playerSeats[3] == false)
             {
+                string masterNickName = NetworkManager.Instance.playerNickName;
                 string masterViewID = dataContainerView.ViewID.ToString();
 
+                Debug.Log(NetworkManager.Instance.playerNickName);
                 if (NetworkManager.Instance.roomSetting.ContainsKey(masterViewID))
                 {
                     string seatNumber =
-                        NetworkManager.Instance.roomSetting[masterViewID].ToString();
+                        NetworkManager.Instance.roomSetting[masterNickName].ToString();
 
-                    int index = int.Parse(seatNumber.Split("player")[1]);
+                    int index = int.Parse(seatNumber.Split("Player")[1]);
                     NetworkManager.Instance.playerSeats[index - 1] = false;
-                    NetworkManager.Instance.roomSetting[masterViewID] = "player4";
-                    Debug.LogFormat("master = player4, player{0} 에서 이동함", index);
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player4_Team2";
+                    NetworkManager.Instance.roomSetting["Player4"] = masterNickName;
+                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
+                    Debug.LogFormat("master = Player4, Player{0} 에서 이동함", index);
                 }
                 else
                 {
-                    NetworkManager.Instance.roomSetting[masterViewID] = "player4";
-                    Debug.Log("master = player4");
+                    NetworkManager.Instance.roomSetting[masterViewID] = "Player4_Team2";
+                    NetworkManager.Instance.roomSetting["Player4"] = masterNickName;
+                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
+                    Debug.Log("master = Player4");
                 }
                 PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
                 NetworkManager.Instance.playerSeats[3] = true;
+                //dataContainerView.RPC("ChangeID", RpcTarget.All, dataContainerView.ViewID, 3);
             }
             else if (NetworkManager.Instance.playerSeats[3] == true)
             {
@@ -584,8 +652,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         if (PhotonNetwork.IsMasterClient == true) 
         {
             PhotonNetwork.AutomaticallySyncScene = true;
-            // 로드할 씬의 이름 작성
-            //PhotonNetwork.LoadLevel();
+            dataContainerView.RPC("StartGame", RpcTarget.All);
         }
         else 
         {

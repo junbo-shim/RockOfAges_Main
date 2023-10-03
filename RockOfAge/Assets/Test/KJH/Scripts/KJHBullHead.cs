@@ -5,9 +5,8 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     public float detectionRadius = 5f;     // 바위 감지 범위
     public float detectionAngle = 90f;     // 바위 감지 각도
     public LayerMask rockLayer;           // 바위 레이어
-    public float chargeSpeed = 5f;        // 돌진 속도
-    public float returnSpeed = 3f;        // 원래 위치로 돌아가는 속도
-    public AudioSource audioSource;
+    public float chargeSpeed = 3f;        // 돌진 속도
+    public float returnSpeed = 1f;        // 원래 위치로 돌아가는 속도
     public AudioClip attackSound;
     public AudioClip dieSound;
 
@@ -25,20 +24,41 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
 
 
 
-    void Start()
+    protected override void Init()
     {
-        Init();
+        base.Init();
         originalPosition = transform.position; // 시작 시 원래 위치 저장
 
         animator = GetComponent<Animator>(); // Animator 컴포넌트 가져오기
 
+        
+    }
 
-        audioSource = GetComponent<AudioSource>();
+    Vector3 GetPlaneNormal()
+    {
+        Vector3 plane;
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 10f, Global_PSC.FindLayerToName("Terrains")))
+        {
+            plane = hit.normal;
+        }
+        else
+        {
+            plane = Vector3.up;
+        }
+
+        return plane;
+
     }
 
     void Update()
     {
+        if (!isBuildComplete)
+        {
+            return;
+        }
 
+        //돌진, 복귀, 회전 상태가 아니면 rock 탐지
         if (!isCharging && !isReturning && !isStaring)
         {
             // 감지 범위 내에서 바위 감지
@@ -58,6 +78,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
                     stareTimer = Time.time;
                     // Attack 애니메이션 트리거 리셋
                     animator.ResetTrigger("Attack");
+
                     break;
                 }
             }
@@ -67,7 +88,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
             // 바위를 바라보는 동안 회전
             Vector3 direction = (target.transform.position - transform.position).normalized;
             direction.y = 0; // Y 축 이동 금지
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            Quaternion targetRotation =  Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * chargeSpeed);
 
             // 2초가 지났는지 확인
@@ -96,7 +117,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         direction.y = 0; // Y 축 이동 금지
 
         // 돌진 중인 모루 황소를 이동 및 회전
-        transform.position += direction * chargeSpeed * Time.deltaTime;
+        obstacleRigidBody.velocity = direction * chargeSpeed;
         Quaternion targetRotation = Quaternion.LookRotation(direction);
 
         // 도착 여부 확인
@@ -114,7 +135,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         direction.y = 0; // Y 축 이동 금지
 
         // 원래 위치로 복귀
-        transform.position += direction * returnSpeed * Time.deltaTime;
+        obstacleRigidBody.velocity = direction * returnSpeed;
         animator.SetBool("isReturning", true);
 
         // 복귀 완료 여부 확인
@@ -128,6 +149,12 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     }
     void OnCollisionEnter(Collision collision)
     {
+        if (!isBuildComplete)
+        {
+            return;
+
+        }
+
         if (isCharging && collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
             audioSource.clip = attackSound;

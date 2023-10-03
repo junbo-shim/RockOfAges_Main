@@ -1,4 +1,3 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -139,7 +138,7 @@ public class BuildManager : MonoBehaviour
                         //빌드 시작
                         Vector3 position;
                         Quaternion rotation;
-                        GetViewerPosition(dragBuildPosition[i], Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE, 0), out position, out rotation);
+                        GetViewerPosition(dragBuildPosition[i], Quaternion.Euler(0, (int)whereLookAt * ONCE_ROTATE_EULER_ANGLE-90, 0), out position, out rotation);
 
                         if (buildTarget.dragObstacle && i!=0 && i!= dragBuildPosition.Count-1)
                         {
@@ -543,7 +542,7 @@ public class BuildManager : MonoBehaviour
 
             return true;
         }
-        //Debug.Log("?");
+        
         if(buildTarget == null)
         {
             return false;
@@ -553,7 +552,13 @@ public class BuildManager : MonoBehaviour
         int buildLimit = default;
         ResourceManager.Instance.GetUnitGoldAndBuildLimitFromID(buildTarget.status.Id, out gold, out buildLimit);
         GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(buildTarget.status.Id);
-        int buildCount = unitButton.GetComponent<CreateButton>().buildCount;
+
+        int buildCount = 0;
+        if (unitButton != null) 
+        {
+            buildCount = unitButton.GetComponent<CreateButton>().buildCount;
+        
+        }
         return (buildCount+size <= buildLimit);
     }
 

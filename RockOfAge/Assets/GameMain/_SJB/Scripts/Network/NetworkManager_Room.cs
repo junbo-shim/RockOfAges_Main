@@ -1,9 +1,7 @@
 using UnityEngine;
 using TMPro;
-using Photon.Realtime;
 using Photon.Pun;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using Photon.Realtime;
 
 public partial class NetworkManager : GlobalSingleton<NetworkManager>
 {
@@ -26,9 +24,6 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     public override void OnCreatedRoom()
     {
         base.OnCreatedRoom();
-
-        Debug.Log("방 생성 완료");
-        Debug.Log("저는 마스터 클라이언트 입니다.");
         roomSetting = PhotonNetwork.CurrentRoom.CustomProperties;
     }
 
@@ -38,8 +33,6 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
 
         GameObject dataContainer =
             PhotonNetwork.Instantiate(NetworkManager.Instance.DataContainerPrefab.name, Vector3.zero, Quaternion.identity);
-        Debug.Log(dataContainer.GetComponent<PhotonView>().ViewID);
-        Debug.Log(dataContainer.GetComponent<PhotonView>().IsMine);
 
         if (dataContainer.GetComponent<PhotonView>().IsMine == true) 
         {
@@ -51,10 +44,23 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         }
     }
 
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+    }
+
     public override void OnLeftRoom()
     {
         base.OnLeftRoom();
 
-        roomSetting.Clear();
+        if (roomSetting != null)
+        {
+            roomSetting.Clear();
+        }
+
+        if (myDataContainer != null)
+        {
+            PhotonNetwork.Destroy(myDataContainer.GetComponent<PhotonView>());
+        }
     }
 }

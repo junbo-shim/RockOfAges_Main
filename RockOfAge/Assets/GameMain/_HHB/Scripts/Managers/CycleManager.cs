@@ -1,6 +1,9 @@
+using Cinemachine;
+using Photon.Pun;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public enum UserState
 { 
@@ -35,6 +38,12 @@ public class CycleManager : MonoBehaviour
     //public int gold = 1000;
     private bool _isEntered = false;
     public bool _isESCed = default;
+
+
+    // ! Photon
+    public PlayerDataContainer dataContainer;
+    public PhotonView dataContainerView;
+    public string layerPlayerTeamName;
     #endregion
 
 
@@ -50,6 +59,12 @@ public class CycleManager : MonoBehaviour
         rockState = (int)RockState.ROCKSELECT;
         resultState = (int)Result.NOTDEFINED;
         _isESCed = false;
+
+        // ! Photon
+        dataContainer = NetworkManager.Instance.myDataContainer;
+        dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
+        FindMyViewID();
+        SetCameraLayerMask(layerPlayerTeamName);
         SoundManager.soundManager.BGMCycle();
     }
 
@@ -59,11 +74,29 @@ public class CycleManager : MonoBehaviour
         //{
         //    return;
         //}
-        if (resultState == (int)Result.NOTDEFINED)
-        { 
-            GameCycle();
+
+        // ! Photon
+        if (dataContainerView.IsMine == true) 
+        {
+            if (resultState == (int)Result.NOTDEFINED)
+            { 
+                GameCycle();
+            }
         }
     }
+
+    // ! Photon
+    private void FindMyViewID()
+    {
+        foreach (var mydata in PhotonNetwork.CurrentRoom.CustomProperties)
+        {
+            if (mydata.Key.ToString() == dataContainer.GetComponent<PhotonView>().ViewID.ToString())
+            {
+                layerPlayerTeamName = mydata.Value.ToString();
+            }
+        }
+    }
+
 
     #region GameCycle
     //{ GameCycle()
@@ -102,26 +135,30 @@ public class CycleManager : MonoBehaviour
     // 공하나 이상 선택 & 유저 enter -> defence
     public void UpdateSelectionCycle()
     {
-        if (_isEntered == false && userState == (int)UserState.UNITSELECT)
+        // ! Photon
+        if (dataContainerView.IsMine == true)
         {
-            // 공 하나 이상 선택시 문자출력 설정
-            if (CheckUserBall() == true)
+            if (_isEntered == false && userState == (int)UserState.UNITSELECT)
             {
-                UIManager.uiManager.PrintReadyText();
-            }
-            else { UIManager.uiManager.PrintNotReadyText(); }
-
-            // 엔터누를시
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
-            {
-                // 검증 후 다음 사이클로
+                // 공 하나 이상 선택시 문자출력 설정
                 if (CheckUserBall() == true)
                 {
-                    _isEntered = true;
-                    UIManager.uiManager.ChangeStateUnitSelectToRockSelect();
-                    CameraManager.Instance.TurnOffSelectCamera();
+                    UIManager.uiManager.PrintReadyText();
                 }
-                else { return; }
+                else { UIManager.uiManager.PrintNotReadyText(); }
+
+                // 엔터누를시
+                if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+                {
+                    // 검증 후 다음 사이클로
+                    if (CheckUserBall() == true)
+                    {
+                        _isEntered = true;
+                        UIManager.uiManager.ChangeStateUnitSelectToRockSelect();
+                        CameraManager.Instance.TurnOffSelectCamera();
+                    }
+                    else { return; }
+                }
             }
         }
     }
@@ -179,13 +216,68 @@ public class CycleManager : MonoBehaviour
     //{ UpdateDefenceCycle()
     public void UpdateDefenceCycle()
     {
-        // 소환시간초과시 C 누르면
-        if (Input.GetKeyDown(KeyCode.C))
+        // ! Photon
+        if (dataContainerView.IsMine == true)
         {
-            ChangeCycleDefenceToAttack();
+            // 소환시간초과시 C 누르면
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                ChangeCycleDefenceToAttack();
+            }
+            else { return; }
         }
-        else { return; }
     }
+
+    // ! Photon
+    // PhotonViewID 의 앞자리만 판단하기 위해서 뒤 3자리를 버리게 하는 메서드
+    public string DropLastThreeChar(string inputString) 
+    {
+        // 매개변수로 받아온 string 을 char 배열로 변환한다
+        char[] stringToChar = inputString.ToCharArray();
+        // char 배열에서 뒷 3 자리를 빼기 위해 새로운 char 배열의 크기를 -3 한다
+        char[] resultArray = new char[stringToChar.Length - 3];
+        
+        // -3 한 배열의 크기만큼 반복문을 실행한다
+        for (int i = 0; i < stringToChar.Length - 3; i++) 
+        {
+            // 새로운 배열에다가 받아온 string -> char[] 값을 대입한다 (짧아진 길이만큼 뒷 부분은 날아간다)
+            resultArray[i] = stringToChar[i];
+        }
+        
+        // result 에 결과값을 담고 return 한다
+        string result = string.Join("", resultArray);
+
+        return result;
+    }
+
+    // ! Photon
+    // RockBase 의 CheckTeamAndDequeue 메서드와 세트 (매개변수로 나의 ViewID 와 생성된 돌 ViewID 를 전달)
+    public void CheckTeamAndSaveQueue(string myViewID, GameObject createdRock) 
+    {
+        // myViewID 에서 Team 번호만 추출한다
+        string myTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[myViewID].ToString().Split('_')[1];
+        // 생성된 돌의 ViewID 를 string 으로 변환하고
+        string rockViewID = createdRock.GetComponent<PhotonView>().ViewID.ToString();
+        // 뒷 3자리를 버린 후 001 을 더하여 생성자의 ViewID 를 만든다
+        string rockOwnerViewID = DropLastThreeChar(rockViewID) + "001";
+        // 생성자의 ViewID 에서 Team 번호만 추출한다
+        string rockTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[rockOwnerViewID].ToString().Split('_')[1];
+
+        // 만약 돌의 생성자가 내 팀이 아니라면
+        if (myTeamNumber != rockTeamNumber)
+        {
+            // enemyCameraQueue 의 크기가 0 일때만 바로 카메라로 생성된 돌을 따라간다
+            if (CameraManager.Instance.enemyCameraQueue.Count == 0) 
+            {
+                CameraManager.Instance.SetEnemyCamera(createdRock);
+            }
+            // 생성된 돌을 enemyCameraQueue 에 추가한다
+            CameraManager.Instance.enemyCameraQueue.Enqueue(createdRock);
+        }
+        //Debug.Log(createdRock.GetComponent<PhotonView>().ViewID.ToString());
+        //Debug.Log(CameraManager.Instance.enemyCameraQueue.Count);
+    }
+
 
     public void ChangeCycleDefenceToAttack()
     {
@@ -193,6 +285,7 @@ public class CycleManager : MonoBehaviour
         if (userRock != -1 && userState == (int)UserState.DEFENCE && rockState == (int)RockState.ROCKCREATED)
         {
             ResourceManager.Instance.InstatiateUserSelectedRock();
+
             userState = (int)UserState.ATTACK;
             rockState = (int)RockState.ROCKSELECT;
             ItemManager.itemManager.userRockChoosed[0] = -1;
@@ -251,10 +344,17 @@ public class CycleManager : MonoBehaviour
     // 플레이어 이름을 넣으면 team에 맞는 카메라 레이어를 바꿔주는 함수
     public void SetCameraLayerMask(string player_)
     {
-        string team = default;
+        // ! Photon
+        string team = player_.Split('_')[1];
+        #region Legacy
+        //int teamNum = (int)((int.Parse(player_.Split("Player")[1]) + 1) * 0.5f);
 
-        int teamNum = (int)((int.Parse(player_.Split("Player")[0]) + 1) * 0.5f);
-        team = "Team" + teamNum;
+        //char playerSplitNum = player_[6];
+        //int temp = (int)char.GetNumericValue(playerSplitNum);
+        //float temp2 = (temp + 1) * 0.5f;
+        //int teamNum = (int)(temp2);
+        //team = "Team" + teamNum;
+        #endregion
 
         AddCullingMask(team);
         AddLayer(team);
@@ -270,39 +370,123 @@ public class CycleManager : MonoBehaviour
         int team1 = Global_PSC.FindLayerToName("Team1");
         int team2 = Global_PSC.FindLayerToName("Team2");
 
+        // ! Photon
+        int maskDefault = Global_PSC.FindLayerToName("Default");
+        int maskTransparentFX = Global_PSC.FindLayerToName("TransparentFX");
+        int maskIgnoreRaycast = Global_PSC.FindLayerToName("Ignore Raycast");
+        int maskWater = Global_PSC.FindLayerToName("Water");
+        int maskUI = Global_PSC.FindLayerToName("UI");
+        int maskETC = Global_PSC.FindLayerToName("ETC");
+        int maskTerrains = Global_PSC.FindLayerToName("Terrains");
+        int maskObstacles = Global_PSC.FindLayerToName("Obstacles");
+        int maskWalls = Global_PSC.FindLayerToName("Walls");
+        int maskOutLand = Global_PSC.FindLayerToName("OutLand");
+        int maskCastle = Global_PSC.FindLayerToName("Castle");
+        int maskRock = Global_PSC.FindLayerToName("Rock");
+        int maskCheckPoint = Global_PSC.FindLayerToName("CheckPoint");
+        int maskPostProcess = Global_PSC.FindLayerToName("PostProcess");
+        int maskEnvironment = Global_PSC.FindLayerToName("Environment");
+
+
+        // ! Photon
         if (team_ == "Team1")
         {
             playerCam.cullingMask |= team1;
-            playerCam.cullingMask &= team2;
+
+            playerCam.cullingMask |= maskDefault;
+            playerCam.cullingMask |= maskTransparentFX;
+            playerCam.cullingMask |= maskIgnoreRaycast;
+            playerCam.cullingMask |= maskWater;
+            playerCam.cullingMask |= maskUI;
+            playerCam.cullingMask |= maskETC;
+            playerCam.cullingMask |= maskTerrains;
+            playerCam.cullingMask |= maskObstacles;
+            playerCam.cullingMask |= maskWalls;
+            playerCam.cullingMask |= maskOutLand;
+            playerCam.cullingMask |= maskCastle;
+            playerCam.cullingMask |= maskRock;
+            playerCam.cullingMask |= maskCheckPoint;
+            playerCam.cullingMask |= maskPostProcess;
+            playerCam.cullingMask |= maskEnvironment;
+
+
             enemyCam.cullingMask |= team2;
-            enemyCam.cullingMask &= team1;
+
+            enemyCam.cullingMask |= maskDefault;
+            enemyCam.cullingMask |= maskTransparentFX;
+            enemyCam.cullingMask |= maskIgnoreRaycast;
+            enemyCam.cullingMask |= maskWater;
+            enemyCam.cullingMask |= maskUI;
+            enemyCam.cullingMask |= maskETC;
+            enemyCam.cullingMask |= maskTerrains;
+            enemyCam.cullingMask |= maskObstacles;
+            enemyCam.cullingMask |= maskWalls;
+            enemyCam.cullingMask |= maskOutLand;
+            enemyCam.cullingMask |= maskCastle;
+            enemyCam.cullingMask |= maskRock;
+            enemyCam.cullingMask |= maskCheckPoint;
+            enemyCam.cullingMask |= maskPostProcess;
+            enemyCam.cullingMask |= maskEnvironment;
         }
-        else
+        // ! Photon
+        else if (team_ == "Team2")
         {
-            enemyCam.cullingMask |= team1;
-            enemyCam.cullingMask &= team2;
             playerCam.cullingMask |= team2;
-            playerCam.cullingMask &= team1;
+
+            playerCam.cullingMask |= maskDefault;
+            playerCam.cullingMask |= maskTransparentFX;
+            playerCam.cullingMask |= maskIgnoreRaycast;
+            playerCam.cullingMask |= maskWater;
+            playerCam.cullingMask |= maskUI;
+            playerCam.cullingMask |= maskETC;
+            playerCam.cullingMask |= maskTerrains;
+            playerCam.cullingMask |= maskObstacles;
+            playerCam.cullingMask |= maskWalls;
+            playerCam.cullingMask |= maskOutLand;
+            playerCam.cullingMask |= maskCastle;
+            playerCam.cullingMask |= maskRock;
+            playerCam.cullingMask |= maskCheckPoint;
+            playerCam.cullingMask |= maskPostProcess;
+            playerCam.cullingMask |= maskEnvironment;
+
+            enemyCam.cullingMask |= team1;
+
+            enemyCam.cullingMask |= maskDefault;
+            enemyCam.cullingMask |= maskTransparentFX;
+            enemyCam.cullingMask |= maskIgnoreRaycast;
+            enemyCam.cullingMask |= maskWater;
+            enemyCam.cullingMask |= maskUI;
+            enemyCam.cullingMask |= maskETC;
+            enemyCam.cullingMask |= maskTerrains;
+            enemyCam.cullingMask |= maskObstacles;
+            enemyCam.cullingMask |= maskWalls;
+            enemyCam.cullingMask |= maskOutLand;
+            enemyCam.cullingMask |= maskCastle;
+            enemyCam.cullingMask |= maskRock;
+            enemyCam.cullingMask |= maskCheckPoint;
+            enemyCam.cullingMask |= maskPostProcess;
+            enemyCam.cullingMask |= maskEnvironment;
         }
     }
 
     public void AddLayer(string team_)
     {
         #region mainCameras
-        GameObject[] playerCameras = new GameObject[4];
+        GameObject[] playerCameras = new GameObject[9];
         playerCameras[0] = Global_PSC.FindTopLevelGameObject("PlayerCamera");
         playerCameras[1] = Global_PSC.FindTopLevelGameObject("TopViewCamera");
         playerCameras[2] = Global_PSC.FindTopLevelGameObject("ClickedTopViewCamera");
         playerCameras[3] = Global_PSC.FindTopLevelGameObject("RockCamera");
         playerCameras[4] = Global_PSC.FindTopLevelGameObject("SelectCamera");
         // 4,5,6 추가됨
-        playerCameras[4] = Global_PSC.FindTopLevelGameObject("GameEndCameraTeam1"); // team1 성문
-        playerCameras[5] = Global_PSC.FindTopLevelGameObject("GameEndCameraTeam2"); // tema2 성문
-        playerCameras[6] = Global_PSC.FindTopLevelGameObject("GameEndResultCamera"); // 게임 엔드 카메라
+        playerCameras[5] = Global_PSC.FindTopLevelGameObject("GameEndCameraTeam1"); // team1 성문
+        playerCameras[6] = Global_PSC.FindTopLevelGameObject("GameEndCameraTeam2"); // tema2 성문
+        playerCameras[7] = Global_PSC.FindTopLevelGameObject("GameEndResultCamera"); // 게임 엔드 카메라
+        playerCameras[8] = Global_PSC.FindTopLevelGameObject("SelectFocus"); // 기물 선택 시 나오는 헬리캠
         #endregion
 
         #region subCameras
-        GameObject[] enemyCameras = new GameObject[3];
+        GameObject[] enemyCameras = new GameObject[2];
         enemyCameras[0] = Global_PSC.FindTopLevelGameObject("EnemyCamera");
         enemyCameras[1] = Global_PSC.FindTopLevelGameObject("EnemyRockCamera");
         // 2번빠짐

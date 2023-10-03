@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CatObstacle : MoveObstacleBase, IHitObjectHandler
 {
-    public AudioSource audioSource;
     public AudioClip attackSound;
 
     private float attackRange = 8f;
@@ -18,19 +17,16 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
     private Quaternion catMotherOrigianlRotation;
     private float attackSoundDelay = 0.3f; // 재생 딜레이 설정 (예: 5초)
 
-    private void Awake()
-    {
-        Init();
-    }
-
     protected override void Init()
     {
+        base.Init();
         cat = transform.GetChild(0);
         catMother = transform;
         status = new ObstacleStatus(status);
-        obstacleRigidBody = transform.GetChild(0).GetComponent<Rigidbody>();
+        //obstacleRigidBody = transform.GetChild(0).GetComponent<Rigidbody>();
         obstacleAnimator = transform.GetChild(0).GetComponent<Animator>();
-        obstacleRenderer = transform.GetChild(0).GetComponentInChildren<SkinnedMeshRenderer>();
+        //obstacleRenderer = transform.GetChild(0).GetComponentInChildren<SkinnedMeshRenderer>();
+        obstacleRenderers = GetComponentsInChildren<Renderer>();
         currHealth = status.Health;
         standPosition = catMother.transform.position;
         catMotherOrigianlRotation = catMother.transform.rotation;
@@ -40,6 +36,11 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
 
     private void Update()
     {
+        if (!isBuildComplete)
+        {
+            return;
+
+        }
         if (!isAttacked && FindTarget())
         {
             MoveCat(rockTransform);

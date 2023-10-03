@@ -4,18 +4,26 @@ using UnityEngine;
 
 public class WOPchildObstacle : MonoBehaviour, IHitObjectHandler
 {
-    private Rigidbody target;
+   // private Rigidbody target;
     private Transform child;
+    private ObstacleBase parent;
     private float hp;
 
-    private void Awake()
+    protected void Awake()
     {
         hp = 50f;
         child = GetComponent<Transform>();
+        parent = transform.parent.GetComponentInParent<ObstacleBase>();
+
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (!parent.isBuildComplete)
+        {
+            return;
+
+        }
         Rigidbody target = collision.gameObject.GetComponent<Rigidbody>();
         float obsForce = 200f;
         if (collision.gameObject.layer == LayerMask.NameToLayer("Rock"))

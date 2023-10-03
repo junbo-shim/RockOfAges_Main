@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
 {
@@ -9,8 +10,6 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
     private GameObject colliderParts = default;
     [SerializeField]
     private bool isAttacked = false;
-
-    public AudioSource audioSource;
 
     //init
     private void Awake()
@@ -21,8 +20,7 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
     protected override void Init()
     {
         base.Init();
-        audioSource = GetComponent<AudioSource>();
-        colliderParts = transform.GetChild(0).GetChild(1).GetChild(1).gameObject;
+        colliderParts = transform.GetChild(1).GetChild(1).GetChild(1).gameObject;
         obstacleCollider = colliderParts.GetComponent<Collider>();
         obstacleCollider.isTrigger = true;
     }
@@ -31,12 +29,6 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
     {
         //초기 animation 상태
         ActiveIdle();
-    }
-
-    //화면상에 보여질때 처음에는 흰색으로 시작.
-    private void OnEnable()
-    {
-        StartBuild(BUILD_TIME);
     }
 
     //충돌처리
@@ -109,6 +101,7 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
     {
         if (!isBuildComplete)
         {
+            //PhotonNetwork.Destroy(gameObject);
             Delete();
         }
 
@@ -122,7 +115,7 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
         currHealth -= damage;
         if (currHealth <= 0)
         {
-            Die();
+            Dead();
         }
     }
 
@@ -131,8 +124,8 @@ public class SpringBoardObstacle : HoldObstacleBase, IHitObjectHandler
         //throw new System.NotImplementedException();
     }
 
-    void Die()
+    protected override void Dead()
     {
-        Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
     }
 }

@@ -53,6 +53,24 @@ MonoBehaviour:
   - SendPlayer4Pos
   - SendPlayerPosition
   - ChangeMasterReadyValue
+  - StartGame
+  - MakeOthersDequeue
+  - MakeOthersEnqueue
+  - ChangeCheck
+  - ChangeID
+  - PrintHP
+  - SendHitToMaster
+  - ActivateHitInMaster
+  - UpdateGateHP
+  - RPCHit
+  - HitReaction
+  - CheckRockTeam
+  - RPCTest
+  - Check
+  - CheckTeamAndDequeue
+  - ThrowRock
+  - PlayAttackAnimation
+  - SetActive
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

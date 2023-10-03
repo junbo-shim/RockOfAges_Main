@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,10 +22,6 @@ public class StoneWall : HoldObstacleBase, IHitObjectHandler
     }
 
 
-    private void OnEnable()
-    {
-        StartBuild(BUILD_TIME);
-    }
 
     protected override void Init()
     {
@@ -37,7 +34,7 @@ public class StoneWall : HoldObstacleBase, IHitObjectHandler
         }
         stateMesh[0].SetActive(true);
         currCollider = stateMesh[0].GetComponent<MeshCollider>();
-        obstacleRenderer = stateMesh[0].GetComponent<MeshRenderer>();
+        obstacleRenderers = stateMesh[0].GetComponentsInChildren<Renderer>();
     }
 
     //맵에 Build
@@ -46,17 +43,22 @@ public class StoneWall : HoldObstacleBase, IHitObjectHandler
         ObstacleBase obstacle;
         if (currIndex == 0 || currIndex == count - 1)
         {
-            obstacle = Instantiate(mainObject, position, rotate);
+            obstacle = PhotonNetwork.Instantiate(mainObject.name, position, rotate).GetComponent<ObstacleBase>();
         }
         else
         {
-            obstacle = Instantiate(subObject, position, rotate);
+            obstacle = PhotonNetwork.Instantiate("StoneWallSub", position, rotate).GetComponent<ObstacleBase>();
         }
-        obstacle.transform.localScale = Vector3.one * .1f;
+        obstacle.transform.localScale = obstacle.transform.localScale;
+        {
+            //버튼 데이터 변경
+            GameObject unitButton = ResourceManager.Instance.FindUnitGameObjById(status.Id);
+            unitButton.GetComponent<CreateButton>().buildCount += 1;
+            UIManager.uiManager.RePrintUnitCount(status.Id);
+        }
         return obstacle;
 
     }
-
     void ChangePhase()
     {
         if (status.Health / transform.childCount > currHealth)
@@ -88,6 +90,14 @@ public class StoneWall : HoldObstacleBase, IHitObjectHandler
 
     protected override void Dead()
     {
-        Destroy(gameObject);
+        if (obstacleCollider != null)
+        {
+            if (obstacleCollider is MeshCollider)
+            {
+                (obstacleCollider as MeshCollider).convex = true;
+            }
+            obstacleCollider.isTrigger = true;
+        }
+        base.Dead();
     }
 }

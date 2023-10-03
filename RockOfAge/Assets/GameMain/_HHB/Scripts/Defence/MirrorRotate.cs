@@ -8,7 +8,6 @@ public class MirrorRotate : MonoBehaviour
     private bool _isRotating = false;
     private float addAngle = 10f;
 
-
     public void RotateMirror()
     {
         _mirror = this.gameObject;
@@ -21,7 +20,7 @@ public class MirrorRotate : MonoBehaviour
 
     }
 
-    IEnumerator RotateObject()
+    public IEnumerator RotateObject()
     {
         float startAngle = 0f;
         float targetAngle = 80f;
@@ -35,7 +34,7 @@ public class MirrorRotate : MonoBehaviour
         _isRotating = true;
     }
 
-    IEnumerator ReRotateObject()
+    public IEnumerator ReRotateObject()
     {
         float startAngle = 80f;
         float targetAngle = 0f;

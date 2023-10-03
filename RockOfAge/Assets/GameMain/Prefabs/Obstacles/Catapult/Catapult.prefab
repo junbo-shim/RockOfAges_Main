@@ -283,7 +283,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: {fileID: 11400000, guid: 7874c6c5501f0a64192d36378d81f0a0, type: 2}
   buildPositionY: 0
-  kjhObjectPrefab: {fileID: 2044133147384927099, guid: 8a36354b176d55b4c91e3978e6f53301, type: 3}
+  peopleObject: {fileID: 2044133147384927099, guid: 8a36354b176d55b4c91e3978e6f53301, type: 3}
   dragObstacle: 0
   detectionRadius: 10
   Rock:

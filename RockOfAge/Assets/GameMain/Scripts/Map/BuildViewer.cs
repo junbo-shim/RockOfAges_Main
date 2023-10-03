@@ -51,12 +51,12 @@ public class BuildViewer : MonoBehaviour
         Mesh sourceMesh;
         if (_meshFilter != null)
         {
-            meshFilter.transform.rotation = _meshFilter.transform.rotation;
+            meshFilter.transform.localRotation = _meshFilter.transform.localRotation;
             sourceMesh = _meshFilter.sharedMesh;
         }
         else
         {
-            meshFilter.transform.rotation = skinnedMeshRenderer.transform.rotation;
+            meshFilter.transform.localRotation = skinnedMeshRenderer.transform.localRotation;
             sourceMesh = skinnedMeshRenderer.sharedMesh;
         }
 

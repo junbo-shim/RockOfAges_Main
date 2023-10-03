@@ -1,7 +1,8 @@
+using Photon.Pun;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+
 
 public class ResourceManager : GlobalSingleton<ResourceManager>
 {
@@ -10,6 +11,14 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     // 유닛 리소스
     public Dictionary<int, GameObject> unitResources = new Dictionary<int, GameObject>();
 
+    // ! photon
+    //public GameObject userRockObject;
+    public string playerTeamNumber;
+    public Vector3 team1StartPoint;
+    public Vector3 team2StartPoint;
+    public PhotonView dataContainerView;
+    
+    //Vector3 startPointTeam1 = new Vector3(111.55f, 31.21f, 120f);
     public static Vector3 team1StartPos { get; private set;}
     public static Vector3 team2StartPos { get; private set; }
     public static Vector3 team1EndPos { get; private set; }
@@ -17,6 +26,12 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
 
     protected override void Awake()
     {
+        // ! Photon
+        team1StartPoint = new Vector3(-107f, 40f, -107f);
+        team2StartPoint = new Vector3(107f, 40f, 107f); 
+
+        dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
+        playerTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[dataContainerView.ViewID.ToString()].ToString();
         PackAwake();
         
         team1StartPos = Global_PSC.FindTopLevelGameObject("Team2").transform.GetChild(3).position + Vector3.up * 5;
@@ -31,16 +46,18 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     {
         for (int i = 1; i < 4; i++)
         {
-            GameObject rockPrefab = Resources.Load<GameObject>("Rocks/" + i);
+            //GameObject rockPrefab = Resources.Load<GameObject>("Rocks/" + i);
+            GameObject rockPrefab = Resources.Load<GameObject>(i.ToString());
             if (rockPrefab != null)
             {
                 rockResources[i] = rockPrefab;
             }
             else { Debug.Log("Failed To Load Rock" + i);}
         }
-        for (int i = 11; i < 19; i++)
+        for (int i = 11; i < 20; i++)
         {
-            GameObject unitPrefab = Resources.Load<GameObject>("Units/" + i);
+            //GameObject unitPrefab = Resources.Load<GameObject>("Units/" + i);
+            GameObject unitPrefab = Resources.Load<GameObject>(i.ToString());
             if (unitPrefab != null)
             {
                 unitResources[i] = unitPrefab;
@@ -143,12 +160,65 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     {
         int id = ItemManager.itemManager.userRockChoosed[0];
         GameObject gameObject = GetGameObjectByID(id);
-        GameObject team1 = Global_PSC.FindTopLevelGameObject("Team1");
-        GameObject userRock = Instantiate(gameObject, team1.transform);
-        Vector3 startPointTransform = new Vector3(114f, 32f, 108f);
-        CameraManager.Instance.SetRockCamera(userRock, startPointTransform);
+
+        GameObject userRockObject =
+               PhotonNetwork.Instantiate(gameObject.name, Vector3.zero, Quaternion.identity);
+        //userRockObject.transform.localScale = Vector3.one * 0.1f;
+        //userRockObject.SetChildPosition(team1StartPoint, "RockObject");
+
+        string teamNum = playerTeamNumber.Split('_')[1];
+
+        // ! Photon
+        FindMyViewID();
+        if (teamNum == "Team1")
+        {
+            if (userRockObject.GetComponent<PhotonView>().IsMine == true)
+            {
+                CameraManager.Instance.SetRockCamera(userRockObject, team1StartPoint);
+                userRockObject.GetComponent<RockBase>().teamNumber = 1;
+            }
+        }
+        else if (teamNum == "Team2")
+        { 
+            if (userRockObject.GetComponent<PhotonView>().IsMine == true)
+            {
+                CameraManager.Instance.SetRockCamera(userRockObject, team2StartPoint);
+                userRockObject.GetComponent<RockBase>().teamNumber = 2;
+            }
+        }
+        // 팀 1인지 2인지 구별하는 if가 필요합니다
+        // 팀2꺼 startPoint 없습니다. 밑은 1번팀꺼입니다
+        #region Legacy
+        //Vector3 startPointTransform = new Vector3(210f, 32f, 85f);
+        //Vector3 cameraTransform = new Vector3(210f, 32f, 82f);
+        //userRock.transform.position = startPointTransform;
+        //Debug.LogFormat("스타트 포인트 : {0}",startPointTransform);
+        //Debug.LogFormat("유저 락 포지션 : {0}",userRock.transform.position);
+        //GameObject rockCamera = FindTopLevelGameObject("RockCamera");
+        //GameObject rockCamera = FindTopLevelGameObject("NewRockCamera");
+        //CinemachineVirtualCamera virtualRockCamera = rockCamera.GetComponent<CinemachineVirtualCamera>();
+        //CinemachineFreeLook virtualRockCamera = rockCamera.GetComponent<CinemachineFreeLook>();
+        //virtualRockCamera.transform.position = cameraTransform;
+        //virtualRockCamera.Follow = userRock.transform;
+        //virtualRockCamera.LookAt = userRock.transform;
+        #endregion
     }
 
+
+    // ! Photon
+    private void FindMyViewID()
+    {
+        foreach (var mydata in PhotonNetwork.CurrentRoom.CustomProperties)
+        {
+            if (mydata.Key.ToString() == CycleManager.cycleManager.dataContainer.GetComponent<PhotonView>().ViewID.ToString())
+            {
+                playerTeamNumber = mydata.Value.ToString();
+            }
+        }
+    }
+
+
+    #region 검색용 함수
     public TextMeshProUGUI FindUnitTextById(int id_)
     {
         List<GameObject> textObjs = new List<GameObject>();
@@ -183,4 +253,6 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         }
         return targetObj;
     }
+    #endregion
 }
+

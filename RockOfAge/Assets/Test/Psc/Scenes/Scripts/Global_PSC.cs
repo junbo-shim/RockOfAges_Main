@@ -12,12 +12,13 @@ public static class Global_PSC
         { 
             CinemachineBrain camerabrsin = mainCamera.GetComponent<CinemachineBrain>();
             if (camerabrsin == null) return;
-                CinemachineFreeLook camera = camerabrsin.ActiveVirtualCamera as CinemachineFreeLook;
+            
+            CinemachineFreeLook camera = camerabrsin.ActiveVirtualCamera as CinemachineFreeLook;
+            if (camera == null) return;
 
             camera.GetRig(0).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = AmplitudeGain;
             camera.GetRig(1).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = AmplitudeGain;
             camera.GetRig(2).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = AmplitudeGain;
-
             camera.GetRig(0).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_FrequencyGain = FrequencyGain;
             camera.GetRig(1).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_FrequencyGain = FrequencyGain;
             camera.GetRig(2).GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_FrequencyGain = FrequencyGain;
@@ -95,6 +96,12 @@ public static class Global_PSC
         return 1f;
     }
 
+    public static void SetChildPosition(this GameObject obj ,Vector3 position, string childName)
+    {
+        Debug.Log(position);
+        obj.transform.Find(childName).position = position;
+    }
+    
     #region HHB GFUNC
     public static GameObject FindTopLevelGameObject(string name_)
     {

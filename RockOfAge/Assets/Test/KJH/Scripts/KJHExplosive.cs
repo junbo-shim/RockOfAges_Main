@@ -13,10 +13,6 @@ public class Explosive : HoldObstacleBase
 
     private bool exploded = false;
 
-    private void Start()
-    {
-        Init();
-    }
     void PlayExplosionSound()
     {
         if (explosion != null)
@@ -30,6 +26,11 @@ public class Explosive : HoldObstacleBase
     }
     private void OnCollisionEnter(Collision collision)
     {
+        if (!isBuildComplete)
+        {
+            return;
+
+        }
         if (!exploded && collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
             PlayExplosionSound();

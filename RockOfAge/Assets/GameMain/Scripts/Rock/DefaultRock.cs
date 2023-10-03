@@ -11,6 +11,12 @@ public class DefaultRock : RockBase
 
     private void FixedUpdate()
     {
+        // ! PSC Editted
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         if (isDestroy)
         {
             return;
@@ -29,7 +35,13 @@ public class DefaultRock : RockBase
 
     private void Update()
     {
-        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("0921"))
+        // ! PSC Editted
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
+        if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("PscTestScene"))
         {
             CameraManager.Instance.SetCameraMotionBlur(gameObject);
         }
@@ -46,8 +58,8 @@ public class DefaultRock : RockBase
         PlayMoveSound();
 
         //{ 0930 홍한범 조건 추가
-        if (CycleManager.cycleManager==null || CycleManager.cycleManager._isESCed == false)
-        { 
+        if (CycleManager.cycleManager == null || CycleManager.cycleManager._isESCed == false)
+        {
             GetInput();
             if (Input.GetKeyDown(KeyCode.Space) && isGround)
             {
@@ -59,7 +71,7 @@ public class DefaultRock : RockBase
             {
                 isFall = true;
                 StartCoroutine(ComebackCheckPointRoutine());
-            }        
+            }
         }
         //} 0930 홍한범 조건 추가
     }

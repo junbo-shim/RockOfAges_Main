@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UIElements;
 
-public class RockBase : MonoBehaviourPun, IHitObjectHandler
+public class RockBase : MonoBehaviourPun, IHitObjectHandler, IPunObservable
 {
     //돌 하위 오브젝트들
     [SerializeField]
@@ -172,7 +172,9 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         debuffJumpForce = 1f;
         //} 0920 홍한범
 
-
+        _rockName = NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerName;
+        rockName.tmpText.text = _rockName;
+        photonView.RPC("SetName", RpcTarget.All);
 
         rayfireRigid = rockObject.GetComponent<RayfireRigid>();
         trails = new Queue<RockTrail>();
@@ -209,6 +211,12 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         }
 
         PackRayFireInit();
+    }
+    [PunRPC]
+    public void SetName()
+    {
+        rockName.tmpText.text = _rockName;
+
     }
 
     //혹시 모를 오버로딩
@@ -1003,5 +1011,20 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         bomb.Explode(0.2f);
     }
 
+    string _rockName;
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting) 
+        {
+            //stream.SendNext(_rockName);
+        }
+        else 
+        {
+           // _rockName = (string)stream.ReceiveNext();
+        }
+
+
+       // rockName.tmpText.text = _rockName;
+    }
 }
 

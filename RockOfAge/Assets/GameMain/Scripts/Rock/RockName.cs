@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -12,7 +13,9 @@ public class RockName : MonoBehaviour
     [SerializeField]
     private GameObject rockObject;
     [SerializeField]
-    TMP_Text tmpText;
+    public TMP_Text tmpText;
+
+    public string _rockName = "";
     
     public bool isMineEnable = true;
     public bool isEnable = true;
@@ -26,7 +29,6 @@ public class RockName : MonoBehaviour
         rockObject = transform.parent.Find("RockObject").gameObject;
         tmpText = GetComponent<TMP_Text>();
         tmpText.color = color;
-        tmpText.text = id;
     }
 
     void Update()

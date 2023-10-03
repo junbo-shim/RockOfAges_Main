@@ -873,6 +873,7 @@ MonoBehaviour:
   fallAudio: {fileID: 8300000, guid: 413299d9b4bb1954a9f3f710438bc815, type: 3}
   jumpAudio: {fileID: 8300000, guid: b8d05ac201c6484428b1405f2d394f88, type: 3}
   rollAudio: {fileID: 8300000, guid: 5f917e1e7eaf1934895e20bd62581fbd, type: 3}
+  catObstacles: []
   dataContainerView: {fileID: 0}
   myDataContainer: {fileID: 0}
   refObj: {fileID: 919132149155446097, guid: 194aaf686d6213e4f9dcef48960dfa40, type: 3}

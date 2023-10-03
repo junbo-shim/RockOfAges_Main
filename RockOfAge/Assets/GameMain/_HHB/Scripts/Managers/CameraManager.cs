@@ -18,7 +18,10 @@ public class CameraManager : GlobalSingleton<CameraManager>
     protected override void Awake()
     {
         GameObject postProcessObj = Global_PSC.FindTopLevelGameObject("Post-process Volume");
-        postProcessVolume = postProcessObj.GetComponent<PostProcessVolume>();
+        if (postProcessObj != null)
+        {
+            postProcessVolume = postProcessObj.GetComponent<PostProcessVolume>();
+        }
     }
 
     public void SetCameraMotionBlur(GameObject rock)
@@ -56,6 +59,18 @@ public class CameraManager : GlobalSingleton<CameraManager>
         postProcessVolume.profile.TryGetSettings(out motionBlur);
         motionBlur.shutterAngle.overrideState = false;
     }
+
+    //public void DebugCameraBlur()
+    //{ 
+    //    postProcessVolume.profile.TryGetSettings(out depthOfField);
+
+    //    depthOfField.focalLength.value = 1f;
+    //    depthOfField.focalLength.value = 150f;
+
+    //    depthOfField.aperture.value = 0.1f;
+    //    depthOfField.aperture.value = 16f;
+
+    //}
 
     public void SetCameraBlurEffect()
     {

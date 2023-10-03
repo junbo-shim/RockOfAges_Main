@@ -65,6 +65,7 @@ public class CycleManager : MonoBehaviour
         dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
         FindMyViewID();
         SetCameraLayerMask(layerPlayerTeamName);
+        SoundManager.soundManager.BGMCycle();
     }
 
     private void Update()
@@ -203,7 +204,7 @@ public class CycleManager : MonoBehaviour
             UIManager.uiManager.ChangeAttackToSelect();
             CameraManager.Instance.TurnOnTopViewCamera();
             CameraManager.Instance.OffCameraMotionBlur();
-
+            SoundManager.soundManager.BGMCycle();
         }
         else { Debug.Log("GAME LOGIC ERROR"); }
     }
@@ -291,6 +292,7 @@ public class CycleManager : MonoBehaviour
             UIManager.uiManager.SwitchUIManager("attackUI");
             UIManager.uiManager.SwitchUIManager("defenceUI");
             UIManager.uiManager.SwitchRockReadyInfo();
+            SoundManager.soundManager.BGMCycle();
         }
     }
 
@@ -317,6 +319,7 @@ public class CycleManager : MonoBehaviour
         resultState = (int)Result.WIN;
         if (userState == (int)UserState.ENDING && resultState != (int)Result.NOTDEFINED)
         {
+            SoundManager.soundManager.BGMCycle();
             CameraManager.Instance.TurnOnGameEndCamera();
             UIManager.uiManager.ShutDownAllUIExpectEnding();
             UIManager.uiManager.PrintResult();
@@ -329,6 +332,7 @@ public class CycleManager : MonoBehaviour
         resultState = (int)Result.LOSE;
         if (userState == (int)UserState.ENDING && resultState != (int)Result.NOTDEFINED)
         {
+            SoundManager.soundManager.BGMCycle();
             CameraManager.Instance.TurnOnGameEndCamera();
             UIManager.uiManager.ShutDownAllUIExpectEnding();
             UIManager.uiManager.PrintResult();

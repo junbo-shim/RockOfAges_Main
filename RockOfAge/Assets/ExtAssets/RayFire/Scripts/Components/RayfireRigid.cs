@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
+
 
 namespace RayFire
 {
@@ -845,7 +846,7 @@ namespace RayFire
                 demolitionType = DemolitionType.None;
                 return;
             }
-            
+
             // Connectivity check
             activation.CheckConnectivity();
             
@@ -921,7 +922,8 @@ namespace RayFire
             // No fragments
             if (HasFragments == false)
                 return;
-            
+
+
             // Set velocity
             RFPhysic.SetFragmentsVelocity (this);
             

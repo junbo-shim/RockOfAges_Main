@@ -200,6 +200,8 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
             CycleManager.cycleManager.CheckTeamAndSaveQueue(dataContainerView.ViewID.ToString(), gameObject);
             //UIManager.uiManager.RotateMirror();
         }
+
+        PackRayFireInit();
     }
 
     //혹시 모를 오버로딩
@@ -665,7 +667,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
         }
 
         PlayDestroySound(true);
-        rayfireRigid.Demolish();
+        DemolishMeshRenderers();
         //rayfireRigid.Activate();
         StartCoroutine(EndAttackRoutine());
         //Destroy(gameObject);
@@ -755,7 +757,6 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
     protected virtual void PlayMoveSound()
     {
         float magnitude = new Vector3(rockRigidbody.velocity.x, 0, rockRigidbody.velocity.z).magnitude;
-
         if (isGround && magnitude > 0.1f)
         {
             if (!rockAudio.isPlaying)
@@ -894,5 +895,87 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
             rockState = RockState.JUMP;
         }
     }
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    ///                                RAYFIRE                                
+    /////////////////////////////////////////////////////////////////////////////
+
+    protected MeshRenderer[] meshRenderers;
+
+    public GameObject refObj;
+
+    protected void PackRayFireInit()
+    {
+        meshRenderers = GetComponentsInChildren<MeshRenderer>();
+        CreateRayFireComponents();
+    }
+
+    // Init
+    protected void CreateRayFireComponents()
+    {
+        foreach (MeshRenderer meshRenderer in meshRenderers)
+        {
+            GameObject meshGo = meshRenderer.gameObject;
+            meshGo.AddComponent(typeof(RayfireRigid));
+
+
+
+            // 고유의 rigidbody component 사용
+            meshGo.GetComponent<RayfireRigid>().physics.massBy = MassType.RigidBodyComponent;
+
+
+            // DemolitionType/referenceDemolition
+            meshGo.GetComponent<RayfireRigid>().demolitionType = DemolitionType.ReferenceDemolition;
+
+            // limitation/collision/by collision
+            meshGo.GetComponent<RayfireRigid>().limitations.col = false;
+
+            // Simulation/simulationType
+            meshGo.GetComponent<RayfireRigid>().simulationType = SimType.Sleeping;
+
+            // Reference
+            meshGo.GetComponent<RayfireRigid>().referenceDemolition.reference = refObj;
+
+            // fading/type
+            meshGo.GetComponent<RayfireRigid>().fading.fadeType = FadeType.FallDown;
+            meshGo.GetComponent<RayfireRigid>().fading.fadeTime = 1f;
+
+            // MeshDemolition/Properties/meshInput
+            meshGo.GetComponent<RayfireRigid>().meshDemolition.inp = RFDemolitionMesh.MeshInputType.AtInitialization;
+
+            // runtimeCaching
+            meshGo.GetComponent<RayfireRigid>().meshDemolition.ch.tp = CachingType.ByFragmentsPerFrame;
+            meshGo.GetComponent<RayfireRigid>().meshDemolition.ch.frm = 3;
+            meshGo.GetComponent<RayfireRigid>().meshDemolition.ch.frg = 10;
+
+
+            // Main/Initialzation
+            meshGo.GetComponent<RayfireRigid>().Initialize();
+
+        }
+    }
+
+    // Destroy
+    private void DemolishMeshRenderers()
+    {
+        for (int i = 0; i < meshRenderers.Length; i++)
+        {
+            MeshRenderer meshRenderer = meshRenderers[i];
+
+            GameObject meshGo = meshRenderer.gameObject;
+            meshRenderer.enabled = false;
+
+            meshGo.GetComponent<RayfireRigid>().Demolish();
+        }
+
+        GameObject bombObj = new GameObject();
+        RayfireBomb bomb = bombObj.AddComponent<RayfireBomb>();
+        bomb.range = 2f;
+        bomb.strength = 0.3f;
+        bomb.mask = Global_PSC.FindLayerToName("Environment");
+        bomb.Explode(0.2f);
+    }
+
 }
 

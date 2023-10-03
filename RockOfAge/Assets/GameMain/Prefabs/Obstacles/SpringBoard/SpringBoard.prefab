@@ -228,6 +228,8 @@ MonoBehaviour:
   buildPositionY: 0.01
   kjhObjectPrefab: {fileID: 0}
   dragObstacle: 0
+  colliderParts: {fileID: 0}
+  isAttacked: 0
   audioSource: {fileID: 950039377036954532}
 --- !u!54 &6100889804328855127
 Rigidbody:

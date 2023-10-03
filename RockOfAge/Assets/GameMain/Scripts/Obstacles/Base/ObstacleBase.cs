@@ -85,7 +85,13 @@ public class ObstacleBase : MonoBehaviourPun
     //제일 하단 스크립트에서 해당 함수를 불러온다(ONENABLE)
     protected virtual void StartBuild(float time)
     {
+
         if (obstacleRenderer == null)
+        {
+            return;
+        }
+
+        if (BuildManager.instance == null)
         {
             return;
         }

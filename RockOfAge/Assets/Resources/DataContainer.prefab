@@ -45,19 +45,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7138967e58969d40a98e2ec3b59bc97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  otherPlayerReady: 0
-  Player1Name: 
-  Player2Name: 
-  Player3Name: 
-  Player4Name: 
-  Player1ViewID: 0
-  Player2ViewID: 0
-  Player3ViewID: 0
-  Player4ViewID: 0
-  Player1Num: 
-  Player2Num: 
-  Player3Num: 
-  Player4Num: 
+  PlayerName: 
+  PlayerViewID: 0
+  ViewIDActorNum: 0
+  PlayerTeamNum: 
+  playerGold: 0
 --- !u!114 &8884712648900300517
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -40,9 +40,10 @@ public class CycleManager : MonoBehaviour
     public bool _isESCed = default;
 
 
-    // ! Photon
-    public PlayerDataContainer dataContainer;
-    public PhotonView dataContainerView;
+    // ! Photon : 나의 데이터를 가지고 있는 DataContainer
+    public GameObject myDataContainer;
+    public PhotonView myDataContainerView;
+    // ! Photon : DataContainer 에서 PlayerTeamNum 을 가져와서 Camera 의 Layer 설정에 활용할 변수
     public string layerPlayerTeamName;
     #endregion
 
@@ -61,9 +62,11 @@ public class CycleManager : MonoBehaviour
         _isESCed = false;
 
         // ! Photon
-        dataContainer = NetworkManager.Instance.myDataContainer;
-        dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
+        // NetworkManager 에서 myDataContainer 를 가져와 저장한다
+        myDataContainer = NetworkManager.Instance.myDataContainer;
+        myDataContainerView = myDataContainer.GetComponent<PhotonView>();
         FindMyViewID();
+        Debug.LogError(layerPlayerTeamName);
         SetCameraLayerMask(layerPlayerTeamName);
         SoundManager.soundManager.BGMCycle();
     }
@@ -76,7 +79,7 @@ public class CycleManager : MonoBehaviour
         //}
 
         // ! Photon
-        if (dataContainerView.IsMine == true) 
+        if (myDataContainerView.IsMine == true) 
         {
             if (resultState == (int)Result.NOTDEFINED)
             { 
@@ -88,13 +91,9 @@ public class CycleManager : MonoBehaviour
     // ! Photon
     private void FindMyViewID()
     {
-        foreach (var mydata in PhotonNetwork.CurrentRoom.CustomProperties)
-        {
-            if (mydata.Key.ToString() == dataContainer.GetComponent<PhotonView>().ViewID.ToString())
-            {
-                layerPlayerTeamName = mydata.Value.ToString();
-            }
-        }
+        // layerPlayerTeamName 변수에 myDataContainer 의 PlayerTeamNum 를 할당한다
+        // 내가 몇번째 플레이어이고 무슨 팀인지를 특정한다
+        layerPlayerTeamName = myDataContainer.GetComponent<PlayerDataContainer>().PlayerTeamNum;
     }
 
 
@@ -136,7 +135,7 @@ public class CycleManager : MonoBehaviour
     public void UpdateSelectionCycle()
     {
         // ! Photon
-        if (dataContainerView.IsMine == true)
+        if (myDataContainerView.IsMine == true)
         {
             if (_isEntered == false && userState == (int)UserState.UNITSELECT)
             {
@@ -217,7 +216,7 @@ public class CycleManager : MonoBehaviour
     public void UpdateDefenceCycle()
     {
         // ! Photon
-        if (dataContainerView.IsMine == true)
+        if (myDataContainerView.IsMine == true)
         {
             // 소환시간초과시 C 누르면
             if (Input.GetKeyDown(KeyCode.C))
@@ -255,13 +254,18 @@ public class CycleManager : MonoBehaviour
     public void CheckTeamAndSaveQueue(string myViewID, GameObject createdRock) 
     {
         // myViewID 에서 Team 번호만 추출한다
-        string myTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[myViewID].ToString().Split('_')[1];
+        string myTeamNumber = myDataContainer.GetComponent<PlayerDataContainer>().PlayerTeamNum.Split('_')[1];
+
         // 생성된 돌의 ViewID 를 string 으로 변환하고
         string rockViewID = createdRock.GetComponent<PhotonView>().ViewID.ToString();
+
         // 뒷 3자리를 버린 후 001 을 더하여 생성자의 ViewID 를 만든다
         string rockOwnerViewID = DropLastThreeChar(rockViewID) + "001";
+
+        PlayerDataContainer creatorContainer = NetworkManager.Instance.dataContainers.Find(x => x.PlayerViewID == rockOwnerViewID);
+
         // 생성자의 ViewID 에서 Team 번호만 추출한다
-        string rockTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[rockOwnerViewID].ToString().Split('_')[1];
+        string rockTeamNumber = creatorContainer.PlayerTeamNum.Split('_')[1];
 
         // 만약 돌의 생성자가 내 팀이 아니라면
         if (myTeamNumber != rockTeamNumber)
@@ -370,7 +374,7 @@ public class CycleManager : MonoBehaviour
         int team1 = Global_PSC.FindLayerToName("Team1");
         int team2 = Global_PSC.FindLayerToName("Team2");
 
-        // ! Photon
+        // ! Photon : Layer 를 찾아서 변수에 할당해둔다
         int maskDefault = Global_PSC.FindLayerToName("Default");
         int maskTransparentFX = Global_PSC.FindLayerToName("TransparentFX");
         int maskIgnoreRaycast = Global_PSC.FindLayerToName("Ignore Raycast");
@@ -388,7 +392,7 @@ public class CycleManager : MonoBehaviour
         int maskEnvironment = Global_PSC.FindLayerToName("Environment");
 
 
-        // ! Photon
+        // ! Photon : Camera 의 culling mask 값을 Team 에 따라 설정한다
         if (team_ == "Team1")
         {
             playerCam.cullingMask |= team1;
@@ -428,7 +432,7 @@ public class CycleManager : MonoBehaviour
             enemyCam.cullingMask |= maskPostProcess;
             enemyCam.cullingMask |= maskEnvironment;
         }
-        // ! Photon
+        // ! Photon : Camera 의 culling mask 값을 Team 에 따라 설정한다
         else if (team_ == "Team2")
         {
             playerCam.cullingMask |= team2;
@@ -489,7 +493,6 @@ public class CycleManager : MonoBehaviour
         GameObject[] enemyCameras = new GameObject[2];
         enemyCameras[0] = Global_PSC.FindTopLevelGameObject("EnemyCamera");
         enemyCameras[1] = Global_PSC.FindTopLevelGameObject("EnemyRockCamera");
-        // 2번빠짐
         #endregion
 
         foreach (var playerCamera in playerCameras)

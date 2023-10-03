@@ -14,7 +14,6 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
 
     private Transform lobbyPanel;
     private Transform createRoomPopup;
-    private Transform joinLockedRoomPopup;
     private Transform waitPopup;
 
     private Transform roomPanel;
@@ -40,19 +39,15 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     public GameObject roomPrefab;
     private Button createRoomButton;
     private Button JoinRandomButton;
-
     private Button createConfirmButton;
-    private Button commitPWButton;
     #endregion
 
     #region RoomPanel 버튼들
-    public Button startReadyButton;
+    public Button roomStartButton;
     public Button player1Button;
     public Button player2Button;
     public Button player3Button;
     public Button player4Button;
-
-    public bool isReady;
     #endregion
 
     public PhotonView dataContainerView;
@@ -87,7 +82,6 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         signupPopup = NetworkManager.Instance.SignupPopup;
 
         createRoomPopup = NetworkManager.Instance.CreateRoomPopup;
-        joinLockedRoomPopup = NetworkManager.Instance.JoinLockedRoomPopup;
         waitPopup = NetworkManager.Instance.WaitPopup;
     }
     #endregion
@@ -118,50 +112,48 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         JoinRandomButton = lobbyPanel.Find("Panel_Room").Find("Button_JoinRandomRoom").GetComponent<Button>();
 
         createConfirmButton = createRoomPopup.Find("Button_Create").GetComponent<Button>();
-        commitPWButton = joinLockedRoomPopup.Find("Button_Join").GetComponent<Button>();
     }
     #endregion
 
     #region Room Panel 의 모든 버튼을 찾아서 저장하는 메서드
     private void FindRoomButtons() 
     {
-        startReadyButton = roomPanel.Find("Button_RoomStartReady").GetComponent<Button>();
+        roomStartButton = roomPanel.Find("Button_RoomStart").GetComponent<Button>();
 
-        player1Button = roomPanel.Find("PlayerButtons").Find("Player1").GetComponent<Button>();
-        player2Button = roomPanel.Find("PlayerButtons").Find("Player2").GetComponent<Button>();
-        player3Button = roomPanel.Find("PlayerButtons").Find("Player3").GetComponent<Button>();
-        player4Button = roomPanel.Find("PlayerButtons").Find("Player4").GetComponent<Button>();
+        player1Button = roomPanel.Find("PlayerButtons").Find("Player1_Team1").GetComponent<Button>();
+        player2Button = roomPanel.Find("PlayerButtons").Find("Player2_Team1").GetComponent<Button>();
+        player3Button = roomPanel.Find("PlayerButtons").Find("Player3_Team2").GetComponent<Button>();
+        player4Button = roomPanel.Find("PlayerButtons").Find("Player4_Team2").GetComponent<Button>();
     }
     #endregion
 
-    #region 방에 들어갔을 때 마스터 클라이언트임을 체크하면 바뀌는 Start, Ready 버튼
+    #region 방에 들어갔을 때 마스터 클라이언트일 때만 활성화되는 Start 버튼
     private void CheckMasterClient()
     {
+        // 지금 방에 참여해있다면
         if (PhotonNetwork.InRoom == true)
         {
-            FindDataContainer();
             if (PhotonNetwork.IsMasterClient == true)
             {
-                startReadyButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "START";
+                // master 이면 게임시작 버튼을 활성화한다
+                roomStartButton.gameObject.SetActive(true);
 
-                // NullReference Exception
-                if (dataContainerView.GetComponent<PlayerDataContainer>().otherPlayerReady == 3)
+                // 만약 readyCount 가 4 이하이면
+                if (NetworkManager.Instance.readyCount < 4)
                 {
-                    startReadyButton.interactable = true;
+                    // 상호작용은 불가능하게 해둔다
+                    roomStartButton.interactable = false;
                 }
-                else if (dataContainerView.GetComponent<PlayerDataContainer>().otherPlayerReady < 3)
+                else if (NetworkManager.Instance.readyCount == 4)
                 {
-                    startReadyButton.interactable = false;
-                }
-                else
-                {
-                    Debug.Log("레디버튼 관련 에러 발생");
+                    // 상호작용이 가능하게 만든다
+                    roomStartButton.interactable = true;
                 }
             }
             else
             {
-                startReadyButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "READY";
-                startReadyButton.interactable = true;
+                // master 가 아니면 꺼둔다
+                roomStartButton.gameObject.SetActive(false);
             }
         }
     }
@@ -185,12 +177,7 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         JoinRandomButton.onClick.AddListener(PressJoinRandomButton);
 
         createConfirmButton.onClick.AddListener(PressConfirmCreateButton);
-        startReadyButton.onClick.AddListener(PressStartReadyButton);
-
-        player1Button.onClick.AddListener(PressPlayer1);
-        player2Button.onClick.AddListener(PressPlayer2);
-        player3Button.onClick.AddListener(PressPlayer3);
-        player4Button.onClick.AddListener(PressPlayer4);
+        roomStartButton.onClick.AddListener(PressGameStartButton);
     }
     #endregion
 
@@ -203,7 +190,6 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
         lobbyPanel.localScale = Vector3.zero;
 
         createRoomPopup.localScale = Vector3.zero;
-        joinLockedRoomPopup.localScale = Vector3.zero;
         waitPopup.localScale = Vector3.zero;
 
         roomPanel.localScale = Vector3.zero;
@@ -254,13 +240,6 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     public void OpenRoomPanel() 
     {
         roomPanel.localScale = Vector3.one;
-    }
-    #endregion
-
-    #region PlayerDataContainer 가 생성된 후 찾아올 메서드
-    public void FindDataContainer() 
-    {
-        dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
     }
     #endregion
 
@@ -335,54 +314,56 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #region 닫기 버튼
     public void PressClose()
     {
+        // 로그인 창이 띄워져 있다면
         if (loginPopup.localScale == Vector3.one)
         {
+            // 창의 크기를 0 으로 만든다
             loginPopup.localScale = Vector3.zero;
 
             TMP_InputField emailInput = loginPopup.Find("InputField_Email").GetComponent<TMP_InputField>();
             TMP_InputField passwordInput = loginPopup.Find("InputField_Password").GetComponent<TMP_InputField>();
 
+            // 기존의 로그인 상태 표시와 InputField 의 내용을 모두 초기화한다
             loginPopup.GetComponentInChildren<TMP_Text>().color = new Color(180, 180, 180);
             loginPopup.GetComponentInChildren<TMP_Text>().text = "로그인";
             emailInput.text = default;
             passwordInput.text = default;
         }
+        // 회원가입 창이 띄워져 있다면
         else if (signupPopup.localScale == Vector3.one)
         {
+            // 창의 크기를 0 으로 만든다
             signupPopup.localScale = Vector3.zero;
 
             TMP_InputField emailInput = signupPopup.Find("InputField_Email").GetComponent<TMP_InputField>();
             TMP_InputField passwordInput = signupPopup.Find("InputField_Password").GetComponent<TMP_InputField>();
             TMP_InputField nicknameInput = signupPopup.Find("InputField_Nickname").GetComponent<TMP_InputField>();
 
+            // 기존의 회원가입 상태 표시와 InputField 의 내용을 모두 초기화한다
             signupPopup.GetComponentInChildren<TMP_Text>().color = new Color(180, 180, 180);
             signupPopup.GetComponentInChildren<TMP_Text>().text = "회원가입";
             emailInput.text = default;
             passwordInput.text = default;
             nicknameInput.text = default;
         }
+        // 방 생성 창이 띄워져 있다면
         else if (createRoomPopup.localScale == Vector3.one) 
         {
+            // 창의 크기를 0 으로 만든다
             createRoomPopup.localScale = Vector3.zero;
 
             TMP_InputField roomNameInput = createRoomPopup.Find("InputField_RoomName").GetComponent<TMP_InputField>();
-            TMP_InputField roomPWInput = createRoomPopup.Find("InputField_RoomPW").GetComponent<TMP_InputField>();
 
+            // InputField 의 내용을 모두 초기화한다
             roomNameInput.text = default;
-            roomPWInput.text = default;
         }
-        else if (joinLockedRoomPopup.localScale == Vector3.one) 
-        {
-            joinLockedRoomPopup.localScale = Vector3.zero;
-
-            TMP_InputField roomPWInput = createRoomPopup.Find("InputField_RoomPW").GetComponent<TMP_InputField>();
-            roomPWInput.text = default;
-        }
+        // 방에 참여해있는 상태라면
         else if (roomPanel.localScale == Vector3.one) 
         {
+            // 창의 크기를 0 으로 만든다
             roomPanel.localScale = Vector3.zero;
+            // 방을 나간다
             PhotonNetwork.LeaveRoom();
-            PhotonNetwork.JoinLobby();
         }
     }
     #endregion
@@ -390,28 +371,31 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #region 닫기 버튼 확인 로직
     public void CheckCloseButton()
     {
+        // 로그인 창이 띄워져 있다면
         if (loginPopup.localScale == Vector3.one)
         {
+            // closeButton 은 loginPopup 하위의 Button_Close
             closeButton = loginPopup.Find("Button_Close").GetComponent<Button>();
             closeButton.onClick.AddListener(PressClose);
         }
+        // 회원가입 창이 띄워져 있다면
         else if (signupPopup.localScale == Vector3.one)
         {
+            // closeButton 은 signupPopup 하위의 Button_Close
             closeButton = signupPopup.Find("Button_Close").GetComponent<Button>();
             closeButton.onClick.AddListener(PressClose);
         }
+        // 방 생성 창이 띄워져 있다면
         else if (createRoomPopup.localScale == Vector3.one) 
         {
+            // closeButton 은 createRoomPopup 하위의 Button_Close
             closeButton = createRoomPopup.Find("Button_Close").GetComponent<Button>();
             closeButton.onClick.AddListener(PressClose);
         }
-        else if (joinLockedRoomPopup.localScale == Vector3.one) 
-        {
-            closeButton = joinLockedRoomPopup.Find("Button_Close").GetComponent<Button>();
-            closeButton.onClick.AddListener(PressClose);
-        }
+        // 방에 참여해있는 상태라면
         else if (roomPanel.localScale == Vector3.one) 
         {
+            // closeButton 은 roomPanel 하위의 Button_Close
             closeButton = roomPanel.Find("Button_Close").GetComponent<Button>();
             closeButton.onClick.AddListener(PressClose);
         }
@@ -432,243 +416,45 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     public void PressConfirmCreateButton() 
     {
         TMP_InputField roomNameInput = createRoomPopup.Find("InputField_RoomName").GetComponent<TMP_InputField>();
-        //TMP_InputField roomPWInput = createRoomPopup.Find("InputField_RoomPW").GetComponent<TMP_InputField>();
 
-        // 포톤 내의 방 생성
+        // 만약 InputField 내용이 비워져있다면 방 이름 text 를 생성자 이름으로 기입한다
+        if (roomNameInput.text == "")
+        {
+            roomNameInput.text = "ROA 2:2 초보만";
+        }
+
+        // photon 내의 방 생성
         RoomOptions roomOptions = new RoomOptions { MaxPlayers = 4 };
         PhotonNetwork.CreateRoom(roomNameInput.text, roomOptions, null, null);
 
         PressClose();
         PauseLobbyButtons();
-        Invoke("ResetLobbyButtons", 3f);
-        Invoke("OpenRoomPanel", 3f);
+        Invoke("ResetLobbyButtons", 2f);
+        Invoke("OpenRoomPanel", 2f);
     }
     #endregion
 
     #region 랜덤 참여 버튼
     public void PressJoinRandomButton()
     {
-        PhotonNetwork.JoinRandomRoom();
+        PhotonNetwork.JoinRandomOrCreateRoom();
         PauseLobbyButtons();
-        Invoke("ResetLobbyButtons", 3f);
-        Invoke("OpenRoomPanel", 3f);
-    }
-    #endregion
-
-    #region 팀 참여 버튼
-    public void PressPlayer1()
-    {
-        if (PhotonNetwork.IsMasterClient == false)
-        {
-            FindDataContainer();
-            dataContainerView.RPC("SendPlayerPosition", RpcTarget.MasterClient, 
-                NetworkManager.Instance.playerNickName, dataContainerView.ViewID, 0);
-        }
-        else if (PhotonNetwork.IsMasterClient == true) 
-        {
-            if (NetworkManager.Instance.playerSeats[0] == false) 
-            {
-                string masterNickName = NetworkManager.Instance.playerNickName;
-                string masterViewID = dataContainerView.ViewID.ToString();
-
-                //int beforeSeat = default;
-                Debug.Log(NetworkManager.Instance.playerNickName);
-                if (NetworkManager.Instance.roomSetting.ContainsKey(masterViewID)) 
-                {
-                    string seatNumber = 
-                        NetworkManager.Instance.roomSetting[masterNickName].ToString();
-
-                    int index = int.Parse(seatNumber.Split("Player")[1]);
-                    //
-                    //beforeSeat = index - 1;
-
-                    NetworkManager.Instance.playerSeats[index - 1] = false;
-                    NetworkManager.Instance.roomSetting[masterViewID] = "Player1_Team1";
-                    NetworkManager.Instance.roomSetting["Player1"] = masterNickName;
-                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
-                    Debug.LogFormat("master = Player1, Player{0} 에서 이동함", index);
-                }
-                else
-                {
-                    NetworkManager.Instance.roomSetting[masterViewID] = "Player1_Team1";
-                    NetworkManager.Instance.roomSetting["Player1"] = masterNickName;
-                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
-                    Debug.Log("master = Player1");
-                }
-                PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
-                NetworkManager.Instance.playerSeats[0] = true;
-                //
-                //dataContainerView.RPC("ChangeID", RpcTarget.All, dataContainerView.ViewID, 0, beforeSeat);
-            }
-            else if (NetworkManager.Instance.playerSeats[0] == true)
-            {
-                Debug.Log("Seat Already Taken");
-            }
-        }
-    }
-
-    public void PressPlayer2()
-    {
-        if (PhotonNetwork.IsMasterClient == false)
-        {
-            FindDataContainer();
-            dataContainerView.RPC("SendPlayerPosition", RpcTarget.MasterClient, 
-                NetworkManager.Instance.playerNickName, dataContainerView.ViewID, 1);
-        }
-        else if (PhotonNetwork.IsMasterClient == true) 
-        {
-            if (NetworkManager.Instance.playerSeats[1] == false)
-            {
-                string masterNickName = NetworkManager.Instance.playerNickName;
-                string masterViewID = dataContainerView.ViewID.ToString();
-
-                Debug.Log(NetworkManager.Instance.playerNickName);
-                if (NetworkManager.Instance.roomSetting.ContainsKey(masterViewID))
-                {
-                    string seatNumber =
-                        NetworkManager.Instance.roomSetting[masterNickName].ToString();
-
-                    int index = int.Parse(seatNumber.Split("Player")[1]);
-                    NetworkManager.Instance.playerSeats[index - 1] = false;
-                    NetworkManager.Instance.roomSetting[masterViewID] = "Player2_Team1";
-                    NetworkManager.Instance.roomSetting["Player2"] = masterNickName;
-                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
-                    Debug.LogFormat("master = Player2, Player{0} 에서 이동함", index);
-                }
-                else
-                {
-                    NetworkManager.Instance.roomSetting[masterViewID] = "Player2_Team1";
-                    NetworkManager.Instance.roomSetting["Player2"] = masterNickName;
-                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
-                    Debug.Log("master = Player2");
-                }
-                PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
-                NetworkManager.Instance.playerSeats[1] = true;
-                //dataContainerView.RPC("ChangeID", RpcTarget.All, dataContainerView.ViewID, 1);
-            }
-            else if(NetworkManager.Instance.playerSeats[1] == true)
-            {
-                Debug.Log("Seat Already Taken");
-            }
-        }
-    }
-
-    public void PressPlayer3()
-    {
-        if (PhotonNetwork.IsMasterClient == false)
-        {
-            FindDataContainer();
-            dataContainerView.RPC("SendPlayerPosition", RpcTarget.MasterClient, 
-                NetworkManager.Instance.playerNickName, dataContainerView.ViewID, 2);
-        }
-        else if (PhotonNetwork.IsMasterClient == true) 
-        {
-            if (NetworkManager.Instance.playerSeats[2] == false)
-            {
-                string masterNickName = NetworkManager.Instance.playerNickName;
-                string masterViewID = dataContainerView.ViewID.ToString();
-
-                Debug.Log(NetworkManager.Instance.playerNickName);
-                if (NetworkManager.Instance.roomSetting.ContainsKey(masterViewID))
-                {
-                    string seatNumber =
-                        NetworkManager.Instance.roomSetting[masterNickName].ToString();
-
-                    int index = int.Parse(seatNumber.Split("Player")[1]);
-                    NetworkManager.Instance.playerSeats[index - 1] = false;
-                    NetworkManager.Instance.roomSetting[masterViewID] = "Player3_Team2";
-                    NetworkManager.Instance.roomSetting["Player3"] = masterNickName;
-                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
-                    Debug.LogFormat("master = Player3, Player{0} 에서 이동함", index);
-                }
-                else
-                {
-                    NetworkManager.Instance.roomSetting[masterViewID] = "Player3_Team2";
-                    NetworkManager.Instance.roomSetting["Player3"] = masterNickName;
-                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
-                    Debug.Log("master = Player3");
-                }
-                PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
-                NetworkManager.Instance.playerSeats[2] = true;
-                //dataContainerView.RPC("ChangeID", RpcTarget.All, dataContainerView.ViewID, 2);
-            }
-            else if (NetworkManager.Instance.playerSeats[2] == true)
-            {
-                Debug.Log("Seat Already Taken");
-            }
-        }
-    }
-
-    public void PressPlayer4()
-    {
-        if (PhotonNetwork.IsMasterClient == false)
-        {
-            FindDataContainer();
-            dataContainerView.RPC("SendPlayerPosition", RpcTarget.MasterClient, 
-                NetworkManager.Instance.playerNickName, dataContainerView.ViewID, 3);
-        }
-        else if (PhotonNetwork.IsMasterClient == true) 
-        {
-            if (NetworkManager.Instance.playerSeats[3] == false)
-            {
-                string masterNickName = NetworkManager.Instance.playerNickName;
-                string masterViewID = dataContainerView.ViewID.ToString();
-
-                Debug.Log(NetworkManager.Instance.playerNickName);
-                if (NetworkManager.Instance.roomSetting.ContainsKey(masterViewID))
-                {
-                    string seatNumber =
-                        NetworkManager.Instance.roomSetting[masterNickName].ToString();
-
-                    int index = int.Parse(seatNumber.Split("Player")[1]);
-                    NetworkManager.Instance.playerSeats[index - 1] = false;
-                    NetworkManager.Instance.roomSetting[masterViewID] = "Player4_Team2";
-                    NetworkManager.Instance.roomSetting["Player4"] = masterNickName;
-                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
-                    Debug.LogFormat("master = Player4, Player{0} 에서 이동함", index);
-                }
-                else
-                {
-                    NetworkManager.Instance.roomSetting[masterViewID] = "Player4_Team2";
-                    NetworkManager.Instance.roomSetting["Player4"] = masterNickName;
-                    NetworkManager.Instance.roomSetting[masterNickName] = masterViewID;
-                    Debug.Log("master = Player4");
-                }
-                PhotonNetwork.CurrentRoom.SetCustomProperties(NetworkManager.Instance.roomSetting);
-                NetworkManager.Instance.playerSeats[3] = true;
-                //dataContainerView.RPC("ChangeID", RpcTarget.All, dataContainerView.ViewID, 3);
-            }
-            else if (NetworkManager.Instance.playerSeats[3] == true)
-            {
-                Debug.Log("Seat Already Taken");
-            }
-        }
+        Invoke("ResetLobbyButtons", 2f);
+        Invoke("OpenRoomPanel", 2f);
     }
     #endregion
 
     #region 시작 버튼
-    public void PressStartReadyButton() 
+    public void PressGameStartButton() 
     {
         if (PhotonNetwork.IsMasterClient == true) 
         {
+            //
+            dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
+            // 마스터의 Scene 을 동기화한다
             PhotonNetwork.AutomaticallySyncScene = true;
+            // 모든 photonView 에 RPC 를 쏴서 StartGame 메서드를 실행시킨다
             dataContainerView.RPC("StartGame", RpcTarget.All);
-        }
-        else 
-        {
-            FindDataContainer();
-            if (isReady == false) 
-            {
-                isReady = true;
-                dataContainerView.RPC("ChangeMasterReadyValue", RpcTarget.MasterClient, isReady, dataContainerView.ViewID.ToString(), dataContainerView.IsMine);
-                startReadyButton.GetComponent<Image>().color = Color.grey;
-            }
-            else if (isReady == true)
-            {
-                isReady = false;
-                dataContainerView.RPC("ChangeMasterReadyValue", RpcTarget.MasterClient, isReady, dataContainerView.ViewID.ToString(), dataContainerView.IsMine);
-                startReadyButton.GetComponent<Image>().color = Color.white;
-            }
         }
     }
     #endregion

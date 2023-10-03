@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PhotonServerSettings
   m_EditorClassIdentifier: 
   AppSettings:
-    AppIdRealtime: 38356e11-294b-4e03-9d0f-094747e08d7c
+    AppIdRealtime: b298e421-853f-4194-b62d-d2cc96413986
     AppIdFusion: 
     AppIdChat: c963de85-8631-48b6-b44c-e2134fc6d02f
     AppIdVoice: 
@@ -68,6 +68,7 @@ MonoBehaviour:
   - RPCTest
   - Check
   - CheckTeamAndDequeue
+
   - ThrowRock
   - PlayAttackAnimation
   - SetActive
@@ -75,6 +76,20 @@ MonoBehaviour:
   - RemoveInMaster
   - SetBitArrays
   - SetBitArrayInRpc
+  - SendMyViewId
+  - MakeIsClickedFalse
+  - MakeIsClickedTrue
+  - MakeOtherButtonFalse
+  - MakeOtherButtonFalseRemote
+  - MakeOtherButtonTrue
+  - MakeOtherButtonTrueRemote
+  - CheckPlayerIdentifierNone
+  - CheckIdentifierNone
+  - CheckIdentifierSomething
+  - TurnButtonFalse
+  - TurnButtonTrue
+  - SavePlayerData
+
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -142,7 +142,6 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
             obstacleAnimator.SetBool("isCharging", false);
             obstacleRigidBody.velocity = Vector3.zero;
             isWait = true;
-
             isCharging = false;
             isReturning = true;
 

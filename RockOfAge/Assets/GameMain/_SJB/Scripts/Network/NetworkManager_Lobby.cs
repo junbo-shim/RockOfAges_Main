@@ -55,8 +55,6 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
 
         // 플레이어의 이름 표시
         playerLobbyName.text = playerNickName;
-        // 로비 인원 출력
-        playerLobbyNumbers.text = PhotonNetwork.CountOfPlayersOnMaster.ToString() + "/20";
     }
 
 
@@ -67,9 +65,6 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         DeleteRoomDisplay(RoomListContent);
         cachedRoomDictionary.Clear();
         //UpdateRoomDisplay();
-
-        // 로비 인원 출력
-        playerLobbyNumbers.text = PhotonNetwork.CountOfPlayersOnMaster.ToString() + "/20";
     }
     #endregion
 

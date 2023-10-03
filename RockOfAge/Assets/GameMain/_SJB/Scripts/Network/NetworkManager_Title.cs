@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using PlayFab;
 using PlayFab.ClientModels;
+using UnityEngine.SceneManagement;
 
 public partial class NetworkManager : GlobalSingleton<NetworkManager>
 {
@@ -29,12 +30,19 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         GameScene = "0921";
 
         cachedRoomDictionary = new Dictionary<string, RoomInfo>();
-        playerRoomList = new Player[4];
+        dataContainers = new List<PlayerDataContainer>();
 
-        Team1ButtonPrefab = Resources.Load<GameObject>("Team1Button");
-        Team2ButtonPrefab = Resources.Load<GameObject>("Team2Button");
         DataContainerPrefab = Resources.Load<GameObject>("DataContainer");
-        playerSeats = new bool[4] { false, false, false, false };
+        readyCount = default;
+    }
+
+    protected override void Update()
+    {
+        if (SceneManager.GetActiveScene().name == PhotonScene) 
+        {
+            // 로비 인원 출력 - 마땅한 callback 을 못찾았음
+            playerLobbyNumbers.text = PhotonNetwork.CountOfPlayersOnMaster.ToString() + "/20";
+        }
     }
 
 

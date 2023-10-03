@@ -6,6 +6,7 @@ using Photon.Pun;
 
 public class TeamButton : MonoBehaviourPun, IPunObservable
 {
+    #region 필드
     // 팀 선택 버튼에 표시될 플레이어의 이름
     public TMP_Text playerName;
 
@@ -17,7 +18,7 @@ public class TeamButton : MonoBehaviourPun, IPunObservable
 
     // 이 버튼을 누른 사람의 아이디 변수
     public int playerIdentifier;
-
+    #endregion
 
 
     // 실시간으로 공유될 (master 가 생성한 원본과 다른 client 들이 가진 복제본이 공유하는)
@@ -62,6 +63,8 @@ public class TeamButton : MonoBehaviourPun, IPunObservable
         // 만약 playerIdentifier 에 누가 눌렀는지 정보가 없다면
         if (playerIdentifier == -1)
         {
+            // MyDataContainer 의 PlayerTeamNum 에 Player'n'_Team'n' 값을 저장한다
+            NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerTeamNum = gameObject.name;
             // 내 ActorNumber 를 담아서 RPC 메서드를 모두에게 쏜다
             photonView.RPC("CheckIdentifierNone", RpcTarget.All,
                 PhotonNetwork.LocalPlayer.ActorNumber, PhotonNetwork.LocalPlayer.NickName);
@@ -72,12 +75,15 @@ public class TeamButton : MonoBehaviourPun, IPunObservable
             // 그리고 그 playerIdentifier 가 내 ActorNumber 라면
             if (playerIdentifier == PhotonNetwork.LocalPlayer.ActorNumber)
             {
+                // MyDataContainer 의 PlayerTeamNum 에 Player'n'_Team'n' 값을 저장한다
+                NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerTeamNum = "";
                 // 내 ActorNumber 를 담아서 RPC 메서드를 모두에게 쏜다
                 photonView.RPC("CheckIdentifierSomething", RpcTarget.All,
                     PhotonNetwork.LocalPlayer.ActorNumber);
             }
         }
     }
+
 
     #region playerIdentifier 값이 비어 있을 경우
     // playerIdentifier 값이 비어 있을 경우에 모두에게 누른 사람의 ActorNumber 송신하는 RPC custom 메서드
@@ -96,6 +102,8 @@ public class TeamButton : MonoBehaviourPun, IPunObservable
             playerName.text = myName;
             // 버튼의 Ready 상태를 true 로 변환
             readyCheck.enabled = true;
+            // master 의 readyCount 를 1 올린다
+            NetworkManager.Instance.readyCount += 1;
             // 모든 사람들에게 interactable false 로 만드는 RPC 발사
             photonView.RPC("TurnButtonFalse", RpcTarget.All, myActorNum);
         }
@@ -118,7 +126,6 @@ public class TeamButton : MonoBehaviourPun, IPunObservable
     }
     #endregion
 
-
     #region playerIdentifier 값이 차있을 경우
     // playerIdentifier 값이 차있을 경우에 모두에게 누른 사람의 ActorNumber 송신하는 RPC custom 메서드
     [PunRPC]
@@ -136,6 +143,8 @@ public class TeamButton : MonoBehaviourPun, IPunObservable
             playerName.text = null;
             // 버튼의 Ready 상태를 false 로 변환
             readyCheck.enabled = false;
+            // master 의 readyCount 를 1 내린다
+            NetworkManager.Instance.readyCount -= 1;
             // 모든 사람들에게 interactable true 로 만드는 RPC 발사
             photonView.RPC("TurnButtonTrue", RpcTarget.All, myActorNum);
         }

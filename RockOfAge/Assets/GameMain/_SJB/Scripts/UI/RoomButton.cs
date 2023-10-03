@@ -3,8 +3,10 @@ using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 
+
 public class RoomButton : MonoBehaviourPun
 {
+    #region 필드
     // 각 클라이언트 별로 NetworkManager 에서 수동 업데이트하는 과정에서 담는 cachedRoom
     public RoomInfo thisRoomInfo;
 
@@ -13,6 +15,7 @@ public class RoomButton : MonoBehaviourPun
 
     // 버튼에 표기할 현재 플레이어 수 / 최대 플레이어 수
     public TMP_Text displayPlayers;
+    #endregion
 
 
     // 이 클래스가 컴포넌트로 Add 될 때 호출(활성화)

@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Collections.Generic;
 
 public partial class NetworkManager : GlobalSingleton<NetworkManager>
 {
@@ -14,22 +15,17 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     // 방 이름 표시하는 TMP_Text
     public TMP_Text roomName;
 
-    // 방에 들어와있는 플레이어들을 캐싱할 배열
-    public Player[] playerRoomList;
-
-    // Team 1 버튼 프리팹 (Blue)
-    public GameObject Team1ButtonPrefab { get; private set; }
-
-    // Team 2 버튼 프리팹 (Red)
-    public GameObject Team2ButtonPrefab { get; private set; }
+    // 
+    public List<PlayerDataContainer> dataContainers;
 
     // PlayerDataContainer 프리팹
     public GameObject DataContainerPrefab { get; private set; }
-    public PlayerDataContainer myDataContainer;
-    public PlayerDataContainer masterDataContainer;
 
-    public ExitGames.Client.Photon.Hashtable roomSetting;
-    public bool[] playerSeats;
+    // 생성된 나의 DataContainer
+    public GameObject myDataContainer;
+
+    // 모든 플레이어 Ready Check 용 int 변수
+    public int readyCount;
     #endregion
 
 
@@ -41,10 +37,6 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         // 방의 이름을 표시하는 custom 메서드
         ShowRoomName();
 
-        // ? 현재 방의 CustomProperties 를 roomSetting HashTable 에 캐싱한다
-        roomSetting = PhotonNetwork.CurrentRoom.CustomProperties;
-
-
         // 방에 참여 시 (master 포함) PhotonView 가 달려있는 오브젝트를 하나씩 생성한다
         GameObject dataContainer =
             PhotonNetwork.Instantiate(DataContainerPrefab.name, Vector3.zero, Quaternion.identity);
@@ -52,13 +44,8 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         // 만약 생성한 오브젝트가 내 것이면
         if (dataContainer.GetComponent<PhotonView>().IsMine == true)
         {
-            // myDataContainer 에 현재 오브젝트를 할당한다
-            myDataContainer = dataContainer.GetComponent<PlayerDataContainer>();
-        }
-        // 
-        if (PhotonNetwork.IsMasterClient == true)
-        {
-            masterDataContainer = myDataContainer;
+            // myDataContainer 에 나의 dataContainer GameObject 를 담아둔다
+            myDataContainer = dataContainer;
         }
     }
 
@@ -66,20 +53,20 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     // 방을 떠나면 호출되는 callback 메서드
     public override void OnLeftRoom()
     {
-        // 방 세팅이 남아 있다면 초기화한다
-        if (roomSetting != null)
+        if (dataContainers.Count > 0) 
         {
-            roomSetting.Clear();
+            dataContainers.Clear();
         }
-        // PhotonView 오브젝트가 남아있다면 삭제한다
+
+        // myDataContainer 오브젝트가 남아있다면 삭제한다
         if (myDataContainer != null)
         {
-            PhotonNetwork.Destroy(myDataContainer.GetComponent<PhotonView>());
+            PhotonNetwork.Destroy(myDataContainer);
         }
     }
 
 
-    // 방에 사람이 나가면 호출되는 callback 메서드
+    // 방의 사람이 나가면 호출되는 callback 메서드
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         // 방의 이름을 표시하는 custom 메서드
@@ -111,6 +98,10 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         ButtonManager.Instance.player4Button.GetComponent<TeamButton>().playerIdentifier = -1;
         ButtonManager.Instance.player4Button.GetComponent<TeamButton>().playerName.text = null;
         ButtonManager.Instance.player4Button.GetComponent<TeamButton>().readyCheck.enabled = false;
+
+        readyCount = default;
+
+        PhotonNetwork.CurrentRoom.CustomProperties.Clear();
     }
 
 

@@ -179,6 +179,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler
             UIManager.uiManager.PrintFillAmountRockHp(currHp, rockStatus.Health);
         }
 
+        Debug.Log(teamNumber);
         // PSC Editted
         Vector3 startPos = Vector3.zero;
         if(teamNumber == 1)

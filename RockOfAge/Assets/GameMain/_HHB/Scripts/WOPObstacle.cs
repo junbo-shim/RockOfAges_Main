@@ -26,9 +26,9 @@ public class WOPObstacle : HoldObstacleBase
     }
 
     //죽음
-    protected override void Dead() 
+    protected override void Dead()
     {
-        PhotonNetwork.Destroy(this.gameObject);
+        Invoke("DestroyPhotonViewObject", 1f);
     }
 
     private void TurnAroundObstacle()

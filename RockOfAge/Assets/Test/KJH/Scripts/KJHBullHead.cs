@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using Photon.Pun;
+
 public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
 {
     public float detectionRadius = 5f;     // 바위 감지 범위
@@ -14,7 +16,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     private Vector3 lastDetectedRockPosition; // 마지막으로 감지된 바위 위치
     private bool isCharging = false;       // 돌진 중 여부
     private bool isReturning = false;      // 원래 위치로 복귀 중 여부
-    private Animator animator; // Animator 컴포넌트 참조
+    private bool isWait = false;      // 아무것도 안하는 대기상태(탐색조차 하지않는 상태)
 
     private float stareTime = 0.8f; // 바위를 바라보는 시간 
     private bool isStaring = false; // 바위를 바라보고 있는지 여부
@@ -29,9 +31,16 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         base.Init();
         originalPosition = transform.position; // 시작 시 원래 위치 저장
 
-        animator = GetComponent<Animator>(); // Animator 컴포넌트 가져오기
+        obstacleAnimator = GetComponent<Animator>(); // Animator 컴포넌트 가져오기
 
         
+    }
+
+    Vector3 GetProjectionVector(Vector3 vector)
+    {
+        
+        return Vector3.ProjectOnPlane(vector, GetPlaneNormal());
+
     }
 
     Vector3 GetPlaneNormal()
@@ -53,13 +62,13 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
 
     void Update()
     {
-        if (!isBuildComplete)
+        if (!isBuildComplete || currHealth <= 0)
         {
             return;
         }
 
         //돌진, 복귀, 회전 상태가 아니면 rock 탐지
-        if (!isCharging && !isReturning && !isStaring)
+        if (!isCharging && !isReturning && !isStaring && !isWait)
         {
             // 감지 범위 내에서 바위 감지
             Collider[] detectedRocks = Physics.OverlapSphere(transform.position, detectionRadius, rockLayer);
@@ -77,18 +86,23 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
                     isStaring = true;
                     stareTimer = Time.time;
                     // Attack 애니메이션 트리거 리셋
-                    animator.ResetTrigger("Attack");
+                    obstacleAnimator.ResetTrigger("Attack");
 
                     break;
                 }
             }
         }
+        else if (isWait)
+        {
+            //empty
+        }
+        //회전
         else if (isStaring)
         {
             // 바위를 바라보는 동안 회전
             Vector3 direction = (target.transform.position - transform.position).normalized;
             direction.y = 0; // Y 축 이동 금지
-            Quaternion targetRotation =  Quaternion.LookRotation(direction);
+            Quaternion targetRotation =  Quaternion.LookRotation(GetProjectionVector(direction));
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * chargeSpeed);
 
             // 2초가 지났는지 확인
@@ -99,10 +113,12 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
                 isCharging = true;
             }
         }
+        //돌진
         else if (isCharging)
         {
             ChargeToLastDetectedRock();
         }
+        //복귀
         else if (isReturning)
         {
             ReturnToOriginalPosition();
@@ -111,22 +127,26 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     void ChargeToLastDetectedRock()
     {
 
-        animator.SetBool("isCharging", true);
+        obstacleAnimator.SetBool("isCharging", true);
 
         Vector3 direction = (lastDetectedRockPosition - transform.position).normalized;
         direction.y = 0; // Y 축 이동 금지
 
         // 돌진 중인 모루 황소를 이동 및 회전
-        obstacleRigidBody.velocity = direction * chargeSpeed;
-        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        Quaternion targetRotation = Quaternion.LookRotation(GetProjectionVector(direction));
+        obstacleRigidBody.velocity = GetProjectionVector(direction).normalized * chargeSpeed;
 
         // 도착 여부 확인
         if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(lastDetectedRockPosition.x, 0, lastDetectedRockPosition.z)) < 0.1f)
         {
-            // 돌진 애니메이션 종료
-            animator.SetBool("isCharging", false);
+            obstacleAnimator.SetBool("isCharging", false);
+            obstacleRigidBody.velocity = Vector3.zero;
+            isWait = true;
 
-            Invoke("Wait", 1f);
+            isCharging = false;
+            isReturning = true;
+
+            Invoke("Wait", 2f);
         }
     }
     void ReturnToOriginalPosition()
@@ -135,21 +155,26 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         direction.y = 0; // Y 축 이동 금지
 
         // 원래 위치로 복귀
-        obstacleRigidBody.velocity = direction * returnSpeed;
-        animator.SetBool("isReturning", true);
+        obstacleRigidBody.velocity = GetProjectionVector(direction).normalized * returnSpeed;
+        obstacleAnimator.SetBool("isReturning", true);
 
         // 복귀 완료 여부 확인
         if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(originalPosition.x, 0, originalPosition.z)) < 0.1f)
         {
 
+            obstacleRigidBody.velocity = Vector3.zero;
+            isWait = true;
+
             // 돌진 애니메이션 종료
             isReturning = false;
-            animator.SetBool("isReturning", false);
+
+            Invoke("Wait", 2f);
+            obstacleAnimator.SetBool("isReturning", false);
         }
     }
     void OnCollisionEnter(Collision collision)
     {
-        if (!isBuildComplete)
+        if (!isBuildComplete || currHealth <= 0)
         {
             return;
 
@@ -165,7 +190,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
 
             // 방향 벡터를 정규화하여 바라봐야 할 방향으로 사용
             collisionDirection.Normalize();
-                       
+
             // 충돌한 바위에 힘을 전달
             Rigidbody rockRigidbody = collision.gameObject.GetComponent<Rigidbody>();
             if (rockRigidbody != null)
@@ -174,10 +199,20 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
                 float forceMagnitude = GetComponent<Rigidbody>().mass * chargeSpeed;
                 rockRigidbody.AddForce(forceDirection * forceMagnitude, ForceMode.Impulse);
             }
-            animator.SetTrigger("Attack");
+
+            obstacleAnimator.SetBool("isCharging", false);
+
+            isWait = true;
+
+            isCharging = false;
+            isReturning = true;
+
+            Invoke("Wait", 5f);
+            photonView.RPC("PlayAnimationTrigger", RpcTarget.All, "Attack");
         }
     }
-    
+
+
     void OnDrawGizmos()
     {
         // 부채꼴 감지 범위를 그립니다.
@@ -195,8 +230,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     }
     public void Wait()
     {
-        isCharging = false;
-        isReturning = true;
+        isWait = false;
 
     }
     protected override void Dead()
@@ -204,20 +238,16 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
         audioSource.clip = dieSound;
         audioSource.Play();
         // Die 애니메이션 재생
-        animator.SetTrigger("Die");
+        photonView.RPC("PlayAnimationTrigger", RpcTarget.All, "Die");
 
         GetComponent<Rigidbody>().isKinematic = true; // 물리 시뮬레이션 비활성화
         GetComponent<Collider>().enabled = false; // 콜라이더 비활성화 (옵션)
 
+        //PhotonNetwork.Destroy(gameObject);
         // 1.0초 후에 사라지는 로직을 실행
-        Invoke("Disappear", 1.0f);
+        Invoke("DestroyPhotonViewObject", 1f);
     }
-    private void Disappear()
-    {
-        // 게임 오브젝트를 비활성화하거나 파괴
-        gameObject.SetActive(false);
-        // 또는 Destroy(gameObject);
-    }
+
     public void Hit(int damage)
     {
         currHealth -= damage;

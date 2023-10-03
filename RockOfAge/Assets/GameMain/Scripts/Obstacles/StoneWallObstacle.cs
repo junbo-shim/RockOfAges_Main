@@ -98,6 +98,7 @@ public class StoneWall : HoldObstacleBase, IHitObjectHandler
             }
             obstacleCollider.isTrigger = true;
         }
-        base.Dead();
+
+        Invoke("DestroyPhotonViewObject", 1f);
     }
 }

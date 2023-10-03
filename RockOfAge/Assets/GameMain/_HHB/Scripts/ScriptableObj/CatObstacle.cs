@@ -22,7 +22,6 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
         base.Init();
         cat = transform.GetChild(0);
         catMother = transform;
-        status = new ObstacleStatus(status);
         //obstacleRigidBody = transform.GetChild(0).GetComponent<Rigidbody>();
         obstacleAnimator = transform.GetChild(0).GetComponent<Animator>();
         //obstacleRenderer = transform.GetChild(0).GetComponentInChildren<SkinnedMeshRenderer>();
@@ -113,6 +112,12 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
     public void Hit(int damage)
     {
         HitReaction();
+
+        currHealth -= damage;
+        if (currHealth <= 0)
+        {
+            Invoke("DestroyPhotonViewObject", 1f);
+        }
         /*Do Nothing*/
     }
     public void HitReaction()

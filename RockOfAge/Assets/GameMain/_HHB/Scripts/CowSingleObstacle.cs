@@ -16,7 +16,6 @@ public class CowSingleObstacle : MoveObstacleBase
     {
         base.Init();
         cow = GetComponent<Transform>();
-        status = new ObstacleStatus(status);
         obstacleMeshFilter = GetComponent<MeshFilter>();
         obstacleRenderers = GetComponentsInChildren<Renderer>();
         obstacleRigidBody = GetComponent<Rigidbody>();
@@ -35,14 +34,19 @@ public class CowSingleObstacle : MoveObstacleBase
         currHealth = status.Health;
         isSticked = false;
         delayBool = false;
-        transform.parent = obstacleParent;
+        //transform.parent = obstacleParent;
     }
 
     [PunRPC]
     public void SetActive()
     {
+        if (audioSource != null)
+        {
+            audioSource.Play();
+        }
         isSticked = true;
         delayBool = true;
+        Destroy(obstacleRigidBody);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -55,14 +59,9 @@ public class CowSingleObstacle : MoveObstacleBase
         if (!isSticked && collision.gameObject.layer == LayerMask.NameToLayer("Rock") && collision.collider.name=="RockObject")
         {
             Transform rock = collision.transform;
-            if (audioSource != null)
-            {
-                audioSource.Play();
-            }
             Physics.IgnoreCollision(collision.collider, obstacleCollider);
             transform.localPosition -= (transform.position - rock.position) * .4f;
             cow.SetParent(rock);
-            Destroy(obstacleRigidBody);
             photonView.RPC("SetActive", RpcTarget.All);
         }
     }
@@ -79,18 +78,11 @@ public class CowSingleObstacle : MoveObstacleBase
                 }
                 else
                 {
-                    StartCoroutine(DestroyCow());
+                    cow.parent = null;
+                    Invoke("DestroyPhotonViewObject", 1f);
                 }
             }
         }
-    }
-
-    IEnumerator DestroyCow()
-    {
-        cow.parent = null;
-        gameObject.AddComponent<Rigidbody>();
-        yield return new WaitForSeconds(1f);
-        PhotonNetwork.Destroy(gameObject);
     }
 
     IEnumerator DelayBool()

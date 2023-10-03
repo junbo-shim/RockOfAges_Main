@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2237567165726413588}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31,7 +31,7 @@ Transform:
   m_Children:
   - {fileID: 2515658586134296221}
   m_Father: {fileID: 2510031525566264426}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 2.765151, y: -14.568, z: 8.15187}
 --- !u!1 &289680409887122919
 GameObject:
   m_ObjectHideFlags: 0
@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2194785352600485457}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-R-Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62,7 +62,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4241750100230565734}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -6.334884, y: 2.0183241, z: -54.96143}
 --- !u!1 &570863328236007383
 GameObject:
   m_ObjectHideFlags: 0
@@ -72,7 +72,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3933783814294547497}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-L-Toe0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ Transform:
   m_Children:
   - {fileID: 6839893454574261579}
   m_Father: {fileID: 7989335977285334829}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0.00000049659525, y: -0.00000051631565, z: -90.00001}
 --- !u!1 &1152323735655805058
 GameObject:
   m_ObjectHideFlags: 0
@@ -104,7 +104,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4625627378545269337}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-Spine2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,7 +128,7 @@ Transform:
   - {fileID: 2510031525566264426}
   - {fileID: 5974271583155204676}
   m_Father: {fileID: 4778393166534456903}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -2.6004221, y: 14.251779, z: -18.414482}
 --- !u!1 &1281112472156351939
 GameObject:
   m_ObjectHideFlags: 0
@@ -138,7 +138,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1862201920196887260}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-Tail2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,7 +160,7 @@ Transform:
   m_Children:
   - {fileID: 6763612743423385777}
   m_Father: {fileID: 3866909276438796835}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0.00002547874, y: -0.000083639476, z: 28.68552}
 --- !u!1 &2010609381701051806
 GameObject:
   m_ObjectHideFlags: 0
@@ -170,7 +170,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6763612743423385777}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-TailNub
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,7 +191,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1862201920196887260}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.000080935955, y: -179.99991, z: -90.04561}
 --- !u!1 &2150287672498564100
 GameObject:
   m_ObjectHideFlags: 0
@@ -201,7 +201,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6839893454574261579}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-L-Toe0Nub
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,7 +222,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3933783814294547497}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.000005851577, y: 0.000000015060504, z: 179.99998}
 --- !u!1 &2215263347036598233
 GameObject:
   m_ObjectHideFlags: 0
@@ -232,7 +232,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4778393166534456903}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-Spine1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -256,7 +256,7 @@ Transform:
   - {fileID: 8785793401772325437}
   - {fileID: 4625627378545269337}
   m_Father: {fileID: 2014696212178958158}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0.50483847, y: -14.748447, z: -6.622714}
 --- !u!1 &2343231549883852953
 GameObject:
   m_ObjectHideFlags: 0
@@ -266,7 +266,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7381650663784754758}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ref
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -281,14 +281,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2343231549883852953}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.5, y: 0.5, z: 0.5, w: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6418102163617787923}
   m_Father: {fileID: 5177068856453660923}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90.003746, y: 89.99961, z: 0}
 --- !u!1 &2452763896783170944
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,7 +298,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4924173681532409859}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-R-UpperArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -320,7 +320,7 @@ Transform:
   m_Children:
   - {fileID: 4241750100230565734}
   m_Father: {fileID: 5974271583155204676}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -17.675941, y: 92.03264, z: 89.970146}
 --- !u!1 &3045173813679912371
 GameObject:
   m_ObjectHideFlags: 0
@@ -330,7 +330,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3175912849650717292}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-R-Thigh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -352,7 +352,7 @@ Transform:
   m_Children:
   - {fileID: 5922947078398665764}
   m_Father: {fileID: 405538464019636634}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -4.0712886, y: -174.83635, z: -20.891052}
 --- !u!1 &3481415437893832008
 GameObject:
   m_ObjectHideFlags: 0
@@ -362,7 +362,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5974271583155204676}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-R-Clavicle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -384,7 +384,7 @@ Transform:
   m_Children:
   - {fileID: 4924173681532409859}
   m_Father: {fileID: 4625627378545269337}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.045675498, y: 90.00001, z: 168.93736}
 --- !u!1 &3907180195143484387
 GameObject:
   m_ObjectHideFlags: 0
@@ -394,7 +394,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8785793401772325437}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-Rwing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -416,7 +416,7 @@ Transform:
   m_Children:
   - {fileID: 2760308277674516198}
   m_Father: {fileID: 4778393166534456903}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 14.31277, y: -98.23978, z: 45.955143}
 --- !u!1 &4151393566735128101
 GameObject:
   m_ObjectHideFlags: 0
@@ -426,7 +426,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8671648164694421134}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-L-Clavicle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -448,7 +448,7 @@ Transform:
   m_Children:
   - {fileID: 2346890933512994140}
   m_Father: {fileID: 4625627378545269337}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0.04557861, y: -89.999985, z: 168.93698}
 --- !u!1 &4633425058614826874
 GameObject:
   m_ObjectHideFlags: 0
@@ -458,7 +458,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6418102163617787923}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -480,7 +480,7 @@ Transform:
   m_Children:
   - {fileID: 405538464019636634}
   m_Father: {fileID: 7381650663784754758}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0.00010034819, y: 0.13498744, z: -0.00017699359}
 --- !u!1 &4640614369958634202
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,7 +490,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2760308277674516198}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-RwingNub
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -511,7 +511,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8785793401772325437}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.019867549, y: 179.9803, z: -90.04562}
 --- !u!1 &5030213269914761499
 GameObject:
   m_ObjectHideFlags: 0
@@ -521,7 +521,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2510031525566264426}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-Neck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -543,7 +543,7 @@ Transform:
   m_Children:
   - {fileID: 2237567165726413588}
   m_Father: {fileID: 4625627378545269337}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.0000026646126, y: -0.000013028519, z: 4.5145206}
 --- !u!1 &5075325748173465519
 GameObject:
   m_ObjectHideFlags: 0
@@ -554,7 +554,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3547209510005754309}
   - component: {fileID: 6663331217512600783}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull_of_heaven
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -569,7 +569,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5075325748173465519}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -666,7 +666,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5922947078398665764}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-R-Calf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -688,7 +688,7 @@ Transform:
   m_Children:
   - {fileID: 3377784377121099714}
   m_Father: {fileID: 3175912849650717292}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.0000065726717, y: -0.000011505863, z: 59.090855}
 --- !u!1 &5483803485953167690
 GameObject:
   m_ObjectHideFlags: 0
@@ -698,7 +698,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6751473452943528807}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-lwingNub
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -719,7 +719,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4234832441637498426}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.000081113816, y: -179.99991, z: -90.04561}
 --- !u!1 &5598062658356853441
 GameObject:
   m_ObjectHideFlags: 0
@@ -729,7 +729,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3159866375387943836}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-L-Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -750,7 +750,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2602874735527495562}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -4.961023, y: -11.160618, z: -39.813084}
 --- !u!1 &5893927211535195590
 GameObject:
   m_ObjectHideFlags: 0
@@ -760,7 +760,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4241750100230565734}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-R-Forearm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -782,7 +782,7 @@ Transform:
   m_Children:
   - {fileID: 2194785352600485457}
   m_Father: {fileID: 4924173681532409859}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.0000044322196, y: 0.0000055133296, z: 80.64748}
 --- !u!1 &6532195259909910822
 GameObject:
   m_ObjectHideFlags: 0
@@ -792,7 +792,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2515658586134296221}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-HeadNub
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -823,7 +823,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2979200158508980247}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-R-Toe0Nub
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -854,7 +854,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2014696212178958158}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-Spine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -876,7 +876,7 @@ Transform:
   m_Children:
   - {fileID: 4778393166534456903}
   m_Father: {fileID: 405538464019636634}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.35425672, y: -0.10294779, z: -93.50902}
 --- !u!1 &6823835260574452832
 GameObject:
   m_ObjectHideFlags: 0
@@ -886,7 +886,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3377784377121099714}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-R-Foot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -908,7 +908,7 @@ Transform:
   m_Children:
   - {fileID: 4586646946680375281}
   m_Father: {fileID: 5922947078398665764}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.07562882, y: -7.090062, z: -39.658978}
 --- !u!1 &7011614504237412923
 GameObject:
   m_ObjectHideFlags: 0
@@ -918,7 +918,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4586646946680375281}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-R-Toe0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -940,7 +940,7 @@ Transform:
   m_Children:
   - {fileID: 2979200158508980247}
   m_Father: {fileID: 3377784377121099714}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0.0001028913, y: 0.0000034650402, z: -90.00001}
 --- !u!1 &7179392710452331048
 GameObject:
   m_ObjectHideFlags: 0
@@ -950,7 +950,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 405538464019636634}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-Pelvis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -975,7 +975,7 @@ Transform:
   - {fileID: 2014696212178958158}
   - {fileID: 3731553029691333227}
   m_Father: {fileID: 6418102163617787923}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 90, z: 0}
 --- !u!1 &7292524979773576617
 GameObject:
   m_ObjectHideFlags: 0
@@ -985,7 +985,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2346890933512994140}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-L-UpperArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1007,7 +1007,7 @@ Transform:
   m_Children:
   - {fileID: 2602874735527495562}
   m_Father: {fileID: 8671648164694421134}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 2.2023342, y: -98.496376, z: 80.46151}
 --- !u!1 &7301948237400135266
 GameObject:
   m_ObjectHideFlags: 0
@@ -1017,7 +1017,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2602874735527495562}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-L-Forearm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1039,7 +1039,7 @@ Transform:
   m_Children:
   - {fileID: 3159866375387943836}
   m_Father: {fileID: 2346890933512994140}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.000009265494, y: -0.000010133953, z: 75.25611}
 --- !u!1 &7539955233910375012
 GameObject:
   m_ObjectHideFlags: 0
@@ -1049,7 +1049,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7989335977285334829}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-L-Foot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1071,7 +1071,7 @@ Transform:
   m_Children:
   - {fileID: 3933783814294547497}
   m_Father: {fileID: 3795451077299170080}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 5.19387, y: 1.0285655, z: -46.933662}
 --- !u!1 &7582142064275052871
 GameObject:
   m_ObjectHideFlags: 0
@@ -1081,7 +1081,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3795451077299170080}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-L-Calf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1103,7 +1103,7 @@ Transform:
   m_Children:
   - {fileID: 7989335977285334829}
   m_Father: {fileID: 7766681872248359377}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.000003945637, y: -0.000011762818, z: 50.544453}
 --- !u!1 &7776474333428519523
 GameObject:
   m_ObjectHideFlags: 0
@@ -1113,7 +1113,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7766681872248359377}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-L-Thigh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1135,7 +1135,7 @@ Transform:
   m_Children:
   - {fileID: 3795451077299170080}
   m_Father: {fileID: 405538464019636634}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -3.0074632, y: 175.58568, z: -5.1328545}
 --- !u!1 &7923666311086101409
 GameObject:
   m_ObjectHideFlags: 0
@@ -1145,7 +1145,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3866909276438796835}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-Tail1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1167,7 +1167,7 @@ Transform:
   m_Children:
   - {fileID: 1862201920196887260}
   m_Father: {fileID: 3731553029691333227}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.0000045034976, y: -0.000060642335, z: 25.452255}
 --- !u!1 &8094103736596034831
 GameObject:
   m_ObjectHideFlags: 0
@@ -1177,7 +1177,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5177068856453660923}
-  m_Layer: 0
+  - component: {fileID: 4368201387960977873}
+  - component: {fileID: 4075662127184927718}
+  - component: {fileID: 2939532590908638040}
+  - component: {fileID: 7730860683740180400}
+  - component: {fileID: 931797567850249205}
+  m_Layer: 8
   m_Name: Heavenbull_Idle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1194,13 +1199,235 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3547209510005754309}
   - {fileID: 7381650663784754758}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4368201387960977873
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8094103736596034831}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 22, y: 15, z: 20}
+  m_Center: {x: 2, y: 7.5, z: 0}
+--- !u!54 &4075662127184927718
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8094103736596034831}
+  serializedVersion: 4
+  m_Mass: 100
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!95 &2939532590908638040
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8094103736596034831}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: fee4b9a86ececed4098c24483afa8c1e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7730860683740180400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8094103736596034831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c86187712e561a0438a6a64fc2b48fb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obstacleParent: {fileID: 0}
+  status: {fileID: 11400000, guid: 97a5264bf24ab344cbd787db7ebb352c, type: 2}
+  buildPositionY: 0
+  peopleObject: {fileID: 0}
+  peopleCount: 5
+  isBuildComplete: 0
+  dragObstacle: 0
+  detectionRadius: 10
+  Rock:
+    serializedVersion: 2
+    m_Bits: 4096
+  mudPrefab: {fileID: 3844246016458193032, guid: eb80e3d0b0a3cea4bbc79b37a3964c45, type: 3}
+  mudDuration: 1
+  audioSource: {fileID: 931797567850249205}
+  attackSound: {fileID: 8300000, guid: e96931933f7b2754b91002c57db8f3b8, type: 3}
+  attackCharge: {fileID: 8300000, guid: 2251bdfc530b67844ab2080fad4badcc, type: 3}
+  idleSound: {fileID: 8300000, guid: e1dbbcac0a83c8d4d96f9ab4d729c69f, type: 3}
+  idleSound2: {fileID: 8300000, guid: a6b5bc52c462287499c097fb01cea6f9, type: 3}
+--- !u!82 &931797567850249205
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8094103736596034831}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1.01
+  MaxDistance: 1.010001
+  Pan2D: 0
+  rolloffMode: 2
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.8207855
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.61798096
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.42640686
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.9581487
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1.0123596
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.9916304
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &8625390603494953925
 GameObject:
   m_ObjectHideFlags: 0
@@ -1210,7 +1437,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4234832441637498426}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-lwing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1232,7 +1459,7 @@ Transform:
   m_Children:
   - {fileID: 6751473452943528807}
   m_Father: {fileID: 4778393166534456903}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -14.313051, y: 98.23951, z: 45.95553}
 --- !u!1 &9107687625413925522
 GameObject:
   m_ObjectHideFlags: 0
@@ -1242,7 +1469,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3731553029691333227}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bull-Tail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1264,4 +1491,4 @@ Transform:
   m_Children:
   - {fileID: 3866909276438796835}
   m_Father: {fileID: 405538464019636634}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0.000026776359, y: -0.000042293406, z: 131.56549}

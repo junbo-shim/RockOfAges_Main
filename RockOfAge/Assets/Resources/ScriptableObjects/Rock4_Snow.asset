@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba3ffab374e4dc54c80f7982f4220096, type: 3}
+  m_Name: Rock4_Snow
+  m_EditorClassIdentifier: 
+  id: 4
+  stoneName: "\uB208\uB369\uC774"
+  health: 1700
+  speed: 23
+  acceleration: 10
+  damage: 170
+  weight: 80
+  cooldown: 5
+  tempString: "\uCC9C\uCC9C\uD788 \uB179\uC544\uB0B4\uB9AC\uB294 \uB300\uC2E0 \uC5C4\uCCAD\uB09C
+    \uB109\uBC31 \uC800\uD56D\uB825\uC744 \uAC00\uC9C0\uACE0 \uC788\uC73C\uBA70,
+    \uC5BC\uC74C \uC704\uC5D0\uC11C \uB2E4\uB978 \uBC14\uC704\uC5D0 \uBE44\uD574
+    \uC870\uC791\uC774 \uC6A9\uC774\uD569\uB2C8\uB2E4."

@@ -18,7 +18,7 @@ public class CowSingleObstacle : MoveObstacleBase
         cow = GetComponent<Transform>();
         status = new ObstacleStatus(status);
         obstacleMeshFilter = GetComponent<MeshFilter>();
-        obstacleRenderer = GetComponent<Renderer>();
+        obstacleRenderers = GetComponentsInChildren<Renderer>();
         obstacleRigidBody = GetComponent<Rigidbody>();
         _colliders = GetComponents<Collider>();
         foreach(var collider in _colliders)
@@ -47,6 +47,11 @@ public class CowSingleObstacle : MoveObstacleBase
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (!isBuildComplete)
+        {
+            return;
+
+        }
         if (!isSticked && collision.gameObject.layer == LayerMask.NameToLayer("Rock") && collision.collider.name=="RockObject")
         {
             Transform rock = collision.transform;

@@ -25,7 +25,8 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
         status = new ObstacleStatus(status);
         //obstacleRigidBody = transform.GetChild(0).GetComponent<Rigidbody>();
         obstacleAnimator = transform.GetChild(0).GetComponent<Animator>();
-        obstacleRenderer = transform.GetChild(0).GetComponentInChildren<SkinnedMeshRenderer>();
+        //obstacleRenderer = transform.GetChild(0).GetComponentInChildren<SkinnedMeshRenderer>();
+        obstacleRenderers = GetComponentsInChildren<Renderer>();
         currHealth = status.Health;
         standPosition = catMother.transform.position;
         catMotherOrigianlRotation = catMother.transform.rotation;
@@ -35,6 +36,11 @@ public class CatObstacle : MoveObstacleBase, IHitObjectHandler
 
     private void Update()
     {
+        if (!isBuildComplete)
+        {
+            return;
+
+        }
         if (!isAttacked && FindTarget())
         {
             MoveCat(rockTransform);

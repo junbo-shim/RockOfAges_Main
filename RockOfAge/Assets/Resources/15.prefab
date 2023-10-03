@@ -339,6 +339,7 @@ MonoBehaviour:
   buildPositionY: 0
   peopleObject: {fileID: 0}
   peopleCount: 5
+  isBuildComplete: 0
   dragObstacle: 0
   attackSound: {fileID: 8300000, guid: c976150b2d03fbe4ba33a0085fdfb15f, type: 3}
 --- !u!114 &7566938314014320200

@@ -26,6 +26,11 @@ public class Explosive : HoldObstacleBase
     }
     private void OnCollisionEnter(Collision collision)
     {
+        if (!isBuildComplete)
+        {
+            return;
+
+        }
         if (!exploded && collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
             PlayExplosionSound();

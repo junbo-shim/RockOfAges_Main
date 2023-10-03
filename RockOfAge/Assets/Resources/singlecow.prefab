@@ -107,6 +107,7 @@ MonoBehaviour:
   buildPositionY: 0
   peopleObject: {fileID: 0}
   peopleCount: 5
+  isBuildComplete: 0
   dragObstacle: 0
   _colliders: []
   isSticked: 0

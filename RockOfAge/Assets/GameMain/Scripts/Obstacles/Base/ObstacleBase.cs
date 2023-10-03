@@ -3,6 +3,8 @@ using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using System.Linq;
 
 public class ObstacleBase : MonoBehaviourPun
 {
@@ -20,10 +22,13 @@ public class ObstacleBase : MonoBehaviourPun
     protected MeshFilter obstacleMeshFilter;
     protected Rigidbody obstacleRigidBody;
     protected Animator obstacleAnimator;
-    protected Renderer obstacleRenderer;
+    //protected Renderer obstacleRenderer;
     protected Collider obstacleCollider;
     protected AudioSource audioSource;
     protected Material[] originMaterial;
+    protected Renderer[] obstacleRenderers;
+    protected Queue<Material[]> originMaterials;
+    protected Queue<Material[]> dissolveMaterials;
     //타겟
     protected GameObject target;
 
@@ -35,16 +40,16 @@ public class ObstacleBase : MonoBehaviourPun
     protected float currHealth;
 
     //건설완성=오브젝트활성화
-    protected bool isBuildComplete = false;
+    public bool isBuildComplete = false;
     
     [SerializeField]
     public bool dragObstacle = false;
 
     public static readonly float BUILD_TIME = 5f;
 
-    private Material material = null;
+    private Material dissolveMaterial = null;
     private int _Width = 0;
-    private int _Cutoff = 0;
+    private int _CutOff = 0;
 
     private void Awake()
     {
@@ -86,7 +91,7 @@ public class ObstacleBase : MonoBehaviourPun
     protected virtual void StartBuild(float time)
     {
 
-        if (obstacleRenderer == null)
+        if (obstacleRenderers.Count() == 0)
         {
             return;
         }
@@ -96,17 +101,45 @@ public class ObstacleBase : MonoBehaviourPun
             return;
         }
 
-        //마테리얼 교체
-        originMaterial = obstacleRenderer.materials;
-        Material[] subMaterial = new Material[originMaterial.Length];
-        for(int i = 0; i < subMaterial.Length; i++)
+        //자식에 있는 모든 renderer 처리
+        foreach (var renderer in obstacleRenderers)
         {
-            subMaterial[i]= BuildManager.instance.white;
-        }
-        obstacleRenderer.materials = subMaterial;
-        material = obstacleRenderer.material;
+            //마테리얼 교체
+            originMaterial = renderer.materials;
+            originMaterials.Enqueue(renderer.materials);
 
-        obstacleRigidBody.useGravity = false;
+            //디졸브될 마테리얼 생성
+            Material[] subMaterial = new Material[originMaterial.Length];
+
+            //각 배열에 들어갈 마테리얼 초기화
+            _Width = Shader.PropertyToID("_Width");
+            _CutOff = Shader.PropertyToID("_CutOff");
+
+            for (int i = 0; i < subMaterial.Length; i++)
+            {
+                //dissolve용 material 추가
+                subMaterial[i] = Instantiate( BuildManager.instance.white, transform);
+
+                //dissolve용 material 초기화
+                if (subMaterial[i] != null)
+                {
+                    subMaterial[i].SetFloat(_CutOff, 0);
+                    subMaterial[i].SetFloat(_Width, 0);
+                }
+            }
+
+            //현재 renderer에 해당하는 dissolve마테리얼 저장
+            dissolveMaterials.Enqueue(subMaterial);
+
+            //마테리얼 교체
+            renderer.materials = subMaterial;
+
+        }
+
+        if (obstacleRigidBody != null)
+        {
+            obstacleRigidBody.useGravity = false;
+        }
         if (obstacleCollider != null)
         {
             if(obstacleCollider is MeshCollider)
@@ -114,15 +147,6 @@ public class ObstacleBase : MonoBehaviourPun
                 (obstacleCollider as MeshCollider).convex = true;
             }
             obstacleCollider.isTrigger = true;
-        }
-
-        _Width = Shader.PropertyToID("_Width");
-        _Cutoff = Shader.PropertyToID("_CutOff");
-
-        if (material != null)
-        {
-            material.SetFloat(_Cutoff, 0);
-            material.SetFloat(_Width, 0);
         }
 
         StartCoroutine(BuildRoutine(time));
@@ -136,17 +160,41 @@ public class ObstacleBase : MonoBehaviourPun
         {
             yield return Time.deltaTime;
             currTime += Time.deltaTime;
-            material.SetFloat(_Cutoff, currTime / buildTime * 0.5f);
-            material.SetFloat(_Width, currTime / buildTime * 0.5f);
+            foreach(var dissolveMaterialArray in dissolveMaterials)
+            {
+                foreach(var dissolveMaterial in dissolveMaterialArray)
+                {
+                    dissolveMaterial.SetFloat(_CutOff, currTime / buildTime * 0.5f);
+                    dissolveMaterial.SetFloat(_Width, currTime / buildTime * 0.5f);
+                }
+            }
         }
 
-        material.SetFloat(_Cutoff, 1);
-        material.SetFloat(_Width, 1);
+        foreach (var dissolveMaterialArray in dissolveMaterials)
+        {
+            foreach (var dissolveMaterial in dissolveMaterialArray)
+            {
+                dissolveMaterial.SetFloat(_CutOff, 1);
+                dissolveMaterial.SetFloat(_Width, 1);
+            }
+        }
+
         if (gameObject == null)
             yield break;
 
+
+        foreach (var renderer in obstacleRenderers)
+        {
+            //마테리얼 교체
+            renderer.materials = originMaterials.Dequeue();
+        }
+
+        //더이상 쓰지않는 저장공간 참조 제거
+        originMaterial = null;
+        originMaterials = null;
+        dissolveMaterials = null;
+
         isBuildComplete = true;
-        obstacleRenderer.materials = originMaterial;
 
         if (obstacleCollider != null)
         {
@@ -156,7 +204,10 @@ public class ObstacleBase : MonoBehaviourPun
                 (obstacleCollider as MeshCollider).convex = false;
             }
         }
-        obstacleRigidBody.useGravity = true;
+        if (obstacleRigidBody != null)
+        {
+            obstacleRigidBody.useGravity = true;
+        }
         MakePeople();
     }
 
@@ -194,9 +245,12 @@ public class ObstacleBase : MonoBehaviourPun
         obstacleMeshFilter = GetComponent<MeshFilter>();
         obstacleRigidBody = GetComponent<Rigidbody>();
         obstacleAnimator = GetComponent<Animator>();
-        obstacleRenderer = GetComponentInChildren<Renderer>();
+        //obstacleRenderer = GetComponentInChildren<Renderer>();
         obstacleCollider = GetComponentInChildren<MeshCollider>();
+        obstacleRenderers = GetComponentsInChildren<Renderer>();
         audioSource = GetComponent<AudioSource>();
+        originMaterials = new Queue<Material[]>();
+        dissolveMaterials = new Queue<Material[]>();
         currHealth = status.Health;
     }
     public virtual void Delete()

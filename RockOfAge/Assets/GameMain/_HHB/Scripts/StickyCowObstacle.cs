@@ -23,7 +23,7 @@ public class StickyCowObstacle : ObstacleBase
         base.Init();
         status = Instantiate(status, transform);
         obstacleMeshFilter = GetComponent<MeshFilter>();
-        obstacleRenderer = GetComponent<Renderer>();
+        obstacleRenderers = GetComponentsInChildren<Renderer>();
         obstacleRigidBody = GetComponent<Rigidbody>();
     }
 

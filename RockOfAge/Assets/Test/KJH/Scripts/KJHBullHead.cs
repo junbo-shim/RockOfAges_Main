@@ -31,11 +31,34 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
 
         animator = GetComponent<Animator>(); // Animator 컴포넌트 가져오기
 
+        
+    }
+
+    Vector3 GetPlaneNormal()
+    {
+        Vector3 plane;
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 10f, Global_PSC.FindLayerToName("Terrains")))
+        {
+            plane = hit.normal;
+        }
+        else
+        {
+            plane = Vector3.up;
+        }
+
+        return plane;
+
     }
 
     void Update()
     {
+        if (!isBuildComplete)
+        {
+            return;
+        }
 
+        //돌진, 복귀, 회전 상태가 아니면 rock 탐지
         if (!isCharging && !isReturning && !isStaring)
         {
             // 감지 범위 내에서 바위 감지
@@ -55,6 +78,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
                     stareTimer = Time.time;
                     // Attack 애니메이션 트리거 리셋
                     animator.ResetTrigger("Attack");
+
                     break;
                 }
             }
@@ -64,7 +88,7 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
             // 바위를 바라보는 동안 회전
             Vector3 direction = (target.transform.position - transform.position).normalized;
             direction.y = 0; // Y 축 이동 금지
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            Quaternion targetRotation =  Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * chargeSpeed);
 
             // 2초가 지났는지 확인
@@ -125,6 +149,12 @@ public class KJHBullHead : MoveObstacleBase, IHitObjectHandler
     }
     void OnCollisionEnter(Collision collision)
     {
+        if (!isBuildComplete)
+        {
+            return;
+
+        }
+
         if (isCharging && collision.gameObject.layer == LayerMask.NameToLayer("Rock"))
         {
             audioSource.clip = attackSound;

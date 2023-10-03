@@ -34,7 +34,7 @@ public class StoneWall : HoldObstacleBase, IHitObjectHandler
         }
         stateMesh[0].SetActive(true);
         currCollider = stateMesh[0].GetComponent<MeshCollider>();
-        obstacleRenderer = stateMesh[0].GetComponent<MeshRenderer>();
+        obstacleRenderers = stateMesh[0].GetComponentsInChildren<Renderer>();
     }
 
     //맵에 Build

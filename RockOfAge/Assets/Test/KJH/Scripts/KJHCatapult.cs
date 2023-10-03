@@ -34,6 +34,11 @@ public class KJHCatapult : HoldObstacleBase, IHitObjectHandler
 
     void Update()
     {
+        if (!isBuildComplete)
+        {
+            return;
+
+        }
         // 투석기의 현재 위치
         Vector3 catapultPosition = transform.position;
 

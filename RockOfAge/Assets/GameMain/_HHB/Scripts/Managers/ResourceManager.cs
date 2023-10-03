@@ -11,13 +11,18 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     // 유닛 리소스
     public Dictionary<int, GameObject> unitResources = new Dictionary<int, GameObject>();
 
-    // ! photon
     //public GameObject userRockObject;
+
+
+    // ! Photon : 나의 데이터를 가지고 있는 DataContainer
+    public GameObject myDataContainer;
+    public PhotonView myDataContainerView;
+    // ! Photon : DataContainer 에서 PlayerTeamNum 을 가져와서 Rock 의 Team 설정에 활용할 변수
     public string playerTeamNumber;
     public Vector3 team1StartPoint;
     public Vector3 team2StartPoint;
-    public PhotonView dataContainerView;
     
+
     //Vector3 startPointTeam1 = new Vector3(111.55f, 31.21f, 120f);
     public static Vector3 team1StartPos { get; private set;}
     public static Vector3 team2StartPos { get; private set; }
@@ -28,10 +33,11 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     {
         // ! Photon
         team1StartPoint = new Vector3(-107f, 40f, -107f);
-        team2StartPoint = new Vector3(107f, 40f, 107f); 
-
-        dataContainerView = NetworkManager.Instance.myDataContainer.GetComponent<PhotonView>();
-        playerTeamNumber = PhotonNetwork.CurrentRoom.CustomProperties[dataContainerView.ViewID.ToString()].ToString();
+        team2StartPoint = new Vector3(107f, 40f, 107f);
+        // ! Photon : playerTeamNumber 값을 myDataContainer 에서 가져와서 저장
+        myDataContainer = NetworkManager.Instance.myDataContainer;
+        myDataContainerView = myDataContainer.GetComponent<PhotonView>();
+        playerTeamNumber = myDataContainer.GetComponent<PlayerDataContainer>().PlayerTeamNum;
         PackAwake();
         
         team1StartPos = Global_PSC.FindTopLevelGameObject("Team2").transform.GetChild(3).position + Vector3.up * 5;
@@ -168,9 +174,8 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
 
         string teamNum = playerTeamNumber.Split('_')[1];
 
-        Debug.Log(teamNum+" 팀넘버");
-        // ! Photon
-        FindMyViewID();
+
+        // ! Photon : Team 에 따라서 카메라를 나누어 지정해준다
         if (teamNum == "Team1")
         {
             if (userRockObject.GetComponent<PhotonView>().IsMine == true)
@@ -204,20 +209,6 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         //virtualRockCamera.LookAt = userRock.transform;
         #endregion
     }
-
-
-    // ! Photon
-    private void FindMyViewID()
-    {
-        foreach (var mydata in PhotonNetwork.CurrentRoom.CustomProperties)
-        {
-            if (mydata.Key.ToString() == CycleManager.cycleManager.dataContainer.GetComponent<PhotonView>().ViewID.ToString())
-            {
-                playerTeamNumber = mydata.Value.ToString();
-            }
-        }
-    }
-
 
     #region 검색용 함수
     public TextMeshProUGUI FindUnitTextById(int id_)

@@ -1,108 +1,169 @@
-using Photon.Pun;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using Photon.Pun;
 
-public class TeamButton : MonoBehaviour
+
+public class TeamButton : MonoBehaviourPun, IPunObservable
 {
-    #region Legacy
-    //private Transform player1;
-    //private Transform player2;
-    //private Transform player3;
-    //private Transform player4;
+    #region 필드
+    // 팀 선택 버튼에 표시될 플레이어의 이름
+    public TMP_Text playerName;
 
-    //private bool isTaken1;
-    //private bool isTaken2;
-    //private bool isTaken3;
-    //private bool isTaken4;
+    // 팀 선택 버튼에 표시될 플레이어의 초상화
+    public Image playerSprite;
 
-    //private void Awake()
-    //{
-    //    FindButtons();
-    //}
+    // 팀 선택 버튼에 표시될 플레이어의 레디 확인용 체크 이미지
+    public Image readyCheck;
 
-    //void Update()
-    //{
-    //    CheckBools();
-    //}
+    // 이 버튼을 누른 사람의 아이디 변수
+    public int playerIdentifier;
+    #endregion
 
-    //private void FindButtons() 
-    //{
-    //    player1 = gameObject.transform.Find("Player1");
-    //    player2 = gameObject.transform.Find("Player2");
-    //    player3 = gameObject.transform.Find("Player3");
-    //    player4 = gameObject.transform.Find("Player4");
 
-    //    player1.GetComponent<Button>().onClick.AddListener(PressPlayer1);
-    //    player2.GetComponent<Button>().onClick.AddListener(PressPlayer2);
-    //    player3.GetComponent<Button>().onClick.AddListener(PressPlayer3);
-    //    player4.GetComponent<Button>().onClick.AddListener(PressPlayer4);
-    //}
-    //public void CheckBools() 
-    //{
-    //    if (isTaken1 == true) 
-    //    {
-    //        player1.GetComponent<Button>().interactable = false;
-    //    }
-    //    else if (isTaken1 == false) 
-    //    {
-    //        player1.GetComponent<Button>().interactable = true;
-    //    }
+    // 실시간으로 공유될 (master 가 생성한 원본과 다른 client 들이 가진 복제본이 공유하는)
+    // 변수 전송용 photon 동기화 메서드
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(playerIdentifier);
+            stream.SendNext(playerName.text);
+            stream.SendNext(readyCheck.enabled);
+        }
+        else
+        {
+            playerIdentifier = (int)stream.ReceiveNext();
+            playerName.text = (string)stream.ReceiveNext();
+            readyCheck.enabled = (bool)stream.ReceiveNext();
+        }
+    }
 
-    //    if (isTaken2 == true) 
-    //    {
-    //        player2.GetComponent<Button>().interactable = false;
-    //    }
-    //    else if (isTaken2 == false) 
-    //    {
-    //        player2.GetComponent<Button>().interactable = true;
-    //    }
 
-    //    if (isTaken3 == true) 
-    //    {
-    //        player3.GetComponent<Button>().interactable = false;
-    //    }
-    //    else if (isTaken3 == false) 
-    //    {
-    //        player3.GetComponent<Button>().interactable = true;
-    //    }
+    private void Awake()
+    {
+        // 이 gameObject 가 가진 button 컴포넌트에 접근하여 AddListener 로 메서드 할당
+        gameObject.GetComponent<Button>().onClick.AddListener(PressPlayerSeat);
 
-    //    if (isTaken4 == true) 
-    //    {
-    //        player4.GetComponent<Button>().interactable = false;
-    //    }
-    //    else if (isTaken4 == false) 
-    //    {
-    //        player4.GetComponent<Button>().interactable = true;
-    //    }
-    //}
-    //public void PressPlayer1()
-    //{
-    //    isTaken1 = true;
-    //    isTaken2 = false;
-    //    isTaken3 = false;
-    //    isTaken4 = false;
-    //}
-    //public void PressPlayer2()
-    //{
-    //    isTaken1 = false;
-    //    isTaken2 = true;
-    //    isTaken3 = false;
-    //    isTaken4 = false;
-    //}
-    //public void PressPlayer3()
-    //{
-    //    isTaken1 = false;
-    //    isTaken2 = false;
-    //    isTaken3 = true;
-    //    isTaken4 = false;
-    //}
-    //public void PressPlayer4()
-    //{
-    //    isTaken1 = false;
-    //    isTaken2 = false;
-    //    isTaken3 = false;
-    //    isTaken4 = true;
-    //}
+        // 각 변수에 이 스크립트가 달린 gameObject 하위 요소들을 찾아서 할당
+        playerName = gameObject.transform.Find("Text (TMP)").GetComponent<TMP_Text>();
+        playerSprite = gameObject.transform.Find("Image").GetComponent<Image>();
+        readyCheck = gameObject.transform.Find("Check").GetComponent<Image>();
+
+        // 체크 이미지는 꺼둔다
+        readyCheck.enabled = false;
+        // playerIdentifier 의 초기값은 -1
+        playerIdentifier = -1;
+    }
+
+
+    // 버튼을 눌렀을 때 호출되는 custom 메서드
+    public void PressPlayerSeat()
+    {
+        // 만약 playerIdentifier 에 누가 눌렀는지 정보가 없다면
+        if (playerIdentifier == -1)
+        {
+            // MyDataContainer 의 PlayerTeamNum 에 Player'n'_Team'n' 값을 저장한다
+            NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerTeamNum = gameObject.name;
+            // 내 ActorNumber 를 담아서 RPC 메서드를 모두에게 쏜다
+            photonView.RPC("CheckIdentifierNone", RpcTarget.All,
+                PhotonNetwork.LocalPlayer.ActorNumber, PhotonNetwork.LocalPlayer.NickName);
+        }
+        // 만약 playerIdentifier 누군가 눌렀는지 정보가 담겨있다면
+        else if (playerIdentifier != -1)
+        {
+            // 그리고 그 playerIdentifier 가 내 ActorNumber 라면
+            if (playerIdentifier == PhotonNetwork.LocalPlayer.ActorNumber)
+            {
+                // MyDataContainer 의 PlayerTeamNum 에 Player'n'_Team'n' 값을 저장한다
+                NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerTeamNum = "";
+                // 내 ActorNumber 를 담아서 RPC 메서드를 모두에게 쏜다
+                photonView.RPC("CheckIdentifierSomething", RpcTarget.All,
+                    PhotonNetwork.LocalPlayer.ActorNumber);
+            }
+        }
+    }
+
+
+    #region playerIdentifier 값이 비어 있을 경우
+    // playerIdentifier 값이 비어 있을 경우에 모두에게 누른 사람의 ActorNumber 송신하는 RPC custom 메서드
+    [PunRPC]
+    public void CheckIdentifierNone(int myActorNum, string myName)
+    {
+        if (PhotonNetwork.IsMasterClient == false)
+        {
+            /*Do Nothing*/
+        }
+        else if (PhotonNetwork.IsMasterClient == true)
+        {
+            // 버튼의 playerIdentifier 변수에 myActorNum 를 담는다
+            playerIdentifier = myActorNum;
+            // 버튼의 playerName 에 플레이어 이름 표시
+            playerName.text = myName;
+            // 버튼의 Ready 상태를 true 로 변환
+            readyCheck.enabled = true;
+            // master 의 readyCount 를 1 올린다
+            NetworkManager.Instance.readyCount += 1;
+            // 모든 사람들에게 interactable false 로 만드는 RPC 발사
+            photonView.RPC("TurnButtonFalse", RpcTarget.All, myActorNum);
+        }
+    }
+
+
+    // 다른 사람들에게 interactable false 로 만드는 RPC custom 메서드
+    [PunRPC]
+    public void TurnButtonFalse(int myActorNum)
+    {
+        // 내가 버튼을 누른 사람이라면
+        if (myActorNum == PhotonNetwork.LocalPlayer.ActorNumber)
+        {
+            /*Do Nothing*/
+        }
+        else
+        {
+            gameObject.GetComponent<Button>().interactable = false;
+        }
+    }
+    #endregion
+
+    #region playerIdentifier 값이 차있을 경우
+    // playerIdentifier 값이 차있을 경우에 모두에게 누른 사람의 ActorNumber 송신하는 RPC custom 메서드
+    [PunRPC]
+    public void CheckIdentifierSomething(int myActorNum)
+    {
+        if (PhotonNetwork.IsMasterClient == false)
+        {
+            /*Do Nothing*/
+        }
+        else if (PhotonNetwork.IsMasterClient == true)
+        {
+            // 버튼의 playerIdentifier 변수를 -1 로 초기화한다
+            playerIdentifier = -1;
+            // 버튼의 playerName 에 플레이어 이름 제거
+            playerName.text = null;
+            // 버튼의 Ready 상태를 false 로 변환
+            readyCheck.enabled = false;
+            // master 의 readyCount 를 1 내린다
+            NetworkManager.Instance.readyCount -= 1;
+            // 모든 사람들에게 interactable true 로 만드는 RPC 발사
+            photonView.RPC("TurnButtonTrue", RpcTarget.All, myActorNum);
+        }
+    }
+
+
+    // 다른 사람들에게 interactable true 로 만드는 RPC custom 메서드
+    [PunRPC]
+    public void TurnButtonTrue(int myActorNum)
+    {
+        // 내가 버튼을 누른 사람이라면
+        if (myActorNum == PhotonNetwork.LocalPlayer.ActorNumber)
+        {
+            /*Do Nothing*/
+        }
+        else
+        {
+            gameObject.GetComponent<Button>().interactable = true;
+        }
+    }
     #endregion
 }

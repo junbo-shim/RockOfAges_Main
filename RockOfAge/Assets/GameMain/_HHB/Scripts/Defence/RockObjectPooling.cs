@@ -38,7 +38,7 @@ public class RockObjectPooling : MonoBehaviour
 
     public void SetTransformPooling(GameObject rock)
     {
-        GameObject mother = Global_PSC.FindTopLevelGameObject("PoolingObjectQueue");
+        GameObject mother = Global_PSC.FindTopLevelGameObject("PoolingRockObjectQueue");
         rock.transform.SetParent(mother.transform);
     }
 

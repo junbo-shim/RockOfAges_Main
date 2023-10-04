@@ -55,6 +55,8 @@ public partial class UIManager : MonoBehaviour
         SwitchUIManager("escUI");
         InitnowOnUIList();
         GetDirection();
+        quitButton.onClick.AddListener(()=> QutGame());
+        userLobbyButton.onClick.AddListener(() => BackToLobby());
     }
 
     #region Functions

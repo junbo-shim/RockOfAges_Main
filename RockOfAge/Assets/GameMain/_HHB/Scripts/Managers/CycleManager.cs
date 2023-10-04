@@ -32,8 +32,8 @@ public class CycleManager : MonoBehaviour
     // 공격에서 공이 선택됨 bool
     public bool attackRockSelected = false;
     // team1 team2 체력
-    public float team1Hp = 600f;
-    public float team2Hp = 600f;
+    public float team1Hp = 300f;
+    public float team2Hp = 300f;
     ////! 서버 player gold
     //public int gold = 1000;
     private bool _isEntered = false;

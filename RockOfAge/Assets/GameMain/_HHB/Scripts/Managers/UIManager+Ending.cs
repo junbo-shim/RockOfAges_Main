@@ -72,6 +72,9 @@ public partial class UIManager : MonoBehaviour
 
     public TextMeshProUGUI victory;
 
+    public Button quitButton;
+    public Button userLobbyButton;
+
     #endregion
 
     #region Functions

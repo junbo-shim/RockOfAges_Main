@@ -100,7 +100,7 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     public void ShowRoomName() 
     {
         // master 이름을 저장
-        string masterName = PhotonNetwork.MasterClient.NickName;
+        string masterName = playerNickName;
         // 현재 방 이름을 표시
         roomName.text = masterName + "의 방 : " + PhotonNetwork.CurrentRoom.Name;
     }

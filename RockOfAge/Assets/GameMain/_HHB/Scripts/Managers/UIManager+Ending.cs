@@ -67,6 +67,9 @@ public partial class UIManager : MonoBehaviour
     private Transform resultImageHolder;
     public TextMeshProUGUI victory;
 
+    public Button quitButton;
+    public Button userLobbyButton;
+
     #endregion
 
     #region Functions

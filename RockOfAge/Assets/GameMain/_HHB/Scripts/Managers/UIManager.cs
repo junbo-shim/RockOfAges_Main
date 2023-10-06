@@ -60,6 +60,8 @@ public partial class UIManager : MonoBehaviour
         GetEndUI();
         AssignEndUIButtons();
         PrintPlayerText(NetworkManager.Instance.dataContainers);
+        quitButton.onClick.AddListener(()=> QutGame());
+        userLobbyButton.onClick.AddListener(() => BackToLobby());
     }
 
     #region Functions

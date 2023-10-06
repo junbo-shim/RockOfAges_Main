@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -32,6 +34,8 @@ public partial class UIManager: MonoBehaviour
     // 플레이어 체력
     [Header("PLAYER GOLD TEXT")]
     public TextMeshProUGUI playerGold;
+
+    //! 플레이어 스코어
     #endregion
 
     #region Functions
@@ -74,14 +78,30 @@ public partial class UIManager: MonoBehaviour
     // ! 서버
     //{ PrintPlayerText()
     // 플레이어 이름 출력하는 함수
-    public void PrintPlayerText(string player1_, string player2_, string player3_, string player4_)
-    { 
-        player1Txt.text = player1_;
-        player2Txt.text = player2_;
-        player3Txt.text = player3_;
-        player4Txt.text = player4_;
+    public void PrintPlayerText(List<PlayerDataContainer> dataContainers)
+    {
+        foreach (var container in dataContainers) 
+        {
+            if (container.PlayerTeamNum.Contains("Player1")) 
+            {
+                player1Txt.text = container.PlayerName;
+            }
+            else if (container.PlayerTeamNum.Contains("Player2"))
+            {
+                player2Txt.text = container.PlayerName;
+            }
+            else if (container.PlayerTeamNum.Contains("Player3"))
+            {
+                player3Txt.text = container.PlayerName;
+            }
+            else if (container.PlayerTeamNum.Contains("Player4"))
+            {
+                player4Txt.text = container.PlayerName;
+            }
+        }
     }
     //} PrintPlayerText()
+
 
     //! 서버
     // 플레이어 이미지 출력하는 함수

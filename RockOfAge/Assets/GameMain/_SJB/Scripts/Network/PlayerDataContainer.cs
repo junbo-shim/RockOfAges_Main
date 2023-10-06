@@ -13,8 +13,10 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     public string PlayerViewID;
     public string ViewIDActorNum;
     public string PlayerTeamNum;
-
+    public int playerScore;
     public float playerGold;
+    public Image playerIcon;
+
     private WaitForSecondsRealtime goldAddTime;
     #endregion
 
@@ -27,6 +29,7 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
             stream.SendNext(PlayerViewID);
             stream.SendNext(ViewIDActorNum);
             stream.SendNext(PlayerTeamNum);
+            stream.SendNext(playerScore);
             stream.SendNext(playerGold);
         }
         else
@@ -35,6 +38,7 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
             PlayerViewID = (string)stream.ReceiveNext();
             ViewIDActorNum = (string)stream.ReceiveNext();
             PlayerTeamNum = (string)stream.ReceiveNext();
+            playerScore = (int)stream.ReceiveNext();
             playerGold = (float)stream.ReceiveNext();
         }
     }
@@ -43,10 +47,11 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
-        PlayerName = PhotonNetwork.NickName;
+        PlayerName = NetworkManager.Instance.playerNickName;
         PlayerViewID = photonView.ViewID.ToString();
         ViewIDActorNum = photonView.OwnerActorNr.ToString();
         gameObject.tag = "DataContainer";
+        playerScore = NetworkManager.Instance.playerScore;
         playerGold = 800f;
         goldAddTime = new WaitForSecondsRealtime(2f);
     }
@@ -76,7 +81,7 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
                 NetworkManager.Instance.dataContainers.Add(tagItem.GetComponent<PlayerDataContainer>());
             }
             // 게임 씬에 넘어가면 골드 획득 coroutine 시작
-            StartCoroutine("GetGold");
+            CheckGold();
         }
     }
     #endregion
@@ -129,13 +134,17 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
 
 
     // 현재 골드 체크해서 다시 coroutine 돌리는 메서드
-    public void RestartGoldCoroutine() 
+    public void CheckGold() 
     {
         // 현재 골드가 1000f 에 도달하여 Coroutine 이 멈춘 경우
-        if (playerGold >= 1500f)
+        if (playerGold >= 2000f)
         {
             // 골드 획득 coroutine 재시작
             StartCoroutine("GetGold");
+        }
+        else 
+        {
+            StopCoroutine("GetGold");
         }
     }
 
@@ -145,10 +154,7 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         while (true) 
         {
             yield return goldAddTime;
-            if(playerGold < 1500f)
-            {
-                playerGold += 20f;
-            }
+            playerGold += 20f;
         }
     }
 
@@ -167,6 +173,4 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         PhotonNetwork.CurrentRoom.IsVisible = false;
     }
     #endregion
-
-
 }

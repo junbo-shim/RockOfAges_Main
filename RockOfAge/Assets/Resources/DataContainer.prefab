@@ -49,7 +49,9 @@ MonoBehaviour:
   PlayerViewID: 0
   ViewIDActorNum: 0
   PlayerTeamNum: 
+  playerScore: 0
   playerGold: 0
+  playerIcon: {fileID: 0}
 --- !u!114 &8884712648900300517
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -20,22 +20,19 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #endregion
 
     #region Title Panel 버튼들
-    private Button titleOptionButton;
     private Button quickStartButton;
     private Button loginButton;
     private Button signupButton;
     private Button quitButton;
 
     private Button startButton;
-    private Button resetPWButton;
+    //private Button resetPWButton;
     private Button closeButton;
 
     private Button registerButton;
     #endregion
 
     #region Lobby Panel 버튼들
-    private Button lobbyOptionButton;
-
     public GameObject roomPrefab;
     private Button createRoomButton;
     private Button JoinRandomButton;
@@ -89,14 +86,13 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #region Title Panel 의 모든 버튼을 찾아서 저장하는 메서드
     private void FinTitleButtons()
     {
-        titleOptionButton = titlePanel.Find("Button_Option").GetComponent<Button>();
         quickStartButton = titlePanel.Find("Button_QuickStart").GetComponent<Button>();
         loginButton = titlePanel.Find("Button_Login").GetComponent<Button>();
         signupButton = titlePanel.Find("Button_Signup").GetComponent<Button>();
         quitButton = titlePanel.Find("Button_Quit").GetComponent<Button>();
 
         startButton = loginPopup.Find("Button_Start").GetComponent<Button>();
-        resetPWButton = loginPopup.Find("Button_ResetPW").GetComponent<Button>();
+        //resetPWButton = loginPopup.Find("Button_ResetPW").GetComponent<Button>();
 
         registerButton = signupPopup.Find("Button_Register").GetComponent<Button>();
     }
@@ -105,7 +101,6 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #region Lobby Panel 의 모든 버튼을 찾아서 저장하는 메서드
     private void FindLobbyButtons()
     {
-        lobbyOptionButton = lobbyPanel.Find("Button_Option").GetComponent<Button>();
         roomPrefab = lobbyPanel.Find("Button_Room").gameObject;
 
         createRoomButton = lobbyPanel.Find("Panel_Room").Find("Button_CreateRoom").GetComponent<Button>();
@@ -162,14 +157,13 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #region 버튼에 AddListener 세팅하는 메서드
     private void ListentAllButton()
     {
-        titleOptionButton.onClick.AddListener(PressOption);
         quickStartButton.onClick.AddListener(PressQuickStart);
         loginButton.onClick.AddListener(PressLogin);
         signupButton.onClick.AddListener(PressSignup);
         quitButton.onClick.AddListener(PressQuit);
 
         startButton.onClick.AddListener(PressStart);
-        resetPWButton.onClick.AddListener(PressResetPW);
+        //resetPWButton.onClick.AddListener(PressResetPW);
 
         registerButton.onClick.AddListener(PressRegister);
 
@@ -199,7 +193,6 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #region 로그인 시 잠시 버튼을 Disable 하는 메서드
     public void PauseTitleButtons() 
     {
-        titleOptionButton.interactable = false;
         quickStartButton.interactable = false;
         loginButton.interactable = false;
         signupButton.interactable = false;
@@ -210,7 +203,6 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #region 로그인 버튼들을 다시 able 상태로 되돌리는 메서드
     public void ResetTitleButtons() 
     {
-        titleOptionButton.interactable = true;
         quickStartButton.interactable = true;
         loginButton.interactable = true;
         signupButton.interactable = true;
@@ -221,7 +213,6 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #region 로비 버튼들을 잠시 Disable 하는 메서드
     public void PauseLobbyButtons()
     {
-        lobbyOptionButton.interactable = false;
         createRoomButton.interactable = false;
         JoinRandomButton.interactable = false;
     }
@@ -230,7 +221,6 @@ public class ButtonManager : GlobalSingleton<ButtonManager>
     #region 로비 버튼들을 다시 able 상태로 되돌리는 메서드
     public void ResetLobbyButtons() 
     {
-        lobbyOptionButton.interactable = true;
         createRoomButton.interactable = true;
         JoinRandomButton.interactable = true;
     }

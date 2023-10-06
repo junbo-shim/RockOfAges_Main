@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 // endingUI
 public partial class UIManager : MonoBehaviour
@@ -64,12 +65,6 @@ public partial class UIManager : MonoBehaviour
     private Button exitButton;
     private Transform resultHolder;
     private Transform resultImageHolder;
-
-    private Transform player1;
-    private Transform player2;
-    private Transform player3;
-    private Transform player4;
-
     public TextMeshProUGUI victory;
 
     public Button quitButton;
@@ -85,32 +80,34 @@ public partial class UIManager : MonoBehaviour
         gameEndUI = GameObject.Find("GameEndUI").transform;
         buttonHolder = gameEndUI.Find("ButtonHolder");
         lobbyButton = buttonHolder.Find("LobbyButton").GetComponent<Button>();
-
         exitButton = buttonHolder.Find("ExitButton").GetComponent<Button>();
-
-        resultHolder = gameEndUI.Find("ResultHolder");
-
-        resultImageHolder = gameEndUI.Find("ResultImageHolder");
     }
+
+    public void AssignEndUIButtons() 
+    {
+        lobbyButton.onClick.AddListener(BackToLobby);
+        exitButton.onClick.AddListener(QutGame);
+    }
+
 
 
     public void PrintResult()
     {
         PrintCrownOrChess();
         ChangeFlagMaterialColor();
-        string player = NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerTeamNum.Split('_')[0];
-        int playerNumber;
-        ConvertStringToInt(player, out playerNumber);
-        PrintUserResult(playerNumber);
+        //string player = NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerTeamNum.Split('_')[0];
+        //int playerNumber;
+        //ConvertStringToInt(player, out playerNumber);
+        PrintUserResult(NetworkManager.Instance.dataContainers);
     }
 
 
-    public void PrintUserResult(int playerNumber)
+    public void PrintUserResult(List<PlayerDataContainer> dataContainers)
     {
-        PrintPlayerName(playerNumber);
-        //PrintPlayerScore(playerNumber);
-        //PrintPlayerIcon(playerNumber);
-        PrintUserImg(playerNumber);
+        PrintPlayerName(dataContainers);
+        PrintPlayerScore(dataContainers);
+        PrintPlayerIcon(NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>());
+        PrintUserImg(dataContainers);
     }
 
 
@@ -136,6 +133,7 @@ public partial class UIManager : MonoBehaviour
         }
     }
 
+    #region Legacy
     //// string을 넣으면 뒤에 숫자만 받아오는 함수
     //public int ConvertStringToInt(string player, out int playerNumber)
     //{
@@ -231,81 +229,94 @@ public partial class UIManager : MonoBehaviour
     //    }
 
     //}
+    #endregion
 
-    public void PrintPlayerName(int playerNumber)
+    public void PrintPlayerName(List<PlayerDataContainer> dataContainers)
     {
-        switch (playerNumber)
+        foreach (var container in dataContainers)
         {
-            case 1:
-                player1NameTxt.text = NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerName;
-                break;
-            case 2:
-                player2NameTxt.text = NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerName;
-                break;
-            case 3:
-                player3NameTxt.text = NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerName;
-                break;
-            case 4:
-                player4NameTxt.text = NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerName;
-                break;
+            if (container.PlayerTeamNum.Contains("Player1"))
+            {
+                player1NameTxt.text = container.PlayerName;
+            }
+            else if (container.PlayerTeamNum.Contains("Player2"))
+            {
+                player2NameTxt.text = container.PlayerName;
+            }
+            else if (container.PlayerTeamNum.Contains("Player3"))
+            {
+                player3NameTxt.text = container.PlayerName;
+            }
+            else if (container.PlayerTeamNum.Contains("Player4"))
+            {
+                player4NameTxt.text = container.PlayerName;
+            }
         }
     }
 
-    public void PrintPlayerScore(int playerNumber)
+    public void PrintPlayerScore(List<PlayerDataContainer> dataContainers)
     {
-        switch (playerNumber)
+        foreach (var container in dataContainers)
         {
-            case 1:
-                //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
-                break;
-            case 2:
-                //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
-                break;
-            case 3:
-                //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""]; 
-                break;
-            case 4:
-                //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
-                break;
+            if (container.PlayerTeamNum.Contains("Player1"))
+            {
+                player1ScoreTxt.text = container.playerScore.ToString();
+            }
+            else if (container.PlayerTeamNum.Contains("Player2"))
+            {
+                player2ScoreTxt.text = container.playerScore.ToString();
+            }
+            else if (container.PlayerTeamNum.Contains("Player3"))
+            {
+                player3ScoreTxt.text = container.playerScore.ToString();
+            }
+            else if (container.PlayerTeamNum.Contains("Player4"))
+            {
+                player4ScoreTxt.text = container.playerScore.ToString();
+            }
         }
     }
 
-    public void PrintPlayerIcon(int playerNumber)
+    public void PrintPlayerIcon(PlayerDataContainer myDataContainer)
     {
-        switch (playerNumber)
+        if (myDataContainer.PlayerTeamNum.Contains("Player1")) 
         {
-            case 1:
-                //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
-                break;
-            case 2:
-                //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
-                break;
-            case 3:
-                //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""]; 
-                break;
-            case 4:
-                //player1NameTxt.text = PhotonNetwork.CurrentRoom.CustomProperties[""];
-                break;
+            player1userImg.gameObject.SetActive(true);
         }
-
+        else if (myDataContainer.PlayerTeamNum.Contains("Player2")) 
+        {
+            player2userImg.gameObject.SetActive(true);
+        }
+        else if (myDataContainer.PlayerTeamNum.Contains("Player3")) 
+        {
+            player3userImg.gameObject.SetActive(true);
+        }
+        else if (myDataContainer.PlayerTeamNum.Contains("Player4")) 
+        {
+            player4userImg.gameObject.SetActive(true);
+        }
     }
 
-    public void PrintUserImg(int playerNumber)
+    public void PrintUserImg(List<PlayerDataContainer> dataContainers)
     {
-        switch (playerNumber)
+        foreach (var container in dataContainers)
         {
-            case 1:
-                player1userImg.gameObject.SetActive(true);
-                break;
-            case 2:
-                player2userImg.gameObject.SetActive(true);
-                break;
-            case 3:
-                player3userImg.gameObject.SetActive(true);
-                break;
-            case 4:
-                player4userImg.gameObject.SetActive(true);
-                break;
+            if (container.PlayerTeamNum.Contains("Player1"))
+            {
+                player1NameTxt.text = container.PlayerName;
+            }
+            else if (container.PlayerTeamNum.Contains("Player2"))
+            {
+                player2NameTxt.text = container.PlayerName;
+            }
+            else if (container.PlayerTeamNum.Contains("Player3"))
+            {
+                player3NameTxt.text = container.PlayerName;
+            }
+            else if (container.PlayerTeamNum.Contains("Player4"))
+            {
+                player4NameTxt.text = container.PlayerName;
+            }
         }
     }
 

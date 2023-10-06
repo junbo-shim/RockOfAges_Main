@@ -55,6 +55,11 @@ public partial class UIManager : MonoBehaviour
         SwitchUIManager("escUI");
         InitnowOnUIList();
         GetDirection();
+
+
+        GetEndUI();
+        AssignEndUIButtons();
+        PrintPlayerText(NetworkManager.Instance.dataContainers);
     }
 
     #region Functions

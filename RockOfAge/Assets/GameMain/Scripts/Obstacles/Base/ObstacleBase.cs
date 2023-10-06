@@ -228,7 +228,7 @@ public class ObstacleBase : MonoBehaviourPun
         obstacle.transform.localScale = obstacle.transform.localScale;
 
         NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().playerGold -= obstacle.status.Price;
-        NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().RestartGoldCoroutine();
+        NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().CheckGold();
 
 
 

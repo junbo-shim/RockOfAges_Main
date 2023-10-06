@@ -20,6 +20,7 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     public Transform SignupPopup { get; private set; }
 
     public string playerNickName;
+    public int playerScore;
     #endregion
 
 
@@ -95,105 +96,166 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     #region 빠른 시작-PlayFab
     public void StartQuick() 
     {
-        ConnectToServer();
-
-        playerNickName = Random.Range(0, 1000000000).ToString();
-        PhotonNetwork.NickName = playerNickName;
-
         //Debug.Log("PlayFab authenticating using Custom ID...");
 
-        //var request = new LoginWithCustomIDRequest { CustomId = PlayFabSettings.DeviceUniqueIdentifier,
-        //    CreateAccount = true };
-        //PlayFabClientAPI.LoginWithCustomID(request, OnQuickLoginSuccess, OnLoginFailure);
+        var request = new LoginWithCustomIDRequest { CustomId = PlayFabSettings.DeviceUniqueIdentifier,
+            CreateAccount = true };
+        PlayFabClientAPI.LoginWithCustomID(request, OnQuickLoginSuccess, OnLoginFailure);
     }
     #endregion
 
     #region 로그인-PlayFab
     public void Login()
     {
-        //TMP_InputField emailInput = LoginPopup.Find("InputField_Email").GetComponent<TMP_InputField>();
-        //TMP_InputField passwordInput = LoginPopup.Find("InputField_Password").GetComponent<TMP_InputField>();
+        TMP_InputField emailInput = LoginPopup.Find("InputField_Email").GetComponent<TMP_InputField>();
+        TMP_InputField passwordInput = LoginPopup.Find("InputField_Password").GetComponent<TMP_InputField>();
 
-        //var request = new LoginWithEmailAddressRequest
-        //{
-        //    Email = emailInput.text,
-        //    Password = passwordInput.text,
-        //};
-        //PlayerPrefs.SetString("name", emailInput.text);
+        var request = new LoginWithEmailAddressRequest
+        {
+            Email = emailInput.text,
+            Password = passwordInput.text,
+        };
+        PlayerPrefs.SetString("name", emailInput.text);
 
-        //PlayFabClientAPI.LoginWithEmailAddress(request, OnLoginSuccess, OnLoginFailure);
+        PlayFabClientAPI.LoginWithEmailAddress(request, OnLoginSuccess, OnLoginFailure);
     }
 
     private void OnQuickLoginSuccess(LoginResult result)
     {
         // 중복 검출 로직 필요
-        //int random = (int)Random.Range(0, 1000000);
-        //playerNickName = random.ToString();
-        //Invoke("ConnectToServer", 2f);
+        int random = (int)Random.Range(0, 10000000);
+        playerNickName = random.ToString();
+        Invoke("ConnectToServer", 2f);
     }
 
     private void OnLoginSuccess(LoginResult result) 
     {
-        //LoginPopup.GetComponentInChildren<TMP_Text>().color = Color.green;
-        //LoginPopup.GetComponentInChildren<TMP_Text>().text = "로그인 성공";
+        LoginPopup.GetComponentInChildren<TMP_Text>().color = Color.green;
+        LoginPopup.GetComponentInChildren<TMP_Text>().text = "로그인 성공";
 
-        //var request = new GetPlayerProfileRequest();
-        //PlayFabClientAPI.GetPlayerProfile(request, OnGetProfileSuccess, OnGetProfileFailure);
+        var request = new GetPlayerProfileRequest();
+        PlayFabClientAPI.GetPlayerProfile(request, OnGetProfileSuccess, OnGetProfileFailure);
     }
 
     private void OnLoginFailure(PlayFabError error)
     {
         //Debug.LogFormat("로그인 실패\n오류 코드 : {0}", error);
-        //LoginPopup.GetComponentInChildren<TMP_Text>().color = Color.red;
-        //LoginPopup.GetComponentInChildren<TMP_Text>().text = "로그인 실패, 오류 코드 : " + error;
+        LoginPopup.GetComponentInChildren<TMP_Text>().color = Color.red;
+        LoginPopup.GetComponentInChildren<TMP_Text>().text = "로그인 실패, 오류 코드 : " + error;
     }
 
     private void OnGetProfileSuccess(GetPlayerProfileResult result) 
     {
         //Debug.Log("플레이어 정보 읽기 성공");
-        //playerNickName = result.PlayerProfile.DisplayName;
-        //Invoke("ConnectToServer", 3f);
+        playerNickName = result.PlayerProfile.DisplayName;
+        ReadPlayerStat();
+        Invoke("ConnectToServer", 3f);
     }
 
     private void OnGetProfileFailure(PlayFabError error) 
     {
         //Debug.LogFormat("플레이어 정보 읽기 실패\n오류 코드 : {0}", error);
 
-        //var request = new GetPlayerProfileRequest();
-        //PlayFabClientAPI.GetPlayerProfile(request, OnGetProfileSuccess, OnGetProfileFailure);
+        var request = new GetPlayerProfileRequest();
+        PlayFabClientAPI.GetPlayerProfile(request, OnGetProfileSuccess, OnGetProfileFailure);
+    }
+
+    // 플레이어의 Statistic 목록에서 특정 요소 (Score) 를 읽어오는 메서드
+    public void ReadPlayerStat()
+    {
+        // PlayFab API : GetPlayerStatisticsRequest
+        // PlayFab DB 에 있는 Score 정보 요청
+        // 성공 시 : OnReadStaticSuccess 호출
+        // 실패 시 : OnReadStaticFailure 호출
+        var request = new GetPlayerStatisticsRequest();
+        PlayFabClientAPI.GetPlayerStatistics(request, OnReadStaticSuccess, OnReadStaticFailure);
+    }
+
+    // 플레이어 Score 를 PlayFab DB 에서 로드 성공 시 호출되는 메서드
+    private void OnReadStaticSuccess(GetPlayerStatisticsResult result)
+    {
+        // List 형태의 result 에서 foreach 문으로 하나씩 변수에 할당
+        foreach (var data in result.Statistics)
+        {
+            playerScore = data.Value;
+        }
+
+        Debug.Log("Score 정보 로드 성공");
+    }
+
+    // 플레이어 Score 를 PlayFab DB 에서 로드 실패 시 호출되는 메서드
+    private void OnReadStaticFailure(PlayFabError error)
+    {
+        Debug.Log("Score 정보 로드에 실패했습니다.");
+
+        // 데이터 로드 재시도
+        ReadPlayerStat();
+    }
+
+    // 플레이어의 Statistic 목록에서 특정 요소 (Score) 를 덮어쓰는 메서드
+    public void WritePlayerStat()
+    {
+        // PlayFab API : UpdatePlayerStatisticsRequest
+        // List 구조로 되어 있는 Statistics 변수에
+        // StatisticUpdate 요소를 하나씩 작성하여 업로드
+        // 성공 시 : OnWriteStaticSuccess 메서드 호출
+        // 실패 시 : OnWriteStaticFailure 메서드 호출
+        var request = new UpdatePlayerStatisticsRequest()
+        {
+            Statistics = new List<StatisticUpdate>
+            {
+                new StatisticUpdate { StatisticName = "Score", Value = playerScore }
+            }
+        };
+        PlayFabClientAPI.UpdatePlayerStatistics(request, OnWriteStaticSuccess, OnWriteStaticFailure);
+    }
+
+    // 플레이어 Score 를 PlayFab DB 에 업로드 성공 시 호출되는 메서드
+    private void OnWriteStaticSuccess(UpdatePlayerStatisticsResult result)
+    {
+        Debug.Log("Score 정보 업데이트 성공");
+    }
+
+    // 플레이어 Score 를 PlayFab DB 에 업로드 실패 시 호출되는 메서드
+    private void OnWriteStaticFailure(PlayFabError error)
+    {
+        Debug.Log("Score 정보 업데이트에 실패했습니다.");
+
+        // 업데이트 재시도
+        WritePlayerStat();
     }
     #endregion
 
     #region Email 회원가입-PlayFab
     public void Register() 
     {
-        //TMP_InputField emailInput = SignupPopup.Find("InputField_Email").GetComponent<TMP_InputField>();
-        //TMP_InputField passwordInput = SignupPopup.Find("InputField_Password").GetComponent<TMP_InputField>();
-        //TMP_InputField nicknameInput = SignupPopup.Find("InputField_Nickname").GetComponent<TMP_InputField>();
+        TMP_InputField emailInput = SignupPopup.Find("InputField_Email").GetComponent<TMP_InputField>();
+        TMP_InputField passwordInput = SignupPopup.Find("InputField_Password").GetComponent<TMP_InputField>();
+        TMP_InputField nicknameInput = SignupPopup.Find("InputField_Nickname").GetComponent<TMP_InputField>();
 
-        //var request = new RegisterPlayFabUserRequest
-        //{
-        //    Email = emailInput.text,
-        //    Password = passwordInput.text,
-        //    Username = nicknameInput.text,
-        //    DisplayName = nicknameInput.text
-        //};
+        var request = new RegisterPlayFabUserRequest
+        {
+            Email = emailInput.text,
+            Password = passwordInput.text,
+            Username = nicknameInput.text,
+            DisplayName = nicknameInput.text
+        };
 
-        //PlayFabClientAPI.RegisterPlayFabUser(request, OnRegisterSuccess, OnRegisterFailure);
+        PlayFabClientAPI.RegisterPlayFabUser(request, OnRegisterSuccess, OnRegisterFailure);
     }
 
     private void OnRegisterSuccess(RegisterPlayFabUserResult result)
     {
         //Debug.LogFormat("계정 등록 성공");
-        //SignupPopup.GetComponentInChildren<TMP_Text>().color = Color.green;
-        //SignupPopup.GetComponentInChildren<TMP_Text>().text = "계정 등록 성공";
+        SignupPopup.GetComponentInChildren<TMP_Text>().color = Color.green;
+        SignupPopup.GetComponentInChildren<TMP_Text>().text = "계정 등록 성공";
     }
 
     private void OnRegisterFailure(PlayFabError error)
     {
         //Debug.LogFormat("계정 등록 실패\n오류 코드 : {0}", error);
-        //SignupPopup.GetComponentInChildren<TMP_Text>().color = Color.red;
-        //SignupPopup.GetComponentInChildren<TMP_Text>().text = "계정 등록 실패, 오류 코드 : " +  error;
+        SignupPopup.GetComponentInChildren<TMP_Text>().color = Color.red;
+        SignupPopup.GetComponentInChildren<TMP_Text>().text = "계정 등록 실패, 오류 코드 : " +  error;
     }
 
     #endregion

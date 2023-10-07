@@ -78,7 +78,7 @@ public partial class UIManager : MonoBehaviour
     public void GetEndUI() 
     {
         gameEndUI = GameObject.Find("GameEndUI").transform;
-        buttonHolder = gameEndUI.Find("ButtonHolder");
+        buttonHolder = gameEndUI.Find("EndHolder").Find("ButtonHolder");
         lobbyButton = buttonHolder.Find("LobbyButton").GetComponent<Button>();
         exitButton = buttonHolder.Find("ExitButton").GetComponent<Button>();
     }

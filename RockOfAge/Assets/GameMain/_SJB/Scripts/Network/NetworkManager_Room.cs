@@ -34,9 +34,6 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
     // 방에 참여하면 호출되는 callback 메서드
     public override void OnJoinedRoom()
     {
-        // 방의 이름을 표시하는 custom 메서드
-        ShowRoomName();
-
         // 방에 참여 시 (master 포함) PhotonView 가 달려있는 오브젝트를 하나씩 생성한다
         GameObject dataContainer =
             PhotonNetwork.Instantiate(DataContainerPrefab.name, Vector3.zero, Quaternion.identity);
@@ -47,21 +44,46 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
             // myDataContainer 에 나의 dataContainer GameObject 를 담아둔다
             myDataContainer = dataContainer;
         }
+
+        // 방의 이름을 표시하는 custom 메서드
+        if (PhotonNetwork.IsMasterClient == true) 
+        {
+            myDataContainer.GetComponent<PhotonView>().RPC("SendMasterName", 
+                RpcTarget.All, myDataContainer.GetComponent<PlayerDataContainer>().PlayerName);
+        }
     }
 
 
     // 방을 떠나면 호출되는 callback 메서드
     public override void OnLeftRoom()
     {
-
+        // 방의 이름을 표시하는 custom 메서드
+        if (PhotonNetwork.IsMasterClient == true)
+        {
+            myDataContainer.GetComponent<PhotonView>().RPC("SendMasterName",
+                RpcTarget.All, myDataContainer.GetComponent<PlayerDataContainer>().PlayerName);
+        }
     }
 
+    public override void OnPlayerEnteredRoom(Player otherPlayer)
+    {
+        // 방의 이름을 표시하는 custom 메서드
+        if (PhotonNetwork.IsMasterClient == true)
+        {
+            myDataContainer.GetComponent<PhotonView>().RPC("SendMasterName",
+                RpcTarget.All, myDataContainer.GetComponent<PlayerDataContainer>().PlayerName);
+        }
+    }
 
     // 방의 사람이 나가면 호출되는 callback 메서드
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         // 방의 이름을 표시하는 custom 메서드
-        ShowRoomName();
+        if (PhotonNetwork.IsMasterClient == true)
+        {
+            myDataContainer.GetComponent<PhotonView>().RPC("SendMasterName",
+                RpcTarget.All, myDataContainer.GetComponent<PlayerDataContainer>().PlayerName);
+        }
         // 버튼에 저장된 정보 초기화 메서드
         ResetAllData();
     }
@@ -93,16 +115,6 @@ public partial class NetworkManager : GlobalSingleton<NetworkManager>
         readyCount = default;
 
         PhotonNetwork.CurrentRoom.CustomProperties.Clear();
-    }
-
-
-    // 방의 이름을 표시하는 custom 메서드
-    public void ShowRoomName() 
-    {
-        // master 이름을 저장
-        string masterName = playerNickName;
-        // 현재 방 이름을 표시
-        roomName.text = masterName + "의 방 : " + PhotonNetwork.CurrentRoom.Name;
     }
     #endregion
 

@@ -378,9 +378,8 @@ public partial class UIManager : MonoBehaviour
         // 만약 잘 안먹히면 주석 풀고 사용
         //PhotonNetwork.Disconnect();
         SceneManager.LoadScene(NetworkManager.Instance.PhotonScene);
-        
-
-        PhotonNetwork.LeaveRoom();
+        ButtonManager.Instance.CheckCloseButton();
+        ButtonManager.Instance.PressClose();
         PhotonNetwork.JoinLobby();
     }
 

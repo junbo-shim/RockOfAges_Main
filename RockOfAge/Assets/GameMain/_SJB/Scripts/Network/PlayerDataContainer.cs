@@ -177,8 +177,6 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
         // 데이터를 저장한다
         //photonView.RPC("SavePlayerData", RpcTarget.All);
         SavePlayerData();
-        ButtonManager.Instance.CheckCloseButton();
-        ButtonManager.Instance.PressClose();
         // 로드할 씬의 이름 작성
         PhotonNetwork.LoadLevel("0921");
         // 현재 방은 닫힘 상태로 만든다

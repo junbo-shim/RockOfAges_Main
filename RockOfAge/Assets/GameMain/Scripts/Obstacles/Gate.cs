@@ -10,7 +10,7 @@ public class Gate : MonoBehaviourPun, IHitObjectHandler, IPunObservable
     [SerializeField]
     private List<GameObject> gateSkin;
 
-    const int GATE_MAX_HP = 300;
+    const int GATE_MAX_HP = 600;
     const float GATE_CRACK_CHANGE = .3f;
     //600 599~200 199~1 0
     //1 1~0.3 0.3~0 0

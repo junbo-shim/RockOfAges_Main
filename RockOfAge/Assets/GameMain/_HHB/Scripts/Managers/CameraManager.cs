@@ -125,7 +125,6 @@ public class CameraManager : GlobalSingleton<CameraManager>
                 myCameraPosition = clickedTopViewCamera.transform.position;
             }
             else { myCameraPosition = topViewCamera.transform.position; }
-
         }
     }
 

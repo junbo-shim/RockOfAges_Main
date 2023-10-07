@@ -75,19 +75,19 @@ public partial class UIManager : MonoBehaviour
     #region Functions
 
     // ! Photon : 엔딩 UI 요소 할당 메서드
-    public void GetEndUI() 
-    {
-        gameEndUI = GameObject.Find("GameEndUI").transform;
-        buttonHolder = gameEndUI.Find("ButtonHolder");
-        lobbyButton = buttonHolder.Find("LobbyButton").GetComponent<Button>();
-        exitButton = buttonHolder.Find("ExitButton").GetComponent<Button>();
-    }
+    //public void GetEndUI() 
+    //{
+    //    gameEndUI = GameObject.Find("GameEndUI").transform;
+    //    buttonHolder = gameEndUI.Find("ButtonHolder");
+    //    lobbyButton = buttonHolder.Find("LobbyButton").GetComponent<Button>();
+    //    exitButton = buttonHolder.Find("ExitButton").GetComponent<Button>();
+    //}
 
-    public void AssignEndUIButtons() 
-    {
-        lobbyButton.onClick.AddListener(BackToLobby);
-        exitButton.onClick.AddListener(QutGame);
-    }
+    //public void AssignEndUIButtons() 
+    //{
+    //    lobbyButton.onClick.AddListener(BackToLobby);
+    //    exitButton.onClick.AddListener(QutGame);
+    //}
 
 
 
@@ -373,7 +373,7 @@ public partial class UIManager : MonoBehaviour
         PhotonNetwork.JoinLobby();
     }
 
-    public void QutGame()
+    public void QuitGame()
     { 
         Application.Quit();
     }

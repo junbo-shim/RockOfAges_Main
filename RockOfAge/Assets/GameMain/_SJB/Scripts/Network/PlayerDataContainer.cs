@@ -148,14 +148,14 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
     public void CheckGold() 
     {
         // 현재 골드가 1000f 에 도달하여 Coroutine 이 멈춘 경우
-        if (playerGold >= 2000f)
+        if (playerGold >= 3000f)
         {
             // 골드 획득 coroutine 재시작
-            StartCoroutine("GetGold");
+            StopCoroutine("GetGold");
         }
         else 
         {
-            StopCoroutine("GetGold");
+            StartCoroutine("GetGold");
         }
     }
 

@@ -41,27 +41,43 @@ public partial class UIManager : MonoBehaviour
     public GameObject endingUI;
     // escUI 작동시 다른 UI 체크
     private List<GameObject> nowOnUI = new List<GameObject>();
+
     #endregion
 
     private void Awake()
     {
         uiManager = this;
         DontDestroyOnLoad(uiManager);
+        Debug.LogError("1");
         SwitchUIManager("rockSelectUI");
+        Debug.LogError("2");
         SwitchUIManager("commonUI");
+        Debug.LogError("3");
         SwitchUIManager("attackUI");
+        Debug.LogError("4");
         SwitchUIManager("defenceUI");
+        Debug.LogError("5");
         SwitchUIManager("endingUI");
+        Debug.LogError("6");
         SwitchUIManager("escUI");
+        Debug.LogError("7");
         InitnowOnUIList();
+        Debug.LogError("8");
         GetDirection();
+        Debug.LogError("9");
 
 
-        GetEndUI();
-        AssignEndUIButtons();
+        //GetEndUI();
+        //AssignEndUIButtons();
         PrintPlayerText(NetworkManager.Instance.dataContainers);
-        Debug.Log(NetworkManager.Instance.dataContainers.Count);
-        quitButton.onClick.AddListener(()=> QutGame());
+        
+
+        Debug.LogError("00000000000000");
+    }
+
+    public void Start()
+    {
+        quitButton.onClick.AddListener(() => QuitGame());
         userLobbyButton.onClick.AddListener(() => BackToLobby());
     }
 

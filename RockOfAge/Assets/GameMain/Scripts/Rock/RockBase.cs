@@ -694,14 +694,14 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler, IPunObservable
         PlayDestroySound(true);
         DemolishMeshRenderers();
         //rayfireRigid.Activate();
-        StartCoroutine(EndAttackRoutine(true));
+        StartCoroutine(EndAttackRoutine(false));
         //Destroy(gameObject);
     }
 
     IEnumerator EndAttackRoutine(bool destroy)
     {
 
-        if (!destroy)
+        if (destroy)
         { yield break; }
 
         isDestroy = true;

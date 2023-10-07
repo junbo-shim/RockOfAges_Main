@@ -10,10 +10,11 @@ public class Gate : MonoBehaviourPun, IHitObjectHandler, IPunObservable
     [SerializeField]
     private List<GameObject> gateSkin;
 
-    const int GATE_MAX_HP = 600;
+    const int GATE_MAX_HP = 300;
     const float GATE_CRACK_CHANGE = .3f;
     //600 599~200 199~1 0
     //1 1~0.3 0.3~0 0
+    private bool isBreaked = false;
 
 
     [Range(0, GATE_MAX_HP)]
@@ -96,7 +97,11 @@ public class Gate : MonoBehaviourPun, IHitObjectHandler, IPunObservable
         {
             currPhase = GatePhase.DESTROY;
             gateCollider.gameObject.SetActive(false);
-            CameraManager.Instance.ShowBreakDoor(this.gameObject);
+            if (!isBreaked)
+            { 
+                isBreaked = true;   
+                CameraManager.Instance.ShowBreakDoor(this.gameObject);         
+            }
         }
 
         if (prePhase != currPhase)

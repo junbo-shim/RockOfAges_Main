@@ -80,6 +80,8 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
             {
                 NetworkManager.Instance.dataContainers.Add(tagItem.GetComponent<PlayerDataContainer>());
             }
+
+            UIManager.uiManager.PrintPlayerText(NetworkManager.Instance.dataContainers);
             // 게임 씬에 넘어가면 골드 획득 coroutine 시작
             CheckGold();
         }
@@ -130,6 +132,15 @@ public class PlayerDataContainer : MonoBehaviourPun, IPunObservable
             // PlayerTeamNum 에 Player'n'_Team'n' 값을 저장한다
             //PlayerTeamNum = PhotonNetwork.CurrentRoom.CustomProperties[PlayerViewID].ToString();
         }
+    }
+
+
+    // 마스터 이름 보내주는 메서드
+    [PunRPC]
+    public void SendMasterName(string name) 
+    {
+        NetworkManager.Instance.roomName.text = 
+            name + "의 방 : " + PhotonNetwork.CurrentRoom.Name;
     }
 
 

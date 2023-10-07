@@ -57,6 +57,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler, IPunObservable
     Coroutine fallCheckCoroutine = null;
     protected Queue<RockTrail> trails;
     protected RockName rockName;
+    string _rockName = "";
 
     protected RayfireRigid rayfireRigid;
 
@@ -172,9 +173,13 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler, IPunObservable
         debuffJumpForce = 1f;
         //} 0920 홍한범
 
-        _rockName = NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerName;
-        rockName.tmpText.text = _rockName;
-        photonView.RPC("SetName", RpcTarget.All);
+
+        rockName.tmpText.text =  
+            myDataContainer.GetComponent<PlayerDataContainer>().PlayerName;
+
+        //_rockName = NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().PlayerName;
+        //rockName.tmpText.text = _rockName;
+        //photonView.RPC("SetName", RpcTarget.All);
 
         rayfireRigid = rockObject.GetComponent<RayfireRigid>();
         trails = new Queue<RockTrail>();
@@ -212,11 +217,12 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler, IPunObservable
 
         PackRayFireInit();
     }
+
+
     [PunRPC]
     public void SetName()
     {
         rockName.tmpText.text = _rockName;
-
     }
 
     //혹시 모를 오버로딩
@@ -1011,20 +1017,17 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler, IPunObservable
         bomb.Explode(0.2f);
     }
 
-    string _rockName;
+    //string _rockName;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if (stream.IsWriting) 
+        if (stream.IsWriting)
         {
-            //stream.SendNext(_rockName);
+            stream.SendNext(rockName.tmpText.text);
         }
-        else 
+        else
         {
-           // _rockName = (string)stream.ReceiveNext();
+            rockName.tmpText.text = (string)stream.ReceiveNext();
         }
-
-
-       // rockName.tmpText.text = _rockName;
     }
 }
 

@@ -70,6 +70,7 @@ public partial class UIManager : MonoBehaviour
         //GetEndUI();
         //AssignEndUIButtons();
         PrintPlayerText(NetworkManager.Instance.dataContainers);
+        
 
         Debug.LogError("00000000000000");
     }

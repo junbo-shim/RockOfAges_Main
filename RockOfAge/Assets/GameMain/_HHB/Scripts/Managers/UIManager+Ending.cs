@@ -74,7 +74,17 @@ public partial class UIManager : MonoBehaviour
 
     #region Functions
 
-    // ! Photon : 엔딩 UI 요소 할당 메서드
+//심준보
+    // ! Photon : 엔딩 UI 요소 할당 메서
+   // public void GetEndUI() 
+  //  {
+        //gameEndUI = GameObject.Find("GameEndUI").transform;
+       // buttonHolder = gameEndUI.Find("EndHolder").Find("ButtonHolder");
+       // lobbyButton = buttonHolder.Find("LobbyButton").GetComponent<Button>();
+       // exitButton = buttonHolder.Find("ExitButton").GetComponent<Button>();
+   // }
+   
+   //홍한범
     //public void GetEndUI() 
     //{
     //    gameEndUI = GameObject.Find("GameEndUI").transform;

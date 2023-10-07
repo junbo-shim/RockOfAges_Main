@@ -95,12 +95,14 @@ public partial class UIManager : MonoBehaviour
             GameObject myEndIndicator = findEndIndicator[0];
             RootIndicator rootEndIndicator = myEndIndicator.GetComponent<RootIndicator>();
             rootEndIndicator.movePoint = endPos;
+            GetDistanceAndSwitchIndicator(endIndicator, midScreen, endPos);
+
             List<GameObject> findStartIndicator = Global_PSC.FindAllTargets("DefenceUI", "StartIndicator");
             GameObject myStartIndicator = findStartIndicator[0];
             RootIndicator rootStartIndicator = myStartIndicator.GetComponent<RootIndicator>();
             rootStartIndicator.movePoint = startPos;
-            GetDistanceAndSwitchIndicator(endIndicator, midScreen, endPos);
             GetDistanceAndSwitchIndicator(startIndicator, midScreen, startPos);
+
         }
     }
 

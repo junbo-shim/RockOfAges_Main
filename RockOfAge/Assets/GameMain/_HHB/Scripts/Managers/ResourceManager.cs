@@ -21,16 +21,18 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
     public string playerTeamNumber;
     public Vector3 team1StartPoint;
     public Vector3 team2StartPoint;
-    
+
 
     //Vector3 startPointTeam1 = new Vector3(111.55f, 31.21f, 120f);
-    public static Vector3 team1StartPos { get; private set;}
-    public static Vector3 team2StartPos { get; private set; }
-    public static Vector3 team1EndPos { get; private set; }
-    public static Vector3 team2EndPos { get; private set; }
+    public static Vector3 team1StartPos;
+    public static Vector3 team2StartPos;
+    public static Vector3 team1EndPos;
+    public static Vector3 team2EndPos;
 
     protected override void Awake()
     {
+        PackAwake();
+
         // ! Photon
         team1StartPoint = new Vector3(-107f, 40f, -107f);
         team2StartPoint = new Vector3(107f, 40f, 107f);
@@ -38,10 +40,9 @@ public class ResourceManager : GlobalSingleton<ResourceManager>
         myDataContainer = NetworkManager.Instance.myDataContainer;
         myDataContainerView = myDataContainer.GetComponent<PhotonView>();
         playerTeamNumber = myDataContainer.GetComponent<PlayerDataContainer>().PlayerTeamNum;
-        PackAwake();
         
-        team1StartPos = Global_PSC.FindTopLevelGameObject("Team2").transform.GetChild(3).position + Vector3.up * 5;
-        team2StartPos = Global_PSC.FindTopLevelGameObject("Team1").transform.GetChild(3).position + Vector3.up * 5;
+        team1StartPos = Global_PSC.FindTopLevelGameObject("Team2").transform.GetChild(3).position;
+        team2StartPos = Global_PSC.FindTopLevelGameObject("Team1").transform.GetChild(3).position;
         team1EndPos = Global_PSC.FindTopLevelGameObject("Team2").transform.GetChild(1).position;
         team2EndPos = Global_PSC.FindTopLevelGameObject("Team1").transform.GetChild(1).position;
     }

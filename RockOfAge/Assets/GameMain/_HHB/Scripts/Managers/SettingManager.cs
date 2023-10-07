@@ -277,7 +277,7 @@ public class SettingManager : MonoBehaviour
     #region PHOTON BUTTONS
     public void OnClickQuitGameButton()
     {
-        UIManager.uiManager.QutGame();
+        UIManager.uiManager.QuitGame();
     }
 
     public void OnClickLobbyButton()

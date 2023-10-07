@@ -49,6 +49,8 @@ public class StoneWall : HoldObstacleBase, IHitObjectHandler
         {
             obstacle = PhotonNetwork.Instantiate("StoneWallSub", position, rotate).GetComponent<ObstacleBase>();
         }
+        NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().playerGold -= obstacle.status.Price;
+        NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().CheckGold();
         obstacle.transform.localScale = obstacle.transform.localScale;
         {
             //버튼 데이터 변경

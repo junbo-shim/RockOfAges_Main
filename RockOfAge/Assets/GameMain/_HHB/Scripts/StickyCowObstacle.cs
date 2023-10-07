@@ -41,6 +41,9 @@ public class StickyCowObstacle : ObstacleBase
             UIManager.uiManager.RePrintUnitCount(status.Id);
         }
 
+        NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().playerGold -= obstacle.status.Price;
+        NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().CheckGold();
+
         cowPosition = new Transform[obstacle.transform.childCount];
         for(int i = 0; i < cowPosition.Length; i++)
         {

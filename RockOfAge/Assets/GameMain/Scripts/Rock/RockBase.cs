@@ -512,12 +512,13 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler, IPunObservable
 
         Debug.Log(hitObject);
         PlayCollisionSound(true);
-
+        float damageChecker = 1;
         foreach (ContactPoint contact in collision.contacts)
         {
             //Debug.Log(contact.thisCollider.transform.parent.gameObject + "/"+ gameObject);
             if (contact.thisCollider.transform.parent.gameObject == gameObject)
             {
+                damageChecker = collision.gameObject.GetComponentInParent<Gate>().gateHP - GetDamageValue();
                 // ! Photon
                 hitObject.Hit((int)GetDamageValue());
                 break;
@@ -555,7 +556,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler, IPunObservable
                 photonView.RPC("CheckTeamAndDequeue", RpcTarget.Others, photonView.ViewID.ToString());
             }
 
-            StartCoroutine(EndAttackRoutine(collision.gameObject.GetComponentInParent<Gate>().gateHP>0));    
+            StartCoroutine(EndAttackRoutine(damageChecker > 0));    
         }
     }
 
@@ -709,6 +710,7 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler, IPunObservable
         CycleManager.cycleManager.ChangeCycleAttackToSelect();
         yield return new WaitForSeconds(1f);
         PhotonNetwork.Destroy(gameObject);
+        NetworkManager.Instance.myDataContainer.GetComponent<PlayerDataContainer>().playerGold += 1500;
     }
 
     // ! Photon

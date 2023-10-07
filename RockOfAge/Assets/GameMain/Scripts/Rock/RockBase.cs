@@ -547,13 +547,6 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler, IPunObservable
         }
         if (collision.gameObject.layer == LayerMask.NameToLayer("Castle"))
         {
-            // ! Photon
-            // 안전장치 if 문
-            if (collision.gameObject.GetComponentInParent<Gate>().gateHP <= 0 && dataContainerView.IsMine == true)
-            {
-                // enemyCameraQueue 를 확인하고 Dequeue 하는 메서드를 다른 ViewID 에게 발사
-                photonView.RPC("CheckTeamAndDequeue", RpcTarget.Others, photonView.ViewID.ToString());
-            }
 
             StartCoroutine(EndAttackRoutine(collision.gameObject.GetComponentInParent<Gate>().gateHP>0));    
         }
@@ -683,14 +676,6 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler, IPunObservable
 
     protected virtual void Die()
     {
-        // ! Photon
-        // 안전장치 if 문
-        if (dataContainerView.IsMine == true)
-        {
-            // enemyCameraQueue 를 확인하고 Dequeue 하는 메서드를 다른 ViewID 에게 발사
-            photonView.RPC("CheckTeamAndDequeue", RpcTarget.Others, photonView.ViewID.ToString());
-        }
-
         PlayDestroySound(true);
         DemolishMeshRenderers();
         //rayfireRigid.Activate();
@@ -705,6 +690,14 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler, IPunObservable
         { yield break; }
 
         isDestroy = true;
+
+        // ! Photon
+        // 안전장치 if 문
+        if (dataContainerView.IsMine == true)
+        {
+            // enemyCameraQueue 를 확인하고 Dequeue 하는 메서드를 다른 ViewID 에게 발사
+            photonView.RPC("CheckTeamAndDequeue", RpcTarget.Others, photonView.ViewID.ToString());
+        }
         yield return new WaitForSeconds(2f);
         CycleManager.cycleManager.ChangeCycleAttackToSelect();
         yield return new WaitForSeconds(1f);

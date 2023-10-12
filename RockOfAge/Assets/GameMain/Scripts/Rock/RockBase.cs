@@ -270,6 +270,8 @@ public class RockBase : MonoBehaviourPun, IHitObjectHandler, IPunObservable
             rockRigidbody.velocity += newVelocity;
         }
 
+        Debug.Log(rockRigidbody.velocity);
+
 
         //속도 제한
         //땅

@@ -8765,7 +8765,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2998856655103843872}
   m_Layer: 9
-  m_Name: PlayerBase_Castle
+  m_Name: Castle_Wall
   m_TagString: Team01
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -83,14 +83,14 @@ public class BuildViewer : MonoBehaviour
     }
 
 
-    public void UpdateMouseMove(bool canBuild)
+    public void UpdateColor(bool canBuild)
     {
         colorHighLight.UpdateColorHighLightColor(canBuild);
         dragViewer.UpdateColor(canBuild);
     }
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!차후 obstacleBase로 바꿀것
-    public void UpdateTargetChange(ObstacleBase target)
+    public void UpdateTarget(ObstacleBase target)
     {
         colorHighLight.UpdateColorHighLightSize(target.status.Size);
         ChangeTarget(target);
